@@ -114,3 +114,24 @@ $routes->get('/', 'Home::index');
 		// master
 	});
 /* ADMIN PANEL */
+/* API */
+	$routes->group("api", ["namespace" => "App\Controllers\Api"], function($routes){
+		// before login
+			$routes->match(['post'], "get-app-setting", "ApiController::getAppSetting");
+			$routes->match(['post'], "get-static-pages", "ApiController::getStaticPages");
+			$routes->match(['post'], "get-product-category", "ApiController::getProductCategory");
+			$routes->match(['post'], "get-member-type", "ApiController::getMemberType");
+		// before login
+		// authentication
+			$routes->match(['post'], "get-company-details", "ApiController::getCompanyDetails");
+			$routes->match(['post'], "signup", "ApiController::signup");
+			$routes->match(['post'], "forgot-password", "ApiController::forgotPassword");
+			$routes->match(['post'], "validate-otp", "ApiController::validateOTP");
+			$routes->match(['post'], "resend-otp", "ApiController::resendOtp");
+			$routes->match(['post'], "reset-password", "ApiController::resetPassword");
+		// authentication
+		// after login
+
+		// after login
+	});
+/* API */
