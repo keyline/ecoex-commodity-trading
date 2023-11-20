@@ -129,6 +129,8 @@ $routes->get('/', 'Home::index');
 			$routes->match(['post'], "validate-otp", "ApiController::validateOTP");
 			$routes->match(['post'], "resend-otp", "ApiController::resendOtp");
 			$routes->match(['post'], "reset-password", "ApiController::resetPassword");
+			$routes->match(['post'], "signin", "ApiController::signin");
+			$routes->match(['post'], "signout", "ApiController::signout");
 		// authentication
 		// after login
 
