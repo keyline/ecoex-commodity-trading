@@ -130,10 +130,12 @@ $routes->get('/', 'Home::index');
 			$routes->match(['post'], "resend-otp", "ApiController::resendOtp");
 			$routes->match(['post'], "reset-password", "ApiController::resetPassword");
 			$routes->match(['post'], "signin", "ApiController::signin");
-			$routes->match(['post'], "signout", "ApiController::signout");
 		// authentication
 		// after login
-
+			$routes->match(['post'], "signout", "ApiController::signout");
+			$routes->match(['post'], "change-password", "ApiController::changePassword");
+			$routes->match(['post'], "get-profile", "ApiController::getProfile");
+			$routes->match(['post'], "update-profile", "ApiController::updateProfile");
 		// after login
 	});
 /* API */

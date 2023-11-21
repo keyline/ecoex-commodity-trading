@@ -705,6 +705,8 @@ class ApiController extends BaseController
             }
             $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
         }
+    /* authentication */
+    /* after login */
         public function signout()
         {
             $apiStatus          = TRUE;
@@ -750,7 +752,234 @@ class ApiController extends BaseController
             }
             $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
         }
-    /* authentication */
+        public function changePassword()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));        
+            $requiredFields     = ['old_password', 'new_password', 'confirm_password'];
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)){              
+                $apiStatus          = FALSE;
+                $apiMessage         = 'All Data Are Not Present !!!';
+            }           
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $old_password               = $requestData['old_password'];
+                $new_password               = $requestData['new_password'];
+                $confirm_password           = $requestData['confirm_password'];
+                
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                // pr($getTokenValue);
+                if($getTokenValue['status']){
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if($getUser){
+                        if($getUser->password == md5($old_password)){
+                            if($new_password == $confirm_password){
+                                if($getUser->password != md5($new_password)){
+                                    $fields = [
+                                        'password'      => md5($new_password)
+                                    ];
+                                    $this->common_model->save_data('ecomm_users', $fields, $uId, 'id');
+                                    $apiStatus          = TRUE;
+                                    http_response_code(200);
+                                    $apiMessage         = 'Password Updated Successfully !!!';
+                                    $apiExtraField      = 'response_code';
+                                    $apiExtraData       = http_response_code();
+                                } else {
+                                    $apiStatus          = FALSE;
+                                    http_response_code(404);
+                                    $apiMessage         = 'New & Existing Password Can\'t Be Same !!!';
+                                    $apiExtraField      = 'response_code';
+                                    $apiExtraData       = http_response_code();
+                                }
+                            } else {
+                                $apiStatus          = FALSE;
+                                http_response_code(404);
+                                $apiMessage         = 'New & Confirm Password Doesn\'t Matched !!!';
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            }
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'Existing Password Doesn\'t Matched !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }               
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+        public function getProfile()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            // $this->isJSON(file_get_contents('php://input'));
+            // $requestData        = $this->extract_json(file_get_contents('php://input'));        
+            // $requiredFields     = [];
+            $headerData         = $this->request->headers();
+            // if (!$this->validateArray($requiredFields, $requestData)){              
+            //     $apiStatus          = FALSE;
+            //     $apiMessage         = 'All Data Are Not Present !!!';
+            // }           
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                // pr($getTokenValue);
+                if($getTokenValue['status']){
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if($getUser){
+                        $productCategory    = $this->common_model->find_data('ecomm_product_categories', 'row', ['id' => $getUser->product_category], 'name');
+                        $memberType         = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
+                        $apiResponse        = [
+                            'type'              => $getUser->type,
+                            'gst_no'            => $getUser->gst_no,
+                            'company_name'      => $getUser->company_name,
+                            'full_address'      => $getUser->full_address,
+                            'holding_no'        => $getUser->holding_no,
+                            'street'            => $getUser->street,
+                            'district'          => $getUser->district,
+                            'state'             => $getUser->state,
+                            'pincode'           => $getUser->pincode,
+                            'location'          => $getUser->location,
+                            'email'             => $getUser->email,
+                            'phone'             => $getUser->phone,
+                            'product_category'  => (($productCategory)?$productCategory->name:''),
+                            'member_type'       => (($memberType)?$memberType->name:''),
+                        ];
+
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Data Available !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }               
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+        public function updateProfile()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));        
+            $requiredFields     = ['gst_no', 'company_name', 'full_address', 'holding_no', 'street', 'district', 'state', 'pincode', 'location', 'phone', 'product_category'];
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)){              
+                $apiStatus          = FALSE;
+                $apiMessage         = 'All Data Are Not Present !!!';
+            }           
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $gst_no                     = $requestData['gst_no'];
+                $company_name               = $requestData['company_name'];
+                $full_address               = $requestData['full_address'];
+                $holding_no                 = $requestData['holding_no'];
+                $street                     = $requestData['street'];
+                $district                   = $requestData['district'];
+                $state                      = $requestData['state'];
+                $pincode                    = $requestData['pincode'];
+                $location                   = $requestData['location'];
+                $phone                      = $requestData['phone'];
+                $product_category           = $requestData['product_category'];
+                
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                // pr($getTokenValue);
+                if($getTokenValue['status']){
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if($getUser){
+                        $fields = [
+                            'gst_no'                => $gst_no,
+                            'company_name'          => $company_name,
+                            'full_address'          => $full_address,
+                            'holding_no'            => $holding_no,
+                            'street'                => $street,
+                            'district'              => $district,
+                            'state'                 => $state,
+                            'pincode'               => $pincode,
+                            'location'              => $location,
+                            'phone'                 => $phone,
+                            'product_category'      => $product_category,
+                        ];
+                        $this->common_model->save_data('ecomm_users', $fields, $uId, 'id');
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Profle Updated Successfully !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }               
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+    /* after login */
     /*
     Get http response code
     Author : Subhomoy
@@ -832,7 +1061,7 @@ class ApiController extends BaseController
             $userdata = $this->matchToken($appAccessToken);
             // pr($userdata);
             if ($userdata['status']) :
-                $checkToken =  UserDevice::where('user_id', '=', $userdata['data']->id)->where('app_access_token', '=', $appAccessToken)->first();
+                $checkToken =  $this->common_model->find_data('ecomm_user_devices', 'row', ['app_access_token' => $appAccessToken, 'user_id' => $userdata['data']->id]);
                 // echo $this->db->last_query();
                 // pr($userdata);
                 if (!empty($checkToken)) :
