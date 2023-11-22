@@ -128,4 +128,23 @@ abstract class BaseController extends Controller
         print json_encode($data);
         die;
     }
+
+    public function sendMail($to_email, $email_subject, $mailbody, $attachment = '')
+    {
+        $siteSetting        = $this->find_data('general_settings', 'row');
+        $email              = \Config\Services::email();        
+        $from_email         = 'no-reply@market.ecoex.market';
+        $from_name          = $siteSetting->site_name;
+        $email->setFrom($from_email, $from_name);
+        $email->setTo($to_email);
+        $email->setCC('subhomoy@keylines.net', 'Ecoex Commodity Trading');
+        // $email->setCC('info@ecoex.market', 'Ecoex Portal');
+        $email->setSubject($email_subject);
+        $email->setMessage($mailbody);
+        if($attachment != ''){
+            $email->attach($attachment);
+        }
+        $email->send();
+        return true;
+    }
 }

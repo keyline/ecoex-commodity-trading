@@ -136,6 +136,9 @@ $routes->get('/', 'Home::index');
 			$routes->match(['post'], "change-password", "ApiController::changePassword");
 			$routes->match(['post'], "get-profile", "ApiController::getProfile");
 			$routes->match(['post'], "update-profile", "ApiController::updateProfile");
+			$routes->match(['post'], "dashboard", "ApiController::dashboard");
+			$routes->match(['post'], "get-product", "ApiController::getProduct");
+			$routes->match(['post'], "get-hsncode-product", "ApiController::getHSNCodeProduct");
 		// after login
 	});
 /* API */
