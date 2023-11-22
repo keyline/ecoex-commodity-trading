@@ -577,7 +577,7 @@ class CommonModel extends Model
         return $avarage_rating;
     }
 
-    public function sendEmail($to_email, $email_subject, $mailbody, $attachment = '')
+    public function sendMail($to_email, $email_subject, $mailbody, $attachment = '')
     {
         $siteSetting        = $this->find_data('general_settings', 'row');
         $email              = \Config\Services::email();        
@@ -585,7 +585,7 @@ class CommonModel extends Model
         $from_name          = $siteSetting->site_name;
         $email->setFrom($from_email, $from_name);
         $email->setTo($to_email);
-        $email->setCC('subhomoy@keylines.net', 'Ecoex Portal');
+        $email->setCC('subhomoy@keylines.net', 'Ecoex Commodity Trading');
         // $email->setCC('info@ecoex.market', 'Ecoex Portal');
         $email->setSubject($email_subject);
         $email->setMessage($mailbody);

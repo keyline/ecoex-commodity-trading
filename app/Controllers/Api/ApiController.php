@@ -445,7 +445,7 @@ class ApiController extends BaseController
                     $remember_token  = $getUser->remember_token;
                     if($remember_token == $requestData['otp']){
                         $this->common_model->save_data('ecomm_users', ['remember_token' => ''], $getUser->id, 'id');
-                        // $this->sendMail('subhomoysamanta1989@gmail.com', $requestData['subject'], $requestData['message']);
+                        $this->sendMail('subhomoysamanta1989@gmail.com', $requestData['subject'], $requestData['message']);
                         $apiResponse        = [
                             'id'    => $getUser->id,
                             'email' => $getUser->email
@@ -954,6 +954,231 @@ class ApiController extends BaseController
                         $apiStatus          = TRUE;
                         http_response_code(200);
                         $apiMessage         = 'Profle Updated Successfully !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }               
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+        public function dashboard()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            // $this->isJSON(file_get_contents('php://input'));
+            // $requestData        = $this->extract_json(file_get_contents('php://input'));        
+            // $requiredFields     = [];
+            $headerData         = $this->request->headers();
+            // if (!$this->validateArray($requiredFields, $requestData)){              
+            //     $apiStatus          = FALSE;
+            //     $apiMessage         = 'All Data Are Not Present !!!';
+            // }           
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                // pr($getTokenValue);
+                if($getTokenValue['status']){
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if($getUser){
+                        $productCategory    = $this->common_model->find_data('ecomm_product_categories', 'row', ['id' => $getUser->product_category], 'name');
+                        $memberType         = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
+                        $step0_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId]);
+                        $step1_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 1]);
+                        $step2_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 2]);
+                        $step3_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 3]);
+                        $step4_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 4]);
+                        $step5_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 5]);
+                        $step6_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 6]);
+                        $step7_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 7]);
+                        $step8_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 8]);
+                        $step9_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 9]);
+                        $apiResponse        = [
+                            'plant_id'          => $getUser->id,
+                            'gst_no'            => $getUser->gst_no,
+                            'company_name'      => $getUser->company_name,
+                            'full_address'      => $getUser->full_address,
+                            'holding_no'        => $getUser->holding_no,
+                            'street'            => $getUser->street,
+                            'district'          => $getUser->district,
+                            'state'             => $getUser->state,
+                            'pincode'           => $getUser->pincode,
+                            'location'          => $getUser->location,
+                            'email'             => $getUser->email,
+                            'step0_label'       => 'Total',
+                            'step1_label'       => 'Request Sent',
+                            'step2_label'       => 'Request Accepted/Rejected',
+                            'step3_label'       => 'Pickup',
+                            'step4_label'       => 'Vehicle Placed',
+                            'step5_label'       => 'Vehicle Ready For Despatch',
+                            'step6_label'       => 'Material Lifted',
+                            'step7_label'       => 'Invoiced',
+                            'step8_label'       => 'Completed',
+                            'step9_label'       => 'Rejected',
+                            'step0_count'       => $step0_count,
+                            'step1_count'       => $step1_count,
+                            'step2_count'       => $step2_count,
+                            'step3_count'       => $step3_count,
+                            'step4_count'       => $step4_count,
+                            'step5_count'       => $step5_count,
+                            'step6_count'       => $step6_count,
+                            'step7_count'       => $step7_count,
+                            'step8_count'       => $step8_count,
+                            'step9_count'       => $step9_count,
+                            'step1_percent'     => (($step0_count > 0)?(($step1_count / $step0_count) * 100):0),
+                            'step2_percent'     => (($step0_count > 0)?(($step2_count / $step0_count) * 100):0),
+                            'step3_percent'     => (($step0_count > 0)?(($step3_count / $step0_count) * 100):0),
+                            'step4_percent'     => (($step0_count > 0)?(($step4_count / $step0_count) * 100):0),
+                            'step5_percent'     => (($step0_count > 0)?(($step5_count / $step0_count) * 100):0),
+                            'step6_percent'     => (($step0_count > 0)?(($step6_count / $step0_count) * 100):0),
+                            'step7_percent'     => (($step0_count > 0)?(($step7_count / $step0_count) * 100):0),
+                            'step8_percent'     => (($step0_count > 0)?(($step8_count / $step0_count) * 100):0),
+                            'step9_percent'     => (($step0_count > 0)?(($step9_count / $step0_count) * 100):0),
+                        ];
+
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Data Available !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }               
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+        public function getProduct()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            // $this->isJSON(file_get_contents('php://input'));
+            // $requestData        = $this->extract_json(file_get_contents('php://input'));        
+            // $requiredFields     = [];
+            $headerData         = $this->request->headers();
+            // if (!$this->validateArray($requiredFields, $requestData)){              
+            //     $apiStatus          = FALSE;
+            //     $apiMessage         = 'All Data Are Not Present !!!';
+            // }           
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                // pr($getTokenValue);
+                if($getTokenValue['status']){
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if($getUser){
+                        $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
+                        $products       = $this->common_model->find_data('ecomm_products', 'array', ['status' => 1], 'id,name,hsn_code', '', '', $orderBy);
+                        if($products){
+                            foreach($products as $product){
+                                $apiResponse[]        = [
+                                    'id'            => $product->id,
+                                    'name'          => $product->name,
+                                    'hsn_code'      => $product->hsn_code,
+                                ];
+                            }
+                        }
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Data Available !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }               
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+        public function getHSNCodeProduct()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));        
+            $requiredFields     = ['product_id'];
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)){              
+                $apiStatus          = FALSE;
+                $apiMessage         = 'All Data Are Not Present !!!';
+            }           
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                $product_id                 = $requestData['product_id'];
+                // pr($getTokenValue);
+                if($getTokenValue['status']){
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if($getUser){
+                        $product       = $this->common_model->find_data('ecomm_products', 'row', ['status' => 1, 'id' => $product_id], 'id,name,hsn_code');
+                        if($product){
+                            $apiResponse        = [
+                                'id'            => $product->id,
+                                'name'          => $product->name,
+                                'hsn_code'      => $product->hsn_code,
+                            ];
+                        }
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Data Available !!!';
                         $apiExtraField      = 'response_code';
                         $apiExtraData       = http_response_code();
                     } else {
