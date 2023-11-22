@@ -131,7 +131,7 @@ abstract class BaseController extends Controller
 
     public function sendMail($to_email, $email_subject, $mailbody, $attachment = '')
     {
-        $siteSetting        = $this->find_data('general_settings', 'row');
+        $siteSetting        = $this->common_model->find_data('general_settings', 'row');
         $email              = \Config\Services::email();        
         $from_email         = 'no-reply@market.ecoex.market';
         $from_name          = $siteSetting->site_name;
