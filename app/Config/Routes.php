@@ -18,6 +18,9 @@ $routes->get('/', 'Home::index');
 		// authentication
 		// dashboard
 			$routes->match(['get', 'post'], "dashboard", "User::dashboard");
+			$routes->match(['get', 'post'], "email-logs", "User::emailLogs");
+			$routes->match(['get', 'post'], "email-logs-details/(:any)", "User::emailLogsDetails/$1");
+			$routes->match(['get', 'post'], "login-logs", "User::loginLogs");
 		// dashboard
 		// settings
 			$routes->match(['get', 'post'], "settings", "User::settings");
@@ -112,6 +115,13 @@ $routes->get('/', 'Home::index');
 				$routes->match(['get', 'post'], "pages/change-status/(:any)", "PageController::change_status/$1");
 			/* page */
 		// master
+		// members
+			$routes->match(['get'], "members/list", "MemberController::list");
+			$routes->match(['get', 'post'], "members/add", "MemberController::add");
+			$routes->match(['get', 'post'], "members/edit/(:any)", "MemberController::edit/$1");
+			$routes->match(['get', 'post'], "members/delete/(:any)", "MemberController::confirm_delete/$1");
+			$routes->match(['get', 'post'], "members/change-status/(:any)", "MemberController::change_status/$1");
+		// members
 	});
 /* ADMIN PANEL */
 /* API */
