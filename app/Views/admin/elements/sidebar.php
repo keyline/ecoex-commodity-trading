@@ -9,6 +9,7 @@ if($baseUrl == 'https://commodity.ecoex.market/'){
     $uri            = new \CodeIgniter\HTTP\URI($currentLink);
     $pageSegment    = $uri->getSegment(3);
 }
+// echo $pageSegment;
 ?>
 <style type="text/css">
     /*.active{
@@ -92,5 +93,23 @@ if($baseUrl == 'https://commodity.ecoex.market/'){
                 </a>
             </li>
         </ul>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link <?=(($pageSegment == 'members')?'active':'')?>" href="<?=base_url('admin/members/list')?>">
+            <i class="fa fa-users"></i>
+            <span>Users</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link <?=(($pageSegment == 'email-logs')?'active':'')?>" href="<?=base_url('admin/email-logs')?>">
+            <i class="fa fa-envelope"></i>
+            <span>Email Logs</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link <?=(($pageSegment == 'login-logs')?'active':'')?>" href="<?=base_url('admin/login-logs')?>">
+            <i class="fa fa-list"></i>
+            <span>Login Logs</span>
+        </a>
     </li>
 </ul>

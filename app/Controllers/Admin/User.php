@@ -469,4 +469,44 @@ class User extends BaseController {
             return redirect()->to('/admin/settings');
         }
     /* settings */
+    /* email logs */
+        public function emailLogs() 
+        {
+            if(!$this->session->get('is_admin_login')) {
+                return redirect()->to('/admin');
+            }
+            $title              = 'Email Logs';
+            $page_name          = 'email-logs';
+            $order_by[0]        = array('field' => 'id', 'type' => 'desc');
+            $data['rows']       = $this->common_model->find_data('email_logs', 'array', '', '', '', '', $order_by);
+            echo $this->layout_after_login($title,$page_name,$data);
+        }
+        public function emailLogsDetails($id) 
+        {
+            if(!$this->session->get('is_admin_login')) {
+                return redirect()->to('/admin');
+            }
+            $id                 = decoded($id);
+            $title              = 'Email Logs Details';
+            $page_name          = 'email-logs-details';
+            $data['row']        = $this->common_model->find_data('email_logs', 'row', ['id' => $id]);
+            echo $this->layout_after_login($title,$page_name,$data);
+        }
+    /* email logs */
+    /* login logs */
+        public function loginLogs() 
+        {
+            if(!$this->session->get('is_admin_login')) {
+                return redirect()->to('/admin');
+            }
+            $title              = 'Login Logs';
+            $page_name          = 'login-logs';
+            $order_by[0]        = array('field' => 'activity_id', 'type' => 'desc');
+            $data['rows1']       = $this->common_model->find_data('user_activities', 'array', ['user_type' => 'MA'], '', '', '', $order_by);
+            $data['rows2']       = $this->common_model->find_data('user_activities', 'array', ['user_type' => 'PLANT'], '', '', '', $order_by);
+            $data['rows3']       = $this->common_model->find_data('user_activities', 'array', ['user_type' => 'HO'], '', '', '', $order_by);
+            $data['rows4']       = $this->common_model->find_data('user_activities', 'array', ['user_type' => 'VENDOR'], '', '', '', $order_by);
+            echo $this->layout_after_login($title,$page_name,$data);
+        }
+    /* login logs */
 }
