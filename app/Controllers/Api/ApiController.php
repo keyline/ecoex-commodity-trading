@@ -265,7 +265,7 @@ class ApiController extends BaseController
             $apiExtraData       = '';
             $this->isJSON(file_get_contents('php://input'));
             $requestData        = $this->extract_json(file_get_contents('php://input'));
-            $requiredFields     = ['gst_no', 'company_name', 'full_address', 'district', 'state', 'pincode', 'location', 'email', 'phone', 'password', 'confirm_password', 'product_category', 'member_type'];
+            $requiredFields     = ['gst_no', 'company_name', 'full_address', 'district', 'state', 'pincode', 'location', 'email', 'phone', 'password', 'confirm_password', 'member_type'];
             $headerData         = $this->request->headers();
             if (!$this->validateArray($requiredFields, $requestData)){              
                 http_response_code(406);
@@ -281,8 +281,9 @@ class ApiController extends BaseController
                     $checkPhone = $this->common_model->find_data('ecomm_users', 'count', ['phone' => $phone]);
                     if($checkPhone <= 0){
                         if($requestData['password'] == $requestData['confirm_password']){
-                            $remember_token = rand(1000,9999);
-                            $postData = [
+                            $remember_token = rand(100000,999999);
+                            $mobile_otp     = rand(100000,999999);
+                            $postData       = [
                                 'gst_no'                    => $requestData['gst_no'],
                                 'company_name'              => $requestData['company_name'],
                                 'full_address'              => $requestData['full_address'],
@@ -297,33 +298,53 @@ class ApiController extends BaseController
                                 'phone'                     => $phone,
                                 'password'                  => md5($requestData['password']),
                                 'remember_token'            => $remember_token,
-                                'product_category'          => $requestData['product_category'],
-                                'member_type'               => $requestData['member_type'],
-                                'status'                    => 0,
+                                'mobile_otp'                => $mobile_otp,
+                                'member_type'               => $requestData['member_type']
                             ];
                             // pr($postData);
-                            $id = $this->common_model->save_data('ecomm_users', $postData, '', 'id');
-                            
-                            /* email sent */
+                            $getUser = $this->common_model->find_data('ecomm_users', 'row', ['email' => $requestData['email']]);
+                            if(!$getUser){
+                                $id = $this->common_model->save_data('ecomm_users', $postData, '', 'id');
+                            } else {
+                                $this->common_model->save_data('ecomm_users', $postData, $getUser->id, 'id');
+                                $id = $getUser->id;
+                            }
+                            $getUser = $this->common_model->find_data('ecomm_users', 'row', ['id' => $id]);
+
+                            $mailData                   = [
+                                'id'            => $getUser->id,
+                                'email'         => $getUser->email,
+                                'otp'           => $remember_token,
+                                'mobile_otp'    => $mobile_otp,
+                            ];
+                            /* send email */
                                 $generalSetting             = $this->common_model->find_data('general_settings', 'row');
-                                $subject                    = $generalSetting->site_name.' :: Signup Complete';
-                                $message                    = view('email-templates/signup',$postData);
+                                $subject                    = $generalSetting->site_name.' :: Email Verify OTP For Signup';
+                                $message                    = view('email-templates/otp',$mailData);
                                 // echo $message;die;
-                                $this->sendMail($requestData['email'], $subject, $message);
-                            /* email sent */
+                                $this->sendMail($getUser->email, $subject, $message);
+                            /* send email */
+                            /* send sms */
+                                $message = "Dear ".(($getUser)?$getUser->company_name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
+                                $mobileNo = (($getUser)?$getUser->phone:'');
+                                $this->sendSMS($mobileNo,$message);
+                            /* send sms */
+
                             /* email log save */
                                 $postData2 = [
-                                    'name'                  => $requestData['company_name'],
-                                    'email'                 => $requestData['email'],
+                                    'name'                  => $getUser->company_name,
+                                    'email'                 => $getUser->email,
                                     'subject'               => $subject,
                                     'message'               => $message
                                 ];
                                 $this->common_model->save_data('email_logs', $postData2, '', 'id');
                             /* email log save */
+
+                            $apiResponse                        = $mailData;
                             
                             $apiStatus          = TRUE;
                             http_response_code(200);
-                            $apiMessage         = 'Signup Successfully. Get Notify After Admin Approval !!!';
+                            $apiMessage         = 'Signup Partially Completed. Please Verify Email & Phone. Get Notify After Admin Approval !!!';
                             $apiExtraField      = 'response_code';
                             $apiExtraData       = http_response_code();
                             
@@ -357,6 +378,207 @@ class ApiController extends BaseController
             }
             $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
         }
+        public function signupOTPResend()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $apiExtraField      = '';
+            $apiExtraData       = '';
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));
+            $requiredFields     = ['id'];
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)){              
+                http_response_code(406);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $getUser = $this->common_model->find_data('ecomm_users', 'row', ['id' => $requestData['id']]);
+                if($getUser){
+                    $remember_token = rand(100000,999999);
+                    $mobile_otp     = rand(100000,999999);
+                    $this->common_model->save_data('ecomm_users', ['remember_token' => $remember_token, 'mobile_otp' => $mobile_otp], $requestData['id'], 'id');
+                    $mailData                   = [
+                        'id'            => $getUser->id,
+                        'email'         => $getUser->email,
+                        'phone'         => $getUser->phone,
+                        'otp'           => $remember_token,
+                        'mobile_otp'    => $mobile_otp,
+                    ];
+                    /* send email */
+                        $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                        $subject                    = $generalSetting->site_name.' :: Email Verify OTP For Signup';
+                        $message                    = view('email-templates/otp',$mailData);
+                        // echo $message;die;
+                        $this->sendMail($getUser->email, $subject, $message);
+                    /* send email */
+                    /* send sms */
+                        $message = "Dear ".(($getUser)?$getUser->company_name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
+                        $mobileNo = (($getUser)?$getUser->phone:'');
+                        $this->sendSMS($mobileNo,$message);
+                    /* send sms */
+
+                    /* email log save */
+                        $postData2 = [
+                            'name'                  => $getUser->company_name,
+                            'email'                 => $getUser->email,
+                            'subject'               => $subject,
+                            'message'               => $message
+                        ];
+                        $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                    /* email log save */
+
+                    $apiResponse        = $mailData;
+                    $apiStatus          = TRUE;
+                    http_response_code(200);
+                    $apiMessage         = 'OTP Resend To Email & SMS Successfully !!!';
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                } else {
+                    $apiStatus          = FALSE;
+                    http_response_code(404);
+                    $apiMessage         = 'User Not Found !!!';
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+        }
+        public function signupOTPVerify(){
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $apiExtraField      = '';
+            $apiExtraData       = '';
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));
+            $requiredFields     = ['id'];
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)){              
+                http_response_code(406);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }           
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $getUser = $this->common_model->find_data('ecomm_users', 'row', ['id' => $requestData['id']]);
+                if($getUser){
+                    $email_otp_input        = $requestData['email_otp_input'];
+                    $mobile_otp_input       = $requestData['mobile_otp_input'];
+                    $remember_token         = $getUser->remember_token;
+                    $mobile_otp             = $getUser->mobile_otp;
+
+                    if($email_otp_input == '' && $mobile_otp_input == ''){
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'Email Or Mobile OTP Required !!!';
+                        $apiExtraField      = 'response_code';
+                    } else {
+                        /* email & mobile verify */
+                            if(($email_otp_input != '') && ($mobile_otp_input != '')){
+                                if($remember_token == $email_otp_input){
+                                    if($mobile_otp == $mobile_otp_input){
+                                        $this->common_model->save_data('ecomm_users', ['mobile_otp' => '', 'remember_token' => ''], $getUser->id, 'id');
+
+                                        $apiResponse        = [
+                                            'id'    => $getUser->id,
+                                            'email' => $getUser->email,
+                                            'phone' => $getUser->phone,
+                                        ];
+                                        $apiStatus                          = TRUE;
+                                        http_response_code(200);
+                                        $apiMessage                         = 'Email & Mobile OTP Validated Successfully !!!';
+                                        $apiExtraField                      = 'response_code';
+                                        $apiExtraData                       = http_response_code();
+                                    } else {
+                                        $apiStatus          = FALSE;
+                                        http_response_code(404);
+                                        $apiMessage         = 'Mobile OTP Mismatched !!!';
+                                        $apiExtraField      = 'response_code';
+                                    }
+                                } else {
+                                    $apiStatus          = FALSE;
+                                    http_response_code(404);
+                                    $apiMessage         = 'Email OTP Mismatched !!!';
+                                    $apiExtraField      = 'response_code';
+                                }
+                            } else {
+                                /* email verify */
+                                    if($email_otp_input != ''){
+                                        if($remember_token == $email_otp_input){
+                                            $this->common_model->save_data('ecomm_users', ['remember_token' => ''], $getUser->id, 'id');
+                                            $apiResponse        = [
+                                                'id'    => $getUser->id,
+                                                'email' => $getUser->email,
+                                                'phone' => $getUser->phone,
+                                            ];
+                                            $apiStatus                          = TRUE;
+                                            http_response_code(200);
+                                            $apiMessage                         = 'Email OTP Validated Successfully !!!';
+                                            $apiExtraField                      = 'response_code';
+                                            $apiExtraData                       = http_response_code();
+                                        } else {
+                                            $apiStatus          = FALSE;
+                                            http_response_code(404);
+                                            $apiMessage         = 'Email OTP Mismatched !!!';
+                                            $apiExtraField      = 'response_code';
+                                        }
+                                    }
+                                /* email verify */
+                                /* mobile verify */
+                                    if($mobile_otp_input != ''){
+                                        if($mobile_otp == $mobile_otp_input){
+                                            $this->common_model->save_data('ecomm_users', ['mobile_otp' => ''], $getUser->id, 'id');
+                                            $apiResponse        = [
+                                                'id'    => $getUser->id,
+                                                'email' => $getUser->email,
+                                                'phone' => $getUser->phone,
+                                            ];
+                                            $apiStatus                          = TRUE;
+                                            http_response_code(200);
+                                            $apiMessage                         = 'Mobile OTP Validated Successfully !!!';
+                                            $apiExtraField                      = 'response_code';
+                                            $apiExtraData                       = http_response_code();
+                                        } else {
+                                            $apiStatus          = FALSE;
+                                            http_response_code(404);
+                                            $apiMessage         = 'Mobile OTP Mismatched !!!';
+                                            $apiExtraField      = 'response_code';
+                                        }
+                                    }
+                                /* mobile verify */
+                            }
+                        /* email & mobile verify */
+                    }
+                } else {
+                    $apiStatus          = FALSE;
+                    http_response_code(404);
+                    $apiMessage         = 'User Not Found !!!';
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+        }
+
+
         public function forgotPassword(){
             $apiStatus          = TRUE;
             $apiMessage         = '';
@@ -610,6 +832,7 @@ class ApiController extends BaseController
             }
             $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
         }
+
         public function signin()
         {
             $apiStatus          = TRUE;
@@ -975,6 +1198,270 @@ class ApiController extends BaseController
             }
             $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
         }
+        public function sendEmailOTP()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            // $this->isJSON(file_get_contents('php://input'));
+            // $requestData        = $this->extract_json(file_get_contents('php://input'));        
+            // $requiredFields     = [];
+            $headerData         = $this->request->headers();
+            // if (!$this->validateArray($requiredFields, $requestData)){              
+            //     $apiStatus          = FALSE;
+            //     $apiMessage         = 'All Data Are Not Present !!!';
+            // }           
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if($getTokenValue['status']){
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId, 'status' => 1]);
+                    if($getUser){
+                        
+                        $remember_token = rand(100000,999999);
+                        $postData = [
+                            'remember_token'        => $remember_token
+                        ];
+                        $this->common_model->save_data('ecomm_users', ['remember_token' => $remember_token], $getUser->id, 'id');
+
+                        $mailData                   = [
+                            'id'    => $getUser->id,
+                            'email' => $getUser->email,
+                            'otp'   => $remember_token,
+                        ];
+                        $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                        $subject                    = $generalSetting->site_name.' :: Email Verify OTP';
+                        $message                    = view('email-templates/otp',$mailData);
+                        // echo $message;die;
+                        // $this->sendMail($getUser->email, $subject, $message);
+
+                        /* email log save */
+                            $postData2 = [
+                                'name'                  => $getUser->company_name,
+                                'email'                 => $getUser->email,
+                                'subject'               => $subject,
+                                'message'               => $message
+                            ];
+                            $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                        /* email log save */
+
+                        $apiResponse                        = $mailData;
+
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Data Available !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }               
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+        public function verifyEmail()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));        
+            $requiredFields     = ['otp'];
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)){              
+                $apiStatus          = FALSE;
+                $apiMessage         = 'All Data Are Not Present !!!';
+            }
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if($getTokenValue['status']){
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId, 'status' => 1]);
+                    if($getUser){
+                        $remember_token  = $getUser->remember_token;
+                        if($remember_token == $requestData['otp']){
+                            $this->common_model->save_data('ecomm_users', ['remember_token' => '', 'email_verify' => 1, 'email_verified_at' => date('Y-m-d H:i:s')], $getUser->id, 'id');
+                            $apiResponse        = [
+                                'id'    => $getUser->id,
+                                'email' => $getUser->email
+                            ];
+                            $apiStatus                          = TRUE;
+                            http_response_code(200);
+                            $apiMessage                         = 'Email Verified Successfully !!!';
+                            $apiExtraField                      = 'response_code';
+                            $apiExtraData                       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'OTP Mismatched !!!';
+                            $apiExtraField      = 'response_code';
+                        }
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }               
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+        public function sendMobileOTP()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $headerData         = $this->request->headers();
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if($getTokenValue['status']){
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId, 'status' => 1]);
+                    if($getUser){
+                        $mobile_otp = rand(100000,999999);
+                        $postData = [
+                            'mobile_otp'        => $mobile_otp
+                        ];
+                        $this->common_model->save_data('ecomm_users', ['mobile_otp' => $mobile_otp], $getUser->id, 'id');
+                        /* send sms */
+                            $message = "Dear ".(($getUser)?$getUser->company_name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
+                            $mobileNo = (($getUser)?$getUser->phone:'');
+                            $this->sendSMS($mobileNo,$message);
+                        /* send sms */
+                        $mailData                   = [
+                            'id'    => $getUser->id,
+                            'email' => $getUser->email,
+                            'phone' => $getUser->phone,
+                            'otp'   => $mobile_otp,
+                        ];
+                        $apiResponse                        = $mailData;
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Data Available !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }               
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+        public function verifyMobile()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));        
+            $requiredFields     = ['otp'];
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)){              
+                $apiStatus          = FALSE;
+                $apiMessage         = 'All Data Are Not Present !!!';
+            }
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if($getTokenValue['status']){
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId, 'status' => 1]);
+                    if($getUser){
+                        $mobile_otp  = $getUser->mobile_otp;
+                        if($mobile_otp == $requestData['otp']){
+                            $this->common_model->save_data('ecomm_users', ['mobile_otp' => '', 'phone_verify' => 1, 'phone_verified_at' => date('Y-m-d H:i:s')], $getUser->id, 'id');
+                            $apiResponse        = [
+                                'id'    => $getUser->id,
+                                'email' => $getUser->email,
+                                'phone' => $getUser->phone,
+                            ];
+                            $apiStatus                          = TRUE;
+                            http_response_code(200);
+                            $apiMessage                         = 'Mobile Verified Successfully !!!';
+                            $apiExtraField                      = 'response_code';
+                            $apiExtraData                       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'OTP Mismatched !!!';
+                            $apiExtraField      = 'response_code';
+                        }
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }               
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+
         public function dashboard()
         {
             $apiStatus          = TRUE;
@@ -1177,276 +1664,6 @@ class ApiController extends BaseController
                         $apiMessage         = 'Data Available !!!';
                         $apiExtraField      = 'response_code';
                         $apiExtraData       = http_response_code();
-                    } else {
-                        $apiStatus          = FALSE;
-                        http_response_code(404);
-                        $apiMessage         = 'User Not Found !!!';
-                        $apiExtraField      = 'response_code';
-                        $apiExtraData       = http_response_code();
-                    }
-                } else {
-                    http_response_code($getTokenValue['data'][2]);
-                    $apiStatus                      = FALSE;
-                    $apiMessage                     = $this->getResponseCode(http_response_code());
-                    $apiExtraField                  = 'response_code';
-                    $apiExtraData                   = http_response_code();
-                }               
-            } else {
-                http_response_code(400);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            }
-            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
-        }
-        public function sendEmailOTP()
-        {
-            $apiStatus          = TRUE;
-            $apiMessage         = '';
-            $apiResponse        = [];
-            // $this->isJSON(file_get_contents('php://input'));
-            // $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            // $requiredFields     = [];
-            $headerData         = $this->request->headers();
-            // if (!$this->validateArray($requiredFields, $requestData)){              
-            //     $apiStatus          = FALSE;
-            //     $apiMessage         = 'All Data Are Not Present !!!';
-            // }           
-            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
-                $getTokenValue              = $this->tokenAuth($app_access_token);
-                if($getTokenValue['status']){
-                    $uId        = $getTokenValue['data'][1];
-                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
-                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId, 'status' => 1]);
-                    if($getUser){
-                        
-                        $remember_token = rand(100000,999999);
-                        $postData = [
-                            'remember_token'        => $remember_token
-                        ];
-                        $this->common_model->save_data('ecomm_users', ['remember_token' => $remember_token], $getUser->id, 'id');
-
-                        $mailData                   = [
-                            'id'    => $getUser->id,
-                            'email' => $getUser->email,
-                            'otp'   => $remember_token,
-                        ];
-                        $generalSetting             = $this->common_model->find_data('general_settings', 'row');
-                        $subject                    = $generalSetting->site_name.' :: Email Verify OTP';
-                        $message                    = view('email-templates/otp',$mailData);
-                        // echo $message;die;
-                        // $this->sendMail($getUser->email, $subject, $message);
-
-                        /* email log save */
-                            $postData2 = [
-                                'name'                  => $getUser->company_name,
-                                'email'                 => $getUser->email,
-                                'subject'               => $subject,
-                                'message'               => $message
-                            ];
-                            $this->common_model->save_data('email_logs', $postData2, '', 'id');
-                        /* email log save */
-
-                        $apiResponse                        = $mailData;
-
-                        $apiStatus          = TRUE;
-                        http_response_code(200);
-                        $apiMessage         = 'Data Available !!!';
-                        $apiExtraField      = 'response_code';
-                        $apiExtraData       = http_response_code();
-                    } else {
-                        $apiStatus          = FALSE;
-                        http_response_code(404);
-                        $apiMessage         = 'User Not Found !!!';
-                        $apiExtraField      = 'response_code';
-                        $apiExtraData       = http_response_code();
-                    }
-                } else {
-                    http_response_code($getTokenValue['data'][2]);
-                    $apiStatus                      = FALSE;
-                    $apiMessage                     = $this->getResponseCode(http_response_code());
-                    $apiExtraField                  = 'response_code';
-                    $apiExtraData                   = http_response_code();
-                }               
-            } else {
-                http_response_code(400);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            }
-            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
-        }
-        public function verifyEmail()
-        {
-            $apiStatus          = TRUE;
-            $apiMessage         = '';
-            $apiResponse        = [];
-            $this->isJSON(file_get_contents('php://input'));
-            $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            $requiredFields     = ['otp'];
-            $headerData         = $this->request->headers();
-            if (!$this->validateArray($requiredFields, $requestData)){              
-                $apiStatus          = FALSE;
-                $apiMessage         = 'All Data Are Not Present !!!';
-            }
-            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
-                $getTokenValue              = $this->tokenAuth($app_access_token);
-                if($getTokenValue['status']){
-                    $uId        = $getTokenValue['data'][1];
-                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
-                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId, 'status' => 1]);
-                    if($getUser){
-                        $remember_token  = $getUser->remember_token;
-                        if($remember_token == $requestData['otp']){
-                            $this->common_model->save_data('ecomm_users', ['remember_token' => '', 'email_verify' => 1, 'email_verified_at' => date('Y-m-d H:i:s')], $getUser->id, 'id');
-                            $apiResponse        = [
-                                'id'    => $getUser->id,
-                                'email' => $getUser->email
-                            ];
-                            $apiStatus                          = TRUE;
-                            http_response_code(200);
-                            $apiMessage                         = 'Email Verified Successfully !!!';
-                            $apiExtraField                      = 'response_code';
-                            $apiExtraData                       = http_response_code();
-                        } else {
-                            $apiStatus          = FALSE;
-                            http_response_code(404);
-                            $apiMessage         = 'OTP Mismatched !!!';
-                            $apiExtraField      = 'response_code';
-                        }
-                    } else {
-                        $apiStatus          = FALSE;
-                        http_response_code(404);
-                        $apiMessage         = 'User Not Found !!!';
-                        $apiExtraField      = 'response_code';
-                        $apiExtraData       = http_response_code();
-                    }
-                } else {
-                    http_response_code($getTokenValue['data'][2]);
-                    $apiStatus                      = FALSE;
-                    $apiMessage                     = $this->getResponseCode(http_response_code());
-                    $apiExtraField                  = 'response_code';
-                    $apiExtraData                   = http_response_code();
-                }               
-            } else {
-                http_response_code(400);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            }
-            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
-        }
-        public function sendMobileOTP()
-        {
-            $apiStatus          = TRUE;
-            $apiMessage         = '';
-            $apiResponse        = [];
-            // $this->isJSON(file_get_contents('php://input'));
-            // $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            // $requiredFields     = [];
-            $headerData         = $this->request->headers();
-            // if (!$this->validateArray($requiredFields, $requestData)){              
-            //     $apiStatus          = FALSE;
-            //     $apiMessage         = 'All Data Are Not Present !!!';
-            // }           
-            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
-                $getTokenValue              = $this->tokenAuth($app_access_token);
-                if($getTokenValue['status']){
-                    $uId        = $getTokenValue['data'][1];
-                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
-                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId, 'status' => 1]);
-                    if($getUser){
-                        $mobile_otp = rand(100000,999999);
-                        $postData = [
-                            'mobile_otp'        => $mobile_otp
-                        ];
-                        $this->common_model->save_data('ecomm_users', ['mobile_otp' => $mobile_otp], $getUser->id, 'id');
-                        /* send sms */
-                            $message = "Dear ".(($getUser)?$getUser->company_name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
-                            $mobileNo = (($getUser)?$getUser->phone:'');
-                            $this->sendSMS($mobileNo,$message);
-                        /* send sms */
-                        $mailData                   = [
-                            'id'    => $getUser->id,
-                            'email' => $getUser->email,
-                            'phone' => $getUser->phone,
-                            'otp'   => $mobile_otp,
-                        ];
-                        $apiResponse                        = $mailData;
-                        $apiStatus          = TRUE;
-                        http_response_code(200);
-                        $apiMessage         = 'Data Available !!!';
-                        $apiExtraField      = 'response_code';
-                        $apiExtraData       = http_response_code();
-                    } else {
-                        $apiStatus          = FALSE;
-                        http_response_code(404);
-                        $apiMessage         = 'User Not Found !!!';
-                        $apiExtraField      = 'response_code';
-                        $apiExtraData       = http_response_code();
-                    }
-                } else {
-                    http_response_code($getTokenValue['data'][2]);
-                    $apiStatus                      = FALSE;
-                    $apiMessage                     = $this->getResponseCode(http_response_code());
-                    $apiExtraField                  = 'response_code';
-                    $apiExtraData                   = http_response_code();
-                }               
-            } else {
-                http_response_code(400);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            }
-            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
-        }
-        public function verifyMobile()
-        {
-            $apiStatus          = TRUE;
-            $apiMessage         = '';
-            $apiResponse        = [];
-            $this->isJSON(file_get_contents('php://input'));
-            $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            $requiredFields     = ['otp'];
-            $headerData         = $this->request->headers();
-            if (!$this->validateArray($requiredFields, $requestData)){              
-                $apiStatus          = FALSE;
-                $apiMessage         = 'All Data Are Not Present !!!';
-            }
-            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
-                $getTokenValue              = $this->tokenAuth($app_access_token);
-                if($getTokenValue['status']){
-                    $uId        = $getTokenValue['data'][1];
-                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
-                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId, 'status' => 1]);
-                    if($getUser){
-                        $mobile_otp  = $getUser->mobile_otp;
-                        if($mobile_otp == $requestData['otp']){
-                            $this->common_model->save_data('ecomm_users', ['mobile_otp' => '', 'phone_verify' => 1, 'phone_verified_at' => date('Y-m-d H:i:s')], $getUser->id, 'id');
-                            $apiResponse        = [
-                                'id'    => $getUser->id,
-                                'email' => $getUser->email,
-                                'phone' => $getUser->phone,
-                            ];
-                            $apiStatus                          = TRUE;
-                            http_response_code(200);
-                            $apiMessage                         = 'Mobile Verified Successfully !!!';
-                            $apiExtraField                      = 'response_code';
-                            $apiExtraData                       = http_response_code();
-                        } else {
-                            $apiStatus          = FALSE;
-                            http_response_code(404);
-                            $apiMessage         = 'OTP Mismatched !!!';
-                            $apiExtraField      = 'response_code';
-                        }
                     } else {
                         $apiStatus          = FALSE;
                         http_response_code(404);

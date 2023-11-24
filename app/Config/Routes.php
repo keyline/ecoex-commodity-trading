@@ -125,10 +125,14 @@ $routes->get('/', 'Home::index');
 		// authentication
 			$routes->match(['post'], "get-company-details", "ApiController::getCompanyDetails");
 			$routes->match(['post'], "signup", "ApiController::signup");
+			$routes->match(['post'], "signup-otp-resend", "ApiController::signupOTPResend");
+			$routes->match(['post'], "signup-otp-verify", "ApiController::signupOTPVerify");
+
 			$routes->match(['post'], "forgot-password", "ApiController::forgotPassword");
 			$routes->match(['post'], "validate-otp", "ApiController::validateOTP");
 			$routes->match(['post'], "resend-otp", "ApiController::resendOtp");
 			$routes->match(['post'], "reset-password", "ApiController::resetPassword");
+
 			$routes->match(['post'], "signin", "ApiController::signin");
 		// authentication
 		// after login
