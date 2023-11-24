@@ -445,11 +445,6 @@ class ApiController extends BaseController
                     $remember_token  = $getUser->remember_token;
                     if($remember_token == $requestData['otp']){
                         $this->common_model->save_data('ecomm_users', ['remember_token' => ''], $getUser->id, 'id');
-<<<<<<< HEAD
-                        // $this->sendMail($getUser->email, $requestData['subject'], $requestData['message']);
-=======
-                        // $this->sendMail('subhomoysamanta1989@gmail.com', $requestData['subject'], $requestData['message']);
->>>>>>> su_home_ecomm
                         $apiResponse        = [
                             'id'    => $getUser->id,
                             'email' => $getUser->email
