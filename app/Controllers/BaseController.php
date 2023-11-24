@@ -51,7 +51,7 @@ abstract class BaseController extends Controller
     {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
-
+        date_default_timezone_set('Asia/Kolkata');
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = \Config\Services::session();
@@ -128,7 +128,7 @@ abstract class BaseController extends Controller
         print json_encode($data);
         die;
     }
-
+    // send email
     public function sendMail($to_email, $email_subject, $mailbody, $attachment = '')
     {
         $siteSetting        = $this->common_model->find_data('general_settings', 'row');
@@ -146,5 +146,46 @@ abstract class BaseController extends Controller
         }
         $email->send();
         return true;
+    }
+    // send sms
+    public function sendSMS($mobileNo,$messageBody){
+        $siteSetting    = $this->common_model->find_data('general_settings', 'row');
+        $authKey        = $siteSetting->sms_authentication_key;        
+        $senderId       = $siteSetting->sms_sender_id;        
+        $route          = "4";
+        $postData = array(
+            'apikey'        => $authKey,
+            'number'        => $mobileNo,
+            'message'       => $messageBody,
+            'senderid'      => $senderId,
+            'format'        => 'json'
+        );
+        //pr($output); 
+        //API URL
+        $url            = $siteSetting->sms_base_url;
+        // init the resource
+        $ch = curl_init();
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => false,
+            CURLOPT_POSTFIELDS => $postData
+            //,CURLOPT_FOLLOWLOCATION => true
+        ));
+        //Ignore SSL certificate verification
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        //get response
+        $output = curl_exec($ch);
+        //pr($output);        
+        //Print error if any
+        if(curl_errno($ch))
+        {
+            //echo 'error:' . curl_error($ch);
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+        curl_close($ch);
     }
 }
