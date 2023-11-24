@@ -150,6 +150,7 @@ $routes->get('/', 'Home::index');
 			$routes->match(['post'], "verify-email", "ApiController::verifyEmail");
 			$routes->match(['post'], "send-mobile-otp", "ApiController::sendMobileOTP");
 			$routes->match(['post'], "verify-mobile", "ApiController::verifyMobile");
+			
 			$routes->match(['post'], "dashboard", "ApiController::dashboard");
 			$routes->match(['post'], "get-product", "ApiController::getProduct");
 			$routes->match(['post'], "get-hsncode-product", "ApiController::getHSNCodeProduct");

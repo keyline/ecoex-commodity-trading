@@ -129,63 +129,63 @@ abstract class BaseController extends Controller
         die;
     }
     // send email
-    public function sendMail($to_email, $email_subject, $mailbody, $attachment = '')
-    {
-        $siteSetting        = $this->common_model->find_data('general_settings', 'row');
-        $email              = \Config\Services::email();        
-        $from_email         = 'no-reply@market.ecoex.market';
-        $from_name          = $siteSetting->site_name;
-        $email->setFrom($from_email, $from_name);
-        $email->setTo($to_email);
-        $email->setCC('subhomoy@keylines.net', 'Ecoex Commodity Trading');
-        // $email->setCC('info@ecoex.market', 'Ecoex Portal');
-        $email->setSubject($email_subject);
-        $email->setMessage($mailbody);
-        if($attachment != ''){
-            $email->attach($attachment);
-        }
-        $email->send();
-        return true;
-    }
-    // send sms
-    public function sendSMS($mobileNo,$messageBody){
-        $siteSetting    = $this->common_model->find_data('general_settings', 'row');
-        $authKey        = $siteSetting->sms_authentication_key;        
-        $senderId       = $siteSetting->sms_sender_id;        
-        $route          = "4";
-        $postData = array(
-            'apikey'        => $authKey,
-            'number'        => $mobileNo,
-            'message'       => $messageBody,
-            'senderid'      => $senderId,
-            'format'        => 'json'
-        );
-        //pr($output); 
-        //API URL
-        $url            = $siteSetting->sms_base_url;
-        // init the resource
-        $ch = curl_init();
-        curl_setopt_array($ch, array(
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => false,
-            CURLOPT_POSTFIELDS => $postData
-            //,CURLOPT_FOLLOWLOCATION => true
-        ));
-        //Ignore SSL certificate verification
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        //get response
-        $output = curl_exec($ch);
-        //pr($output);        
-        //Print error if any
-        if(curl_errno($ch))
+        public function sendMail($to_email, $email_subject, $mailbody, $attachment = '')
         {
-            //echo 'error:' . curl_error($ch);
-            return FALSE;
-        } else {
-            return TRUE;
+            $siteSetting        = $this->common_model->find_data('general_settings', 'row');
+            $email              = \Config\Services::email();        
+            $from_email         = 'no-reply@market.ecoex.market';
+            $from_name          = $siteSetting->site_name;
+            $email->setFrom($from_email, $from_name);
+            $email->setTo($to_email);
+            $email->setCC('subhomoy@keylines.net', 'Ecoex Commodity Trading');
+            // $email->setCC('info@ecoex.market', 'Ecoex Portal');
+            $email->setSubject($email_subject);
+            $email->setMessage($mailbody);
+            if($attachment != ''){
+                $email->attach($attachment);
+            }
+            $email->send();
+            return true;
         }
-        curl_close($ch);
-    }
+    // send email
+    // send sms
+        public function sendSMS($mobileNo,$messageBody){
+            $siteSetting    = $this->common_model->find_data('general_settings', 'row');
+            $authKey        = $siteSetting->sms_authentication_key;        
+            $senderId       = $siteSetting->sms_sender_id;        
+            $route          = "4";
+            $postData = array(
+                'apikey'        => $authKey,
+                'number'        => $mobileNo,
+                'message'       => $messageBody,
+                'senderid'      => $senderId,
+                'format'        => 'json'
+            );
+            //API URL
+            $url            = $siteSetting->sms_base_url;
+            // init the resource
+            $ch = curl_init();
+            curl_setopt_array($ch, array(
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POST => false,
+                CURLOPT_POSTFIELDS => $postData
+                //,CURLOPT_FOLLOWLOCATION => true
+            ));
+            //Ignore SSL certificate verification
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            //get response
+            $output = curl_exec($ch);
+            //Print error if any
+            if(curl_errno($ch))
+            {
+                //echo 'error:' . curl_error($ch);
+                return FALSE;
+            } else {
+                return TRUE;
+            }
+            curl_close($ch);
+        }
+    // send sms
 }
