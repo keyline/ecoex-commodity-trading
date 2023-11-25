@@ -95,9 +95,9 @@ if($baseUrl == 'https://commodity.ecoex.market/'){
         </ul>
     </li>
     <li class="nav-item">
-        <a class="nav-link <?=(($pageSegment == 'members')?'active':'')?>" href="<?=base_url('admin/members/list')?>">
+        <a class="nav-link <?=(($pageSegment == 'vendors')?'active':'')?>" href="<?=base_url('admin/vendors/list')?>">
             <i class="fa fa-users"></i>
-            <span>Users</span>
+            <span>Vendors</span>
         </a>
     </li>
     <li class="nav-item">
@@ -110,6 +110,12 @@ if($baseUrl == 'https://commodity.ecoex.market/'){
         <a class="nav-link <?=(($pageSegment == 'login-logs')?'active':'')?>" href="<?=base_url('admin/login-logs')?>">
             <i class="fa fa-list"></i>
             <span>Login Logs</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link <?=(($pageSegment == 'settings')?'active':'')?>" href="<?=base_url('admin/settings')?>">
+            <i class="fa fa-list"></i>
+            <span>Settings</span>
         </a>
     </li>
 </ul>

@@ -2,7 +2,7 @@
 namespace App\Controllers\admin;
 use App\Controllers\BaseController;
 use App\Models\CommonModel;
-class MemberController extends BaseController {
+class VendorController extends BaseController {
 
     private $model;  //This can be accessed by all class methods
 	public function __construct()
@@ -15,9 +15,9 @@ class MemberController extends BaseController {
         $this->data = array(
             'model'                 => $model,
             'session'               => $session,
-            'title'                 => 'Member',
-            'controller_route'      => 'members',
-            'controller'            => 'MemberController',
+            'title'                 => 'Vendor',
+            'controller_route'      => 'vendors',
+            'controller'            => 'VendorController',
             'table_name'            => 'ecomm_users',
             'primary_key'           => 'id'
         );
@@ -88,8 +88,40 @@ class MemberController extends BaseController {
             $status  = 0;
             $msg        = 'Deactivated';
         } else {
-            $status  = 1;
+            $email_verify           = $data['row']->email_verify;
+            $phone_verify           = $data['row']->phone_verify;
+            if(($email_verify == 1) && ($phone_verify == 1)){
+                $status  = 2;
+            } else {
+                $status  = 1;
+            }
             $msg        = 'Activated';
+
+            /* approve mail send */
+                $getUser = $data['row'];
+                $requestData = [
+                    'id'            => $getUser->id,
+                    'email'         => $getUser->email,
+                    'phone'         => $getUser->phone,
+                    'company_name'  => $getUser->company_name,
+                ];
+                /* send email */
+                    $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                    $subject                    = $generalSetting->site_name.' :: Account Approved';
+                    $message                    = view('email-templates/signup',$requestData);
+                    // echo $message;die;
+                    $this->sendMail($requestData['email'], $subject, $message);
+                /* send email */
+                /* email log save */
+                    $postData2 = [
+                        'name'                  => $getUser->company_name,
+                        'email'                 => $getUser->email,
+                        'subject'               => $subject,
+                        'message'               => $message
+                    ];
+                    $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                /* email log save */
+            /* approve mail send */
         }
         $postData = array(
                             'status' => $status
@@ -97,5 +129,16 @@ class MemberController extends BaseController {
         $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
         $this->session->setFlashdata('success_message', $this->data['title'].' '.$msg.' successfully');
         return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+    }
+    public function view($id)
+    {
+        $id                         = decoded($id);
+        $data['moduleDetail']       = $this->data;
+        $data['action']             = 'View';
+        $title                      = $data['action'].' '.$this->data['title'];
+        $page_name                  = 'member/details';        
+        $conditions                 = array($this->data['primary_key']=>$id);
+        $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
+        echo $this->layout_after_login($title,$page_name,$data);
     }
 }

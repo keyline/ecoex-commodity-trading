@@ -115,13 +115,14 @@ $routes->get('/', 'Home::index');
 				$routes->match(['get', 'post'], "pages/change-status/(:any)", "PageController::change_status/$1");
 			/* page */
 		// master
-		// members
-			$routes->match(['get'], "members/list", "MemberController::list");
-			$routes->match(['get', 'post'], "members/add", "MemberController::add");
-			$routes->match(['get', 'post'], "members/edit/(:any)", "MemberController::edit/$1");
-			$routes->match(['get', 'post'], "members/delete/(:any)", "MemberController::confirm_delete/$1");
-			$routes->match(['get', 'post'], "members/change-status/(:any)", "MemberController::change_status/$1");
-		// members
+		// vendors
+			$routes->match(['get'], "vendors/list", "VendorController::list");
+			$routes->match(['get', 'post'], "vendors/add", "VendorController::add");
+			$routes->match(['get', 'post'], "vendors/edit/(:any)", "VendorController::edit/$1");
+			$routes->match(['get', 'post'], "vendors/view/(:any)", "VendorController::view/$1");
+			$routes->match(['get', 'post'], "vendors/delete/(:any)", "VendorController::confirm_delete/$1");
+			$routes->match(['get', 'post'], "vendors/change-status/(:any)", "VendorController::change_status/$1");
+		// vendors
 	});
 /* ADMIN PANEL */
 /* API */
