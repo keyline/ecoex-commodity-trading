@@ -144,6 +144,8 @@ $routes->get('/', 'Home::index');
 			$routes->match(['post'], "reset-password", "ApiController::resetPassword");
 
 			$routes->match(['post'], "signin", "ApiController::signin");
+			$routes->match(['post'], "signin-with-mobile", "ApiController::signinWithMobile");
+			$routes->match(['post'], "signin-validate-mobile", "ApiController::signinValidateMobile");
 		// authentication
 		// after login
 			$routes->match(['post'], "signout", "ApiController::signout");
