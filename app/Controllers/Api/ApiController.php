@@ -14,17 +14,7 @@ class ApiController extends BaseController
             $apiResponse        = [];
             $apiExtraField      = '';
             $apiExtraData       = '';
-            // $this->isJSON(file_get_contents('php://input'));
-            // $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            // $requiredFields     = [];
             $headerData            = $this->request->headers();
-            // if (!$this->validateArray($requiredFields, $requestData)){              
-            //     http_response_code(406);
-            //     $apiStatus          = FALSE;
-            //     $apiMessage         = $this->getResponseCode(http_response_code());
-            //     $apiExtraField      = 'response_code';
-            //     $apiExtraData       = http_response_code();
-            // }
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
                 $generalSetting = $this->common_model->find_data('general_settings', 'row');
                 if($generalSetting){
@@ -100,17 +90,7 @@ class ApiController extends BaseController
             $apiResponse        = [];
             $apiExtraField      = '';
             $apiExtraData       = '';
-            // $this->isJSON(file_get_contents('php://input'));
-            // $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            // $requiredFields     = [];
             $headerData            = $this->request->headers();
-            // if (!$this->validateArray($requiredFields, $requestData)){              
-            //     http_response_code(406);
-            //     $apiStatus          = FALSE;
-            //     $apiMessage         = $this->getResponseCode(http_response_code());
-            //     $apiExtraField      = 'response_code';
-            //     $apiExtraData       = http_response_code();
-            // }
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
                 $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
                 $rows           = $this->common_model->find_data('ecomm_product_categories', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
@@ -142,17 +122,7 @@ class ApiController extends BaseController
             $apiResponse        = [];
             $apiExtraField      = '';
             $apiExtraData       = '';
-            // $this->isJSON(file_get_contents('php://input'));
-            // $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            // $requiredFields     = [];
             $headerData            = $this->request->headers();
-            // if (!$this->validateArray($requiredFields, $requestData)){              
-            //     http_response_code(406);
-            //     $apiStatus          = FALSE;
-            //     $apiMessage         = $this->getResponseCode(http_response_code());
-            //     $apiExtraField      = 'response_code';
-            //     $apiExtraData       = http_response_code();
-            // }
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
                 $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
                 $rows           = $this->common_model->find_data('ecomm_member_types', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
@@ -180,6 +150,7 @@ class ApiController extends BaseController
         }
     /* before login */
     /* authentication */
+        // signup
         public function getCompanyDetails(){
             $apiStatus          = TRUE;
             $apiMessage         = '';
@@ -577,8 +548,8 @@ class ApiController extends BaseController
             }
             $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
         }
-
-
+        // signup
+        // forgot password
         public function forgotPassword(){
             $apiStatus          = TRUE;
             $apiMessage         = '';
@@ -831,102 +802,254 @@ class ApiController extends BaseController
             }
             $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
         }
+        // forgot password
+        // signin
+            public function signin()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));
+                $requiredFields     = ['email', 'password', 'device_token'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $email                      = $requestData['email'];
+                    $password                   = $requestData['password'];
+                    $device_token               = $requestData['device_token'];
+                    $fcm_token                  = $requestData['fcm_token'];
+                    $device_type                = trim($headerData['Source'], "Source: ");
+                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['email' => $email, 'status' => 1]);
+                    if($checkUser){
+                        if(md5($password) == $checkUser->password){
+                            $objOfJwt           = new CreatorJwt();
+                            $app_access_token   = $objOfJwt->GenerateToken($checkUser->id, $checkUser->email, $checkUser->phone);
+                            $user_id                        = $checkUser->id;
+                            $fields     = [
+                                'user_id'               => $user_id,
+                                'device_type'           => $device_type,
+                                'device_token'          => $device_token,
+                                'fcm_token'             => $fcm_token,
+                                'app_access_token'      => $app_access_token,
+                            ];
+                            $checkUserTokenExist                  = $this->common_model->find_data('ecomm_user_devices', 'row', ['user_id' => $user_id, 'published' => 1, 'device_type' => $device_type, 'device_token' => $device_token]);
+                            if(!$checkUserTokenExist){
+                                $this->common_model->save_data('ecomm_user_devices', $fields, '', 'id');
+                            } else {
+                                $this->common_model->save_data('ecomm_user_devices', $fields, $checkUserTokenExist->id, 'id');
+                            }
 
-        public function signin()
-        {
-            $apiStatus          = TRUE;
-            $apiMessage         = '';
-            $apiResponse        = [];
-            $this->isJSON(file_get_contents('php://input'));
-            $requestData        = $this->extract_json(file_get_contents('php://input'));
-            $requiredFields     = ['email', 'password', 'device_token'];
-            $headerData         = $this->request->headers();
-            if (!$this->validateArray($requiredFields, $requestData)){
-                $apiStatus          = FALSE;
-                $apiMessage         = 'All Data Are Not Present !!!';
-            }
-            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $email                      = $requestData['email'];
-                $password                   = $requestData['password'];
-                $device_token               = $requestData['device_token'];
-                $fcm_token                  = $requestData['fcm_token'];
-                $device_type                = trim($headerData['Source'], "Source: ");
-                $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['email' => $email, 'status' => 1]);
-                if($checkUser){
-                    if(md5($password) == $checkUser->password){
-                        $objOfJwt           = new CreatorJwt();
-                        $app_access_token   = $objOfJwt->GenerateToken($checkUser->id, $checkUser->email, $checkUser->phone);
-                        $user_id                        = $checkUser->id;
-                        $fields     = [
-                            'user_id'               => $user_id,
-                            'device_type'           => $device_type,
-                            'device_token'          => $device_token,
-                            'fcm_token'             => $fcm_token,
-                            'app_access_token'      => $app_access_token,
-                        ];
-                        $checkUserTokenExist                  = $this->common_model->find_data('ecomm_user_devices', 'row', ['user_id' => $user_id, 'published' => 1, 'device_type' => $device_type, 'device_token' => $device_token]);
-                        if(!$checkUserTokenExist){
-                            $this->common_model->save_data('ecomm_user_devices', $fields, '', 'id');
+                            $userActivityData = [
+                                'user_email'        => $checkUser->email,
+                                'user_name'         => $checkUser->company_name,
+                                'activity_type'     => 1,
+                                'user_type'         => 'USER',
+                                'ip_address'        => $this->request->getIPAddress(),
+                                'activity_details'  => $checkUser->type.' Sign In Success',
+                            ];
+                            // pr($userActivityData);
+                            $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
+
+                            $apiResponse = [
+                                'user_id'               => $user_id,
+                                'company_name'          => $checkUser->company_name,
+                                'email'                 => $checkUser->email,
+                                'phone'                 => $checkUser->phone,
+                                'type'                  => $checkUser->type,
+                                'device_type'           => $device_type,
+                                'device_token'          => $device_token,
+                                'fcm_token'             => $fcm_token,
+                                'app_access_token'      => $app_access_token,
+                            ];
+                            $apiStatus                          = TRUE;
+                            $apiMessage                         = 'SignIn Successfully !!!';
                         } else {
-                            $this->common_model->save_data('ecomm_user_devices', $fields, $checkUserTokenExist->id, 'id');
-                        }
-
-                        $userActivityData = [
-                            'user_email'        => $checkUser->email,
-                            'user_name'         => $checkUser->company_name,
-                            'activity_type'     => 1,
-                            'user_type'         => 'USER',
-                            'ip_address'        => $this->request->getIPAddress(),
-                            'activity_details'  => $checkUser->type.' Sign In Success',
-                        ];
-                        // pr($userActivityData);
-                        $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
-
-                        $apiResponse = [
-                            'user_id'               => $user_id,
-                            'company_name'          => $checkUser->company_name,
-                            'email'                 => $checkUser->email,
-                            'phone'                 => $checkUser->phone,
-                            'type'                  => $checkUser->type,
-                            'device_type'           => $device_type,
-                            'device_token'          => $device_token,
-                            'fcm_token'             => $fcm_token,
-                            'app_access_token'      => $app_access_token,
-                        ];
-                        $apiStatus                          = TRUE;
-                        $apiMessage                         = 'SignIn Successfully !!!';
+                            $userActivityData = [
+                                'user_email'        => $email,
+                                'user_name'         => $checkUser->company_name,
+                                'user_type'         => 'USER',
+                                'ip_address'        => $this->request->getIPAddress(),
+                                'activity_type'     => 0,
+                                'activity_details'  => 'Invalid Password',
+                            ];
+                            $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
+                            $apiStatus                          = FALSE;
+                            $apiMessage                         = 'Invalid Password !!!';
+                        }                   
                     } else {
                         $userActivityData = [
                             'user_email'        => $email,
-                            'user_name'         => $checkUser->company_name,
+                            'user_name'         => '',
                             'user_type'         => 'USER',
                             'ip_address'        => $this->request->getIPAddress(),
                             'activity_type'     => 0,
-                            'activity_details'  => 'Invalid Password',
+                            'activity_details'  => 'We Don\'t Recognize Your Email Address',
                         ];
                         $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
-                        $apiStatus                          = FALSE;
-                        $apiMessage                         = 'Invalid Password !!!';
-                    }                   
+                        $apiStatus                              = FALSE;
+                        $apiMessage                             = 'We Don\'t Recognize You !!!';
+                    }
                 } else {
-                    $userActivityData = [
-                        'user_email'        => $email,
-                        'user_name'         => '',
-                        'user_type'         => 'USER',
-                        'ip_address'        => $this->request->getIPAddress(),
-                        'activity_type'     => 0,
-                        'activity_details'  => 'We Don\'t Recognize Your Email Address',
-                    ];
-                    $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
-                    $apiStatus                              = FALSE;
-                    $apiMessage                             = 'We Don\'t Recognize You !!!';
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'Unauthenticate Request !!!';
                 }
-            } else {
-                $apiStatus          = FALSE;
-                $apiMessage         = 'Unauthenticate Request !!!';
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
             }
-            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
-        }
+            public function signinWithMobile()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));
+                $requiredFields     = ['phone'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $phone                      = $requestData['phone'];
+                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['phone' => $phone, 'status' => 1]);
+                    if($checkUser){
+                        $mobile_otp = rand(100000,999999);
+                        $postData = [
+                            'mobile_otp'        => $mobile_otp
+                        ];
+                        $this->common_model->save_data('ecomm_users', ['mobile_otp' => $mobile_otp], $checkUser->id, 'id');
+                        /* send sms */
+                            $message = "Dear ".(($checkUser)?$checkUser->company_name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
+                            $mobileNo = (($checkUser)?$checkUser->phone:'');
+                            $this->sendSMS($mobileNo,$message);
+                        /* send sms */
+                        $mailData                   = [
+                            'id'    => $checkUser->id,
+                            'email' => $checkUser->email,
+                            'phone' => $checkUser->phone,
+                            'otp'   => $mobile_otp,
+                        ];
+                        $apiResponse                        = $mailData;
+                        $apiStatus                          = TRUE;
+                        $apiMessage                         = 'Please Enter OTP !!!';
+                    } else {
+                        $userActivityData = [
+                            'user_email'        => $email,
+                            'user_name'         => '',
+                            'user_type'         => 'USER',
+                            'ip_address'        => $this->request->getIPAddress(),
+                            'activity_type'     => 0,
+                            'activity_details'  => 'We Don\'t Recognize Your Phone Number',
+                        ];
+                        $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
+                        $apiStatus                              = FALSE;
+                        $apiMessage                             = 'We Don\'t Recognize You !!!';
+                    }
+                } else {
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'Unauthenticate Request !!!';
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
+            public function signinValidateMobile()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));
+                $requiredFields     = ['phone', 'otp', 'device_token'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $phone                      = $requestData['phone'];
+                    $otp                        = $requestData['otp'];
+                    $device_token               = $requestData['device_token'];
+                    $fcm_token                  = $requestData['fcm_token'];
+                    $device_type                = trim($headerData['Source'], "Source: ");
+                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['phone' => $phone, 'status' => 1]);
+                    if($checkUser){
+                        if($otp == $checkUser->mobile_otp){
+                            $objOfJwt           = new CreatorJwt();
+                            $app_access_token   = $objOfJwt->GenerateToken($checkUser->id, $checkUser->email, $checkUser->phone);
+                            $user_id                        = $checkUser->id;
+                            $fields     = [
+                                'user_id'               => $user_id,
+                                'device_type'           => $device_type,
+                                'device_token'          => $device_token,
+                                'fcm_token'             => $fcm_token,
+                                'app_access_token'      => $app_access_token,
+                            ];
+                            $checkUserTokenExist                  = $this->common_model->find_data('ecomm_user_devices', 'row', ['user_id' => $user_id, 'published' => 1, 'device_type' => $device_type, 'device_token' => $device_token]);
+                            if(!$checkUserTokenExist){
+                                $this->common_model->save_data('ecomm_user_devices', $fields, '', 'id');
+                            } else {
+                                $this->common_model->save_data('ecomm_user_devices', $fields, $checkUserTokenExist->id, 'id');
+                            }
+
+                            $userActivityData = [
+                                'user_email'        => $checkUser->email,
+                                'user_name'         => $checkUser->company_name,
+                                'activity_type'     => 1,
+                                'user_type'         => 'USER',
+                                'ip_address'        => $this->request->getIPAddress(),
+                                'activity_details'  => $checkUser->type.' Sign In Success',
+                            ];
+                            // pr($userActivityData);
+                            $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
+
+                            $apiResponse = [
+                                'user_id'               => $user_id,
+                                'company_name'          => $checkUser->company_name,
+                                'email'                 => $checkUser->email,
+                                'phone'                 => $checkUser->phone,
+                                'type'                  => $checkUser->type,
+                                'device_type'           => $device_type,
+                                'device_token'          => $device_token,
+                                'fcm_token'             => $fcm_token,
+                                'app_access_token'      => $app_access_token,
+                            ];
+                            $apiStatus                          = TRUE;
+                            $apiMessage                         = 'SignIn Successfully !!!';
+                        } else {
+                            $userActivityData = [
+                                'user_email'        => $checkUser->email,
+                                'user_name'         => $checkUser->company_name,
+                                'user_type'         => 'USER',
+                                'ip_address'        => $this->request->getIPAddress(),
+                                'activity_type'     => 0,
+                                'activity_details'  => 'OTP Mismatched !!!',
+                            ];
+                            $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
+                            $apiStatus                          = FALSE;
+                            $apiMessage                         = 'OTP Mismatched !!!';
+                        }
+                    } else {
+                        $userActivityData = [
+                            'user_email'        => $email,
+                            'user_name'         => '',
+                            'user_type'         => 'USER',
+                            'ip_address'        => $this->request->getIPAddress(),
+                            'activity_type'     => 0,
+                            'activity_details'  => 'We Don\'t Recognize Your Phone Number',
+                        ];
+                        $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
+                        $apiStatus                              = FALSE;
+                        $apiMessage                             = 'We Don\'t Recognize You !!!';
+                    }
+                } else {
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'Unauthenticate Request !!!';
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
+        // signin
     /* authentication */
     /* after login */
         public function signout()
@@ -934,14 +1057,7 @@ class ApiController extends BaseController
             $apiStatus          = TRUE;
             $apiMessage         = '';
             $apiResponse        = [];
-            // $this->isJSON(file_get_contents('php://input'));
-            // $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            // $requiredFields     = [];
             $headerData         = $this->request->headers();
-            // if (!$this->validateArray($requiredFields, $requestData)){              
-            //     $apiStatus          = FALSE;
-            //     $apiMessage         = 'All Data Are Not Present !!!';
-            // }           
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
                 $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
                 $checkUserTokenExist        = $this->common_model->find_data('ecomm_user_devices', 'row', ['app_access_token' => $app_access_token, 'published' => 1]);
@@ -957,7 +1073,6 @@ class ApiController extends BaseController
                             'activity_type'     => 2,
                             'activity_details'  => 'Sign Out Successfully',
                         ];
-                        // pr($userActivityData);
                         $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
                     /* user activity */
                     $this->common_model->delete_data('ecomm_user_devices', $app_access_token, 'app_access_token');
@@ -994,7 +1109,6 @@ class ApiController extends BaseController
                 $confirm_password           = $requestData['confirm_password'];
                 
                 $getTokenValue              = $this->tokenAuth($app_access_token);
-                // pr($getTokenValue);
                 if($getTokenValue['status']){
                     $uId        = $getTokenValue['data'][1];
                     $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
@@ -1061,18 +1175,10 @@ class ApiController extends BaseController
             $apiStatus          = TRUE;
             $apiMessage         = '';
             $apiResponse        = [];
-            // $this->isJSON(file_get_contents('php://input'));
-            // $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            // $requiredFields     = [];
             $headerData         = $this->request->headers();
-            // if (!$this->validateArray($requiredFields, $requestData)){              
-            //     $apiStatus          = FALSE;
-            //     $apiMessage         = 'All Data Are Not Present !!!';
-            // }           
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
                 $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
                 $getTokenValue              = $this->tokenAuth($app_access_token);
-                // pr($getTokenValue);
                 if($getTokenValue['status']){
                     $uId        = $getTokenValue['data'][1];
                     $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
@@ -1202,14 +1308,7 @@ class ApiController extends BaseController
             $apiStatus          = TRUE;
             $apiMessage         = '';
             $apiResponse        = [];
-            // $this->isJSON(file_get_contents('php://input'));
-            // $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            // $requiredFields     = [];
             $headerData         = $this->request->headers();
-            // if (!$this->validateArray($requiredFields, $requestData)){              
-            //     $apiStatus          = FALSE;
-            //     $apiMessage         = 'All Data Are Not Present !!!';
-            // }           
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
                 $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
                 $getTokenValue              = $this->tokenAuth($app_access_token);
@@ -1466,18 +1565,10 @@ class ApiController extends BaseController
             $apiStatus          = TRUE;
             $apiMessage         = '';
             $apiResponse        = [];
-            // $this->isJSON(file_get_contents('php://input'));
-            // $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            // $requiredFields     = [];
             $headerData         = $this->request->headers();
-            // if (!$this->validateArray($requiredFields, $requestData)){              
-            //     $apiStatus          = FALSE;
-            //     $apiMessage         = 'All Data Are Not Present !!!';
-            // }           
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
                 $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
                 $getTokenValue              = $this->tokenAuth($app_access_token);
-                // pr($getTokenValue);
                 if($getTokenValue['status']){
                     $uId        = $getTokenValue['data'][1];
                     $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
@@ -1571,18 +1662,10 @@ class ApiController extends BaseController
             $apiStatus          = TRUE;
             $apiMessage         = '';
             $apiResponse        = [];
-            // $this->isJSON(file_get_contents('php://input'));
-            // $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            // $requiredFields     = [];
             $headerData         = $this->request->headers();
-            // if (!$this->validateArray($requiredFields, $requestData)){              
-            //     $apiStatus          = FALSE;
-            //     $apiMessage         = 'All Data Are Not Present !!!';
-            // }           
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
                 $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
                 $getTokenValue              = $this->tokenAuth($app_access_token);
-                // pr($getTokenValue);
                 if($getTokenValue['status']){
                     $uId        = $getTokenValue['data'][1];
                     $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
