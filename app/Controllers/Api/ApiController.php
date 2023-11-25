@@ -704,7 +704,7 @@ class ApiController extends BaseController
                     $generalSetting             = $this->common_model->find_data('general_settings', 'row');
                     $subject                    = $generalSetting->site_name.' :: Forgot Password OTP';
                     $message                    = view('email-templates/otp',$mailData);
-                    echo $message;die;
+                    // echo $message;die;
                     $this->sendMail($getUser->email, $subject, $message);
 
                     /* email log save */
@@ -823,7 +823,7 @@ class ApiController extends BaseController
                     $device_token               = $requestData['device_token'];
                     $fcm_token                  = $requestData['fcm_token'];
                     $device_type                = trim($headerData['Source'], "Source: ");
-                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['email' => $email, 'status' => 1]);
+                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['email' => $email, 'status>=' => 1]);
                     if($checkUser){
                         if(md5($password) == $checkUser->password){
                             $objOfJwt           = new CreatorJwt();
@@ -914,7 +914,7 @@ class ApiController extends BaseController
                 }
                 if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
                     $phone                      = $requestData['phone'];
-                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['phone' => $phone, 'status' => 1]);
+                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['phone' => $phone, 'status>=' => 1]);
                     if($checkUser){
                         $mobile_otp = rand(100000,999999);
                         $postData = [
@@ -937,7 +937,7 @@ class ApiController extends BaseController
                         $apiMessage                         = 'Please Enter OTP !!!';
                     } else {
                         $userActivityData = [
-                            'user_email'        => $email,
+                            'user_email'        => '',
                             'user_name'         => '',
                             'user_type'         => 'USER',
                             'ip_address'        => $this->request->getIPAddress(),
@@ -973,7 +973,7 @@ class ApiController extends BaseController
                     $device_token               = $requestData['device_token'];
                     $fcm_token                  = $requestData['fcm_token'];
                     $device_type                = trim($headerData['Source'], "Source: ");
-                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['phone' => $phone, 'status' => 1]);
+                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['phone' => $phone, 'status>=' => 1]);
                     if($checkUser){
                         if($otp == $checkUser->mobile_otp){
                             $objOfJwt           = new CreatorJwt();
@@ -1015,6 +1015,7 @@ class ApiController extends BaseController
                                 'fcm_token'             => $fcm_token,
                                 'app_access_token'      => $app_access_token,
                             ];
+                            $this->common_model->save_data('ecomm_users', ['mobile_otp' => ''], $checkUser->id, 'id');
                             $apiStatus                          = TRUE;
                             $apiMessage                         = 'SignIn Successfully !!!';
                         } else {

@@ -21,16 +21,16 @@ $generalSetting     = $this->common_model->find_data('general_settings', 'row');
             <table style="width: 100%;  border-spacing: 2px;">
               <tbody>
                 <tr>
-                  <th style="background: #ccc; color: #000; padding: 10px; text-align: left; font-family: sans-serif; font-size: 14px;">Company Name</th>
-                  <td style="padding: 10px; background: #ccc; text-align: left; color: #000;font-family: sans-serif;font-size: 15px;"><?=$company_name?></td>
+                  <th style="background: #3e9854; color: #fff; padding: 10px; text-align: left; font-family: sans-serif; font-size: 14px;">Company Name</th>
+                  <td style="padding: 10px; background: #89b33c; text-align: left; color: #fff;font-family: sans-serif;font-size: 15px; font-weight: 600;"><?=$company_name?></td>
                 </tr>
                 <tr>
-                  <th style="background: #cccccc42; color: #000; padding: 10px; text-align: left; font-family: sans-serif; font-size: 14px;">Email Address</th>
-                  <td style="padding: 10px; background: #cccccc42; text-align: left; color: #000;font-family: sans-serif;font-size: 15px;"><?=$email?></td>
+                  <th style="background: #3e9854; color: #fff; padding: 10px; text-align: left; font-family: sans-serif; font-size: 14px;">Email Address</th>
+                  <td style="padding: 10px; background: #89b33c; text-align: left; color: #fff;font-family: sans-serif;font-size: 15px; font-weight: 600;"><?=$email?></td>
                 </tr>
                 <tr>
-                  <th style="background: #ccc; color: #000; padding: 10px; text-align: left; font-family: sans-serif; font-size: 14px;">Password</th>
-                  <td style="padding: 10px; background: #ccc; text-align: left; color: #000;font-family: sans-serif;font-size: 15px;">********</td>
+                  <th style="background: #3e9854; color: #fff; padding: 10px; text-align: left; font-family: sans-serif; font-size: 14px;">Password</th>
+                  <td style="padding: 10px; background: #89b33c; text-align: left; color: #fff;font-family: sans-serif;font-size: 15px; font-weight: 600;">********</td>
                 </tr>
               </tbody>
             </table>
