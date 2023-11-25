@@ -836,7 +836,7 @@ class ApiController extends BaseController
                                 'fcm_token'             => $fcm_token,
                                 'app_access_token'      => $app_access_token,
                             ];
-                            $checkUserTokenExist                  = $this->common_model->find_data('ecomm_user_devices', 'row', ['user_id' => $user_id, 'published' => 1, 'device_type' => $device_type, 'device_token' => $device_token]);
+                            $checkUserTokenExist                  = $this->common_model->find_data('ecomm_user_devices', 'row', ['app_access_token' => $app_access_token]);
                             if(!$checkUserTokenExist){
                                 $this->common_model->save_data('ecomm_user_devices', $fields, '', 'id');
                             } else {
@@ -986,7 +986,7 @@ class ApiController extends BaseController
                                 'fcm_token'             => $fcm_token,
                                 'app_access_token'      => $app_access_token,
                             ];
-                            $checkUserTokenExist                  = $this->common_model->find_data('ecomm_user_devices', 'row', ['user_id' => $user_id, 'published' => 1, 'device_type' => $device_type, 'device_token' => $device_token]);
+                            $checkUserTokenExist                  = $this->common_model->find_data('ecomm_user_devices', 'row', ['app_access_token' => $app_access_token]);
                             if(!$checkUserTokenExist){
                                 $this->common_model->save_data('ecomm_user_devices', $fields, '', 'id');
                             } else {
