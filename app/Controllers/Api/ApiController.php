@@ -1062,6 +1062,7 @@ class ApiController extends BaseController
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
                 $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
                 $checkUserTokenExist        = $this->common_model->find_data('ecomm_user_devices', 'row', ['app_access_token' => $app_access_token, 'published' => 1]);
+                // pr($checkUserTokenExist);
                 if($checkUserTokenExist){
                     $user_id    = $checkUserTokenExist->user_id;
                     $checkUser  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $user_id, 'status' => 1]);
