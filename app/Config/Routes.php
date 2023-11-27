@@ -123,6 +123,14 @@ $routes->get('/', 'Home::index');
 			$routes->match(['get', 'post'], "vendors/delete/(:any)", "VendorController::confirm_delete/$1");
 			$routes->match(['get', 'post'], "vendors/change-status/(:any)", "VendorController::change_status/$1");
 		// vendors
+		// companies
+			$routes->match(['get'], "companies/list", "CompanyController::list");
+			$routes->match(['get', 'post'], "companies/add", "CompanyController::add");
+			$routes->match(['get', 'post'], "companies/edit/(:any)", "CompanyController::edit/$1");
+			$routes->match(['get', 'post'], "companies/view/(:any)", "CompanyController::view/$1");
+			$routes->match(['get', 'post'], "companies/delete/(:any)", "CompanyController::confirm_delete/$1");
+			$routes->match(['get', 'post'], "companies/change-status/(:any)", "CompanyController::change_status/$1");
+		// companies
 	});
 /* ADMIN PANEL */
 /* API */
@@ -135,6 +143,7 @@ $routes->get('/', 'Home::index');
 		// before login
 		// authentication
 			$routes->match(['post'], "get-company-details", "ApiController::getCompanyDetails");
+			$routes->match(['post'], "get-company-details2", "ApiController::getCompanyDetails2");
 			$routes->match(['post'], "signup", "ApiController::signup");
 			$routes->match(['post'], "signup-otp-resend", "ApiController::signupOTPResend");
 			$routes->match(['post'], "signup-otp-verify", "ApiController::signupOTPVerify");
