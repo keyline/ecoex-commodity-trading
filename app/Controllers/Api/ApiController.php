@@ -372,7 +372,7 @@ class ApiController extends BaseController
                                 $this->sendMail($getUser->email, $subject, $message);
                             /* send email */
                             /* send sms */
-                                $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->type], 'name');
+                                $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
                                 $message = "Dear ".(($memberType)?$memberType->name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
                                 $mobileNo = (($getUser)?$getUser->phone:'');
                                 $this->sendSMS($mobileNo,$message);
@@ -465,7 +465,7 @@ class ApiController extends BaseController
                         $this->sendMail($getUser->email, $subject, $message);
                     /* send email */
                     /* send sms */
-                        $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->type], 'name');
+                        $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
                         $message = "Dear ".(($memberType)?$memberType->name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
                         $mobileNo = (($getUser)?$getUser->phone:'');
                         $this->sendSMS($mobileNo,$message);
@@ -1000,7 +1000,7 @@ class ApiController extends BaseController
                         ];
                         $this->common_model->save_data('ecomm_users', ['mobile_otp' => $mobile_otp], $checkUser->id, 'id');
                         /* send sms */
-                            $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $checkUser->type], 'name');
+                            $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $checkUser->member_type], 'name');
                             $message = "Dear ".(($memberType)?$memberType->name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
                             $mobileNo = (($checkUser)?$checkUser->phone:'');
                             $this->sendSMS($mobileNo,$message);
@@ -1538,7 +1538,7 @@ class ApiController extends BaseController
                         ];
                         $this->common_model->save_data('ecomm_users', ['mobile_otp' => $mobile_otp], $getUser->id, 'id');
                         /* send sms */
-                            $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $checkUser->type], 'name');
+                            $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $checkUser->member_type], 'name');
                             $message = "Dear ".(($memberType)?$memberType->name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
                             $mobileNo = (($getUser)?$getUser->phone:'');
                             $this->sendSMS($mobileNo,$message);
