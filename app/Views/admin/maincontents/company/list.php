@@ -31,9 +31,9 @@ $controller_route   = $moduleDetail['controller_route'];
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <!-- <h5 class="card-title">
+                    <h5 class="card-title">
                         <a href="<?=base_url('admin/' . $controller_route . '/add/')?>" class="btn btn-outline-success btn-sm">Add <?=$title?></a>
-                    </h5> -->
+                    </h5>
                     <table class="table datatable">
                         <thead>
                             <tr>
@@ -56,13 +56,14 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <td><?=$row->email?></td>
                                 <td><?=$row->phone?></td>
                                 <td>
-                                    <!-- <a href="<?=base_url('admin/' . $controller_route . '/edit/'.encoded($row->$primary_key))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$title?>"><i class="fa fa-edit"></i></a> -->
+                                    <a href="<?=base_url('admin/' . $controller_route . '/edit/'.encoded($row->$primary_key))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$title?>"><i class="fa fa-edit"></i></a>
                                     <a target="_blank" href="<?=base_url('admin/' . $controller_route . '/view/'.encoded($row->$primary_key))?>" class="btn btn-outline-info btn-sm" title="View <?=$title?>"><i class="fa fa-info-circle"></i></a>
                                     <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i></a>
+                                    <br><br>
                                     <?php if($row->status){?>
-                                    <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-success btn-sm" title="Activate <?=$title?>" onclick="return confirm('Do You Want To Deactivate This <?=$title?>');"><i class="fa fa-check"></i> Click To Disapprove</a>
+                                    <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-success btn-sm" title="Deactivate <?=$title?>" onclick="return confirm('Do You Want To Deactivate This <?=$title?>');"><i class="fa fa-check"></i> Click To Disapprove</a>
                                     <?php } else {?>
-                                    <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Deactivate <?=$title?>" onclick="return confirm('Do You Want To Activate This <?=$title?>');"><i class="fa fa-times"></i> Click To Approve</a>
+                                    <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Activate <?=$title?>" onclick="return confirm('Do You Want To Activate This <?=$title?>');"><i class="fa fa-times"></i> Click To Approve</a>
                                     <?php }?>
                                 </td>
                             </tr>

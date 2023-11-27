@@ -227,6 +227,82 @@ class ApiController extends BaseController
             }
             $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
         }
+        public function getCompanyDetails2(){
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $apiExtraField      = '';
+            $apiExtraData       = '';
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));        
+            $requiredFields     = ['gst_no'];
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)){              
+                http_response_code(406);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $generalSetting = $this->common_model->find_data('general_settings', 'row');
+                $gst_no         = $requestData['gst_no'];
+                $checkGST       = $this->common_model->find_data('ecoex_companies', 'row', ['gst_no' => $gst_no]);
+                if($checkGST){
+                    $apiStatus      = FALSE;
+                    $apiMessage     = "GSTIN No. Already Exists !!!";
+                } else {
+                    $ch = curl_init();
+                    // curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/edb8e6902f3ca57767d04972cd7a1ad2/'.$gst_no);
+                    curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/'.$generalSetting->gst_api_code.'/'.$gst_no); //info@leylines.net
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                    $response = json_decode(curl_exec($ch));
+                    if($response){
+                        if($response->flag){
+                            $gstResponse    = [
+                                'trade_name'    => trim($response->data->tradeNam, " "),
+                                'gstin'         => trim($response->data->gstin, " "),
+                                'address'       => trim($response->data->pradr->adr, " "),
+                                'holding_no'    => (($response->data->pradr->addr->bnm != '')?trim($response->data->pradr->addr->bnm, " "):trim($response->data->pradr->addr->flno, " ")),
+                                'street'        => trim($response->data->pradr->addr->st, " "),
+                                'district'      => trim($response->data->pradr->addr->dst, " "),
+                                'state'         => trim($response->data->pradr->addr->stcd, " "),
+                                'pincode'       => trim($response->data->pradr->addr->pncd, " "),
+                                'location'      => trim($response->data->pradr->addr->loc, " "),
+                            ];
+                            $apiResponse    = $gstResponse;
+                            // pr($apiResponse);
+                            http_response_code(200);
+                            $apiStatus          = TRUE;
+                            $apiMessage         = "Company Details Available !!!";
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            http_response_code(400);
+                            $apiStatus          = FALSE;
+                            $apiMessage         = "Company Details Not Available !!!";
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code(400);
+                        $apiStatus          = FALSE;
+                        $apiMessage         = "Not Valid GSTIN No. !!!";
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                }
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+        }
         public function signup()
         {
             $apiStatus          = TRUE;
@@ -296,7 +372,8 @@ class ApiController extends BaseController
                                 $this->sendMail($getUser->email, $subject, $message);
                             /* send email */
                             /* send sms */
-                                $message = "Dear ".(($getUser)?$getUser->company_name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
+                                $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->type], 'name');
+                                $message = "Dear ".(($memberType)?$memberType->name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
                                 $mobileNo = (($getUser)?$getUser->phone:'');
                                 $this->sendSMS($mobileNo,$message);
                             /* send sms */
@@ -388,7 +465,8 @@ class ApiController extends BaseController
                         $this->sendMail($getUser->email, $subject, $message);
                     /* send email */
                     /* send sms */
-                        $message = "Dear ".(($getUser)?$getUser->company_name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
+                        $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->type], 'name');
+                        $message = "Dear ".(($memberType)?$memberType->name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
                         $mobileNo = (($getUser)?$getUser->phone:'');
                         $this->sendSMS($mobileNo,$message);
                     /* send sms */
@@ -922,7 +1000,8 @@ class ApiController extends BaseController
                         ];
                         $this->common_model->save_data('ecomm_users', ['mobile_otp' => $mobile_otp], $checkUser->id, 'id');
                         /* send sms */
-                            $message = "Dear ".(($checkUser)?$checkUser->company_name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
+                            $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $checkUser->type], 'name');
+                            $message = "Dear ".(($memberType)?$memberType->name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
                             $mobileNo = (($checkUser)?$checkUser->phone:'');
                             $this->sendSMS($mobileNo,$message);
                         /* send sms */
@@ -1459,7 +1538,8 @@ class ApiController extends BaseController
                         ];
                         $this->common_model->save_data('ecomm_users', ['mobile_otp' => $mobile_otp], $getUser->id, 'id');
                         /* send sms */
-                            $message = "Dear ".(($getUser)?$getUser->company_name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
+                            $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $checkUser->type], 'name');
+                            $message = "Dear ".(($memberType)?$memberType->name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
                             $mobileNo = (($getUser)?$getUser->phone:'');
                             $this->sendSMS($mobileNo,$message);
                         /* send sms */

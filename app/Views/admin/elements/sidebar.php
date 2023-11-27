@@ -101,6 +101,12 @@ if($baseUrl == 'https://commodity.ecoex.market/'){
         </a>
     </li>
     <li class="nav-item">
+        <a class="nav-link <?=(($pageSegment == 'companies')?'active':'')?>" href="<?=base_url('admin/companies/list')?>">
+            <i class="fa fa-users"></i>
+            <span>Companies</span>
+        </a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link <?=(($pageSegment == 'email-logs')?'active':'')?>" href="<?=base_url('admin/email-logs')?>">
             <i class="fa fa-envelope"></i>
             <span>Email Logs</span>
