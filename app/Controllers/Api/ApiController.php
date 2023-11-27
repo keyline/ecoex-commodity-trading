@@ -1571,12 +1571,13 @@ class ApiController extends BaseController
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
                 $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
                 $getTokenValue              = $this->tokenAuth($app_access_token);
+                // echo $app_access_token;
+                // pr($getTokenValue);
                 if($getTokenValue['status']){
                     $uId        = $getTokenValue['data'][1];
                     $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                     $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                     if($getUser){
-                        $productCategory    = $this->common_model->find_data('ecomm_product_categories', 'row', ['id' => $getUser->product_category], 'name');
                         $memberType         = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
                         $step0_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId]);
                         $step1_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 1]);
@@ -1849,14 +1850,15 @@ class ApiController extends BaseController
     Author : Subhomoy
     */
     private function tokenAuth($appAccessToken){
-        $headers = apache_request_headers();
+        $this->db   = \Config\Database::connect();
+        $headers    = apache_request_headers();
         if (isset($appAccessToken) && !empty($appAccessToken)) :
             $userdata = $this->matchToken($appAccessToken);
             // pr($userdata);
             if ($userdata['status']) :
-                $checkToken =  $this->common_model->find_data('ecomm_user_devices', 'row', ['app_access_token' => $appAccessToken, 'user_id' => $userdata['data']->id]);
-                // echo $this->db->last_query();
-                // pr($userdata);
+                $checkToken =  $this->common_model->find_data('ecomm_user_devices', 'row', ['app_access_token' => $appAccessToken]);
+                // echo $this->db->getLastQuery();
+                // pr($checkToken);
                 if (!empty($checkToken)) :
                     if ($userdata['data']->exp && $userdata['data']->exp > time()) :
                         $tokenStatus = array(TRUE, $userdata['data']->id, $userdata['data']->email, $userdata['data']->phone, $userdata['data']->exp);
@@ -1899,7 +1901,6 @@ class ApiController extends BaseController
         // }
         
         // return array('status' => TRUE, 'data' => $decoded);
-
 
         try{
             $key = "1234567890qwertyuiopmnbvcxzasdfghjkl";

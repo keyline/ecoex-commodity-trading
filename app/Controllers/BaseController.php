@@ -55,9 +55,10 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = \Config\Services::session();
-        $this->common_model = new CommonModel;
-        $this->session = \Config\Services::session();
-        $this->uri = new \CodeIgniter\HTTP\URI();
+        $this->common_model         = new CommonModel;
+        $this->session              = \Config\Services::session();
+        $this->uri                  = new \CodeIgniter\HTTP\URI();
+        $this->db                   = \Config\Database::connect();
     }
     public function layout_before_login($title,$page_name,$data)
     {
