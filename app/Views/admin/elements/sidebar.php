@@ -12,9 +12,9 @@ if($baseUrl == 'https://commodity.ecoex.market/'){
 // echo $pageSegment;
 ?>
 <style type="text/css">
-    /*.active{
-        color:green !important;
-    }*/
+    a.nav-link.active {
+        color: green;
+    }
 </style>
 <ul class="sidebar-nav" id="sidebar-nav">
     <li class="nav-item">
@@ -102,10 +102,17 @@ if($baseUrl == 'https://commodity.ecoex.market/'){
     </li>
     <li class="nav-item">
         <a class="nav-link <?=(($pageSegment == 'companies')?'active':'')?>" href="<?=base_url('admin/companies/list')?>">
-            <i class="fa fa-users"></i>
+            <i class="fa fa-building"></i>
             <span>Companies</span>
         </a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link <?=(($pageSegment == 'plants')?'active':'')?>" href="<?=base_url('admin/plants/list')?>">
+            <i class="fa fa-industry"></i>
+            <span>Plants</span>
+        </a>
+    </li>
+
     <li class="nav-item">
         <a class="nav-link <?=(($pageSegment == 'email-logs')?'active':'')?>" href="<?=base_url('admin/email-logs')?>">
             <i class="fa fa-envelope"></i>
@@ -120,7 +127,7 @@ if($baseUrl == 'https://commodity.ecoex.market/'){
     </li>
     <li class="nav-item">
         <a class="nav-link <?=(($pageSegment == 'settings')?'active':'')?>" href="<?=base_url('admin/settings')?>">
-            <i class="fa fa-list"></i>
+            <i class="fa fa-gear"></i>
             <span>Settings</span>
         </a>
     </li>

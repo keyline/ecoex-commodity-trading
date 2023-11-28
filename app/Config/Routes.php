@@ -131,6 +131,14 @@ $routes->get('/', 'Home::index');
 			$routes->match(['get', 'post'], "companies/delete/(:any)", "CompanyController::confirm_delete/$1");
 			$routes->match(['get', 'post'], "companies/change-status/(:any)", "CompanyController::change_status/$1");
 		// companies
+		// plants
+			$routes->match(['get'], "plants/list", "PlantController::list");
+			$routes->match(['get', 'post'], "plants/add", "PlantController::add");
+			$routes->match(['get', 'post'], "plants/edit/(:any)", "PlantController::edit/$1");
+			$routes->match(['get', 'post'], "plants/view/(:any)", "PlantController::view/$1");
+			$routes->match(['get', 'post'], "plants/delete/(:any)", "PlantController::confirm_delete/$1");
+			$routes->match(['get', 'post'], "plants/change-status/(:any)", "PlantController::change_status/$1");
+		// plants
 	});
 /* ADMIN PANEL */
 /* API */
