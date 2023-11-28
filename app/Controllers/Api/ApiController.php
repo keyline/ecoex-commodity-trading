@@ -249,8 +249,47 @@ class ApiController extends BaseController
                 $gst_no         = $requestData['gst_no'];
                 $checkGST       = $this->common_model->find_data('ecoex_companies', 'row', ['gst_no' => $gst_no]);
                 if($checkGST){
-                    $apiStatus      = FALSE;
-                    $apiMessage     = "GSTIN No. Already Exists !!!";
+                    $ch = curl_init();
+                    // curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/edb8e6902f3ca57767d04972cd7a1ad2/'.$gst_no);
+                    curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/'.$generalSetting->gst_api_code.'/'.$gst_no); //info@leylines.net
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                    $response = json_decode(curl_exec($ch));
+                    if($response){
+                        if($response->flag){
+                            $gstResponse    = [
+                                'trade_name'    => trim($response->data->tradeNam, " "),
+                                'gstin'         => trim($response->data->gstin, " "),
+                                'address'       => trim($response->data->pradr->adr, " "),
+                                'holding_no'    => (($response->data->pradr->addr->bnm != '')?trim($response->data->pradr->addr->bnm, " "):trim($response->data->pradr->addr->flno, " ")),
+                                'street'        => trim($response->data->pradr->addr->st, " "),
+                                'district'      => trim($response->data->pradr->addr->dst, " "),
+                                'state'         => trim($response->data->pradr->addr->stcd, " "),
+                                'pincode'       => trim($response->data->pradr->addr->pncd, " "),
+                                'location'      => trim($response->data->pradr->addr->loc, " "),
+                            ];
+                            $apiResponse    = $gstResponse;
+                            // pr($apiResponse);
+                            http_response_code(200);
+                            $apiStatus          = TRUE;
+                            $apiMessage         = "Company Details Available !!!";
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            http_response_code(400);
+                            $apiStatus          = FALSE;
+                            $apiMessage         = "Company Details Not Available !!!";
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code(400);
+                        $apiStatus          = FALSE;
+                        $apiMessage         = "Not Valid GSTIN No. !!!";
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
                 } else {
                     $ch = curl_init();
                     // curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/edb8e6902f3ca57767d04972cd7a1ad2/'.$gst_no);

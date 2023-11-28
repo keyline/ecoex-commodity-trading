@@ -2,7 +2,7 @@
 namespace App\Controllers\admin;
 use App\Controllers\BaseController;
 use App\Models\CommonModel;
-class VendorController extends BaseController {
+class PlantController extends BaseController {
 
     private $model;  //This can be accessed by all class methods
 	public function __construct()
@@ -15,10 +15,10 @@ class VendorController extends BaseController {
         $this->data = array(
             'model'                 => $model,
             'session'               => $session,
-            'title'                 => 'Vendor',
-            'controller_route'      => 'vendors',
-            'controller'            => 'VendorController',
-            'table_name'            => 'ecomm_users',
+            'title'                 => 'Plant',
+            'controller_route'      => 'plants',
+            'controller'            => 'PlantController',
+            'table_name'            => 'ecoex_companies',
             'primary_key'           => 'id'
         );
     }
@@ -26,9 +26,9 @@ class VendorController extends BaseController {
     {
         $data['moduleDetail']       = $this->data;
         $title                      = 'Manage '.$this->data['title'];
-        $page_name                  = 'member/list';
+        $page_name                  = 'plant/list';
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
-        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status!=' => 3], '', '', '', $order_by);
+        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status!=' => 3, 'parent_id!=' => 0], '', '', '', $order_by);
         echo $this->layout_after_login($title,$page_name,$data);
     }
     public function add()
@@ -36,15 +36,49 @@ class VendorController extends BaseController {
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Add';
         $title                      = $data['action'].' '.$this->data['title'];
-        $page_name                  = 'member/add-edit';        
+        $page_name                  = 'plant/add-edit';        
         $data['row']                = [];
-        $data['memberTypes']        = $this->data['model']->find_data('ecomm_member_types', 'array', ['status' => 1]);
-
+        $orderBy[0]                 = ['field' => 'company_name', 'type' => 'ASC'];
+        $data['companyList']        = $this->data['model']->find_data($this->data['table_name'], 'array', ['status>=' => 1, 'parent_id' => 0], '', '', '', $orderBy);
         if($this->request->getMethod() == 'post') {
+            /* profile image */
+                $file = $this->request->getFile('profile_image');
+                $originalName = $file->getClientName();
+                $fieldName = 'profile_image';
+                if($file!='') {
+                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','image');
+                    if($upload_array['status']) {
+                        $profile_image = $upload_array['newFilename'];
+                    } else {
+                        $profile_image = '';
+                    }
+                } else {
+                    $profile_image = '';
+                }
+            /* profile image */
             $postData   = array(
-                'name'          => strtoupper($this->request->getPost('name')),
-                'created_by'    => $this->session->get('user_id'),
+                'type'                  => 'PLANT',
+                'parent_id'             => $this->request->getPost('parent_id'),
+                'gst_no'                => $this->request->getPost('gst_no'),
+                'company_name'          => $this->request->getPost('company_name'),
+                'full_address'          => $this->request->getPost('full_address'),
+                'holding_no'            => $this->request->getPost('holding_no'),
+                'street'                => $this->request->getPost('street'),
+                'district'              => $this->request->getPost('district'),
+                'state'                 => $this->request->getPost('state'),
+                'pincode'               => $this->request->getPost('pincode'),
+                'location'              => $this->request->getPost('location'),
+                'email'                 => $this->request->getPost('email'),
+                'email_verify'          => 1,
+                'email_verified_at'     => date('Y-m-d H:i:s'),
+                'phone'                 => $this->request->getPost('phone'),
+                'phone_verify'          => 1,
+                'phone_verified_at'     => date('Y-m-d H:i:s'),
+                'password'              => md5($this->request->getPost('password')),
+                'profile_image'         => $profile_image,
+                'status'                => 2,
             );
+            // pr($postData);
             $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);            
             $this->session->setFlashdata('success_message', $this->data['title'].' inserted successfully');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
@@ -57,10 +91,11 @@ class VendorController extends BaseController {
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Edit';
         $title                      = $data['action'].' '.$this->data['title'];
-        $page_name                  = 'member/add-edit';        
+        $page_name                  = 'plant/add-edit';        
         $conditions                 = array($this->data['primary_key']=>$id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
-        $data['memberTypes']        = $this->data['model']->find_data('ecomm_member_types', 'array', ['status' => 1]);
+        $orderBy[0]                 = ['field' => 'company_name', 'type' => 'ASC'];
+        $data['companyList']        = $this->data['model']->find_data($this->data['table_name'], 'array', ['status>=' => 1, 'parent_id' => 0], '', '', '', $orderBy);
 
         if($this->request->getMethod() == 'post') {
             /* profile image */
@@ -80,6 +115,8 @@ class VendorController extends BaseController {
             /* profile image */
             if($this->request->getPost('password') != ''){
                 $postData   = array(
+                    'type'                  => 'PLANT',
+                    'parent_id'             => $this->request->getPost('parent_id'),
                     'gst_no'                => $this->request->getPost('gst_no'),
                     'company_name'          => $this->request->getPost('company_name'),
                     'full_address'          => $this->request->getPost('full_address'),
@@ -93,10 +130,11 @@ class VendorController extends BaseController {
                     'phone'                 => $this->request->getPost('phone'),
                     'password'              => md5($this->request->getPost('password')),
                     'profile_image'         => $profile_image,
-                    'member_type'           => $this->request->getPost('member_type'),
                 );
             } else {
                 $postData   = array(
+                    'type'                  => 'PLANT',
+                    'parent_id'             => $this->request->getPost('parent_id'),
                     'gst_no'                => $this->request->getPost('gst_no'),
                     'company_name'          => $this->request->getPost('company_name'),
                     'full_address'          => $this->request->getPost('full_address'),
@@ -109,9 +147,9 @@ class VendorController extends BaseController {
                     'email'                 => $this->request->getPost('email'),
                     'phone'                 => $this->request->getPost('phone'),
                     'profile_image'         => $profile_image,
-                    'member_type'           => $this->request->getPost('member_type'),
                 );
             }
+            
             $record = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
             $this->session->setFlashdata('success_message', $this->data['title'].' updated successfully');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
@@ -184,7 +222,7 @@ class VendorController extends BaseController {
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'View';
         $title                      = $data['action'].' '.$this->data['title'];
-        $page_name                  = 'member/details';        
+        $page_name                  = 'plant/details';        
         $conditions                 = array($this->data['primary_key']=>$id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
         echo $this->layout_after_login($title,$page_name,$data);

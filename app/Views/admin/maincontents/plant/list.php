@@ -31,14 +31,14 @@ $controller_route   = $moduleDetail['controller_route'];
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <!-- <h5 class="card-title">
+                    <h5 class="card-title">
                         <a href="<?=base_url('admin/' . $controller_route . '/add/')?>" class="btn btn-outline-success btn-sm">Add <?=$title?></a>
-                    </h5> -->
+                    </h5>
                     <table class="table datatable">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Type<br>GST No.<br>Company Name</th>
+                                <th scope="col">Company Name<br>GST No.<br>Plant Name</th>
                                 <th scope="col">Full Address<br>Location</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Phone</th>
@@ -52,10 +52,11 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <td>
                                     <strong>
                                     <?php
-                                    $memberType = $common_model->find_data('ecomm_member_types', 'row', ['id' => $row->member_type], 'name');
-                                    echo (($memberType)?$memberType->name:'');
+                                    $company = $common_model->find_data('ecoex_companies', 'row', ['id' => $row->parent_id], 'company_name');
+                                    echo (($company)?$company->company_name:'');
                                     ?></strong><br>
-                                    <?=$row->gst_no?><br><?=$row->company_name?>
+                                    <?=$row->gst_no?><br>
+                                    <strong><?=$row->company_name?></strong>
                                 </td>
                                 <td><?=$row->full_address?><br><?=$row->location?></td>
                                 <td><?=$row->email?></td>
@@ -64,10 +65,11 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <a href="<?=base_url('admin/' . $controller_route . '/edit/'.encoded($row->$primary_key))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$title?>"><i class="fa fa-edit"></i></a>
                                     <a target="_blank" href="<?=base_url('admin/' . $controller_route . '/view/'.encoded($row->$primary_key))?>" class="btn btn-outline-info btn-sm" title="View <?=$title?>"><i class="fa fa-info-circle"></i></a>
                                     <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i></a>
+                                    <br><br>
                                     <?php if($row->status){?>
-                                    <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-success btn-sm" title="Activate <?=$title?>" onclick="return confirm('Do You Want To Deactivate This <?=$title?>');"><i class="fa fa-check"></i> Click To Disapprove</a>
+                                    <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-success btn-sm" title="Deactivate <?=$title?>" onclick="return confirm('Do You Want To Deactivate This <?=$title?>');"><i class="fa fa-check"></i> Click To Disapprove</a>
                                     <?php } else {?>
-                                    <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Deactivate <?=$title?>" onclick="return confirm('Do You Want To Activate This <?=$title?>');"><i class="fa fa-times"></i> Click To Approve</a>
+                                    <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Activate <?=$title?>" onclick="return confirm('Do You Want To Activate This <?=$title?>');"><i class="fa fa-times"></i> Click To Approve</a>
                                     <?php }?>
                                 </td>
                             </tr>

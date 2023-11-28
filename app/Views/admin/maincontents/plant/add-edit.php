@@ -32,6 +32,7 @@ $controller_route   = $moduleDetail['controller_route'];
         </div>
         <?php
             if($row){
+              $parent_id        = $row->parent_id;
               $gst_no           = $row->gst_no;
               $company_name     = $row->company_name;
               $full_address     = $row->full_address;
@@ -46,6 +47,7 @@ $controller_route   = $moduleDetail['controller_route'];
               $password         = $row->password;
               $profile_image    = $row->profile_image;
             } else {
+              $parent_id        = '';
               $gst_no           = '';
               $company_name     = '';
               $full_address     = '';
@@ -66,13 +68,24 @@ $controller_route   = $moduleDetail['controller_route'];
                 <div class="card-body pt-3">
                     <form method="POST" action="" enctype="multipart/form-data">
                         <div class="row mb-3">
+                            <label for="parent_id" class="col-md-2 col-lg-2 col-form-label">Company</label>
+                            <div class="col-md-10 col-lg-10">
+                                <select class="form-control" name="parent_id" id="parent_id" required>
+                                    <option value="" selected>Select Company</option>
+                                    <?php if($companyList){ foreach($companyList as $company){?>
+                                    <option value="<?=$company->id?>" <?=(($company->id == $parent_id)?'selected':'')?>><?=$company->company_name?></option>
+                                    <?php } }?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
                             <label for="gst_no" class="col-md-2 col-lg-2 col-form-label">GST No.</label>
                             <div class="col-md-10 col-lg-10">
                                 <input type="text" name="gst_no" class="form-control" id="gst_no" value="<?=$gst_no?>" required>
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="company_name" class="col-md-2 col-lg-2 col-form-label">Company Name</label>
+                            <label for="company_name" class="col-md-2 col-lg-2 col-form-label">Plant Name</label>
                             <div class="col-md-10 col-lg-10">
                                 <input type="text" name="company_name" class="form-control" id="company_name" value="<?=$company_name?>" required>
                             </div>
