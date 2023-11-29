@@ -1700,14 +1700,9 @@ class ApiController extends BaseController
                         $memberType         = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
                         $step0_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId]);
                         $step1_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 1]);
-                        $step2_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 2]);
-                        $step3_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 3]);
-                        $step4_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 4]);
-                        $step5_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 5]);
-                        $step6_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 6]);
-                        $step7_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 7]);
-                        $step8_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 8]);
-                        $step9_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 9]);
+                        $step2_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status>=' => 2, 'status<=' => 7]);
+                        $step3_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 9]);
+                        $step4_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 8]);
                         $apiResponse        = [
                             'plant_id'          => $getUser->id,
                             'gst_no'            => $getUser->gst_no,
@@ -1721,34 +1716,19 @@ class ApiController extends BaseController
                             'location'          => $getUser->location,
                             'email'             => $getUser->email,
                             'step0_label'       => 'Total',
-                            'step1_label'       => 'Request Sent',
-                            'step2_label'       => 'Request Accepted/Rejected',
-                            'step3_label'       => 'Pickup',
-                            'step4_label'       => 'Vehicle Placed',
-                            'step5_label'       => 'Vehicle Ready For Despatch',
-                            'step6_label'       => 'Material Lifted',
-                            'step7_label'       => 'Invoiced',
-                            'step8_label'       => 'Completed',
-                            'step9_label'       => 'Rejected',
+                            'step1_label'       => 'Add Request',
+                            'step2_label'       => 'In Process Request',
+                            'step3_label'       => 'Rejected Request',
+                            'step4_label'       => 'Close Request',
                             'step0_count'       => $step0_count,
                             'step1_count'       => $step1_count,
                             'step2_count'       => $step2_count,
                             'step3_count'       => $step3_count,
                             'step4_count'       => $step4_count,
-                            'step5_count'       => $step5_count,
-                            'step6_count'       => $step6_count,
-                            'step7_count'       => $step7_count,
-                            'step8_count'       => $step8_count,
-                            'step9_count'       => $step9_count,
                             'step1_percent'     => (($step0_count > 0)?(($step1_count / $step0_count) * 100):0),
                             'step2_percent'     => (($step0_count > 0)?(($step2_count / $step0_count) * 100):0),
                             'step3_percent'     => (($step0_count > 0)?(($step3_count / $step0_count) * 100):0),
                             'step4_percent'     => (($step0_count > 0)?(($step4_count / $step0_count) * 100):0),
-                            'step5_percent'     => (($step0_count > 0)?(($step5_count / $step0_count) * 100):0),
-                            'step6_percent'     => (($step0_count > 0)?(($step6_count / $step0_count) * 100):0),
-                            'step7_percent'     => (($step0_count > 0)?(($step7_count / $step0_count) * 100):0),
-                            'step8_percent'     => (($step0_count > 0)?(($step8_count / $step0_count) * 100):0),
-                            'step9_percent'     => (($step0_count > 0)?(($step9_count / $step0_count) * 100):0),
                         ];
 
                         $apiStatus          = TRUE;
