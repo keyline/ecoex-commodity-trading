@@ -94,12 +94,7 @@ if($baseUrl == 'https://commodity.ecoex.market/'){
             </li>
         </ul>
     </li>
-    <li class="nav-item">
-        <a class="nav-link <?=(($pageSegment == 'vendors')?'active':'')?>" href="<?=base_url('admin/vendors/list')?>">
-            <i class="fa fa-users"></i>
-            <span>Vendors</span>
-        </a>
-    </li>
+    
     <li class="nav-item">
         <a class="nav-link <?=(($pageSegment == 'companies')?'active':'')?>" href="<?=base_url('admin/companies/list')?>">
             <i class="fa fa-building"></i>
@@ -110,6 +105,12 @@ if($baseUrl == 'https://commodity.ecoex.market/'){
         <a class="nav-link <?=(($pageSegment == 'plants')?'active':'')?>" href="<?=base_url('admin/plants/list')?>">
             <i class="fa fa-industry"></i>
             <span>Plants</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link <?=(($pageSegment == 'vendors')?'active':'')?>" href="<?=base_url('admin/vendors/list')?>">
+            <i class="fa fa-users"></i>
+            <span>Vendors</span>
         </a>
     </li>
 

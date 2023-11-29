@@ -50,13 +50,13 @@ $controller_route   = $moduleDetail['controller_route'];
                             <td><?=$row->company_name?></td>
                         </tr>
                         <tr>
-                            <td>Full Address</td>
+                            <td>Plant Address</td>
                             <td><?=$row->full_address?></td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <td>Holding No.</td>
                             <td><?=$row->holding_no?></td>
-                        </tr>
+                        </tr> -->
                         <tr>
                             <td>Street</td>
                             <td><?=$row->street?></td>

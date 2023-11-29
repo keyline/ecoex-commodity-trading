@@ -77,7 +77,27 @@ class CompanyController extends BaseController {
                 'status'                => 2,
             );
             // pr($postData);
-            $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);            
+            $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
+
+            // insert as a sub user of masteradmin of type COMPANY ADMIN
+                $postData2   = array(
+                    'user_type'                 => 'COMPANY',
+                    'role_id'                   => 14,
+                    'name'                      => $this->request->getPost('company_name'),
+                    'mobileNo'                  => $this->request->getPost('phone'),
+                    'username'                  => $this->request->getPost('email'),
+                    'password'                  => md5($this->request->getPost('password')),
+                    'original_password'         => $this->request->getPost('password'),
+                    'email'                     => $this->request->getPost('email'),
+                    'present_address'           => $this->request->getPost('full_address'),
+                    'permanent_address'         => $this->request->getPost('full_address'),
+                    'added_user'                => 1,
+                    'updated_user'              => 1,
+                );
+                // pr($postData);
+                $this->data['model']->save_data('ecoex_admin_user', $postData2, '', 'id');
+            // insert as a sub user of masteradmin of type COMPANY ADMIN
+
             $this->session->setFlashdata('success_message', $this->data['title'].' inserted successfully');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
         }
@@ -125,6 +145,23 @@ class CompanyController extends BaseController {
                     'password'              => md5($this->request->getPost('password')),
                     'profile_image'         => $profile_image,
                 );
+
+                // insert as a sub user of masteradmin of type COMPANY ADMIN
+                    $postData2   = array(
+                        'user_type'                 => 'COMPANY',
+                        'role_id'                   => 14,
+                        'name'                      => $this->request->getPost('company_name'),
+                        'mobileNo'                  => $this->request->getPost('phone'),
+                        'username'                  => $this->request->getPost('email'),
+                        'password'                  => md5($this->request->getPost('password')),
+                        'original_password'         => $this->request->getPost('password'),
+                        'email'                     => $this->request->getPost('email'),
+                        'present_address'           => $this->request->getPost('full_address'),
+                        'permanent_address'         => $this->request->getPost('full_address'),
+                        'added_user'                => 1,
+                        'updated_user'              => 1,
+                    );
+                // insert as a sub user of masteradmin of type COMPANY ADMIN
             } else {
                 $postData   = array(
                     'gst_no'                => $this->request->getPost('gst_no'),
@@ -140,9 +177,31 @@ class CompanyController extends BaseController {
                     'phone'                 => $this->request->getPost('phone'),
                     'profile_image'         => $profile_image,
                 );
+
+                // insert as a sub user of masteradmin of type COMPANY ADMIN
+                    $postData2   = array(
+                        'user_type'                 => 'COMPANY',
+                        'role_id'                   => 14,
+                        'name'                      => $this->request->getPost('company_name'),
+                        'mobileNo'                  => $this->request->getPost('phone'),
+                        'username'                  => $this->request->getPost('email'),
+                        'email'                     => $this->request->getPost('email'),
+                        'present_address'           => $this->request->getPost('full_address'),
+                        'permanent_address'         => $this->request->getPost('full_address'),
+                        'added_user'                => 1,
+                        'updated_user'              => 1,
+                    );
+                // insert as a sub user of masteradmin of type COMPANY ADMIN
             }
-            
             $record = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
+
+            $checkCompanySubuser = $this->common_model->find_data('ecoex_admin_user', 'row', ['email' => $this->request->getPost('email')]);
+            if($checkCompanySubuser){
+                $this->data['model']->save_data('ecoex_admin_user', $postData2, $checkCompanySubuser->id, 'id');
+            } else {
+                $this->data['model']->save_data('ecoex_admin_user', $postData2, '', 'id');
+            }
+
             $this->session->setFlashdata('success_message', $this->data['title'].' updated successfully');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
         }        

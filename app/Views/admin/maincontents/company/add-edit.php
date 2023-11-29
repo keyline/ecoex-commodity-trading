@@ -65,6 +65,7 @@ $controller_route   = $moduleDetail['controller_route'];
             <div class="card">
                 <div class="card-body pt-3">
                     <form method="POST" action="" enctype="multipart/form-data">
+                        <input type="hidden" name="holding_no" id="holding_no" value="<?=$holding_no?>">
                         <div class="row mb-3">
                             <label for="gst_no" class="col-md-2 col-lg-2 col-form-label">GST No.</label>
                             <div class="col-md-10 col-lg-10">
@@ -81,12 +82,6 @@ $controller_route   = $moduleDetail['controller_route'];
                             <label for="full_address" class="col-md-2 col-lg-2 col-form-label">Full Address</label>
                             <div class="col-md-10 col-lg-10">
                                 <textarea name="full_address" class="form-control" id="full_address" required><?=$full_address?></textarea>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="holding_no" class="col-md-2 col-lg-2 col-form-label">Holding No.</label>
-                            <div class="col-md-10 col-lg-10">
-                                <input type="text" name="holding_no" class="form-control" id="holding_no" value="<?=$holding_no?>" required>
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -134,7 +129,7 @@ $controller_route   = $moduleDetail['controller_route'];
                         <div class="row mb-3">
                             <label for="password" class="col-md-2 col-lg-2 col-form-label">Password</label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="password" class="form-control" id="password" onkeypress="return isNumber(event)" maxlength="15" minlength="8" <?=(($row)?'':'required')?>>
+                                <input type="password" name="password" class="form-control" id="password" onkeypress="return isNumber(event)" maxlength="15" minlength="8" <?=(($row)?'':'required')?>>
                                 <?php if($row){?>
                                     <small class="text-info">* Please leave blank when you dont want to change password</small><br>
                                 <?php }?>

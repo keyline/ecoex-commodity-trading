@@ -39,7 +39,7 @@ $controller_route   = $moduleDetail['controller_route'];
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Company Name<br>GST No.<br>Plant Name</th>
-                                <th scope="col">Full Address<br>Location</th>
+                                <th scope="col">Plant Address<br>Location</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Phone</th>
                                 <th scope="col">Action</th>

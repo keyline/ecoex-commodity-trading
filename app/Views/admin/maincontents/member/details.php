@@ -45,10 +45,6 @@ $controller_route   = $moduleDetail['controller_route'];
                             <td><?=$row->full_address?></td>
                         </tr>
                         <tr>
-                            <td>Holding No.</td>
-                            <td><?=$row->holding_no?></td>
-                        </tr>
-                        <tr>
                             <td>Street</td>
                             <td><?=$row->street?></td>
                         </tr>

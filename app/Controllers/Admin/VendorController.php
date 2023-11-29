@@ -28,7 +28,7 @@ class VendorController extends BaseController {
         $title                      = 'Manage '.$this->data['title'];
         $page_name                  = 'member/list';
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
-        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status!=' => 3], '', '', '', $order_by);
+        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status!=' => 3, 'type' => 'VENDOR'], '', '', '', $order_by);
         echo $this->layout_after_login($title,$page_name,$data);
     }
     public function add()
