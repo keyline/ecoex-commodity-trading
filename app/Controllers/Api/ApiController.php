@@ -1178,7 +1178,9 @@ class ApiController extends BaseController
             $apiResponse        = [];
             $headerData         = $this->request->headers();
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
                 $checkUserTokenExist        = $this->common_model->find_data('ecomm_user_devices', 'row', ['app_access_token' => $app_access_token, 'published' => 1]);
                 // pr($checkUserTokenExist);
                 if($checkUserTokenExist){
@@ -1223,12 +1225,13 @@ class ApiController extends BaseController
                 $apiMessage         = 'All Data Are Not Present !!!';
             }           
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
                 $old_password               = $requestData['old_password'];
                 $new_password               = $requestData['new_password'];
                 $confirm_password           = $requestData['confirm_password'];
-                
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
                 $getTokenValue              = $this->tokenAuth($app_access_token);
+                
                 if($getTokenValue['status']){
                     $uId        = $getTokenValue['data'][1];
                     $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
@@ -1297,7 +1300,8 @@ class ApiController extends BaseController
             $apiResponse        = [];
             $headerData         = $this->request->headers();
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
                 $getTokenValue              = $this->tokenAuth($app_access_token);
                 if($getTokenValue['status']){
                     $uId        = $getTokenValue['data'][1];
@@ -1363,7 +1367,7 @@ class ApiController extends BaseController
                 $apiMessage         = 'All Data Are Not Present !!!';
             }           
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                
                 $gst_no                     = $requestData['gst_no'];
                 $company_name               = $requestData['company_name'];
                 $full_address               = $requestData['full_address'];
@@ -1375,8 +1379,9 @@ class ApiController extends BaseController
                 $location                   = $requestData['location'];
                 $phone                      = $requestData['phone'];
                 
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
                 $getTokenValue              = $this->tokenAuth($app_access_token);
-                // pr($getTokenValue);
                 if($getTokenValue['status']){
                     $uId        = $getTokenValue['data'][1];
                     $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
@@ -1430,7 +1435,8 @@ class ApiController extends BaseController
             $apiResponse        = [];
             $headerData         = $this->request->headers();
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
                 $getTokenValue              = $this->tokenAuth($app_access_token);
                 if($getTokenValue['status']){
                     $uId        = $getTokenValue['data'][1];
@@ -1509,7 +1515,8 @@ class ApiController extends BaseController
                 $apiMessage         = 'All Data Are Not Present !!!';
             }
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
                 $getTokenValue              = $this->tokenAuth($app_access_token);
                 if($getTokenValue['status']){
                     $uId        = $getTokenValue['data'][1];
@@ -1564,7 +1571,8 @@ class ApiController extends BaseController
             $apiResponse        = [];
             $headerData         = $this->request->headers();
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
                 $getTokenValue              = $this->tokenAuth($app_access_token);
                 if($getTokenValue['status']){
                     $uId        = $getTokenValue['data'][1];
@@ -1631,7 +1639,8 @@ class ApiController extends BaseController
                 $apiMessage         = 'All Data Are Not Present !!!';
             }
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
                 $getTokenValue              = $this->tokenAuth($app_access_token);
                 if($getTokenValue['status']){
                     $uId        = $getTokenValue['data'][1];
@@ -1688,10 +1697,9 @@ class ApiController extends BaseController
             $apiResponse        = [];
             $headerData         = $this->request->headers();
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
                 $getTokenValue              = $this->tokenAuth($app_access_token);
-                // echo $app_access_token;
-                // pr($getTokenValue);
                 if($getTokenValue['status']){
                     $uId        = $getTokenValue['data'][1];
                     $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
@@ -1766,7 +1774,8 @@ class ApiController extends BaseController
             $apiResponse        = [];
             $headerData         = $this->request->headers();
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
                 $getTokenValue              = $this->tokenAuth($app_access_token);
                 if($getTokenValue['status']){
                     $uId        = $getTokenValue['data'][1];
@@ -1826,7 +1835,8 @@ class ApiController extends BaseController
                 $apiMessage         = 'All Data Are Not Present !!!';
             }           
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $app_access_token           = trim($headerData['Authorization'], "Authorization: ");
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
                 $getTokenValue              = $this->tokenAuth($app_access_token);
                 $product_id                 = $requestData['product_id'];
                 // pr($getTokenValue);
@@ -1930,6 +1940,13 @@ class ApiController extends BaseController
         }
         return $text;
     }
+    /* extract header token */
+    private function extractToken($token){
+        $app_token = explode("Authorization: ", $token);
+        $app_access_token = $app_token[1];
+        return $app_access_token;
+    }
+    /* extract header token */
     /*
     Generate JWT tokens for authentication
     Author : Subhomoy
@@ -1953,7 +1970,7 @@ class ApiController extends BaseController
         $headers    = apache_request_headers();
         if (isset($appAccessToken) && !empty($appAccessToken)) :
             $userdata = $this->matchToken($appAccessToken);
-            // pr($userdata);
+            // echo $appAccessToken;
             if ($userdata['status']) :
                 $checkToken =  $this->common_model->find_data('ecomm_user_devices', 'row', ['app_access_token' => $appAccessToken]);
                 // echo $this->db->getLastQuery();
