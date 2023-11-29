@@ -60,7 +60,7 @@ $controller_route   = $moduleDetail['controller_route'];
                         <div class="row mb-3">
                             <label for="short_description" class="col-md-2 col-lg-2 col-form-label"><?=$title?> Short Description</label>
                             <div class="col-md-10 col-lg-10">
-                                <textarea name="short_description" class="form-control" id="short_description" rows="5" required><?=$short_description?></textarea>
+                                <textarea name="short_description" class="form-control ckeditor" id="short_description" rows="5" required><?=$short_description?></textarea>
                             </div>
                         </div>
                         <div class="row mb-3">
