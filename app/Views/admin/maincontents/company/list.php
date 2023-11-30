@@ -65,6 +65,16 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <?php } else {?>
                                     <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Activate <?=$title?>" onclick="return confirm('Do You Want To Activate This <?=$title?>');"><i class="fa fa-times"></i> Click To Approve</a>
                                     <?php }?>
+                                    <br><br>
+                                    <?php
+                                    $assignedCategoryCount = $common_model->find_data('ecomm_company_category', 'count', ['company_id' => $row->$primary_key, 'status!=' => 3]);
+                                    if($assignedCategoryCount > 0){
+                                        $assignCategoryText = '<br>('.$assignedCategoryCount.' categories)';
+                                    } else {
+                                        $assignCategoryText = '';
+                                    }
+                                    ?>
+                                    <a href="<?=base_url('admin/' . $controller_route . '/assign-category/'.encoded($row->$primary_key))?>" class="btn btn-warning btn-sm" title="Manage Product Category"><i class="fa fa-tasks"></i> Manage Product Category <?=$assignCategoryText?></a>
                                 </td>
                             </tr>
                             <?php } }?>

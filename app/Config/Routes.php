@@ -115,16 +115,6 @@ $routes->get('/', 'Home::index');
 				$routes->match(['get', 'post'], "pages/change-status/(:any)", "PageController::change_status/$1");
 			/* page */
 		// master
-		// vendors
-			$routes->match(['get'], "vendors/list", "VendorController::list");
-			$routes->match(['get', 'post'], "vendors/add", "VendorController::add");
-			$routes->match(['get', 'post'], "vendors/edit/(:any)", "VendorController::edit/$1");
-			$routes->match(['get', 'post'], "vendors/view/(:any)", "VendorController::view/$1");
-			$routes->match(['get', 'post'], "vendors/delete/(:any)", "VendorController::confirm_delete/$1");
-			$routes->match(['get', 'post'], "vendors/change-status/(:any)", "VendorController::change_status/$1");
-			$routes->match(['get', 'post'], "vendors/check-email", "VendorController::check_email");
-			$routes->match(['get', 'post'], "vendors/check-phone", "VendorController::check_phone");
-		// vendors
 		// companies
 			$routes->match(['get'], "companies/list", "CompanyController::list");
 			$routes->match(['get', 'post'], "companies/add", "CompanyController::add");
@@ -134,6 +124,7 @@ $routes->get('/', 'Home::index');
 			$routes->match(['get', 'post'], "companies/change-status/(:any)", "CompanyController::change_status/$1");
 			$routes->match(['get', 'post'], "companies/check-email", "CompanyController::check_email");
 			$routes->match(['get', 'post'], "companies/check-phone", "CompanyController::check_phone");
+			$routes->match(['get', 'post'], "companies/assign-category/(:any)", "CompanyController::assignCategory/$1");
 		// companies
 		// plants
 			$routes->match(['get'], "plants/list", "PlantController::list");
@@ -145,6 +136,16 @@ $routes->get('/', 'Home::index');
 			$routes->match(['get', 'post'], "plants/check-email", "PlantController::check_email");
 			$routes->match(['get', 'post'], "plants/check-phone", "PlantController::check_phone");
 		// plants
+		// vendors
+			$routes->match(['get'], "vendors/list", "VendorController::list");
+			$routes->match(['get', 'post'], "vendors/add", "VendorController::add");
+			$routes->match(['get', 'post'], "vendors/edit/(:any)", "VendorController::edit/$1");
+			$routes->match(['get', 'post'], "vendors/view/(:any)", "VendorController::view/$1");
+			$routes->match(['get', 'post'], "vendors/delete/(:any)", "VendorController::confirm_delete/$1");
+			$routes->match(['get', 'post'], "vendors/change-status/(:any)", "VendorController::change_status/$1");
+			$routes->match(['get', 'post'], "vendors/check-email", "VendorController::check_email");
+			$routes->match(['get', 'post'], "vendors/check-phone", "VendorController::check_phone");
+		// vendors
 	});
 /* ADMIN PANEL */
 /* API */
