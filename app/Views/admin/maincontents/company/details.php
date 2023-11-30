@@ -8,6 +8,7 @@ $controller_route   = $moduleDetail['controller_route'];
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?=base_url('admin/dashboard')?>">Home</a></li>
+            <li class="breadcrumb-item active"><a href="<?=base_url('admin/' . $controller_route . '/list/')?>"><?=$title?> List</a></li>
             <li class="breadcrumb-item active"><?=$page_header?></li>
         </ol>
     </nav>
@@ -60,10 +61,10 @@ $controller_route   = $moduleDetail['controller_route'];
                             <td>Pincode</td>
                             <td><?=$row->pincode?></td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <td>Location</td>
                             <td><?=$row->location?></td>
-                        </tr>
+                        </tr> -->
                         <tr>
                             <td>Email</td>
                             <td><?=$row->email?></td>
@@ -90,7 +91,55 @@ $controller_route   = $moduleDetail['controller_route'];
                         </tr>
                         <tr>
                             <td>Profile Image</td>
-                            <td><img src="<?=(($row->profile_image != '')?getenv('app.uploadsURL').'user/'.$row->profile_image:getenv('app.NO_IMAGE'))?>" class="img-thumbnail" style="width: 150px; height: auto;"></td>
+                            <td><img src="<?=(($row->profile_image != '')?getenv('app.uploadsURL').'user/'.$row->profile_image:getenv('app.NO_IMAGE'))?>" class="img-thumbnail" style="width: 250px; height: auto;"></td>
+                        </tr>
+                        <tr>
+                            <td>GST Certificate</td>
+                            <td>
+                                <?php if($row->gst_certificate != ''){?>
+                                    <a href="<?=getenv('app.uploadsURL').'user/'.$row->gst_certificate?>" class="badge bg-primary" target="_blank">View Document</a>
+                                <?php }?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>CIN No.</td>
+                            <td><?=$row->cin_no?></td>
+                        </tr>
+                        <tr>
+                            <td>CIN Document</td>
+                            <td>
+                                <?php if($row->cin_document != ''){?>
+                                    <a href="<?=getenv('app.uploadsURL').'user/'.$row->cin_document?>" class="badge bg-primary" target="_blank">View Document</a>
+                                <?php }?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Bank Name</td>
+                            <td><?=$row->bank_name?></td>
+                        </tr>
+                        <tr>
+                            <td>Branch Name</td>
+                            <td><?=$row->branch_name?></td>
+                        </tr>
+                        <tr>
+                            <td>IFSC Code</td>
+                            <td><?=$row->ifsc_code?></td>
+                        </tr>
+                        <tr>
+                            <td>Account Type</td>
+                            <td><?=$row->account_type?></td>
+                        </tr>
+                        <tr>
+                            <td>Account No.</td>
+                            <td><?=$row->account_number?></td>
+                        </tr>
+                        <tr>
+                            <td>Cancelled Cheque</td>
+                            <td>
+                                <?php if($row->cancelled_cheque != ''){?>
+                                    <a href="<?=getenv('app.uploadsURL').'user/'.$row->cancelled_cheque?>" class="badge bg-primary" target="_blank">View Document</a>
+                                <?php }?>
+                            </td>
                         </tr>
                         <tr>
                             <td>Created At</td>
