@@ -8,6 +8,7 @@ $controller_route   = $moduleDetail['controller_route'];
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?=base_url('admin/dashboard')?>">Home</a></li>
+            <li class="breadcrumb-item active"><a href="<?=base_url('admin/' . $controller_route . '/list/')?>"><?=$title?> List</a></li>
             <li class="breadcrumb-item active"><?=$page_header?></li>
         </ol>
     </nav>
@@ -60,10 +61,10 @@ $controller_route   = $moduleDetail['controller_route'];
                             <td>Pincode</td>
                             <td><?=$row->pincode?></td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <td>Location</td>
                             <td><?=$row->location?></td>
-                        </tr>
+                        </tr> -->
                         <tr>
                             <td>Email</td>
                             <td><?=$row->email?></td>
@@ -90,7 +91,7 @@ $controller_route   = $moduleDetail['controller_route'];
                         </tr>
                         <tr>
                             <td>Profile Image</td>
-                            <td><img src="<?=(($row->profile_image != '')?getenv('app.uploadsURL').'user/'.$row->profile_image:getenv('app.NO_IMAGE'))?>" class="img-thumbnail" style="width: 150px; height: 150px; border-radius: 50%;"></td>
+                            <td><img src="<?=(($row->profile_image != '')?getenv('app.uploadsURL').'user/'.$row->profile_image:getenv('app.NO_IMAGE'))?>" class="img-thumbnail" style="width: 250px; height: auto;"></td>
                         </tr>
                         <tr>
                             <td>Member Type</td>
@@ -101,6 +102,33 @@ $controller_route   = $moduleDetail['controller_route'];
                                 ?>
                             </td>
                         </tr>
+
+
+                        <tr>
+                            <td>GST Certificate</td>
+                            <td>
+                                <?php if($row->gst_certificate != ''){?>
+                                    <a href="<?=getenv('app.uploadsURL').'user/'.$row->gst_certificate?>" class="badge bg-primary" target="_blank">View Document</a>
+                                <?php }?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Proprietor Name</td>
+                            <td><?=$row->contact_person_name?></td>
+                        </tr>
+                        <tr>
+                            <td>Proprietor Designation</td>
+                            <td><?=$row->contact_person_designation?></td>
+                        </tr>
+                        <tr>
+                            <td>Proprietor PAN Card</td>
+                            <td>
+                                <?php if($row->contact_person_document != ''){?>
+                                    <a href="<?=getenv('app.uploadsURL').'user/'.$row->contact_person_document?>" class="badge bg-primary" target="_blank">View Document</a>
+                                <?php }?>
+                            </td>
+                        </tr>
+                        
                         <tr>
                             <td>Created At</td>
                             <td><?=date_format(date_create($row->created_at), "M d Y h:i A")?></td>

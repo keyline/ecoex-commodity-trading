@@ -57,7 +57,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                     ?></strong><br>
                                     <?=$row->gst_no?><br><?=$row->company_name?>
                                 </td>
-                                <td><?=$row->full_address?><br><?=$row->location?></td>
+                                <td><?=wordwrap($row->full_address,25,"<br>\n")?><br><?=$row->location?></td>
                                 <td><?=$row->email?></td>
                                 <td><?=$row->phone?></td>
                                 <td>

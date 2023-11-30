@@ -25,3 +25,23 @@
 <!-- Template Main CSS File -->
 <link href="<?=getenv('app.adminAssetsURL')?>assets/css/style.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
+<style type="text/css">    
+    .toast-success {
+        background-color: #000;
+        color: #28a745 !important;
+    }
+    .toast-error {
+        background-color: #000;
+        color: #dc3545 !important;
+    }
+    .toast-warning {
+        background-color: #000;
+        color: #ffc107 !important;
+    }
+    .toast-info {
+        background-color: #000;
+        color: #007bff !important;
+    }
+</style>

@@ -38,7 +38,7 @@ $controller_route   = $moduleDetail['controller_route'];
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Company Name<br>GST No.<br>Plant Name</th>
+                                <th scope="col">Company Name<br>Plant Name<br>GST No.</th>
                                 <th scope="col">Plant Address<br>Location</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Phone</th>
@@ -55,10 +55,10 @@ $controller_route   = $moduleDetail['controller_route'];
                                     $company = $common_model->find_data('ecoex_companies', 'row', ['id' => $row->parent_id], 'company_name');
                                     echo (($company)?$company->company_name:'');
                                     ?></strong><br>
-                                    <?=$row->gst_no?><br>
-                                    <strong><?=$row->company_name?></strong>
+                                    <strong><?=$row->company_name?></strong><br>
+                                    <?=$row->gst_no?>
                                 </td>
-                                <td><?=$row->full_address?><br><?=$row->location?></td>
+                                <td><?=wordwrap($row->full_address,25,"<br>\n")?><br><?=$row->location?></td>
                                 <td><?=$row->email?></td>
                                 <td><?=$row->phone?></td>
                                 <td>

@@ -1360,7 +1360,7 @@ class ApiController extends BaseController
             $apiResponse        = [];
             $this->isJSON(file_get_contents('php://input'));
             $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            $requiredFields     = ['gst_no', 'company_name', 'full_address', 'holding_no', 'street', 'district', 'state', 'pincode', 'location', 'phone'];
+            $requiredFields     = ['gst_no', 'company_name', 'full_address', 'holding_no', 'street', 'district', 'state', 'pincode', 'location', 'phone', 'email'];
             $headerData         = $this->request->headers();
             if (!$this->validateArray($requiredFields, $requestData)){              
                 $apiStatus          = FALSE;
@@ -1378,6 +1378,7 @@ class ApiController extends BaseController
                 $pincode                    = $requestData['pincode'];
                 $location                   = $requestData['location'];
                 $phone                      = $requestData['phone'];
+                $email                      = $requestData['email'];
                 
                 $Authorization              = $headerData['Authorization'];
                 $app_access_token           = $this->extractToken($Authorization);
@@ -1398,6 +1399,7 @@ class ApiController extends BaseController
                             'pincode'               => $pincode,
                             'location'              => $location,
                             'phone'                 => $phone,
+                            'email'                 => $email,
                         ];
                         $this->common_model->save_data('ecomm_users', $fields, $uId, 'id');
                         $apiStatus          = TRUE;

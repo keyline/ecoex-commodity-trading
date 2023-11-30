@@ -51,8 +51,8 @@ $controller_route   = $moduleDetail['controller_route'];
                             <tr>
                                 <th scope="row"><?=$sl++?></th>
                                 <!-- <td><?=$row->type?></td> -->
-                                <td><?=$row->gst_no?><br><?=$row->company_name?></td>
-                                <td><?=$row->full_address?><br><?=$row->location?></td>
+                                <td><?=$row->gst_no?><br><b><?=$row->company_name?></b></td>
+                                <td><?=wordwrap($row->full_address,25,"<br>\n")?><br><?=$row->location?></td>
                                 <td><?=$row->email?></td>
                                 <td><?=$row->phone?></td>
                                 <td>
