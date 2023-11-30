@@ -395,6 +395,7 @@ class CompanyController extends BaseController {
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
         echo $this->layout_after_login($title,$page_name,$data);
     }
+
     public function check_email(){
         $apiStatus          = TRUE;
         $apiMessage         = '';
@@ -476,5 +477,55 @@ class CompanyController extends BaseController {
             $apiExtraData       = http_response_code();
         }
         $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+    }
+
+    public function assignCategory($id)
+    {
+        $id                         = decoded($id);
+        $company                    = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $id], 'company_name');
+        $company_name               = (($company)?$company->company_name:'');
+        $data['moduleDetail']       = $this->data;
+        $data['action']             = 'Manage Product Category Of';
+        $title                      = $data['action'].' '.$company_name;
+        $page_name                  = 'company/assign-category';
+        $data['cats']               = $this->common_model->find_data('ecomm_product_categories', 'array', ['status' => 1], 'id,name');
+        $data['company_id']         = $id;
+        $data['company_name']       = $company_name;
+
+        $order_by[0]                = array('field' => 'id', 'type' => 'desc');
+        $conditions                 = array('company_id' => $id, 'status' => 1);
+        $data['assignCats']         = $this->data['model']->find_data('ecomm_company_category', 'array', $conditions, '', '', '', $order_by);
+        
+        if($this->request->getMethod() == 'post') {
+            $company_id         = $this->request->getPost('company_id');
+            $category_id        = $this->request->getPost('category_id');
+
+            if(!empty($category_id)){
+                $this->data['model']->save_data('ecomm_company_category', ['status' => 3], $company_id, 'company_id');
+                for($k=0;$k<count($category_id);$k++){
+                    $checkCompanyCategory = $this->common_model->find_data('ecomm_company_category', 'row', ['company_id' => $company_id, 'category_id' => $category_id[$k]]);
+                    if($checkCompanyCategory){
+                        // update
+                        $postData   = array(
+                            'status'                    => 1,
+                        );
+                        $this->data['model']->save_data('ecomm_company_category', $postData, $checkCompanyCategory->id, 'id');
+                    } else {
+                        // insert
+                        $category_alias     = $this->request->getPost('category_alias'.$category_id[$k]);
+                        $postData   = array(
+                            'company_id'                => $company_id,
+                            'category_id'               => $category_id[$k],
+                            'category_alias'            => $category_alias,
+                            'status'                    => 1,
+                        );
+                        $this->data['model']->save_data('ecomm_company_category', $postData, '', 'id');
+                    }
+                }
+            }
+            $this->session->setFlashdata('success_message', $this->data['title'].' Product Category Updated Successfully');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+        }        
+        echo $this->layout_after_login($title,$page_name,$data);
     }
 }
