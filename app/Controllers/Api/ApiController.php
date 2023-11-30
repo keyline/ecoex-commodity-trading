@@ -1251,21 +1251,21 @@ class ApiController extends BaseController
                                     $apiExtraData       = http_response_code();
                                 } else {
                                     $apiStatus          = FALSE;
-                                    http_response_code(404);
+                                    http_response_code(200);
                                     $apiMessage         = 'New & Existing Password Can\'t Be Same !!!';
                                     $apiExtraField      = 'response_code';
                                     $apiExtraData       = http_response_code();
                                 }
                             } else {
                                 $apiStatus          = FALSE;
-                                http_response_code(404);
+                                http_response_code(200);
                                 $apiMessage         = 'New & Confirm Password Doesn\'t Matched !!!';
                                 $apiExtraField      = 'response_code';
                                 $apiExtraData       = http_response_code();
                             }
                         } else {
                             $apiStatus          = FALSE;
-                            http_response_code(404);
+                            http_response_code(200);
                             $apiMessage         = 'Existing Password Doesn\'t Matched !!!';
                             $apiExtraField      = 'response_code';
                             $apiExtraData       = http_response_code();
