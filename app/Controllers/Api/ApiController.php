@@ -1323,6 +1323,16 @@ class ApiController extends BaseController
                             'email'             => $getUser->email,
                             'phone'             => $getUser->phone,
                             'member_type'       => (($memberType)?$memberType->name:''),
+                            'gst_certificate'   => (($getUser->gst_certificate != '')?getenv('app.uploadsURL').'user/'.$getUser->gst_certificate:''),
+                            'contact_person_name'                   => $getUser->contact_person_name,
+                            'contact_person_designation'            => $getUser->contact_person_designation,
+                            'contact_person_document'               => (($getUser->contact_person_document != '')?getenv('app.uploadsURL').'user/'.$getUser->contact_person_document:''),
+                            'bank_name'                             => $getUser->bank_name,
+                            'branch_name'                           => $getUser->branch_name,
+                            'ifsc_code'                             => $getUser->ifsc_code,
+                            'account_type'                          => $getUser->account_type,
+                            'account_number'                        => $getUser->account_number,
+                            'cancelled_cheque'                      => (($getUser->cancelled_cheque != '')?getenv('app.uploadsURL').'user/'.$getUser->cancelled_cheque:''),
                         ];
 
                         $apiStatus          = TRUE;
@@ -1903,15 +1913,21 @@ class ApiController extends BaseController
                     $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                     $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                     if($getUser){
-                        $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
-                        $products       = $this->common_model->find_data('ecomm_products', 'array', ['status' => 1], 'id,name,hsn_code', '', '', $orderBy);
-                        if($products){
-                            foreach($products as $product){
-                                $apiResponse[]        = [
-                                    'id'            => $product->id,
-                                    'name'          => $product->name,
-                                    'hsn_code'      => $product->hsn_code,
-                                ];
+                        $assignCategory = $this->common_model->find_data('ecomm_company_category', 'array', ['company_id' => $getUser->parent_id], 'category_id');
+                        // pr($assignCategory);
+                        if($assignCategory){
+                            foreach($assignCategory as $assignCat){
+                                $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
+                                $products       = $this->common_model->find_data('ecomm_products', 'array', ['status' => 1, 'category_id' => $assignCat->category_id], 'id,name,hsn_code', '', '', $orderBy);
+                                if($products){
+                                    foreach($products as $product){
+                                        $apiResponse[]        = [
+                                            'id'            => $product->id,
+                                            'name'          => $product->name,
+                                            'hsn_code'      => $product->hsn_code,
+                                        ];
+                                    }
+                                }
                             }
                         }
                         $apiStatus          = TRUE;
@@ -2004,6 +2020,63 @@ class ApiController extends BaseController
         }
     /* after login */
     
+    // process request
+        public function processRequestList()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $headerData         = $this->request->headers();
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if($getTokenValue['status']){
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if($getUser){
+                        $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['plant_id' => $uId]);
+                        if($rows){
+                            foreach($rows as $row){
+                                $apiResponse[] = [
+                                    'enq_id'        => $row->id,
+                                    'enquiry_no'    => $row->enquiry_no,
+                                    'status'        => $row->status,
+                                    'created_at'    => date_format(date_create($row->created_at), "M d, Y h:i A"),
+                                    'updated_at'    => date_format(date_create($row->updated_at), "M d, Y h:i A"),
+                                ];
+                            }
+                        }
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Data Available !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }               
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+    // process request
     /*
     Get http response code
     Author : Subhomoy

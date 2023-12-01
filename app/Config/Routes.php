@@ -185,6 +185,10 @@ $routes->get('/', 'Home::index');
 			$routes->match(['post'], "dashboard", "ApiController::dashboard");
 			$routes->match(['post'], "get-product", "ApiController::getProduct");
 			$routes->match(['post'], "get-hsncode-product", "ApiController::getHSNCodeProduct");
+
+			// process request
+				$routes->match(['get', 'post'], "process-request-list", "ApiController::processRequestList");
+			// process request
 		// after login
 	});
 /* API */
