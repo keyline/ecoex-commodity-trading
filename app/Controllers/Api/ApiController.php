@@ -1360,14 +1360,14 @@ class ApiController extends BaseController
             $apiResponse        = [];
             $this->isJSON(file_get_contents('php://input'));
             $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            $requiredFields     = ['gst_no', 'company_name', 'full_address', 'holding_no', 'street', 'district', 'state', 'pincode', 'location', 'phone', 'email'];
+            $requiredFields     = ['type', 'gst_no', 'company_name', 'full_address', 'street', 'district', 'state', 'pincode', 'phone', 'gst_certificate', 'contact_person_name', 'contact_person_designation', 'contact_person_document'];
             $headerData         = $this->request->headers();
             if (!$this->validateArray($requiredFields, $requestData)){              
                 $apiStatus          = FALSE;
                 $apiMessage         = 'All Data Are Not Present !!!';
             }           
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                
+                $type                       = $requestData['type'];
                 $gst_no                     = $requestData['gst_no'];
                 $company_name               = $requestData['company_name'];
                 $full_address               = $requestData['full_address'];
@@ -1378,7 +1378,27 @@ class ApiController extends BaseController
                 $pincode                    = $requestData['pincode'];
                 $location                   = $requestData['location'];
                 $phone                      = $requestData['phone'];
-                $email                      = $requestData['email'];
+                // $email                      = $requestData['email'];
+
+                $gst_certificate                            = $requestData['gst_certificate'];
+                $contact_person_name                        = $requestData['contact_person_name'];
+                $contact_person_designation                 = $requestData['contact_person_designation'];
+                $contact_person_document                    = $requestData['contact_person_document'];
+                if($type == 'PLANT'){
+                    $bank_name                                  = $requestData['bank_name'];
+                    $branch_name                                = $requestData['branch_name'];
+                    $ifsc_code                                  = $requestData['ifsc_code'];
+                    $account_type                               = $requestData['account_type'];
+                    $account_number                             = $requestData['account_number'];
+                    $cancelled_cheque                           = $requestData['cancelled_cheque'];
+                } else {
+                    $bank_name                                  = '';
+                    $branch_name                                = '';
+                    $ifsc_code                                  = '';
+                    $account_type                               = '';
+                    $account_number                             = '';
+                    $cancelled_cheque                           = '';
+                }
                 
                 $Authorization              = $headerData['Authorization'];
                 $app_access_token           = $this->extractToken($Authorization);
@@ -1388,25 +1408,124 @@ class ApiController extends BaseController
                     $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                     $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                     if($getUser){
-                        $fields = [
-                            'gst_no'                => $gst_no,
-                            'company_name'          => $company_name,
-                            'full_address'          => $full_address,
-                            'holding_no'            => $holding_no,
-                            'street'                => $street,
-                            'district'              => $district,
-                            'state'                 => $state,
-                            'pincode'               => $pincode,
-                            'location'              => $location,
-                            'phone'                 => $phone,
-                            'email'                 => $email,
-                        ];
-                        $this->common_model->save_data('ecomm_users', $fields, $uId, 'id');
-                        $apiStatus          = TRUE;
-                        http_response_code(200);
-                        $apiMessage         = 'Profle Updated Successfully !!!';
-                        $apiExtraField      = 'response_code';
-                        $apiExtraData       = http_response_code();
+                        $checkPhoneExist = $this->common_model->find_data('ecomm_users', 'row', ['phone' => $phone, 'id!=' => $uId]);
+                        if($checkPhoneExist){
+                            $apiStatus          = FALSE;
+                            http_response_code(200);
+                            $apiMessage         = 'Phone No. Already Exists. Please Use Other Phone No. !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            // pr($requestData);die;
+                            /* gst certificate */
+                                if(!empty($gst_certificate)){
+                                    $gst_certificate    = $gst_certificate[0];
+                                    $upload_type        = $gst_certificate['type'];
+                                    if($upload_type == 'application/pdf'){
+                                        $upload_base64      = $gst_certificate['base64'];
+                                        $img                = $upload_base64;
+                                        // $img            = $upload_file['base64'];
+                                        // $img            = str_replace('data:application/pdf;base64,', '', $upload_file);
+                                        // $img            = str_replace(' ', '+', $img);
+                                        $data           = base64_decode($img);
+                                        $fileName       = uniqid() . '.pdf';
+                                        $file           = 'public/uploads/user/' . $fileName;
+                                        $success        = file_put_contents($file, $data);
+                                        $gst_docs       = $fileName;
+                                    } else {
+                                        $apiStatus          = FALSE;
+                                        http_response_code(404);
+                                        $apiMessage         = 'Please Upload Document in PDF Format !!!';
+                                        $apiExtraField      = 'response_code';
+                                        $apiExtraData       = http_response_code();
+                                    }
+                                } else {
+                                    $gst_docs = $getUser->gst_certificate;
+                                }
+                            /* gst certificate */
+                            /* pan card/company ID */
+                                if(!empty($contact_person_document)){
+                                    $contact_person_document    = $contact_person_document[0];
+                                    $upload_type        = $contact_person_document['type'];
+                                    if($upload_type == 'application/pdf'){
+                                        $upload_base64      = $contact_person_document['base64'];
+                                        $img                = $upload_base64;
+                                        // $img            = $upload_file['base64'];
+                                        // $img            = str_replace('data:application/pdf;base64,', '', $upload_file);
+                                        // $img            = str_replace(' ', '+', $img);
+                                        $data           = base64_decode($img);
+                                        $fileName       = uniqid() . '.pdf';
+                                        $file           = 'public/uploads/user/' . $fileName;
+                                        $success        = file_put_contents($file, $data);
+                                        $pan_docs       = $fileName;
+                                    } else {
+                                        $apiStatus          = FALSE;
+                                        http_response_code(404);
+                                        $apiMessage         = 'Please Upload Document in PDF Format !!!';
+                                        $apiExtraField      = 'response_code';
+                                        $apiExtraData       = http_response_code();
+                                    }
+                                } else {
+                                    $pan_docs = $getUser->contact_person_document;
+                                }
+                            /* pan card/company ID */
+                            /* cancelled cheque */
+                                if(!empty($cancelled_cheque)){
+                                    $cancelled_cheque    = $cancelled_cheque[0];
+                                    $upload_type        = $cancelled_cheque['type'];
+                                    if($upload_type == 'application/pdf'){
+                                        $upload_base64      = $cancelled_cheque['base64'];
+                                        $img                = $upload_base64;
+                                        // $img            = $upload_file['base64'];
+                                        // $img            = str_replace('data:application/pdf;base64,', '', $upload_file);
+                                        // $img            = str_replace(' ', '+', $img);
+                                        $data           = base64_decode($img);
+                                        $fileName       = uniqid() . '.pdf';
+                                        $file           = 'public/uploads/user/' . $fileName;
+                                        $success        = file_put_contents($file, $data);
+                                        $cheque_docs    = $fileName;
+                                    } else {
+                                        $apiStatus          = FALSE;
+                                        http_response_code(404);
+                                        $apiMessage         = 'Please Upload Document in PDF Format !!!';
+                                        $apiExtraField      = 'response_code';
+                                        $apiExtraData       = http_response_code();
+                                    }
+                                } else {
+                                    $cheque_docs = $getUser->cancelled_cheque;
+                                }
+                            /* cancelled cheque */
+                            $fields = [
+                                'gst_no'                            => $gst_no,
+                                'company_name'                      => $company_name,
+                                'full_address'                      => $full_address,
+                                'holding_no'                        => $holding_no,
+                                'street'                            => $street,
+                                'district'                          => $district,
+                                'state'                             => $state,
+                                'pincode'                           => $pincode,
+                                'location'                          => $location,
+                                'phone'                             => $phone,
+                                // 'email'                          => $email,
+                                'gst_certificate'                   => $gst_docs,
+                                'contact_person_name'               => $contact_person_name,
+                                'contact_person_designation'        => $contact_person_designation,
+                                'contact_person_document'           => $pan_docs,
+                                'bank_name'                         => $bank_name,
+                                'branch_name'                       => $branch_name,
+                                'ifsc_code'                         => $ifsc_code,
+                                'account_type'                      => $account_type,
+                                'account_number'                    => $account_number,
+                                'cancelled_cheque'                  => $cheque_docs,
+                            ];
+                            // pr($fields);
+                            $this->common_model->save_data('ecomm_users', $fields, $uId, 'id');
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Profle Updated Successfully !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
                     } else {
                         $apiStatus          = FALSE;
                         http_response_code(404);
