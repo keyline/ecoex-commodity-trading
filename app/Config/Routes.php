@@ -188,7 +188,14 @@ $routes->get('/', 'Home::index');
 
 			// process request
 				$routes->match(['get', 'post'], "process-request-list", "ApiController::processRequestList");
+				$routes->match(['get', 'post'], "process-request-add", "ApiController::processRequestAdd");
 			// process request
+			// completed request
+
+			// completed request
+			// rejected request
+				
+			// rejected request
 		// after login
 	});
 /* API */
