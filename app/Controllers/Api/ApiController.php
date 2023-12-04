@@ -2085,7 +2085,7 @@ class ApiController extends BaseController
             $apiResponse        = [];
             $this->isJSON(file_get_contents('php://input'));
             $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            $requiredFields     = ['requestList', 'gps_image', 'collection_date', 'latitude', 'longitude'];
+            $requiredFields     = ['requestList', 'gps_image', 'collection_date', 'latitude', 'longitude', 'device_brand', 'device_model'];
             $headerData         = $this->request->headers();
             if (!$this->validateArray($requiredFields, $requestData)){              
                 $apiStatus          = FALSE;
@@ -2153,6 +2153,8 @@ class ApiController extends BaseController
                             'tentative_collection_date' => date_format(date_create($requestData['collection_date']), "Y-m-d"),
                             'latitude'                  => $requestData['latitude'],
                             'longitude'                 => $requestData['longitude'],
+                            'device_brand'              => $requestData['device_brand'],
+                            'device_model'              => $requestData['device_model'],
                             'created_by'                => $uId,
                         ];
                         // pr($fields1);
