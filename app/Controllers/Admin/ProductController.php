@@ -41,11 +41,27 @@ class ProductController extends BaseController {
         $orderBy[0]                 = ['field' => 'name', 'type' => 'ASC'];
         $data['cats']               = $this->data['model']->find_data('ecomm_product_categories', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
         if($this->request->getMethod() == 'post') {
+            /* profile image */
+                $file = $this->request->getFile('product_image');
+                $originalName = $file->getClientName();
+                $fieldName = 'product_image';
+                if($file!='') {
+                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'enquiry','image');
+                    if($upload_array['status']) {
+                        $product_image = $upload_array['newFilename'];
+                    } else {
+                        $product_image = '';
+                    }
+                } else {
+                    $product_image = '';
+                }
+            /* profile image */
             $postData   = array(
                 'category_id'           => $this->request->getPost('category_id'),
                 'name'                  => $this->request->getPost('name'),
                 'hsn_code'              => $this->request->getPost('hsn_code'),
                 'description'           => $this->request->getPost('description'),
+                'product_image'         => $product_image,
                 'created_by'            => $this->session->get('user_id'),
             );
             $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);            
@@ -66,11 +82,27 @@ class ProductController extends BaseController {
         $orderBy[0]                 = ['field' => 'name', 'type' => 'ASC'];
         $data['cats']               = $this->data['model']->find_data('ecomm_product_categories', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
         if($this->request->getMethod() == 'post') {
+            /* profile image */
+                $file = $this->request->getFile('product_image');
+                $originalName = $file->getClientName();
+                $fieldName = 'product_image';
+                if($file!='') {
+                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'enquiry','image');
+                    if($upload_array['status']) {
+                        $product_image = $upload_array['newFilename'];
+                    } else {
+                        $product_image = $data['row']->product_image;
+                    }
+                } else {
+                    $product_image = $data['row']->product_image;
+                }
+            /* profile image */
             $postData   = array(
                 'category_id'           => $this->request->getPost('category_id'),
                 'name'                  => $this->request->getPost('name'),
                 'hsn_code'              => $this->request->getPost('hsn_code'),
                 'description'           => $this->request->getPost('description'),
+                'product_image'         => $product_image,
                 'updated_by'            => $this->session->get('user_id'),
             );
             $record = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);

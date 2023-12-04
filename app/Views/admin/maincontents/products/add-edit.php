@@ -36,11 +36,13 @@ $controller_route   = $moduleDetail['controller_route'];
               $name             = $row->name;
               $hsn_code         = $row->hsn_code;
               $description      = $row->description;
+              $product_image    = $row->product_image;
             } else {
               $category_id      = '';
               $name             = '';
               $hsn_code         = '';
               $description      = '';
+              $product_image    = '';
             }
             ?>
         <div class="col-xl-12">
@@ -74,6 +76,18 @@ $controller_route   = $moduleDetail['controller_route'];
                             <label for="description" class="col-md-2 col-lg-2 col-form-label"><?=$title?> Description</label>
                             <div class="col-md-10 col-lg-10">
                                 <textarea name="description" class="form-control" id="description" rows="5"><?=$description?></textarea>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="product_image" class="col-md-2 col-lg-2 col-form-label">Product Image</label>
+                            <div class="col-md-10 col-lg-10">
+                                <input type="file" name="product_image" class="form-control" id="product_image">
+                                <small class="text-info">* Only JPG, JPEG, ICO, SVG, PNG files are allowed</small><br>
+                                <?php if($product_image != ''){?>
+                                  <img src="<?=getenv('app.uploadsURL').'enquiry/'.$product_image?>" alt="<?=$name?>" class="img-thumbnail" style="width: 130px; height: auto; margin-top: 10px;">
+                                <?php } else {?>
+                                  <img src="<?=getenv('app.NO_IMG')?>" alt="<?=$name?>" class="img-thumbnail" style="width: 130px; height: auto; margin-top: 10px;">
+                                <?php }?>
                             </div>
                         </div>
                         <div class="text-center">
