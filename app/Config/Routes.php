@@ -79,6 +79,13 @@ $routes->get('/', 'Home::index');
 				$routes->match(['get', 'post'], "products/delete/(:any)", "ProductController::confirm_delete/$1");
 				$routes->match(['get', 'post'], "products/change-status/(:any)", "ProductController::change_status/$1");
 			/* products */
+			/* pending products */
+				$routes->match(['get'], "pending-products/list", "PendingProductController::list");
+				$routes->match(['get', 'post'], "pending-products/add", "PendingProductController::add");
+				$routes->match(['get', 'post'], "pending-products/edit/(:any)", "PendingProductController::edit/$1");
+				$routes->match(['get', 'post'], "pending-products/delete/(:any)", "PendingProductController::confirm_delete/$1");
+				$routes->match(['get', 'post'], "pending-products/change-status/(:any)", "PendingProductController::change_status/$1");
+			/* pending products */
 			/* units */
 				$routes->match(['get'], "units/list", "UnitController::list");
 				$routes->match(['get', 'post'], "units/add", "UnitController::add");
@@ -189,6 +196,7 @@ $routes->get('/', 'Home::index');
 			// process request
 				$routes->match(['get', 'post'], "process-request-list", "ApiController::processRequestList");
 				$routes->match(['get', 'post'], "process-request-add", "ApiController::processRequestAdd");
+				$routes->match(['get', 'post'], "process-request-delete", "ApiController::processRequestDelete");
 			// process request
 			// completed request
 
