@@ -2026,17 +2026,48 @@ class ApiController extends BaseController
             $apiStatus          = TRUE;
             $apiMessage         = '';
             $apiResponse        = [];
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));        
+            $requiredFields     = ['order_field', 'order_type', 'page_no'];
             $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)){              
+                $apiStatus          = FALSE;
+                $apiMessage         = 'All Data Are Not Present !!!';
+            }
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
                 $Authorization              = $headerData['Authorization'];
                 $app_access_token           = $this->extractToken($Authorization);
                 $getTokenValue              = $this->tokenAuth($app_access_token);
+                $order_field                = $requestData['order_field'];
+                $order_type                 = $requestData['order_type'];
+                $page_no                    = $requestData['page_no'];
                 if($getTokenValue['status']){
                     $uId        = $getTokenValue['data'][1];
                     $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                     $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                     if($getUser){
-                        $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['plant_id' => $uId]);
+                        if($order_field == 'request_id'){
+                            $fieldName = 'id';
+                        } elseif($order_field == 'added_date'){
+                            $fieldName = 'created_at';
+                        } else {
+                            $fieldName = 'id';
+                        }
+                        if($order_type != ''){
+                            $typeName = $order_type;
+                        } else {
+                            $typeName = 'DESC';
+                        }
+                        $orderBy[0]         = ['field' => $fieldName, 'type' => $typeName];
+                        $limit = 2;
+                        if($page_no == 1){
+                            $offset = 0;
+                        } else {
+                            $offset = (($limit * $page_no) - $limit); // ((15 * 3) - 15)
+                        }
+                        $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['plant_id' => $uId, 'status>' => 0], '', '', '', $orderBy, $limit, $offset);
+                        // $this->db = \Config\Database::connect();
+                        // echo $this->db->getLastQuery();die;
                         if($rows){
                             foreach($rows as $row){
                                 $apiResponse[] = [
@@ -2044,7 +2075,7 @@ class ApiController extends BaseController
                                     'enquiry_no'    => $row->enquiry_no,
                                     'status'        => $row->status,
                                     'created_at'    => date_format(date_create($row->created_at), "M d, Y h:i A"),
-                                    'updated_at'    => date_format(date_create($row->updated_at), "M d, Y h:i A"),
+                                    'updated_at'    => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
                                 ];
                             }
                         }
@@ -2076,8 +2107,6 @@ class ApiController extends BaseController
             }
             $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
         }
-    // process request
-    // completed request
         public function processRequestAdd()
         {
             $apiStatus          = TRUE;
@@ -2104,7 +2133,7 @@ class ApiController extends BaseController
                         $company_id     = $getUser->parent_id;
                         /* sl no*/
                             $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
-                            $checkEnq = $this->common_model->find_data('ecomm_enquires', 'row', '', 'sl_no');
+                            $checkEnq = $this->common_model->find_data('ecomm_enquires', 'row', '', 'sl_no', '', '', $orderBy);
                             if($checkEnq){
                                 // exist
                                 $sl_no              = $checkEnq->sl_no;
@@ -2142,9 +2171,12 @@ class ApiController extends BaseController
                                 $gps_tracking = '';
                             }
                         /* gps track image */
-                        // pr($requestData);
+                        // $folderName         = 'enquiry';
+                        // $uploadedImage      = $gps_tracking;
+                        // $watermarkText      = $requestData['device_model'].'|'.$requestData['latitude'].'|'.$requestData['longitude'].'|'.date('Y-m-d H:i:s');
+                        // $this->applyWatermark($watermarkText, $gps_tracking, $folderName);
 
-                        $fields1 = [
+                        $fields1            = [
                             'plant_id'                  => $plant_id,
                             'company_id'                => $company_id,
                             'sl_no'                     => $next_sl_no,
@@ -2267,10 +2299,96 @@ class ApiController extends BaseController
             }
             $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
         }
+        public function processRequestDelete()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));        
+            $requiredFields     = ['enq_id'];
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)){              
+                $apiStatus          = FALSE;
+                $apiMessage         = 'All Data Are Not Present !!!';
+            }
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                $enq_id                     = $requestData['enq_id'];
+                if($getTokenValue['status']){
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if($getUser){
+                        $enquiry               = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+                        if($enquiry){
+                            $this->common_model->save_data('ecomm_enquires', ['status' => 0], $enq_id, 'id');
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Enquiry Deleted Successfully !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(200);
+                            $apiMessage         = 'Enquiry Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }               
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+    // process request
+    // completed request
+        
     // completed request
     // rejected request
 
     // rejected request
+    /* apply watermark */
+        public function applyWatermark($watermarkText, $uploadedImage, $folderName){
+            header('Content-type: image/jpeg');
+            $image              = imagecreatefromjpeg('public/uploads/enquiry/'.$uploadedImage);
+            $textcolor          = imagecolorallocate($image, 0, 0, 0);
+            $font_file          = 'public/uploads/'.$folderName.'/OpenSans-VariableFont_wdth_wght.ttf';
+            $custom_text        = $watermarkText;
+            imagettftext($image, 5, 90, 5, 250, $textcolor, $font_file, $custom_text);
+            $targetDir          = "public/uploads/".$folderName."/";
+            $fileName           = $uploadedImage;
+            $targetFilePath     = $targetDir . $fileName;
+            // imagejpeg($image, $targetFilePath);
+            // imagepng($image, $targetFilePath);
+            // imagedestroy($image);
+            if(imagepng($image, $targetFilePath)){
+                imagedestroy($image);
+                return 1; 
+            }else{ 
+                return 0;
+            }
+        }
+    /* apply watermark */
     /*
     Get http response code
     Author : Subhomoy

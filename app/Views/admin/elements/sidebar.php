@@ -53,10 +53,10 @@ if($baseUrl == 'https://commodity.ecoex.market/'){
     </li>
     
     <li class="nav-item">
-        <a class="nav-link <?=(($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages')?'':'collapsed')?> <?=(($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages')?'active':'')?>" data-bs-target="#master-nav" data-bs-toggle="collapse" href="#">
+        <a class="nav-link <?=(($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'pending-products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages')?'':'collapsed')?> <?=(($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'pending-products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages')?'active':'')?>" data-bs-target="#master-nav" data-bs-toggle="collapse" href="#">
             <i class="fa fa-database"></i><span>Masters</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="master-nav" class="nav-content collapse <?=(($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages')?'show':'')?>" data-bs-parent="#sidebar-nav">
+        <ul id="master-nav" class="nav-content collapse <?=(($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'pending-products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages')?'show':'')?>" data-bs-parent="#sidebar-nav">
             <li>
                 <a class="<?=(($pageSegment == 'product-category')?'active':'')?>" href="<?=base_url('admin/product-category/list')?>">
                     <i class="fa fa-arrow-right"></i><span>Product Category</span>
@@ -65,6 +65,11 @@ if($baseUrl == 'https://commodity.ecoex.market/'){
             <li>
                 <a class="<?=(($pageSegment == 'products')?'active':'')?>" href="<?=base_url('admin/products/list')?>">
                     <i class="fa fa-arrow-right"></i><span>Products</span>
+                </a>
+            </li>
+            <li>
+                <a class="<?=(($pageSegment == 'pending-products')?'active':'')?>" href="<?=base_url('admin/pending-products/list')?>">
+                    <i class="fa fa-arrow-right"></i><span>Pending Products</span>
                 </a>
             </li>
             <li>
