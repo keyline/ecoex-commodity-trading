@@ -51,6 +51,16 @@ class EnquiryRequestController extends BaseController {
         $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status' => $status], '', '', '', $order_by);
         echo $this->layout_after_login($title,$page_name,$data);
     }
+    public function viewDetail($enq_id)
+    {
+        $enq_id                     = decoded($enq_id);
+        $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
+        $data['moduleDetail']       = $this->data;
+        $data['enquiryStatus']      = (($data['row'])?$data['row']->status:1);
+        $title                      = 'View Details Of '.$data['row']->enquiry_no;
+        $page_name                  = 'enquiry-request/view-details';
+        echo $this->layout_after_login($title,$page_name,$data);
+    }
     public function confirm_delete($id)
     {
         $id                         = decoded($id);
