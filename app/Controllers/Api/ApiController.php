@@ -2152,7 +2152,13 @@ class ApiController extends BaseController
                             if(!empty($gps_tracking_image_payload)){
                                 $gps_tracking_image     = $gps_tracking_image_payload;
                                 $upload_type            = $gps_tracking_image['type'];
-                                if($upload_type == 'image/jpeg'){
+                                if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
+                                    $apiStatus          = FALSE;
+                                    http_response_code(404);
+                                    $apiMessage         = 'Please Upload GPS Image !!!';
+                                    $apiExtraField      = 'response_code';
+                                    $apiExtraData       = http_response_code();
+                                } else {
                                     $upload_base64      = $gps_tracking_image['base64'];
                                     $img                = $upload_base64;
                                     $data               = base64_decode($img);
@@ -2160,12 +2166,6 @@ class ApiController extends BaseController
                                     $file               = 'public/uploads/enquiry/' . $fileName;
                                     $success            = file_put_contents($file, $data);
                                     $gps_tracking       = $fileName;
-                                } else {
-                                    $apiStatus          = FALSE;
-                                    http_response_code(404);
-                                    $apiMessage         = 'Please Upload GPS Image !!!';
-                                    $apiExtraField      = 'response_code';
-                                    $apiExtraData       = http_response_code();
                                 }
                             } else {
                                 $gps_tracking = '';
@@ -2189,7 +2189,7 @@ class ApiController extends BaseController
                             'device_model'              => $requestData['device_model'],
                             'created_by'                => $uId,
                         ];
-                        // pr($fields1);
+                        // pr($fields1);die;
 
                         /* email notification */
                             $plantName                  = $getUser->company_name;
@@ -2210,7 +2210,13 @@ class ApiController extends BaseController
                                         $product_image = $requestList[$k]['product_image'];
                                         if(!empty($product_image)){
                                             $upload_type            = $product_image['type'];
-                                            if($upload_type == 'image/jpeg'){
+                                            if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
+                                                $apiStatus          = FALSE;
+                                                http_response_code(404);
+                                                $apiMessage         = 'Please Upload Product Image !!!';
+                                                $apiExtraField      = 'response_code';
+                                                $apiExtraData       = http_response_code();
+                                            } else {
                                                 $upload_base64      = $product_image['base64'];
                                                 $img                = $upload_base64;
                                                 $data               = base64_decode($img);
@@ -2218,12 +2224,6 @@ class ApiController extends BaseController
                                                 $file               = 'public/uploads/enquiry/' . $fileName;
                                                 $success            = file_put_contents($file, $data);
                                                 $new_product_image  = $fileName;
-                                            } else {
-                                                $apiStatus          = FALSE;
-                                                http_response_code(404);
-                                                $apiMessage         = 'Please Upload Product Image !!!';
-                                                $apiExtraField      = 'response_code';
-                                                $apiExtraData       = http_response_code();
                                             }
                                         } else {
                                             $new_product_image = '';
