@@ -9,7 +9,17 @@ if($baseUrl == 'https://commodity.ecoex.market/'){
     $uri            = new \CodeIgniter\HTTP\URI($currentLink);
     $pageSegment    = $uri->getSegment(3);
 }
-// echo $pageSegment;
+$paramerId = $uri->getSegment(5);
+
+$step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
+$step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2]);
+$step3_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 3]);
+$step4_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 4]);
+$step5_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 5]);
+$step6_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 6]);
+$step7_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 7]);
+$step8_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 8]);
+$step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 9]);
 ?>
 <style type="text/css">
     a.nav-link.active {
@@ -117,6 +127,59 @@ if($baseUrl == 'https://commodity.ecoex.market/'){
             <i class="fa fa-users"></i>
             <span>Vendors</span>
         </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link <?=(($pageSegment == 'enquiry-requests')?'':'collapsed')?> <?=(($pageSegment == 'enquiry-requests')?'active':'')?>" data-bs-target="#enquiry-nav" data-bs-toggle="collapse" href="#">
+            <i class="fa fa-question-circle"></i><span>Enquiry Requests</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="enquiry-nav" class="nav-content collapse <?=(($pageSegment == 'enquiry-requests')?'show':'')?>" data-bs-parent="#sidebar-nav">
+            <li>
+                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 1))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(1))?>">
+                    <i class="fa fa-arrow-right"></i><span>Sent/Submitted (<?=$step1_count?>)</span>
+                </a>
+            </li>
+            <li>
+                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 2))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(2))?>">
+                    <i class="fa fa-arrow-right"></i><span>Accepted/Rejected (<?=$step2_count?>)</span>
+                </a>
+            </li>
+            <li>
+                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 3))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(3))?>">
+                    <i class="fa fa-arrow-right"></i><span>Pickup (<?=$step3_count?>)</span>
+                </a>
+            </li>
+            <li>
+                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 4))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(4))?>">
+                    <i class="fa fa-arrow-right"></i><span>Vehicle Placed (<?=$step4_count?>)</span>
+                </a>
+            </li>
+            <li>
+                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 5))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(5))?>">
+                    <i class="fa fa-arrow-right"></i><span>Vehicle Ready Despatch (<?=$step5_count?>)</span>
+                </a>
+            </li>
+            <li>
+                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 6))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(6))?>">
+                    <i class="fa fa-arrow-right"></i><span>Material Lifted (<?=$step6_count?>)</span>
+                </a>
+            </li>
+            <li>
+                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 7))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(7))?>">
+                    <i class="fa fa-arrow-right"></i><span>Invoiced (<?=$step7_count?>)</span>
+                </a>
+            </li>
+            <li>
+                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 8))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(8))?>">
+                    <i class="fa fa-arrow-right"></i><span>Completed (<?=$step8_count?>)</span>
+                </a>
+            </li>
+            <li>
+                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 9))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(9))?>">
+                    <i class="fa fa-arrow-right"></i><span>Rejected (<?=$step9_count?>)</span>
+                </a>
+            </li>
+        </ul>
     </li>
 
     <li class="nav-item">
