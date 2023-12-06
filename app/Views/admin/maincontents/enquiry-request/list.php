@@ -71,7 +71,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                     </h6>
                                 </td>
                                 <td>
-                                    <a href="<?=base_url('admin/' . $controller_route . '/view-detail/'.encoded($row->$primary_key))?>" class="btn btn-outline-info btn-sm" title="Edit <?=$title?>"><i class="fa fa-eye"></i></a>
+                                    <a target="_blank" href="<?=base_url('admin/' . $controller_route . '/view-detail/'.encoded($row->$primary_key))?>" class="btn btn-outline-info btn-sm" title="Edit <?=$title?>"><i class="fa fa-eye"></i></a>
                                     <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i></a>
                                     
                                 </td>

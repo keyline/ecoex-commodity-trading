@@ -155,6 +155,7 @@ $routes->get('/', 'Home::index');
 		// vendors
 		// enquiry requests
 			$routes->match(['get'], "enquiry-requests/list/(:any)", "EnquiryRequestController::list/$1");
+			$routes->match(['get'], "enquiry-requests/view-detail/(:any)", "EnquiryRequestController::viewDetail/$1");
 		// enquiry requests
 	});
 /* ADMIN PANEL */
