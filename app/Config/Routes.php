@@ -153,6 +153,9 @@ $routes->get('/', 'Home::index');
 			$routes->match(['get', 'post'], "vendors/check-email", "VendorController::check_email");
 			$routes->match(['get', 'post'], "vendors/check-phone", "VendorController::check_phone");
 		// vendors
+		// enquiry requests
+			$routes->match(['get'], "enquiry-requests/list/(:any)", "EnquiryRequestController::list/$1");
+		// enquiry requests
 	});
 /* ADMIN PANEL */
 /* API */

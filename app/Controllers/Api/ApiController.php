@@ -2059,7 +2059,7 @@ class ApiController extends BaseController
                             $typeName = 'DESC';
                         }
                         $orderBy[0]         = ['field' => $fieldName, 'type' => $typeName];
-                        $limit = 2;
+                        $limit = 10; // per page elements
                         if($page_no == 1){
                             $offset = 0;
                         } else {
