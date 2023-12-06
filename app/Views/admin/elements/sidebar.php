@@ -9,7 +9,12 @@ if($baseUrl == 'https://commodity.ecoex.market/'){
     $uri            = new \CodeIgniter\HTTP\URI($currentLink);
     $pageSegment    = $uri->getSegment(3);
 }
-$paramerId = $uri->getSegment(5);
+$segmentCount = $uri->getTotalSegments();
+if($segmentCount > 3){
+    $paramerId = $uri->getSegment(5);
+} else {
+    $paramerId = '';
+}
 
 $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
 $step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2]);
