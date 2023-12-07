@@ -15,7 +15,7 @@ class EnquiryRequestController extends BaseController {
         $this->data = array(
             'model'                 => $model,
             'session'               => $session,
-            'title'                 => 'Enquiry Requests',
+            'title'                 => 'Enquiry Request',
             'controller_route'      => 'enquiry-requests',
             'controller'            => 'EnquiryRequestController',
             'table_name'            => 'ecomm_enquires',
@@ -26,7 +26,9 @@ class EnquiryRequestController extends BaseController {
     {
         $status                     = decoded($status);
         $data['moduleDetail']       = $this->data;
-        if($status == 1){
+        if($status == 0){
+            $stepName = 'Request Pending';
+        } elseif($status == 1){
             $stepName = 'Sent/Submitted';
         } elseif($status == 2){
             $stepName = 'Accepted/Rejected';
@@ -57,6 +59,8 @@ class EnquiryRequestController extends BaseController {
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
         $data['moduleDetail']       = $this->data;
         $data['enquiryStatus']      = (($data['row'])?$data['row']->status:1);
+        $data['enquiryProducts']    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id]);
+
         $title                      = 'View Details Of '.$data['row']->enquiry_no;
         $page_name                  = 'enquiry-request/view-details';
         echo $this->layout_after_login($title,$page_name,$data);
@@ -65,7 +69,7 @@ class EnquiryRequestController extends BaseController {
     {
         $id                         = decoded($id);
         $postData = array(
-                            'status' => 0
+                            'status' => 10
                         );
         $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
         $this->session->setFlashdata('success_message', $this->data['title'].' deleted successfully');
@@ -88,5 +92,16 @@ class EnquiryRequestController extends BaseController {
         $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
         $this->session->setFlashdata('success_message', $this->data['title'].' '.$msg.' successfully');
         return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+    }
+    public function accept_request($id)
+    {
+        $id                         = decoded($id);
+        $postData = array(
+                            'status'        => 1,
+                            'accepted_date' => date('y-m-d H:i:s')
+                        );
+        $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
+        $this->session->setFlashdata('success_message', $this->data['title'].' Accepted Successfully & Transfer To Sent/Submitted List !!!');
+        return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(1));
     }
 }

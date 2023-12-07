@@ -36,11 +36,13 @@ $controller_route   = $moduleDetail['controller_route'];
               $product_name     = $row->product_name;
               $hsn_code         = $row->hsn_code;
               $product_image    = $row->product_image;
+              $remarks          = $row->remarks;
             } else {
               $category_id      = '';
               $product_name     = '';
               $hsn_code         = '';
               $product_image    = '';
+              $remarks          = '';
             }
             ?>
         <div class="col-xl-12">
@@ -80,6 +82,12 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <?php } else {?>
                                   <img src="<?=getenv('app.NO_IMG')?>" alt="<?=$product_name?>" class="img-thumbnail" style="width: 130px; height: auto; margin-top: 10px;">
                                 <?php }?>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="remarks" class="col-md-2 col-lg-2 col-form-label"><?=$title?> Remarks</label>
+                            <div class="col-md-10 col-lg-10">
+                                <textarea name="remarks" class="form-control" id="remarks" rows="5"><?=(($remarks != '')?$remarks:'Approved By Admin')?></textarea>
                             </div>
                         </div>
                         <div class="text-center">

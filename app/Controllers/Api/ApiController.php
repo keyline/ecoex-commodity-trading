@@ -2059,21 +2059,23 @@ class ApiController extends BaseController
                             $typeName = 'DESC';
                         }
                         $orderBy[0]         = ['field' => $fieldName, 'type' => $typeName];
-                        $limit = 10; // per page elements
+                        $limit              = 10; // per page elements
                         if($page_no == 1){
                             $offset = 0;
                         } else {
                             $offset = (($limit * $page_no) - $limit); // ((15 * 3) - 15)
                         }
-                        $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['plant_id' => $uId, 'status>' => 0], '', '', '', $orderBy, $limit, $offset);
+                        $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['plant_id' => $uId, 'status<' => 10], '', '', '', $orderBy, $limit, $offset);
                         // $this->db = \Config\Database::connect();
                         // echo $this->db->getLastQuery();die;
                         if($rows){
                             foreach($rows as $row){
+                                $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['id' => $row->id]);
                                 $apiResponse[] = [
                                     'enq_id'        => $row->id,
                                     'enquiry_no'    => $row->enquiry_no,
                                     'status'        => $row->status,
+                                    'product_count' => $productCount,
                                     'created_at'    => date_format(date_create($row->created_at), "M d, Y h:i A"),
                                     'updated_at'    => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
                                 ];
@@ -2238,6 +2240,7 @@ class ApiController extends BaseController
                                         'new_product_name'              => $requestList[$k]['product_name'],
                                         'new_hsn'                       => $requestList[$k]['hsn'],
                                         'new_product_image'             => $new_product_image,
+                                        'status'                        => 0,
                                     ];
                                     $enq_product_id = $this->common_model->save_data('ecomm_enquiry_products', $fields2, '', 'id');
 
@@ -2259,6 +2262,8 @@ class ApiController extends BaseController
                                         'new_product'   => 0,
                                         'product_id'    => $requestList[$k]['product_id'],
                                         'hsn'           => $requestList[$k]['hsn'],
+                                        'status'        => 1,
+                                        'remarks'       => 'Approved By Admin',
                                     ];
                                     $enq_product_id = $this->common_model->save_data('ecomm_enquiry_products', $fields2, '', 'id');
                                 }
@@ -2324,7 +2329,7 @@ class ApiController extends BaseController
                     if($getUser){
                         $enquiry               = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
                         if($enquiry){
-                            $this->common_model->save_data('ecomm_enquires', ['status' => 0], $enq_id, 'id');
+                            $this->common_model->save_data('ecomm_enquires', ['status' => 10], $enq_id, 'id');
                             $apiStatus          = TRUE;
                             http_response_code(200);
                             $apiMessage         = 'Enquiry Deleted Successfully !!!';
