@@ -15,7 +15,7 @@ if($segmentCount > 3){
 } else {
     $paramerId = '';
 }
-
+$step0_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 0]);
 $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
 $step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2]);
 $step3_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 3]);
@@ -139,6 +139,11 @@ $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['stat
             <i class="fa fa-question-circle"></i><span>Enquiry Requests</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="enquiry-nav" class="nav-content collapse <?=(($pageSegment == 'enquiry-requests')?'show':'')?>" data-bs-parent="#sidebar-nav">
+            <li>
+                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 0))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(0))?>">
+                    <i class="fa fa-arrow-right"></i><span>Pending (<?=$step0_count?>)</span>
+                </a>
+            </li>
             <li>
                 <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 1))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(1))?>">
                     <i class="fa fa-arrow-right"></i><span>Sent/Submitted (<?=$step1_count?>)</span>

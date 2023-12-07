@@ -101,6 +101,7 @@ class PendingProductController extends BaseController {
                 'category_id'           => $this->request->getPost('category_id'),
                 'product_name'          => $this->request->getPost('product_name'),
                 'hsn_code'              => $this->request->getPost('hsn_code'),
+                'remarks'               => $this->request->getPost('remarks'),
                 'product_image'         => $product_image,
                 'updated_by'            => $this->session->get('user_id'),
             );
@@ -130,11 +131,42 @@ class PendingProductController extends BaseController {
         } else {
             $status  = 1;
             $msg        = 'Activated';
-        }
+        }        
+
+        /* insert product in product master */
+            $fields = [
+                'category_id'       => $data['row']->category_id,
+                'name'              => $data['row']->product_name,
+                'description'       => '',
+                'hsn_code'          => $data['row']->hsn_code,
+                'product_image'     => $data['row']->product_image,
+                'created_by'        => 1,
+                'updated_by'        => 1,
+            ];
+            // pr($fields);
+            $product_id = $this->common_model->save_data('ecomm_products', $fields, '', 'id');
+        /* insert product in product master */
+
         $postData = array(
-                            'status' => $status
+                            'status'        => $status,
+                            'product_id'    => $product_id,
+                            'approved_date' => date('Y-m-d H:i:s'),
                         );
-        $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
+        $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
+
+        /* update product id in enquiry products */
+            $fields2 = [
+                'new_product'       => 0,
+                'product_id'        => $product_id,
+                'hsn'               => $data['row']->hsn_code,
+                'remarks'           => $data['row']->remarks,
+                'status'            => 1,
+                'approved_date'     => date('Y-m-d H:i:s'),
+            ];
+            // pr($fields2);
+            $this->common_model->save_data('ecomm_enquiry_products', $fields2, $data['row']->enq_product_id, 'id');
+        /* update product id in enquiry products */
+
         $this->session->setFlashdata('success_message', $this->data['title'].' '.$msg.' successfully');
         return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
     }

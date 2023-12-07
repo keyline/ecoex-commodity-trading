@@ -112,7 +112,9 @@ $controller_route   = $moduleDetail['controller_route'];
                 <div class="card-body">
                     <!-- inquiry flow tracking -->
                         <?php
-                        if($row->status == 1){
+                        if($row->status == 0){
+                            $enquiryStatus = 'Pending';
+                        } elseif($row->status == 1){
                             $enquiryStatus = 'Sent/Submitted';
                         } elseif($row->status == 2){
                             $enquiryStatus = 'Accepted/Rejected';
@@ -163,7 +165,7 @@ $controller_route   = $moduleDetail['controller_route'];
                             <h5 class="fw-bold text-success">GPS Tracking Image</h5>
                             <h6>
                                 <?php if($row->gps_tracking_image != ''){?>
-                                    <img src="<?=getenv('app.uploadsURL').'enquiry/'.$row->gps_tracking_image?>" alt="<?=$row->enquiry_no?>" class="img-thumbnail" style="width: 250px; height: 250px; margin-top: 10px;">
+                                    <a href="<?=getenv('app.uploadsURL').'enquiry/'.$row->gps_tracking_image?>" target="_blank"><img src="<?=getenv('app.uploadsURL').'enquiry/'.$row->gps_tracking_image?>" alt="<?=$row->enquiry_no?>" class="img-thumbnail" style="width: 250px; height: 250px; margin-top: 10px;"></a>
                                 <?php } else {?>
                                     <img src="<?=getenv('app.NO_IMAGE')?>" alt="<?=$row->enquiry_no?>" class="img-thumbnail" style="width: 250px; height: 250px; margin-top: 10px;">
                                 <?php }?>
@@ -192,6 +194,66 @@ $controller_route   = $moduleDetail['controller_route'];
                     </div>
                 </div>
             </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Product Name</th>
+                                        <th>HSN Code</th>
+                                        <th>Image</th>
+                                        <th>New Product</th>
+                                        <th>Remarks</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    if($enquiryProducts){ $slNo=1; foreach($enquiryProducts as $enquiryProduct){
+                                        if($enquiryProduct->new_product){
+                                            $productName    = $enquiryProduct->new_product_name;
+                                            $productHSNCode = $enquiryProduct->new_hsn;
+                                            $productImage   = (($enquiryProduct->new_product_image != '')?getenv('app.uploadsURL').'enquiry/'.$enquiryProduct->new_product_image:getenv('app.NO_IMG'));
+                                        } else {
+                                            $getProduct = $common_model->find_data('ecomm_products', 'row', ['id' => $enquiryProduct->product_id], 'name,hsn_code,product_image');
+                                            $productName    = (($getProduct)?$getProduct->name:'');
+                                            $productHSNCode = (($getProduct)?$getProduct->hsn_code:'');
+                                            $productImage   = (($getProduct)?(($getProduct->product_image != '')?getenv('app.uploadsURL').'enquiry/'.$getProduct->product_image:$getProduct->product_image):getenv('app.NO_IMG'));
+                                        }
+                                    ?>
+                                        <tr>
+                                            <td><?=$slNo++?></td>
+                                            <td><?=$productName?></td>
+                                            <td><?=$productHSNCode?></td>
+                                            <td><a href="<?=$productImage?>" target="_blank"><img src="<?=$productImage?>" class="img-thumbnail" style="width:100px; height: 100px;"></a></td>
+                                            <td>
+                                                <?php if($enquiryProduct->new_product){?>
+                                                    <span class="badge bg-success">NEW</span>
+                                                <?php } else {?>
+                                                    <span class="badge bg-danger">EXISTING</span>
+                                                <?php }?>
+                                            </td>
+                                            <td><?=$enquiryProduct->remarks?></td>
+                                            <td>
+                                                <?php if($enquiryProduct->status){?>
+                                                    <span class="badge bg-success">APPROVED</span>
+                                                <?php } else {?>
+                                                    <span class="badge bg-danger">PENDING</span>
+                                                <?php }?>
+                                            </td>
+                                        </tr>
+                                    <?php } }?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </div>
@@ -204,15 +266,16 @@ $controller_route   = $moduleDetail['controller_route'];
   //we can set animation delay as following in ms (default 1000)
   ProgressBar.singleStepAnimation = 1500;
   ProgressBar.init(
-    [ 'Sent/Submitted',
-      'Accepted/Rejected',
-      'Pickup',
-      'Vehicle Placed',
-      'Vehicle Ready Despatch',
-      'Material Lifted',
-      'Invoiced',
-      'Completed',
-      'Rejected'
+    [   'Pending',
+        'Sent/Submitted',
+        'Accepted/Rejected',
+        'Pickup',
+        'Vehicle Placed',
+        'Vehicle Ready Despatch',
+        'Material Lifted',
+        'Invoiced',
+        'Completed',
+        'Rejected'
     ],
     '<?=$enquiryStatus?>',
     'progress-bar-wrapper' // created this optional parameter for container name (otherwise default container created)
