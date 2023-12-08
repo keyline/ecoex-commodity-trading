@@ -83,9 +83,15 @@ $controller_route   = $moduleDetail['controller_route'];
                                         <br><br>
                                         <?php if($row->status == 0){?>
                                             <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i> Delete</a>
-                                            <a href="<?=base_url('admin/' . $controller_route . '/accept-request/'.encoded($row->$primary_key))?>" class="btn btn-warning btn-sm" title="Accept <?=$title?>" onclick="return confirm('Do You Want To Accept This <?=$title?>');"><i class="fa fa-check"></i> Click To Accept</a>
+                                            <br><br>
+                                            <a href="<?=base_url('admin/' . $controller_route . '/accept-request/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Accept <?=$title?>" onclick="return confirm('Do You Want To Accept This <?=$title?>');"><i class="fa fa-check"></i> Click To Accept</a>
+                                            <a href="<?=base_url('admin/' . $controller_route . '/reject-request/'.encoded($row->$primary_key))?>" class="btn btn-danger btn-sm" title="Reject <?=$title?>" onclick="return confirm('Do You Want To Reject This <?=$title?>');"><i class="fa fa-times"></i> Click To Reject</a>
                                         <?php } else {?>
-                                            <h6 class="badge bg-success"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
+                                            <?php if($row->status == 1){?>
+                                                <h6 class="badge bg-success"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
+                                            <?php } elseif($row->status == 9){?>
+                                                <h6 class="badge bg-danger"><i class="fa fa-times-circle"></i> REJECTED</h6>
+                                            <?php }?>
                                             <p><?=(($row->accepted_date != '')?date_format(date_create($row->accepted_date), "M d, Y h:i A"):'')?></p>
                                         <?php }?>
                                     </td>

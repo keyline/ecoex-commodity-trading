@@ -104,4 +104,15 @@ class EnquiryRequestController extends BaseController {
         $this->session->setFlashdata('success_message', $this->data['title'].' Accepted Successfully & Transfer To Sent/Submitted List !!!');
         return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(1));
     }
+    public function reject_request($id)
+    {
+        $id                         = decoded($id);
+        $postData = array(
+                            'status'        => 9,
+                            'accepted_date' => date('y-m-d H:i:s')
+                        );
+        $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
+        $this->session->setFlashdata('success_message', $this->data['title'].' Rejected Successfully & Transfer To Rejected List !!!');
+        return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(9));
+    }
 }
