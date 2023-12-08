@@ -194,6 +194,18 @@ $user_type = session('user_type');
                   </div>
                 </div>
                 <div class="row mb-3">
+                  <label for="gst_api_code" class="col-md-4 col-lg-3 col-form-label">GST API Code</label>
+                  <div class="col-md-8 col-lg-9">
+                    <textarea name="gst_api_code" class="form-control" id="gst_api_code" rows="3"><?=$setting->gst_api_code?></textarea>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="firebase_server_key" class="col-md-4 col-lg-3 col-form-label">Firebase Server Key</label>
+                  <div class="col-md-8 col-lg-9">
+                    <textarea name="firebase_server_key" class="form-control" id="firebase_server_key" rows="3"><?=$setting->firebase_server_key?></textarea>
+                  </div>
+                </div>
+                <div class="row mb-3">
                   <label for="theme_color" class="col-md-4 col-lg-3 col-form-label">Theme Color</label>
                   <div class="col-md-8 col-lg-9">
                     <input name="theme_color" type="color" class="form-control" id="theme_color" value="<?=$setting->theme_color?>">
