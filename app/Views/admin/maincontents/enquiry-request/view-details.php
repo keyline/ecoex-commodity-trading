@@ -206,6 +206,8 @@ $controller_route   = $moduleDetail['controller_route'];
                                         <th>Product Name</th>
                                         <th>HSN Code</th>
                                         <th>Image</th>
+                                        <th>Qty</th>
+                                        <th>Unit</th>
                                         <th>New Product</th>
                                         <th>Remarks</th>
                                         <th>Status</th>
@@ -230,6 +232,13 @@ $controller_route   = $moduleDetail['controller_route'];
                                             <td><?=$productName?></td>
                                             <td><?=$productHSNCode?></td>
                                             <td><a href="<?=$productImage?>" target="_blank"><img src="<?=$productImage?>" class="img-thumbnail" style="width:100px; height: 100px;"></a></td>
+                                            <td><?=$enquiryProduct->qty?></td>
+                                            <td>
+                                                <?php
+                                                $unit               = $common_model->find_data('ecomm_units', 'row', ['id' => $enquiryProduct->unit], 'name');
+                                                echo (($unit)?$unit->name:'');
+                                                ?>
+                                            </td>
                                             <td>
                                                 <?php if($enquiryProduct->new_product){?>
                                                     <span class="badge bg-success">NEW</span>
