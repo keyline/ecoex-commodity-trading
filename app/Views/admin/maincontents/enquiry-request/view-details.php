@@ -262,22 +262,36 @@ $controller_route   = $moduleDetail['controller_route'];
 <!-- progress bar -->
     <script src="<?=getenv('app.adminAssetsURL');?>assets/js/progress-bar.js"></script>
 <!-- progress bar -->
-<script type="text/javascript">
-  //we can set animation delay as following in ms (default 1000)
-  ProgressBar.singleStepAnimation = 1500;
-  ProgressBar.init(
-    [   'Pending',
-        'Sent/Submitted',
-        'Accepted/Rejected',
-        'Pickup',
-        'Vehicle Placed',
-        'Vehicle Ready Despatch',
-        'Material Lifted',
-        'Invoiced',
-        'Completed',
-        'Rejected'
-    ],
-    '<?=$enquiryStatus?>',
-    'progress-bar-wrapper' // created this optional parameter for container name (otherwise default container created)
-  );
-</script>
+<?php if($row->status != 9){?>
+    <script type="text/javascript">
+      //we can set animation delay as following in ms (default 1000)
+      ProgressBar.singleStepAnimation = 700;
+      ProgressBar.init(
+        [   'Pending',
+            'Sent/Submitted',
+            'Accepted/Rejected',
+            'Pickup',
+            'Vehicle Placed',
+            'Vehicle Ready Despatch',
+            'Material Lifted',
+            'Invoiced',
+            'Completed',
+            'Rejected'
+        ],
+        '<?=$enquiryStatus?>',
+        'progress-bar-wrapper' // created this optional parameter for container name (otherwise default container created)
+      );
+    </script>
+<?php } else {?>
+    <script type="text/javascript">
+      //we can set animation delay as following in ms (default 1000)
+      ProgressBar.singleStepAnimation = 700;
+      ProgressBar.init(
+        [   'Pending',
+            'Rejected'
+        ],
+        '<?=$enquiryStatus?>',
+        'progress-bar-wrapper' // created this optional parameter for container name (otherwise default container created)
+      );
+    </script>
+<?php }?>
