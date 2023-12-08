@@ -275,8 +275,7 @@ $controller_route   = $moduleDetail['controller_route'];
             'Vehicle Ready Despatch',
             'Material Lifted',
             'Invoiced',
-            'Completed',
-            'Rejected'
+            'Completed'
         ],
         '<?=$enquiryStatus?>',
         'progress-bar-wrapper' // created this optional parameter for container name (otherwise default container created)
