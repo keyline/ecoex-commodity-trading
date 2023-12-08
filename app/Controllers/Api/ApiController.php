@@ -2025,6 +2025,59 @@ class ApiController extends BaseController
     /* after login */
     
     // process request
+        public function getUnits()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $headerData         = $this->request->headers();
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if($getTokenValue['status']){
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if($getUser){
+                        $orderBy[0]         = ['field' => 'name', 'type' => 'ASC'];
+                        $rows               = $this->common_model->find_data('ecomm_units', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
+                        if($rows){
+                            foreach($rows as $row){
+                                $apiResponse[] = [
+                                    'id'        => $row->id,
+                                    'name'      => $row->name
+                                ];
+                            }
+                        }
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Data Available !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }               
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
         public function processRequestList()
         {
             $apiStatus          = TRUE;
@@ -2243,6 +2296,8 @@ class ApiController extends BaseController
                                         'new_product'                   => 1,
                                         'new_product_name'              => $requestList[$k]['product_name'],
                                         'new_hsn'                       => $requestList[$k]['hsn'],
+                                        'qty'                           => $requestList[$k]['qty'],
+                                        'unit'                          => $requestList[$k]['unit'],
                                         'new_product_image'             => $new_product_image,
                                         'status'                        => 0,
                                     ];
@@ -2266,6 +2321,8 @@ class ApiController extends BaseController
                                         'new_product'   => 0,
                                         'product_id'    => $requestList[$k]['product_id'],
                                         'hsn'           => $requestList[$k]['hsn'],
+                                        'qty'           => $requestList[$k]['qty'],
+                                        'unit'          => $requestList[$k]['unit'],
                                         'status'        => 1,
                                         'approved_date' => date('Y-m-d H:i:s'),
                                         'remarks'       => 'Approved By Admin',
@@ -2411,6 +2468,7 @@ class ApiController extends BaseController
                                         $hsn            = (($getProduct)?$getProduct->hsn_code:'');
                                         $product_image  = (($getProduct->product_image != '')?getenv('app.uploadsURL').'enquiry/'.$getProduct->product_image:getenv('app.NO_IMAGE'));
                                     }
+                                    $unit               = $this->common_model->find_data('ecomm_units', 'row', ['id' => $enquiryProduct->unit], 'name');
                                     $requestList[] = [
                                         'enq_id'            => $enq_id,
                                         'enq_product_id'    => $enquiryProduct->id,
@@ -2420,21 +2478,61 @@ class ApiController extends BaseController
                                         'product_image'     => $product_image,
                                         'productErr'        => '',
                                         'new_product'       => $enquiryProduct->new_product,
-                                        'remarks'           => $enquiryProduct->remarks,
+                                        'qty'               => $enquiryProduct->qty,
+                                        'unit'              => (($unit)?$unit->name:''),
+                                        'remarks'           => (($enquiryProduct->remarks != '')?$enquiryProduct->remarks:''),
                                         'is_approve'        => $enquiryProduct->status,
                                         'approve_date'      => (($enquiryProduct->approved_date != '')?$enquiryProduct->approved_date:''),
                                     ];
                                 }
                             }
                             
+                            if($enquiry->status == 0){
+                                $enquiryStatus = 'Pending';
+                            } elseif($enquiry->status == 1){
+                                $enquiryStatus = 'Sent/Submitted';
+                            } elseif($enquiry->status == 2){
+                                $enquiryStatus = 'Accepted/Rejected';
+                            } elseif($enquiry->status == 3){
+                                $enquiryStatus = 'Pickup';
+                            } elseif($enquiry->status == 4){
+                                $enquiryStatus = 'Vehicle Placed';
+                            } elseif($enquiry->status == 5){
+                                $enquiryStatus = 'Vehicle Ready Despatch';
+                            } elseif($enquiry->status == 6){
+                                $enquiryStatus = 'Material Lifted';
+                            } elseif($enquiry->status == 7){
+                                $enquiryStatus = 'Invoiced';
+                            } elseif($enquiry->status == 8){
+                                $enquiryStatus = 'Completed';
+                            } elseif($enquiry->status == 9){
+                                $enquiryStatus = 'Rejected';
+                            }
+                            $getPlant = $this->common_model->find_data('ecomm_users', 'row', ['id' => $enquiry->plant_id], 'company_name,full_address,district,state,pincode,location');
                             $apiResponse = [
-                                'requestList'       => $requestList,
-                                'gps_image'         => (($enquiry->gps_tracking_image != '')?getenv('app.uploadsURL').'enquiry/'.$enquiry->gps_tracking_image:getenv('app.NO_IMAGE')),
-                                'collection_date'   => $enquiry->tentative_collection_date,
-                                'latitude'          => $enquiry->latitude,
-                                'longitude'         => $enquiry->longitude,
-                                'device_model'      => $enquiry->device_brand,
-                                'device_brand'      => $enquiry->device_model,
+                                'enq_id'                => $enquiry->id,
+                                'enquiry_no'            => $enquiry->enquiry_no,
+                                'total_step'            => 8,
+                                'current_step_no'       => $enquiry->status,
+                                'current_step_name'     => $enquiryStatus,
+                                'accepted_date'         => date_format(date_create($enquiry->accepted_date), "M d, Y h:i A"),
+                                'collection_date'       => date_format(date_create($enquiry->tentative_collection_date), "M d, Y h:i A"),
+                                'latitude'              => $enquiry->latitude,
+                                'longitude'             => $enquiry->longitude,
+                                'device_model'          => $enquiry->device_model,
+                                'device_brand'          => $enquiry->device_brand,
+                                'plant_id'              => $enquiry->plant_id,
+                                'company_id'            => $enquiry->company_id,
+                                'gps_image'             => (($enquiry->gps_tracking_image != '')?getenv('app.uploadsURL').'enquiry/'.$enquiry->gps_tracking_image:''),
+                                'weighing_slip'         => (($enquiry->weighing_slip != '')?getenv('app.uploadsURL').'enquiry/'.$enquiry->weighing_slip:''),
+                                'vehicle_image'         => (($enquiry->vehicle_image != '')?getenv('app.uploadsURL').'enquiry/'.$enquiry->vehicle_image:''),
+                                'plant_name'            => (($getPlant)?$getPlant->company_name:''),
+                                'plant_fulladress'      => (($getPlant)?$getPlant->full_address:''),
+                                'plant_district'        => (($getPlant)?$getPlant->district:''),
+                                'plant_state'           => (($getPlant)?$getPlant->state:''),
+                                'plant_pincode'         => (($getPlant)?$getPlant->pincode:''),
+                                'plant_location'        => (($getPlant)?$getPlant->location:''),
+                                'requestList'           => $requestList,
                             ];
 
                             $apiStatus          = TRUE;

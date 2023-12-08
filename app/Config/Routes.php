@@ -201,6 +201,7 @@ $routes->get('/', 'Home::index');
 			$routes->match(['post'], "get-hsncode-product", "ApiController::getHSNCodeProduct");
 
 			// process request
+				$routes->match(['get', 'post'], "get-units", "ApiController::getUnits");
 				$routes->match(['get', 'post'], "process-request-list", "ApiController::processRequestList");
 				$routes->match(['get', 'post'], "process-request-add", "ApiController::processRequestAdd");
 				$routes->match(['get', 'post'], "process-request-delete", "ApiController::processRequestDelete");
