@@ -332,6 +332,8 @@ class User extends BaseController {
                 'google_analytics_code'         => $this->request->getPost('google_analytics_code'),
                 'google_pixel_code'             => $this->request->getPost('google_pixel_code'),
                 'facebook_tracking_code'        => $this->request->getPost('facebook_tracking_code'),
+                'gst_api_code'                  => $this->request->getPost('gst_api_code'),
+                'firebase_server_key'           => $this->request->getPost('firebase_server_key'),
                 'theme_color'                   => $this->request->getPost('theme_color'),
                 'font_color'                    => $this->request->getPost('font_color'),
                 'twitter_profile'               => $this->request->getPost('twitter_profile'),
