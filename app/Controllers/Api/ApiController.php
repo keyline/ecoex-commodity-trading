@@ -2479,7 +2479,7 @@ class ApiController extends BaseController
                                         'productErr'        => '',
                                         'new_product'       => $enquiryProduct->new_product,
                                         'qty'               => $enquiryProduct->qty,
-                                        'unit'              => (($unit)?$unit->name:''),
+                                        'unit'              => $enquiryProduct->unit,
                                         'remarks'           => (($enquiryProduct->remarks != '')?$enquiryProduct->remarks:''),
                                         'is_approve'        => $enquiryProduct->status,
                                         'approve_date'      => (($enquiryProduct->approved_date != '')?$enquiryProduct->approved_date:''),
