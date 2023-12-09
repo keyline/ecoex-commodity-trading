@@ -2127,7 +2127,7 @@ class ApiController extends BaseController
                         // echo $this->db->getLastQuery();die;
                         if($rows){
                             foreach($rows as $row){
-                                $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['id' => $row->id]);
+                                $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id]);
                                 $apiResponse[] = [
                                     'enq_id'        => $row->id,
                                     'enquiry_no'    => $row->enquiry_no,
