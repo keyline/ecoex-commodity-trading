@@ -2485,8 +2485,7 @@ class ApiController extends BaseController
                                         'approve_date'      => (($enquiryProduct->approved_date != '')?$enquiryProduct->approved_date:''),
                                     ];
                                 }
-                            }
-                            
+                            }                            
                             if($enquiry->status == 0){
                                 $enquiryStatus = 'Pending';
                             } elseif($enquiry->status == 1){
