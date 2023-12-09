@@ -2508,6 +2508,7 @@ class ApiController extends BaseController
                                 $enquiryStatus = 'Rejected';
                             }
                             $getPlant = $this->common_model->find_data('ecomm_users', 'row', ['id' => $enquiry->plant_id], 'company_name,full_address,district,state,pincode,location');
+                            
                             $apiResponse = [
                                 'enq_id'                => $enquiry->id,
                                 'enquiry_no'            => $enquiry->enquiry_no,
@@ -2516,6 +2517,7 @@ class ApiController extends BaseController
                                 'current_step_name'     => $enquiryStatus,
                                 'accepted_date'         => date_format(date_create($enquiry->accepted_date), "M d, Y h:i A"),
                                 'collection_date'       => date_format(date_create($enquiry->tentative_collection_date), "M d, Y h:i A"),
+                                'booking_date'          => date_format(date_create($enquiry->created_at), "M d, Y h:i A"),
                                 'latitude'              => $enquiry->latitude,
                                 'longitude'             => $enquiry->longitude,
                                 'device_model'          => $enquiry->device_model,
