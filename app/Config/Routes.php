@@ -206,6 +206,7 @@ $routes->get('/', 'Home::index');
 				$routes->match(['get', 'post'], "process-request-add", "ApiController::processRequestAdd");
 				$routes->match(['get', 'post'], "process-request-delete", "ApiController::processRequestDelete");
 				$routes->match(['get', 'post'], "process-request-edit", "ApiController::processRequestEdit");
+				$routes->match(['get', 'post'], "process-request-update", "ApiController::processRequestUpdate");
 			// process request
 			// completed request
 
