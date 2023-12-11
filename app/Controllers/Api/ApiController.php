@@ -2046,7 +2046,7 @@ class ApiController extends BaseController
                     $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                     if($getUser){
                         $orderBy[0]     = ['field' => 'id', 'type' => 'DESC'];
-                        $limit          = 10; // per page elements
+                        $limit          = 15; // per page elements
                         if($page_no == 1){
                             $offset = 0;
                         } else {
