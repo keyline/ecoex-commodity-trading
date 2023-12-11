@@ -1974,7 +1974,7 @@ class ApiController extends BaseController
             if (!$this->validateArray($requiredFields, $requestData)){              
                 $apiStatus          = FALSE;
                 $apiMessage         = 'All Data Are Not Present !!!';
-            }           
+            }
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
                 $Authorization              = $headerData['Authorization'];
                 $app_access_token           = $this->extractToken($Authorization);
@@ -2027,18 +2027,32 @@ class ApiController extends BaseController
             $apiStatus          = TRUE;
             $apiMessage         = '';
             $apiResponse        = [];
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));        
+            $requiredFields     = ['page_no'];
             $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)){              
+                $apiStatus          = FALSE;
+                $apiMessage         = 'All Data Are Not Present !!!';
+            }
             if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
                 $Authorization              = $headerData['Authorization'];
                 $app_access_token           = $this->extractToken($Authorization);
                 $getTokenValue              = $this->tokenAuth($app_access_token);
+                $page_no                    = $requestData['page_no'];
                 if($getTokenValue['status']){
                     $uId        = $getTokenValue['data'][1];
                     $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                     $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                     if($getUser){
                         $orderBy[0]     = ['field' => 'id', 'type' => 'DESC'];
-                        $notifications  = $this->common_model->find_data('notifications', 'array', ['status' => 1, 'is_send' => 1], 'id,title,description,send_timestamp,users', '', '', $orderBy);
+                        $limit          = 10; // per page elements
+                        if($page_no == 1){
+                            $offset = 0;
+                        } else {
+                            $offset = (($limit * $page_no) - $limit); // ((15 * 3) - 15)
+                        }
+                        $notifications  = $this->common_model->find_data('notifications', 'array', ['status' => 1, 'is_send' => 1], 'id,title,description,send_timestamp,users', '', '', $orderBy, $limit, $offset);
                         if($notifications){
                             foreach($notifications as $notification){
                                 $users = json_decode($notification->users);
