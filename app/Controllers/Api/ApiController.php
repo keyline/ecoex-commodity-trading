@@ -2022,9 +2022,66 @@ class ApiController extends BaseController
             }
             $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
         }
+        public function getNotifications()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $headerData         = $this->request->headers();
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if($getTokenValue['status']){
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if($getUser){
+                        $orderBy[0]     = ['field' => 'id', 'type' => 'DESC'];
+                        $notifications  = $this->common_model->find_data('notifications', 'array', ['status' => 1, 'is_send' => 1], 'id,title,description,send_timestamp,users', '', '', $orderBy);
+                        if($notifications){
+                            foreach($notifications as $notification){
+                                $users = json_decode($notification->users);
+                                if(in_array($uId, $users)){
+                                    $apiResponse[]        = [
+                                        'id'                    => $notification->id,
+                                        'title'                 => $notification->title,
+                                        'description'           => $notification->description,
+                                        'send_timestamp'        => date_format(date_create($notification->send_timestamp), "M d, Y h:i A"),
+                                    ];
+                                }
+                            }
+                        }
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Data Available !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }               
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
     /* after login */
-    
-    // process request
+    /* process request */
         public function getUnits()
         {
             $apiStatus          = TRUE;
@@ -2642,12 +2699,37 @@ class ApiController extends BaseController
                                         if($requestList[$k]['new_product']){
                                             if (array_key_exists("enq_product_id", $requestList[$k])){
                                                 $enq_product_id = $requestList[$k]['enq_product_id'];
+                                                $getEnquiryProductData = $this->common_model->find_data('ecomm_enquiry_products', 'row', ['id' => $enq_product_id]);
+                                                /* new product image */
+                                                    $product_image = $requestList[$k]['product_image'];
+                                                    if(!empty($product_image)){
+                                                        $upload_type            = $product_image['type'];
+                                                        if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
+                                                            $apiStatus          = FALSE;
+                                                            http_response_code(404);
+                                                            $apiMessage         = 'Please Upload Product Image !!!';
+                                                            $apiExtraField      = 'response_code';
+                                                            $apiExtraData       = http_response_code();
+                                                        } else {
+                                                            $upload_base64      = $product_image['base64'];
+                                                            $img                = $upload_base64;
+                                                            $data               = base64_decode($img);
+                                                            $fileName           = uniqid() . '.jpg';
+                                                            $file               = 'public/uploads/enquiry/' . $fileName;
+                                                            $success            = file_put_contents($file, $data);
+                                                            $new_product_image  = $fileName;
+                                                        }
+                                                    } else {
+                                                        $new_product_image = (($getEnquiryProductData)?$getEnquiryProductData->new_product_image:'');
+                                                    }
+                                                /* new product image */
                                                 $fields2 = [
                                                     'new_product'                   => 1,
                                                     'new_product_name'              => $requestList[$k]['product_name'],
                                                     'new_hsn'                       => $requestList[$k]['hsn'],
                                                     'qty'                           => $requestList[$k]['qty'],
-                                                    'unit'                          => $requestList[$k]['unit']
+                                                    'unit'                          => $requestList[$k]['unit'],
+                                                    'new_product_image'             => $new_product_image,
                                                 ];
                                                 $this->common_model->save_data('ecomm_enquiry_products', $fields2, $enq_product_id, 'id');
                                             } else {
@@ -2780,13 +2862,13 @@ class ApiController extends BaseController
             }
             $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
         }
-    // process request
-    // completed request
+    /* process request */
+    /* completed request */
         
-    // completed request
-    // rejected request
+    /* completed request */
+    /* rejected request */
 
-    // rejected request
+    /* rejected request */
     /* apply watermark */
         public function applyWatermark($watermarkText, $uploadedImage, $folderName){
             header('Content-type: image/jpeg');
