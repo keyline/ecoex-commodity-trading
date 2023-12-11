@@ -199,6 +199,7 @@ $routes->get('/', 'Home::index');
 			$routes->match(['post'], "dashboard", "ApiController::dashboard");
 			$routes->match(['post'], "get-product", "ApiController::getProduct");
 			$routes->match(['post'], "get-hsncode-product", "ApiController::getHSNCodeProduct");
+			$routes->match(['post'], "get-notifications", "ApiController::getNotifications");
 
 			// process request
 				$routes->match(['get', 'post'], "get-units", "ApiController::getUnits");
