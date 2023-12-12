@@ -210,10 +210,10 @@ $routes->get('/', 'Home::index');
 				$routes->match(['get', 'post'], "process-request-update", "ApiController::processRequestUpdate");
 			// process request
 			// completed request
-
+				$routes->match(['get', 'post'], "completed-request-list", "ApiController::completedRequestList");
 			// completed request
 			// rejected request
-				
+				$routes->match(['get', 'post'], "rejected-request-list", "ApiController::rejectedRequestList");
 			// rejected request
 		// after login
 	});
