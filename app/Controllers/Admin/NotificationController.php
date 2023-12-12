@@ -128,15 +128,15 @@ class NotificationController extends BaseController {
                 for($n=0;$n<count($users);$n++){
                     $getDeviceToken            = $this->data['model']->find_data('ecomm_user_devices', 'row', ['user_id' => $users[$n], 'fcm_token!=' => ''], 'device_token');
                     if($getDeviceToken){
-                        $device_token = $getDeviceToken->device_token;
-                        if($device_token != ''){
+                        $fcm_token = $getDeviceToken->fcm_token;
+                        if($fcm_token != ''){
                             $messageData = [
                                 'title'     => $getNotification->title,
                                 'body'      => $getNotification->description,
                                 'badge'     => 1,
                                 'sound'     => 'Default'
                             ];
-                            $this->pushNotification($device_token, $messageData);
+                            $this->pushNotification($fcm_token, $messageData);
                         }
                     }
                 }
