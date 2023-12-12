@@ -189,4 +189,35 @@ abstract class BaseController extends Controller
             curl_close($ch);
         }
     // send sms
+    // send push notification
+    protected function pushNotification($deviceToken = '', $messageData = array()){
+        // $messageData = array(
+        //     'body'          => $this->input->post('name') . ' uploaded !!!',
+        //     'title'         => "New Video Uploaded !!!",
+        //     'vibrate'       => 1,
+        //     'sound'         => 1,
+        //     'click_action'  => ""
+        // );
+        $siteSetting                = $this->common_model->find_data('general_settings', 'row');
+        $firebase_server_key        = $siteSetting->firebase_server_key;        
+        $fields                     = array(
+            'to'            => $deviceToken,
+            'notification'  => $messageData
+        );
+        $headers = array(
+            'Authorization: key=' . $firebase_server_key,
+            'Content-Type: application/json'
+        );
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, Config::get('constants.fcm_url'));
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+        $result = curl_exec($ch);
+        $err    = curl_error($ch);
+        curl_close($ch);
+    }
+    // send push notification
 }
