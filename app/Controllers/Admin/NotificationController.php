@@ -126,7 +126,7 @@ class NotificationController extends BaseController {
             $users      = json_decode($getNotification->users);
             if(!empty($users)){
                 for($n=0;$n<count($users);$n++){
-                    $getDeviceToken            = $this->data['model']->find_data('ecomm_user_devices', 'row', ['user_id' => $users[$n], 'fcm_token!=' => ''], 'device_token');
+                    $getDeviceToken            = $this->data['model']->find_data('ecomm_user_devices', 'row', ['user_id' => $users[$n], 'fcm_token!=' => ''], 'fcm_token');
                     if($getDeviceToken){
                         $fcm_token = $getDeviceToken->fcm_token;
                         if($fcm_token != ''){
