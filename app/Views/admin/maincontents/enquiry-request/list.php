@@ -3,6 +3,7 @@ $title              = $moduleDetail['title'];
 $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
 ?>
+
 <div class="pagetitle">
     <h1><?=$page_header?></h1>
     <nav>
@@ -53,7 +54,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <td>
                                         <h5><?=$row->enquiry_no?></h5>
                                         <h6 class="badge bg-success"><?=$approveProductCount?> approved products</h6>
-                                        <h6 class="badge bg-warning"><?=$disapproveProductCount?> disapproved products</h6>
+                                        <h6 class="badge bg-danger"><?=$disapproveProductCount?> pending approval</h6>
                                     </td>
                                     <td><?=date_format(date_create($row->tentative_collection_date), "M d, Y")?></td>
                                     <td><?=$row->latitude?><br><?=$row->longitude?></td>

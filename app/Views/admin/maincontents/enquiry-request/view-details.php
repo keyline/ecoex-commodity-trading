@@ -180,12 +180,12 @@ $controller_route   = $moduleDetail['controller_route'];
                             <h6><?=$row->latitude?></h6>
                         </div>
                         <div class="col-md-6">
-                            <h5 class="fw-bold text-success">Longitude</h5>
-                            <h6><?=$row->longitude?></h6>
-                        </div>
-                        <div class="col-md-6">
                             <h5 class="fw-bold text-success">Device Brand</h5>
                             <h6><?=$row->device_brand?></h6>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="fw-bold text-success">Longitude</h5>
+                            <h6><?=$row->longitude?></h6>
                         </div>
                         <div class="col-md-6">
                             <h5 class="fw-bold text-success">Device Model</h5>
@@ -208,7 +208,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                         <th>Image</th>
                                         <th>Qty</th>
                                         <th>Unit</th>
-                                        <th>New Product</th>
+                                        <!-- <th>New Product</th> -->
                                         <th>Remarks</th>
                                         <th>Status</th>
                                     </tr>
@@ -239,13 +239,14 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 echo (($unit)?$unit->name:'');
                                                 ?>
                                             </td>
-                                            <td>
+                                            <!-- <td>
                                                 <?php if($enquiryProduct->new_product){?>
                                                     <span class="badge bg-success">NEW</span>
                                                 <?php } else {?>
                                                     <span class="badge bg-danger">EXISTING</span>
                                                 <?php }?>
-                                            </td>
+                                            </td> -->
+                                            
                                             <td><?=$enquiryProduct->remarks?></td>
                                             <td>
                                                 <?php if($enquiryProduct->status){?>

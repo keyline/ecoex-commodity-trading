@@ -374,6 +374,7 @@ class ApiController extends BaseController
                             $remember_token = rand(100000,999999);
                             $mobile_otp     = rand(100000,999999);
                             $postData       = [
+                                'type'                      => 'VENDOR',
                                 'gst_no'                    => $requestData['gst_no'],
                                 'company_name'              => $requestData['company_name'],
                                 'full_address'              => $requestData['full_address'],
@@ -400,7 +401,6 @@ class ApiController extends BaseController
                                 $id = $getUser->id;
                             }
                             $getUser = $this->common_model->find_data('ecomm_users', 'row', ['id' => $id]);
-
                             $mailData                   = [
                                 'id'            => $getUser->id,
                                 'email'         => $getUser->email,

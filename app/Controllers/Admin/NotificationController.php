@@ -123,23 +123,25 @@ class NotificationController extends BaseController {
         $id                         = decoded($id);
         $getNotification            = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $id]);
         if($getNotification){
-            $users      = json_decode($getNotification->users);
+            $users              = json_decode($getNotification->users);
             if(!empty($users)){
+                $to_notify_users    = [];
                 for($n=0;$n<count($users);$n++){
-                    $getDeviceToken            = $this->data['model']->find_data('ecomm_user_devices', 'row', ['user_id' => $users[$n], 'fcm_token!=' => ''], 'fcm_token');
-                    if($getDeviceToken){
-                        $fcm_token = $getDeviceToken->fcm_token;
-                        if($fcm_token != ''){
+                    $getDeviceTokens            = $this->data['model']->find_data('ecomm_user_devices', 'array', ['user_id' => $users[$n], 'fcm_token!=' => ''], 'fcm_token');
+                    if($getDeviceTokens){
+                        foreach($getDeviceTokens as $getDeviceToken){
+                            $fcm_token          = $getDeviceToken->fcm_token;
                             $messageData = [
                                 'title'     => $getNotification->title,
                                 'body'      => $getNotification->description,
                                 'badge'     => 1,
-                                'sound'     => 'Default'
+                                'sound'     => 'Default',
+                                'data'      => [],
                             ];
                             $this->pushNotification($fcm_token, $messageData);
                         }
                     }
-                }
+                }                
             }
             $postData = array(
                                 'status'            => 1,
