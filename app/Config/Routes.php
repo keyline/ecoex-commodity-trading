@@ -160,6 +160,14 @@ $routes->get('/', 'Home::index');
 			$routes->match(['get', 'post'], "enquiry-requests/accept-request/(:any)", "EnquiryRequestController::accept_request/$1");
 			$routes->match(['get', 'post'], "enquiry-requests/reject-request/(:any)", "EnquiryRequestController::reject_request/$1");
 		// enquiry requests
+		// notifications
+			$routes->match(['get'], "notifications/list", "NotificationController::list");
+			$routes->match(['get', 'post'], "notifications/add", "NotificationController::add");
+			$routes->match(['get', 'post'], "notifications/edit/(:any)", "NotificationController::edit/$1");
+			$routes->match(['get', 'post'], "notifications/delete/(:any)", "NotificationController::confirm_delete/$1");
+			$routes->match(['get', 'post'], "notifications/change-status/(:any)", "NotificationController::change_status/$1");
+			$routes->match(['get', 'post'], "notifications/send/(:any)", "NotificationController::send/$1");
+		// notifications
 	});
 /* ADMIN PANEL */
 /* API */

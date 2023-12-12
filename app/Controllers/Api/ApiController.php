@@ -2198,7 +2198,7 @@ class ApiController extends BaseController
                         // echo $this->db->getLastQuery();die;
                         if($rows){
                             foreach($rows as $row){
-                                $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id]);
+                                $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
                                 $apiResponse[] = [
                                     'enq_id'        => $row->id,
                                     'enquiry_no'    => $row->enquiry_no,
@@ -2929,7 +2929,7 @@ class ApiController extends BaseController
                         // echo $this->db->getLastQuery();die;
                         if($rows){
                             foreach($rows as $row){
-                                $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id]);
+                                $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
                                 $apiResponse[] = [
                                     'enq_id'        => $row->id,
                                     'enquiry_no'    => $row->enquiry_no,
@@ -3019,7 +3019,7 @@ class ApiController extends BaseController
                         // echo $this->db->getLastQuery();die;
                         if($rows){
                             foreach($rows as $row){
-                                $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id]);
+                                $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
                                 $apiResponse[] = [
                                     'enq_id'        => $row->id,
                                     'enquiry_no'    => $row->enquiry_no,
