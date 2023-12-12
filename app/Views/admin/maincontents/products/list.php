@@ -56,7 +56,14 @@ $controller_route   = $moduleDetail['controller_route'];
                                     echo (($productCategory)?$productCategory->name:'');
                                     ?>
                                 </td>
-                                <td><?=$row->name?></td>
+                                <td>
+                                    <?=$row->name?><br>
+                                    <?php if($row->product_image != ''){?>
+                                        <img src="<?=getenv('app.uploadsURL').'enquiry/'.$row->product_image?>" alt="" class="img-thumbnail" style="width: 130px; height: auto; margin-top: 10px;">
+                                    <?php } else {?>
+                                        <img src="<?=getenv('app.NO_IMAGE')?>" alt="" class="img-thumbnail" style="width: 130px; height: auto; margin-top: 10px;">
+                                    <?php }?>
+                                </td>
                                 <td><?=$row->hsn_code?></td>
                                 <td><?=wordwrap($row->description,35,"<br>\n")?></td>
                                 <td>

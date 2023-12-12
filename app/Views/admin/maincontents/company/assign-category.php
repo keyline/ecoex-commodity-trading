@@ -56,7 +56,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                 $category_alias = $assignCat->category_alias;
                             } else {
                                 $category_id    = '';
-                                $category_alias = '';
+                                $category_alias = clean($cat->name).'-'.clean($company_name);
                             }
                             ?>
                             <div class="row" style="border:1px solid #0080003b; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
