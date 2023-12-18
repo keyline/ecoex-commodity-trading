@@ -1400,21 +1400,42 @@ class ApiController extends BaseController
                     $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                     if($getUser){
                         $memberType         = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
+
+                        if($getUser->type == 'VENDOR'){
+                            $is_contract_expire = 1;
+                        } else {
+                            $getCompany         = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $getUser->parent_id, 'status>=' => 1]);
+                            if($getCompany){
+                                $contract_end   = $getCompany->contract_end;
+                                $currentDate    = date('Y-m-d');
+                                if($currentDate <= $contract_end){
+                                    $is_contract_expire = 1;
+                                } else {
+                                    $is_contract_expire = 0;
+                                }
+                            } else {
+                                $is_contract_expire = 0;
+                            }
+                        }
+                        
                         $apiResponse        = [
-                            'type'              => $getUser->type,
-                            'gst_no'            => $getUser->gst_no,
-                            'company_name'      => $getUser->company_name,
-                            'full_address'      => $getUser->full_address,
-                            'holding_no'        => $getUser->holding_no,
-                            'street'            => $getUser->street,
-                            'district'          => $getUser->district,
-                            'state'             => $getUser->state,
-                            'pincode'           => $getUser->pincode,
-                            'location'          => $getUser->location,
-                            'email'             => $getUser->email,
-                            'phone'             => $getUser->phone,
-                            'member_type'       => (($memberType)?$memberType->name:''),
-                            'gst_certificate'   => (($getUser->gst_certificate != '')?getenv('app.uploadsURL').'user/'.$getUser->gst_certificate:''),
+                            'type'                                  => $getUser->type,
+                            'gst_no'                                => $getUser->gst_no,
+                            'company_name'                          => $getUser->company_name,
+                            'full_address'                          => $getUser->full_address,
+                            'holding_no'                            => $getUser->holding_no,
+                            'street'                                => $getUser->street,
+                            'district'                              => $getUser->district,
+                            'state'                                 => $getUser->state,
+                            'pincode'                               => $getUser->pincode,
+                            'location'                              => $getUser->location,
+                            'email'                                 => $getUser->email,
+                            'phone'                                 => $getUser->phone,
+                            'contract_start'                        => date_format(date_create($checkUser->contract_start), "M d, Y"),
+                            'contract_end'                          => date_format(date_create($checkUser->contract_end), "M d, Y"),
+                            'is_contract_expire'                    => $is_contract_expire,
+                            'member_type'                           => (($memberType)?$memberType->name:''),
+                            'gst_certificate'                       => (($getUser->gst_certificate != '')?getenv('app.uploadsURL').'user/'.$getUser->gst_certificate:''),
                             'contact_person_name'                   => $getUser->contact_person_name,
                             'contact_person_designation'            => $getUser->contact_person_designation,
                             'contact_person_document'               => (($getUser->contact_person_document != '')?getenv('app.uploadsURL').'user/'.$getUser->contact_person_document:''),
