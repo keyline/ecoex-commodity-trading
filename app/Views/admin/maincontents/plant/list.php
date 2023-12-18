@@ -55,7 +55,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                     $company = $common_model->find_data('ecoex_companies', 'row', ['id' => $row->parent_id], 'company_name');
                                     echo (($company)?$company->company_name:'');
                                     ?></strong><br>
-                                    <strong><?=$row->company_name?></strong><br>
+                                    <strong><?=$row->plant_name?></strong><br>
                                     <?=$row->gst_no?>
                                 </td>
                                 <td><?=wordwrap($row->full_address,25,"<br>\n")?><br><?=$row->location?></td>

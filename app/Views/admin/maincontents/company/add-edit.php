@@ -46,6 +46,8 @@ $controller_route   = $moduleDetail['controller_route'];
               $phone            = $row->phone;
               $password         = $row->password;
               $profile_image    = $row->profile_image;
+              $contract_start   = $row->contract_start;
+              $contract_end     = $row->contract_end;
               $cin_no           = $row->cin_no;
               $cin_document     = $row->cin_document;
               $bank_name        = $row->bank_name;
@@ -69,6 +71,8 @@ $controller_route   = $moduleDetail['controller_route'];
               $phone            = '';
               $password         = '';
               $profile_image    = '';
+              $contract_start   = '';
+              $contract_end     = '';
               $cin_no           = '';
               $cin_document     = '';
               $bank_name        = '';
@@ -169,6 +173,19 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <?php } else {?>
                                   <img src="<?=getenv('app.NO_IMAGE')?>" alt="<?=$company_name?>" class="img-thumbnail" style="width: 130px; height: auto; margin-top: 10px;">
                                 <?php }?>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="contract_start" class="col-md-2 col-lg-2 col-form-label">Contract Start Date <span class="text-danger">*</span></label>
+                            <div class="col-md-10 col-lg-10">
+                                <input type="date" name="contract_start" class="form-control" id="contract_start" value="<?=$contract_start?>" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="contract_end" class="col-md-2 col-lg-2 col-form-label">Contract Start End <span class="text-danger">*</span></label>
+                            <div class="col-md-10 col-lg-10">
+                                <input type="date" name="contract_end" class="form-control" id="contract_end" value="<?=$contract_end?>" required>
                             </div>
                         </div>
 

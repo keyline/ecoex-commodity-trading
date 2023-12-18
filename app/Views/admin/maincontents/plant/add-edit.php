@@ -36,6 +36,7 @@ $controller_route   = $moduleDetail['controller_route'];
               $gst_no           = $row->gst_no;
               $gst_certificate  = $row->gst_certificate;
               $company_name     = $row->company_name;
+              $plant_name      = $row->plant_name;
               $full_address     = $row->full_address;
               $holding_no       = $row->holding_no;
               $street           = $row->street;
@@ -61,6 +62,7 @@ $controller_route   = $moduleDetail['controller_route'];
               $gst_no           = '';
               $gst_certificate  = '';
               $company_name     = '';
+              $plant_name      = '';
               $full_address     = '';
               $holding_no       = '';
               $street           = '';
@@ -118,39 +120,45 @@ $controller_route   = $moduleDetail['controller_route'];
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="company_name" class="col-md-2 col-lg-2 col-form-label">Plant Name <span class="text-danger">*</span></label>
+                            <label for="company_name" class="col-md-2 col-lg-2 col-form-label">Company Name <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="company_name" class="form-control" id="company_name" value="<?=$company_name?>" required>
+                                <input type="text" name="company_name" class="form-control" id="company_name" value="<?=$company_name?>" readonly required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="plant_name" class="col-md-2 col-lg-2 col-form-label">Plant Name <span class="text-danger">*</span></label>
+                            <div class="col-md-10 col-lg-10">
+                                <input type="text" name="plant_name" class="form-control" id="plant_name" value="<?=$plant_name?>" required>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="full_address" class="col-md-2 col-lg-2 col-form-label">Plant Address <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <textarea name="full_address" class="form-control" id="full_address" required><?=$full_address?></textarea>
+                                <textarea name="full_address" class="form-control" id="full_address" readonly required><?=$full_address?></textarea>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="street" class="col-md-2 col-lg-2 col-form-label">Street <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="street" class="form-control" id="street" value="<?=$street?>" required>
+                                <input type="text" name="street" class="form-control" id="street" readonly value="<?=$street?>" required>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="district" class="col-md-2 col-lg-2 col-form-label">District <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="district" class="form-control" id="district" value="<?=$district?>" required>
+                                <input type="text" name="district" class="form-control" id="district" readonly value="<?=$district?>" required>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="state" class="col-md-2 col-lg-2 col-form-label">State <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="state" class="form-control" id="state" value="<?=$state?>" required>
+                                <input type="text" name="state" class="form-control" id="state" readonly value="<?=$state?>" required>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="pincode" class="col-md-2 col-lg-2 col-form-label">Pincode <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="pincode" class="form-control" id="pincode" onkeypress="return isNumber(event)" maxlength="6" minlength="6" value="<?=$location?>" required>
+                                <input type="text" name="pincode" class="form-control" id="pincode" readonly onkeypress="return isNumber(event)" maxlength="6" minlength="6" value="<?=$location?>" required>
                             </div>
                         </div>
                         <div class="row mb-3">
