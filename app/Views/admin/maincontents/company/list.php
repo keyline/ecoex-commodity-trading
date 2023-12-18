@@ -41,8 +41,8 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <!-- <th scope="col">Type</th> -->
                                 <th scope="col">GST No.<br>Company Name</th>
                                 <th scope="col">Company Address<br>Location</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Phone</th>
+                                <th scope="col">Email<br>Phone</th>
+                                <th scope="col">Contact Start<br>End</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -53,8 +53,11 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <!-- <td><?=$row->type?></td> -->
                                 <td><?=$row->gst_no?><br><b><?=$row->company_name?></b></td>
                                 <td><?=wordwrap($row->full_address,25,"<br>\n")?><br><?=$row->location?></td>
-                                <td><?=$row->email?></td>
-                                <td><?=$row->phone?></td>
+                                <td><?=$row->email?><br><?=$row->phone?></td>
+                                <td>
+                                    <?=(($row->contract_start != '')?date_format(date_create($row->contract_start), "M d, Y"):'')?><br>
+                                    <?=(($row->contract_end != '')?date_format(date_create($row->contract_end), "M d, Y"):'')?>
+                                </td>
                                 <td>
                                     <a href="<?=base_url('admin/' . $controller_route . '/edit/'.encoded($row->$primary_key))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$title?>"><i class="fa fa-edit"></i></a>
                                     <a target="_blank" href="<?=base_url('admin/' . $controller_route . '/view/'.encoded($row->$primary_key))?>" class="btn btn-outline-info btn-sm" title="View <?=$title?>"><i class="fa fa-info-circle"></i></a>
@@ -74,7 +77,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                         $assignCategoryText = '';
                                     }
                                     ?>
-                                    <a href="<?=base_url('admin/' . $controller_route . '/assign-category/'.encoded($row->$primary_key))?>" class="btn btn-warning btn-sm" title="Manage Product Category"><i class="fa fa-tasks"></i> Manage Product Category <?=$assignCategoryText?></a>
+                                    <a href="<?=base_url('admin/' . $controller_route . '/assign-category/'.encoded($row->$primary_key))?>" class="btn btn-warning btn-sm" title="Manage Product Category"><i class="fa fa-tasks"></i> Product Category <?=$assignCategoryText?></a>
                                 </td>
                             </tr>
                             <?php } }?>
