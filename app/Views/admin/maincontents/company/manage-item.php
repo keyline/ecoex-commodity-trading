@@ -10,6 +10,12 @@ $controller_route   = $moduleDetail['controller_route'];
         border-radius: 7px;
         margin-bottom: 10px;
     }
+    .item-cover-existing{
+        border: 1px solid orange;
+        padding: 13px;
+        border-radius: 7px;
+        margin-bottom: 10px;
+    }
 </style>
 <div class="pagetitle">
     <h1><?=$page_header?></h1>
@@ -75,6 +81,54 @@ $controller_route   = $moduleDetail['controller_route'];
                             </div>
                         </div>
                         <div class="field_wrapper">
+                            <?php if($assignItems){ foreach($assignItems as $assignItem){?>
+                                <div class="row item-cover-existing">
+                                    <div class="col-md-1">
+                                        <select class="form-control" name="item_category[]">
+                                            <option value="" selected>Select</option>
+                                            <?php if($cats){ foreach($cats as $cat){?>
+                                            <option value="<?=$cat->category_id?>" <?=(($cat->category_id == $assignItem->item_category)?'selected':'')?>><?=$cat->category_alias?></option>
+                                            <?php } }?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex" value="<?=$assignItem->item_name_ecoex?>">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name" value="<?=$assignItem->alias_name?>">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name" value="<?=$assignItem->billing_name?>">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input type="text" name="hsn[]" class="form-control" placeholder="HSN" value="<?=$assignItem->hsn?>">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <select class="form-control" name="gst[]">
+                                            <option value="" selected>Select</option>
+                                            <option value="0" <?=(($assignItem->gst == 0)?'selected':'')?>>0 %</option>
+                                            <option value="5" <?=(($assignItem->gst == 5)?'selected':'')?>>5 %</option>
+                                            <option value="12" <?=(($assignItem->gst == 12)?'selected':'')?>>12 %</option>
+                                            <option value="18" <?=(($assignItem->gst == 18)?'selected':'')?>>18 %</option>
+                                            <option value="28" <?=(($assignItem->gst == 28)?'selected':'')?>>28 %</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input type="text" name="rate[]" class="form-control" placeholder="Rate" value="<?=$assignItem->rate?>">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <select class="form-control" name="unit[]">
+                                            <option value="" selected>Select</option>
+                                            <?php if($units){ foreach($units as $unit){?>
+                                            <option value="<?=$unit->id?>" <?=(($unit->id == $assignItem->unit)?'selected':'')?>><?=$unit->name?></option>
+                                            <?php } }?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <a href="javascript:void(0);" class="remove_button" title="Remove Item"><i class="fa fa-minus-circle fa-2x text-danger"></i></a>
+                                    </div>
+                                </div>
+                            <?php } }?>
                             <div class="row item-cover">
                                 <div class="col-md-1">
                                     <select class="form-control" name="item_category[]">

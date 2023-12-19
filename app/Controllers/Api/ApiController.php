@@ -2025,21 +2025,17 @@ class ApiController extends BaseController
                     $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                     $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                     if($getUser){
-                        $assignCategory = $this->common_model->find_data('ecomm_company_category', 'array', ['company_id' => $getUser->parent_id], 'category_id');
+                        $assignItems = $this->common_model->find_data('ecomm_company_items', 'array', ['company_id' => $getUser->parent_id, 'status' => 1, 'is_approved' => 1], 'id,alias_name,hsn,unit');
                         // pr($assignCategory);
-                        if($assignCategory){
-                            foreach($assignCategory as $assignCat){
-                                $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
-                                $products       = $this->common_model->find_data('ecomm_products', 'array', ['status' => 1, 'category_id' => $assignCat->category_id], 'id,name,hsn_code', '', '', $orderBy);
-                                if($products){
-                                    foreach($products as $product){
-                                        $apiResponse[]        = [
-                                            'id'            => $product->id,
-                                            'name'          => $product->name,
-                                            'hsn_code'      => $product->hsn_code,
-                                        ];
-                                    }
-                                }
+                        if($assignItems){
+                            foreach($assignItems as $assignItem){
+                                $getUnit       = $this->common_model->find_data('ecomm_units', 'row', ['status' => 1, 'id' => $assignItem->unit], 'id,name');
+                                $apiResponse[]        = [
+                                    'id'            => $assignItem->id,
+                                    'name'          => $assignItem->alias_name,
+                                    'hsn'           => $assignItem->hsn,
+                                    'unit_name'     => (($getUnit)?$getUnit->name:''),
+                                ];
                             }
                         }
                         $apiStatus          = TRUE;
