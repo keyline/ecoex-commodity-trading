@@ -76,8 +76,17 @@ $controller_route   = $moduleDetail['controller_route'];
                                     } else {
                                         $assignCategoryText = '';
                                     }
+
+                                    $assignedItemCount = $common_model->find_data('ecomm_company_items', 'count', ['company_id' => $row->$primary_key, 'status!=' => 3]);
+                                    if($assignedItemCount > 0){
+                                        $assignItemText = '<br>('.$assignedItemCount.' categories)';
+                                    } else {
+                                        $assignItemText = '';
+                                    }
                                     ?>
-                                    <a href="<?=base_url('admin/' . $controller_route . '/assign-category/'.encoded($row->$primary_key))?>" class="btn btn-warning btn-sm" title="Manage Product Category"><i class="fa fa-tasks"></i> Product Category <?=$assignCategoryText?></a>
+                                    <a href="<?=base_url('admin/' . $controller_route . '/assign-category/'.encoded($row->$primary_key))?>" class="btn btn-warning btn-sm" title="Manage Item Category"><i class="fa fa-tasks"></i> Item Categories <?=$assignCategoryText?></a>
+                                    <br><br>
+                                    <a href="<?=base_url('admin/' . $controller_route . '/manage-item/'.encoded($row->$primary_key))?>" class="btn btn-warning btn-sm" title="Manage Item"><i class="fa fa-tasks"></i> Items <?=$assignItemText?></a>
                                 </td>
                             </tr>
                             <?php } }?>

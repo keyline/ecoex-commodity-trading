@@ -132,6 +132,7 @@ $routes->get('/', 'Home::index');
 			$routes->match(['get', 'post'], "companies/check-email", "CompanyController::check_email");
 			$routes->match(['get', 'post'], "companies/check-phone", "CompanyController::check_phone");
 			$routes->match(['get', 'post'], "companies/assign-category/(:any)", "CompanyController::assignCategory/$1");
+			$routes->match(['get', 'post'], "companies/manage-item/(:any)", "CompanyController::manageItem/$1");
 		// companies
 		// plants
 			$routes->match(['get'], "plants/list", "PlantController::list");
@@ -203,6 +204,7 @@ $routes->get('/', 'Home::index');
 			$routes->match(['post'], "verify-email", "ApiController::verifyEmail");
 			$routes->match(['post'], "send-mobile-otp", "ApiController::sendMobileOTP");
 			$routes->match(['post'], "verify-mobile", "ApiController::verifyMobile");
+			$routes->match(['post'], "delete-account", "ApiController::deleteAccount");
 			
 			$routes->match(['post'], "dashboard", "ApiController::dashboard");
 			$routes->match(['post'], "get-product", "ApiController::getProduct");
