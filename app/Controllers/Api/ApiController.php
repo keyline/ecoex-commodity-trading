@@ -2473,7 +2473,7 @@ class ApiController extends BaseController
                                         'new_product_name'              => $requestList[$k]['product_name'],
                                         'new_hsn'                       => $requestList[$k]['hsn'],
                                         'qty'                           => (($requestList[$k]['qty'] != '')?$requestList[$k]['qty']:0.00),
-                                        'unit'                          => $requestList[$k]['unit'],
+                                        'unit'                          => (($requestList[$k]['unit'] != '')?$requestList[$k]['unit']:0),
                                         'new_product_image'             => json_encode($item_images),
                                         'status'                        => 0,
                                     ];
