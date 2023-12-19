@@ -2523,7 +2523,6 @@ class ApiController extends BaseController
                                         'product_id'                    => $requestList[$k]['product_id'],
                                         'hsn'                           => $requestList[$k]['hsn'],
                                         'qty'                           => $requestList[$k]['qty'],
-                                        'unit'                          => $requestList[$k]['unit'],
                                         'new_product_image'             => json_encode($item_images),
                                         'status'                        => 1,
                                         'approved_date'                 => date('Y-m-d H:i:s'),
