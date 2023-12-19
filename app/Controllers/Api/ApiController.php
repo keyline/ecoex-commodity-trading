@@ -2472,12 +2472,12 @@ class ApiController extends BaseController
                                         'new_product'                   => 1,
                                         'new_product_name'              => $requestList[$k]['product_name'],
                                         'new_hsn'                       => $requestList[$k]['hsn'],
-                                        'qty'                           => $requestList[$k]['qty'],
+                                        'qty'                           => (($requestList[$k]['qty'] != '')?$requestList[$k]['qty']:0.00),
                                         'unit'                          => $requestList[$k]['unit'],
                                         'new_product_image'             => json_encode($item_images),
                                         'status'                        => 0,
                                     ];
-                                    pr($fields2);
+                                    // pr($fields2);
                                     $enq_product_id = $this->common_model->save_data('ecomm_enquiry_products', $fields2, '', 'id');
 
                                     $fields3 = [
@@ -2529,7 +2529,7 @@ class ApiController extends BaseController
                                         'approved_date'                 => date('Y-m-d H:i:s'),
                                         'remarks'                       => 'Approved By Admin',
                                     ];
-                                    pr($fields2);
+                                    // pr($fields2);
                                     $enq_product_id = $this->common_model->save_data('ecomm_enquiry_products', $fields2, '', 'id');
                                 }
                             }
