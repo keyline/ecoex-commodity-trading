@@ -53,8 +53,8 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <th scope="row"><?=$sl++?></th>
                                     <td>
                                         <h5><?=$row->enquiry_no?></h5>
-                                        <h6 class="badge bg-success"><?=$approveProductCount?> approved products</h6>
-                                        <h6 class="badge bg-danger"><?=$disapproveProductCount?> pending approval</h6>
+                                        <p><h6 class="badge bg-success"><?=$approveProductCount?> approved products</h6></p>
+                                        <p><h6 class="badge bg-danger"><?=$disapproveProductCount?> pending approval</h6></p>
                                     </td>
                                     <td><?=date_format(date_create($row->tentative_collection_date), "M d, Y")?></td>
                                     <td><?=$row->latitude?><br><?=$row->longitude?></td>
@@ -86,7 +86,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                             <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i> Delete</a>
                                             <br><br>
                                             <a href="<?=base_url('admin/' . $controller_route . '/accept-request/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Accept <?=$title?>" onclick="return confirm('Do You Want To Accept This <?=$title?>');"><i class="fa fa-check"></i> Click To Accept</a>
-                                            <a href="<?=base_url('admin/' . $controller_route . '/reject-request/'.encoded($row->$primary_key))?>" class="btn btn-danger btn-sm" title="Reject <?=$title?>" onclick="return confirm('Do You Want To Reject This <?=$title?>');"><i class="fa fa-times"></i> Click To Reject</a>
+                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Reject <?=$title?>" onclick="getRejectModal(<?=$row->$primary_key?>);"><i class="fa fa-times"></i> Click To Reject</a>
                                         <?php } else {?>
                                             <?php if($row->status == 1){?>
                                                 <h6 class="badge bg-success"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
@@ -105,3 +105,43 @@ $controller_route   = $moduleDetail['controller_route'];
         </div>
     </div>
 </section>
+<!-- reject request modal -->
+    <div class="modal fade" id="rejectRequest" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header" id="rejectRequestTitle">
+              
+            </div>
+            <div class="modal-body" id="rejectRequestBody">
+
+            </div>
+          </div>
+        </div>
+    </div>
+<!-- reject request modal -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        
+    });
+    function getRejectModal(enq_id){
+        let baseUrl = '<?=base_url()?>';
+        $.ajax({
+          type: "POST",
+          data: { enq_id: enq_id },
+          url: baseUrl+"/admin/get-reject-modal",
+          dataType: "JSON",
+          success: function(res){
+            if(res.success){
+              $('#rejectRequest').modal('show');
+              $('#rejectRequestTitle').html(res.data.title);
+              $('#rejectRequestBody').html(res.data.body);
+            } else {
+              $('#rejectRequest').modal('hide');
+              $('#rejectRequestTitle').html('');
+              $('#rejectRequestBody').html('');
+            }
+          }
+        });
+    }
+</script>

@@ -115,8 +115,9 @@ class EnquiryRequestController extends BaseController {
                 }
             /* send push */
             $postData = array(
-                                'status'        => 1,
-                                'accepted_date' => date('y-m-d H:i:s')
+                                'status'                    => 1,
+                                'enquiry_remarks'           => 'Approved By EcoEx',
+                                'accepted_date'             => date('y-m-d H:i:s')
                             );
             $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
             $this->session->setFlashdata('success_message', $this->data['title'].' Accepted Successfully & Transfer To Sent/Submitted List !!!');
@@ -148,8 +149,9 @@ class EnquiryRequestController extends BaseController {
                 }
             /* send push */
             $postData = array(
-                                'status'        => 9,
-                                'accepted_date' => date('y-m-d H:i:s')
+                                'status'                    => 9,
+                                'enquiry_remarks'           => $this->request->getPost('enquiry_remarks'),
+                                'accepted_date'             => date('y-m-d H:i:s')
                             );
             $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
             $this->session->setFlashdata('success_message', $this->data['title'].' Rejected Successfully & Transfer To Rejected List !!!');
@@ -158,5 +160,29 @@ class EnquiryRequestController extends BaseController {
             $this->session->setFlashdata('success_message', $this->data['title'].' Not Found !!!');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(0));
         }
+    }
+
+    public function getRejectModal(){
+        $apiStatus          = TRUE;
+        $apiMessage         = '';
+        $apiResponse        = [];
+        $requestData        = $this->request->getPost();
+        $enq_id             = $requestData['enq_id'];
+        $getEnquiry         = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+        $actionLink         = base_url('admin/' . $this->data['controller_route'] . '/reject-request/'.encoded($enq_id));
+        $modalHeader        = '<h6>Reject Request : '.(($getEnquiry)?$getEnquiry->enquiry_no:'').'</h6>';
+        $modalBody          =   '<form method="POST" action="'.$actionLink.'">
+                                    <input type="hidden" name="enq_id" value="'.$enq_id.'">
+                                    <div class="form-group mb-3">
+                                        <label for="enquiry_remarks">Remarks</label>
+                                        <textarea name="enquiry_remarks" id="enquiry_remarks" class="form-control"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                                </form>';
+        $apiResponse        = [
+            'title' => $modalHeader,
+            'body'  => $modalBody,
+        ];
+        $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
     }
 }
