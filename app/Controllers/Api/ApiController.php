@@ -2575,7 +2575,7 @@ class ApiController extends BaseController
                                             }
                                         }
                                     /* new product image */
-                                    $getCompanyProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $requestList[$k]['product_id']], 'id,unit');
+                                    $getCompanyProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $requestList[$k]['product_id']], 'id,unit,hsn');
                                     $fields2 = [
                                         'enq_id'                        => $enq_id,
                                         'plant_id'                      => $plant_id,
@@ -2583,7 +2583,7 @@ class ApiController extends BaseController
                                         'sl_no'                         => $next_sl_no,
                                         'new_product'                   => 0,
                                         'product_id'                    => $requestList[$k]['product_id'],
-                                        'hsn'                           => $requestList[$k]['hsn'],
+                                        'hsn'                           => (($getCompanyProduct)?$getCompanyProduct->hsn:''),
                                         'qty'                           => $requestList[$k]['qty'],
                                         'unit'                          => (($getCompanyProduct)?$getCompanyProduct->unit:0),
                                         'new_product_image'             => json_encode($item_images),
@@ -2913,69 +2913,83 @@ class ApiController extends BaseController
                                 $this->common_model->save_data('ecomm_enquires', $fields1, $enq_id, 'id');
                                 $this->common_model->save_data('ecomm_enquiry_products', ['status' => 3], $enq_id, 'enq_id');
                                 $requestList = $requestData['requestList'];
+                                // pr($requestList);
                                 if(!empty($requestList)){
                                     for($k=0;$k<count($requestList);$k++){
                                         if($requestList[$k]['new_product']){
                                             if (array_key_exists("enq_product_id", $requestList[$k])){
+                                                // update
                                                 $enq_product_id = $requestList[$k]['enq_product_id'];
                                                 $getEnquiryProductData = $this->common_model->find_data('ecomm_enquiry_products', 'row', ['id' => $enq_product_id]);
+                                                
                                                 /* new product image */
-                                                    $product_image = $requestList[$k]['product_image'];
+                                                    $product_image  = $requestList[$k]['product_image'];
+                                                    $item_images    = [];
                                                     if(!empty($product_image)){
-                                                        $upload_type            = $product_image['type'];
-                                                        if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
-                                                            $apiStatus          = FALSE;
-                                                            http_response_code(404);
-                                                            $apiMessage         = 'Please Upload Product Image !!!';
-                                                            $apiExtraField      = 'response_code';
-                                                            $apiExtraData       = http_response_code();
-                                                        } else {
-                                                            $upload_base64      = $product_image['base64'];
-                                                            $img                = $upload_base64;
-                                                            $data               = base64_decode($img);
-                                                            $fileName           = uniqid() . '.jpg';
-                                                            $file               = 'public/uploads/enquiry/' . $fileName;
-                                                            $success            = file_put_contents($file, $data);
-                                                            $new_product_image  = $fileName;
+                                                        for($p=0;$p<count($product_image);$p++){
+                                                            if (array_key_exists("base64", $product_image[$p])){
+                                                                $upload_type            = $product_image[$p]['type'];
+                                                                if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
+                                                                    $apiStatus          = FALSE;
+                                                                    http_response_code(404);
+                                                                    $apiMessage         = 'Please Upload Product Image !!!';
+                                                                    $apiExtraField      = 'response_code';
+                                                                    $apiExtraData       = http_response_code();
+                                                                } else {
+                                                                    $upload_base64      = $product_image[$p]['base64'];
+                                                                    $img                = $upload_base64;
+                                                                    $data               = base64_decode($img);
+                                                                    $fileName           = uniqid() . '.jpg';
+                                                                    $file               = 'public/uploads/enquiry/' . $fileName;
+                                                                    $success            = file_put_contents($file, $data);
+                                                                    $item_images[]      = $fileName;
+                                                                }
+                                                            } else {
+                                                                $existingUploadedImageLink  = explode("public/uploads/enquiry/", $product_image[$p]['link']);
+                                                                $existingUploadedImage      = $existingUploadedImageLink[1];
+                                                                $item_images[]              = $existingUploadedImage;
+                                                            }
                                                         }
-                                                    } else {
-                                                        $new_product_image = (($getEnquiryProductData)?$getEnquiryProductData->new_product_image:'');
                                                     }
                                                 /* new product image */
+
                                                 $fields2 = [
                                                     'new_product'                   => 1,
                                                     'new_product_name'              => $requestList[$k]['product_name'],
                                                     'new_hsn'                       => $requestList[$k]['hsn'],
-                                                    'qty'                           => $requestList[$k]['qty'],
-                                                    'unit'                          => $requestList[$k]['unit'],
-                                                    'new_product_image'             => $new_product_image,
-                                                    'status'                        => 1,
+                                                    'qty'                           => (($requestList[$k]['qty'] != '')?$requestList[$k]['qty']:0.00),
+                                                    'unit'                          => (($requestList[$k]['unit'] != '')?$requestList[$k]['unit']:0),
+                                                    'new_product_image'             => json_encode($item_images),
+                                                    'status'                        => 0,
                                                 ];
                                                 $this->common_model->save_data('ecomm_enquiry_products', $fields2, $enq_product_id, 'id');
                                             } else {
+                                                //insert
                                                 /* new product image */
-                                                    $product_image = $requestList[$k]['product_image'];
+                                                    $product_image  = $requestList[$k]['product_image'];
+                                                    $item_images    = [];
                                                     if(!empty($product_image)){
-                                                        $upload_type            = $product_image['type'];
-                                                        if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
-                                                            $apiStatus          = FALSE;
-                                                            http_response_code(404);
-                                                            $apiMessage         = 'Please Upload Product Image !!!';
-                                                            $apiExtraField      = 'response_code';
-                                                            $apiExtraData       = http_response_code();
-                                                        } else {
-                                                            $upload_base64      = $product_image['base64'];
-                                                            $img                = $upload_base64;
-                                                            $data               = base64_decode($img);
-                                                            $fileName           = uniqid() . '.jpg';
-                                                            $file               = 'public/uploads/enquiry/' . $fileName;
-                                                            $success            = file_put_contents($file, $data);
-                                                            $new_product_image  = $fileName;
+                                                        for($p=0;$p<count($product_image);$p++){
+                                                            $upload_type            = $product_image[$p]['type'];
+                                                            if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
+                                                                $apiStatus          = FALSE;
+                                                                http_response_code(404);
+                                                                $apiMessage         = 'Please Upload Product Image !!!';
+                                                                $apiExtraField      = 'response_code';
+                                                                $apiExtraData       = http_response_code();
+                                                            } else {
+                                                                $upload_base64      = $product_image[$p]['base64'];
+                                                                $img                = $upload_base64;
+                                                                $data               = base64_decode($img);
+                                                                $fileName           = uniqid() . '.jpg';
+                                                                $file               = 'public/uploads/enquiry/' . $fileName;
+                                                                $success            = file_put_contents($file, $data);
+                                                                $item_images[]      = $fileName;
+                                                            }
                                                         }
-                                                    } else {
-                                                        $new_product_image = '';
                                                     }
                                                 /* new product image */
+
                                                 $fields2 = [
                                                     'enq_id'                        => $enq_id,
                                                     'plant_id'                      => $plant_id,
@@ -2984,50 +2998,113 @@ class ApiController extends BaseController
                                                     'new_product'                   => 1,
                                                     'new_product_name'              => $requestList[$k]['product_name'],
                                                     'new_hsn'                       => $requestList[$k]['hsn'],
-                                                    'qty'                           => $requestList[$k]['qty'],
-                                                    'unit'                          => $requestList[$k]['unit'],
-                                                    'new_product_image'             => $new_product_image,
+                                                    'qty'                           => (($requestList[$k]['qty'] != '')?$requestList[$k]['qty']:0.00),
+                                                    'unit'                          => (($requestList[$k]['unit'] != '')?$requestList[$k]['unit']:0),
+                                                    'new_product_image'             => json_encode($item_images),
                                                     'status'                        => 0,
                                                 ];
                                                 $enq_product_id = $this->common_model->save_data('ecomm_enquiry_products', $fields2, '', 'id');
 
                                                 $fields3 = [
+                                                    'company_id'            => $company_id,
                                                     'enq_id'                => $enq_id,
                                                     'enq_product_id'        => $enq_product_id,
-                                                    'product_name'          => $requestList[$k]['product_name'],
-                                                    'hsn_code'              => $requestList[$k]['hsn'],
-                                                    'product_image'         => $new_product_image,
+                                                    'item_name_ecoex'       => $requestList[$k]['product_name'],
+                                                    'hsn'                   => $requestList[$k]['hsn'],
+                                                    'item_images'           => json_encode($item_images),
                                                     'created_by'            => $uId,
                                                 ];
-                                                $this->common_model->save_data('ecomm_pending_products', $fields3, '', 'id');
+                                                $this->common_model->save_data('ecomm_company_items', $fields3, '', 'id');
                                             }
                                         } else {
                                             if (array_key_exists("enq_product_id", $requestList[$k])){
                                                 // update
+
+                                                /* new product image */
+                                                    $product_image  = $requestList[$k]['product_image'];
+                                                    $item_images    = [];
+                                                    if(!empty($product_image)){
+                                                        for($p=0;$p<count($product_image);$p++){
+                                                            if (array_key_exists("base64", $product_image[$p])){
+                                                                $upload_type            = $product_image[$p]['type'];
+                                                                if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
+                                                                    $apiStatus          = FALSE;
+                                                                    http_response_code(404);
+                                                                    $apiMessage         = 'Please Upload Product Image !!!';
+                                                                    $apiExtraField      = 'response_code';
+                                                                    $apiExtraData       = http_response_code();
+                                                                } else {
+                                                                    $upload_base64      = $product_image[$p]['base64'];
+                                                                    $img                = $upload_base64;
+                                                                    $data               = base64_decode($img);
+                                                                    $fileName           = uniqid() . '.jpg';
+                                                                    $file               = 'public/uploads/enquiry/' . $fileName;
+                                                                    $success            = file_put_contents($file, $data);
+                                                                    $item_images[]      = $fileName;
+                                                                }
+                                                            } else {
+                                                                $existingUploadedImageLink  = explode("public/uploads/enquiry/", $product_image[$p]['link']);
+                                                                $existingUploadedImage      = $existingUploadedImageLink[1];
+                                                                $item_images[]              = $existingUploadedImage;
+                                                            }
+                                                        }
+                                                    }
+                                                /* new product image */
+                                                $getCompanyProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $requestList[$k]['product_id']], 'id,unit');
+
                                                 $enq_product_id = $requestList[$k]['enq_product_id'];
                                                 $fields2 = [
-                                                    'product_id'    => $requestList[$k]['product_id'],
-                                                    'hsn'           => $requestList[$k]['hsn'],
-                                                    'qty'           => $requestList[$k]['qty'],
-                                                    'unit'          => $requestList[$k]['unit'],
-                                                    'status'        => 1,
+                                                    'product_id'                    => $requestList[$k]['product_id'],
+                                                    'hsn'                           => $requestList[$k]['hsn'],
+                                                    'qty'                           => $requestList[$k]['qty'],
+                                                    'unit'                          => (($getCompanyProduct)?$getCompanyProduct->unit:0),
+                                                    'new_product_image'             => json_encode($item_images),
+                                                    'status'                        => 1,
                                                 ];
                                                 $this->common_model->save_data('ecomm_enquiry_products', $fields2, $enq_product_id, 'id');
                                             } else {
                                                 // insert
+
+                                                /* new product image */
+                                                    $product_image  = $requestList[$k]['product_image'];
+                                                    $item_images    = [];
+                                                    if(!empty($product_image)){
+                                                        for($p=0;$p<count($product_image);$p++){
+                                                            $upload_type            = $product_image[$p]['type'];
+                                                            if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
+                                                                $apiStatus          = FALSE;
+                                                                http_response_code(404);
+                                                                $apiMessage         = 'Please Upload Product Image !!!';
+                                                                $apiExtraField      = 'response_code';
+                                                                $apiExtraData       = http_response_code();
+                                                            } else {
+                                                                $upload_base64      = $product_image[$p]['base64'];
+                                                                $img                = $upload_base64;
+                                                                $data               = base64_decode($img);
+                                                                $fileName           = uniqid() . '.jpg';
+                                                                $file               = 'public/uploads/enquiry/' . $fileName;
+                                                                $success            = file_put_contents($file, $data);
+                                                                $item_images[]      = $fileName;
+                                                            }
+                                                        }
+                                                    }
+                                                /* new product image */
+                                                $getCompanyProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $requestList[$k]['product_id']], 'id,unit,hsn');
+
                                                 $fields2 = [
-                                                    'enq_id'        => $enq_id,
-                                                    'plant_id'      => $plant_id,
-                                                    'company_id'    => $company_id,
-                                                    'sl_no'         => $getEnquiryData->sl_no,
-                                                    'new_product'   => 0,
-                                                    'product_id'    => $requestList[$k]['product_id'],
-                                                    'hsn'           => $requestList[$k]['hsn'],
-                                                    'qty'           => $requestList[$k]['qty'],
-                                                    'unit'          => $requestList[$k]['unit'],
-                                                    'status'        => 1,
-                                                    'approved_date' => date('Y-m-d H:i:s'),
-                                                    'remarks'       => 'Approved By Admin',
+                                                    'enq_id'                        => $enq_id,
+                                                    'plant_id'                      => $plant_id,
+                                                    'company_id'                    => $company_id,
+                                                    'sl_no'                         => $getEnquiryData->sl_no,
+                                                    'new_product'                   => 0,
+                                                    'product_id'                    => $requestList[$k]['product_id'],
+                                                    'hsn'                           => (($getCompanyProduct)?$getCompanyProduct->hsn:''),
+                                                    'qty'                           => $requestList[$k]['qty'],
+                                                    'unit'                          => (($getCompanyProduct)?$getCompanyProduct->unit:0),
+                                                    'new_product_image'             => json_encode($item_images),
+                                                    'status'                        => 1,
+                                                    'approved_date'                 => date('Y-m-d H:i:s'),
+                                                    'remarks'                       => 'Approved By Admin',
                                                 ];
                                                 $this->common_model->save_data('ecomm_enquiry_products', $fields2, '', 'id');
                                             }                                        
