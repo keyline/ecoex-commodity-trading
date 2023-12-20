@@ -160,6 +160,7 @@ $routes->get('/', 'Home::index');
 			$routes->match(['get', 'post'], "enquiry-requests/delete/(:any)", "EnquiryRequestController::confirm_delete/$1");
 			$routes->match(['get', 'post'], "enquiry-requests/accept-request/(:any)", "EnquiryRequestController::accept_request/$1");
 			$routes->match(['get', 'post'], "enquiry-requests/reject-request/(:any)", "EnquiryRequestController::reject_request/$1");
+			$routes->match(['post'], "get-reject-modal", "EnquiryRequestController::getRejectModal");
 		// enquiry requests
 		// notifications
 			$routes->match(['get'], "notifications/list", "NotificationController::list");
