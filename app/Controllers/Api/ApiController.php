@@ -1932,7 +1932,52 @@ class ApiController extends BaseController
             }
             $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
         }
+        public function deleteAccount()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $headerData         = $this->request->headers();
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if($getTokenValue['status']){
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if($getUser){
+                        $this->common_model->save_data('ecomm_users', ['status' => 3], $uId, 'id');
+                        $this->common_model->delete_data('ecomm_user_devices', $uId, 'user_id');
 
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Account Deleted Successfully !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }               
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
         public function dashboard()
         {
             $apiStatus          = TRUE;
@@ -2515,6 +2560,7 @@ class ApiController extends BaseController
                                             }
                                         }
                                     /* new product image */
+                                    $getCompanyProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $requestList[$k]['product_id']], 'id,unit');
                                     $fields2 = [
                                         'enq_id'                        => $enq_id,
                                         'plant_id'                      => $plant_id,
@@ -2524,6 +2570,7 @@ class ApiController extends BaseController
                                         'product_id'                    => $requestList[$k]['product_id'],
                                         'hsn'                           => $requestList[$k]['hsn'],
                                         'qty'                           => $requestList[$k]['qty'],
+                                        'unit'                          => (($getCompanyProduct)?$getCompanyProduct->unit:0),
                                         'new_product_image'             => json_encode($item_images),
                                         'status'                        => 1,
                                         'approved_date'                 => date('Y-m-d H:i:s'),
@@ -2663,26 +2710,37 @@ class ApiController extends BaseController
                                         $product_id     = $enquiryProduct->product_id;
                                         $product_name   = $enquiryProduct->new_product_name;
                                         $hsn            = $enquiryProduct->new_hsn;
-                                        $product_image  = (($enquiryProduct->new_product_image != '')?getenv('app.uploadsURL').'enquiry/'.$enquiryProduct->new_product_image:getenv('app.NO_IMAGE'));
+                                        // $product_image  = (($enquiryProduct->new_product_image != '')?getenv('app.uploadsURL').'enquiry/'.$enquiryProduct->new_product_image:getenv('app.NO_IMAGE'));
                                     } else {
                                         $getProduct     = $this->common_model->find_data('ecomm_products', 'row', ['id' => $enquiryProduct->product_id], 'name,hsn_code,product_image');
                                         $product_id     = $enquiryProduct->product_id;
                                         $product_name   = (($getProduct)?$getProduct->name:'');
                                         $hsn            = (($getProduct)?$getProduct->hsn_code:'');
-                                        $product_image  = (($getProduct->product_image != '')?getenv('app.uploadsURL').'enquiry/'.$getProduct->product_image:getenv('app.NO_IMAGE'));
+                                        // $product_image  = (($getProduct->product_image != '')?getenv('app.uploadsURL').'enquiry/'.$getProduct->product_image:getenv('app.NO_IMAGE'));
                                     }
-                                    $unit               = $this->common_model->find_data('ecomm_units', 'row', ['id' => $enquiryProduct->unit], 'name');
+                                    $product_images     = [];
+                                    $new_product_image  = json_decode($enquiryProduct->new_product_image);
+                                    if(!empty($new_product_image)){
+                                        for($pi=0;$pi<count($new_product_image);$pi++){
+                                            $product_images[]     = [
+                                                'id'    => $pi,
+                                                'link'  => (($new_product_image[$pi] != '')?getenv('app.uploadsURL').'enquiry/'.$new_product_image[$pi]:getenv('app.NO_IMAGE'))
+                                            ];
+                                        }
+                                    }
+                                    $getUnit               = $this->common_model->find_data('ecomm_units', 'row', ['id' => $enquiryProduct->unit], 'name');
                                     $requestList[] = [
                                         'enq_id'            => $enq_id,
                                         'enq_product_id'    => $enquiryProduct->id,
                                         'product_id'        => $product_id,
                                         'product_name'      => $product_name,
                                         'hsn'               => $hsn,
-                                        'product_image'     => $product_image,
+                                        'product_image'     => $product_images,
                                         'productErr'        => '',
                                         'new_product'       => (($enquiryProduct->new_product)?true:false),
                                         'qty'               => $enquiryProduct->qty,
                                         'unit'              => $enquiryProduct->unit,
+                                        'unit_name'         => (($getUnit)?$getUnit->name:''),
                                         'remarks'           => (($enquiryProduct->remarks != '')?$enquiryProduct->remarks:''),
                                         'is_approve'        => $enquiryProduct->status,
                                         'approve_date'      => (($enquiryProduct->approved_date != '')?$enquiryProduct->approved_date:''),
