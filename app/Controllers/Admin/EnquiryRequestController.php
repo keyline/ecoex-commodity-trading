@@ -60,6 +60,18 @@ class EnquiryRequestController extends BaseController {
         $data['moduleDetail']       = $this->data;
         $data['enquiryStatus']      = (($data['row'])?$data['row']->status:1);
         $data['enquiryProducts']    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id]);
+        $data['enquiryPendingProducts']    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id, 'status' => 0]);
+
+        $company_id                 = $data['row']->company_id;
+        $orderBy[0]                 = ['field' => 'category_alias', 'type' => 'ASC'];
+        $data['cats']               = $this->common_model->find_data('ecomm_company_category', 'array', ['status' => 1, 'company_id' => $company_id], 'category_id,category_alias', '', '', $orderBy);
+
+        $orderBy[0]                 = ['field' => 'name', 'type' => 'ASC'];
+        $data['units']              = $this->common_model->find_data('ecomm_units', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
+
+        $order_by[0]                = array('field' => 'id', 'type' => 'asc');
+        $conditions                 = array('company_id' => $company_id, 'status!=' => 3);
+        $data['assignItems']        = $this->data['model']->find_data('ecomm_company_items', 'array', $conditions, '', '', '', $order_by);
 
         $title                      = 'View Details Of '.$data['row']->enquiry_no;
         $page_name                  = 'enquiry-request/view-details';
@@ -98,30 +110,36 @@ class EnquiryRequestController extends BaseController {
         $id                         = decoded($id);
         $getEnquiry                 = $this->common_model->find_data($this->data['table_name'], 'row', ['id' => $id]);
         if($getEnquiry){
-            /* send push */
-                $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $getEnquiry->plant_id, 'fcm_token!=' => ''], 'fcm_token');
-                if($getDeviceTokens){
-                    foreach($getDeviceTokens as $getDeviceToken){
-                        $fcm_token          = $getDeviceToken->fcm_token;
-                        $messageData = [
-                            'title'     => 'Enquiry Request Accepted',
-                            'body'      => 'Enquiry Request ('.(($getEnquiry)?$getEnquiry->enquiry_no:"").') Accepted By EcoEx',
-                            'badge'     => 1,
-                            'sound'     => 'Default',
-                            'data'      => [],
-                        ];
-                        $this->pushNotification($fcm_token, $messageData);
+            $pendingItemCount       = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $id, 'status' => 0]);
+            if($pendingItemCount <= 0){
+                /* send push */
+                    $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $getEnquiry->plant_id, 'fcm_token!=' => ''], 'fcm_token');
+                    if($getDeviceTokens){
+                        foreach($getDeviceTokens as $getDeviceToken){
+                            $fcm_token          = $getDeviceToken->fcm_token;
+                            $messageData = [
+                                'title'     => 'Enquiry Request Accepted',
+                                'body'      => 'Enquiry Request ('.(($getEnquiry)?$getEnquiry->enquiry_no:"").') Accepted By EcoEx',
+                                'badge'     => 1,
+                                'sound'     => 'Default',
+                                'data'      => [],
+                            ];
+                            $this->pushNotification($fcm_token, $messageData);
+                        }
                     }
-                }
-            /* send push */
-            $postData = array(
-                                'status'                    => 1,
-                                'enquiry_remarks'           => 'Approved By EcoEx',
-                                'accepted_date'             => date('y-m-d H:i:s')
-                            );
-            $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
-            $this->session->setFlashdata('success_message', $this->data['title'].' Accepted Successfully & Transfer To Sent/Submitted List !!!');
-            return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(1));
+                /* send push */
+                $postData = array(
+                                    'status'                    => 1,
+                                    'enquiry_remarks'           => 'Approved By EcoEx',
+                                    'accepted_date'             => date('y-m-d H:i:s')
+                                );
+                $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
+                $this->session->setFlashdata('success_message', $this->data['title'].' Accepted Successfully & Transfer To Sent/Submitted List !!!');
+                return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(1));
+            } else {
+                $this->session->setFlashdata('error_message', $pendingItemCount.' Pending Items In '.$getEnquiry->enquiry_no.'. Please Approve The Same Before Accept Enquiry Request !!!');
+                return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(0));
+            }
         } else {
             $this->session->setFlashdata('success_message', $this->data['title'].' Not Found !!!');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(0));
@@ -161,7 +179,6 @@ class EnquiryRequestController extends BaseController {
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(0));
         }
     }
-
     public function getRejectModal(){
         $apiStatus          = TRUE;
         $apiMessage         = '';

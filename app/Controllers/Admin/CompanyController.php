@@ -554,7 +554,7 @@ class CompanyController extends BaseController {
         $data['units']              = $this->common_model->find_data('ecomm_units', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
 
         $order_by[0]                = array('field' => 'id', 'type' => 'asc');
-        $conditions                 = array('company_id' => $id, 'status' => 1);
+        $conditions                 = array('company_id' => $id, 'status!=' => 3);
         $data['assignItems']        = $this->data['model']->find_data('ecomm_company_items', 'array', $conditions, '', '', '', $order_by);
         
         if($this->request->getMethod() == 'post') {
@@ -591,7 +591,7 @@ class CompanyController extends BaseController {
                             'rate'                      => $rate[$k],
                             'unit'                      => $unit[$k],
                             'is_approved'               => 1,
-                            'approved_date'             => date('Y-m-d'),
+                            'approved_date'             => date('Y-m-d H:i:s'),
                             'status'                    => 1,
                         );
                         // pr($postData);
@@ -603,5 +603,59 @@ class CompanyController extends BaseController {
             return redirect()->to(current_url());
         }        
         echo $this->layout_after_login($title,$page_name,$data);
+    }
+    public function approveItem()
+    {
+        $id             = decoded($this->request->getPost('id'));
+        $redirectLink   = decoded($this->request->getPost('redirect_link'));
+        $postData   = array(
+            'item_category'             => $this->request->getPost('item_category')[0],
+            'item_name_ecoex'           => $this->request->getPost('item_name_ecoex')[0],
+            'alias_name'                => $this->request->getPost('alias_name')[0],
+            'billing_name'              => $this->request->getPost('billing_name')[0],
+            'hsn'                       => $this->request->getPost('hsn')[0],
+            'gst'                       => $this->request->getPost('gst')[0],
+            'rate'                      => $this->request->getPost('rate')[0],
+            'unit'                      => $this->request->getPost('unit')[0]
+        );
+        $this->data['model']->save_data('ecomm_company_items', $postData, $id, 'id');
+
+        $getItem        = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $id]);
+        if($getItem){
+            if(($getItem->item_category > 0) && ($getItem->alias_name != '') && ($getItem->billing_name != '') && ($getItem->hsn != '') && ($getItem->gst > 0) &&  ($getItem->rate > 0) && ($getItem->unit > 0)){
+                /* company items */
+                    $postData   = array(
+                        'is_approved'               => 1,
+                        'approved_date'             => date('Y-m-d H:i:s'),
+                        'status'                    => 1,
+                    );
+                    $this->data['model']->save_data('ecomm_company_items', $postData, $id, 'id');
+                /* company items */
+                /* company enquiry items */
+                    $enq_id         = $getItem->enq_id;
+                    $enq_product_id = $getItem->enq_product_id;
+                    $product_id     = $id;
+                    $postData   = array(
+                        'product_id'                => $product_id,
+                        'hsn'                       => $getItem->hsn,
+                        'new_product_name'          => $getItem->alias_name,
+                        'new_hsn'                   => $getItem->hsn,
+                        'unit'                      => $getItem->unit,
+                        'remarks'                   => 'Approved By Admin',
+                        'status'                    => 1,
+                        'approved_date'             => date('Y-m-d H:i:s')
+                    );
+                    $this->data['model']->save_data('ecomm_enquiry_products', $postData, $enq_product_id, 'id');
+                /* company enquiry items */
+                $this->session->setFlashdata('success_message', $this->data['title'].' Item Approved Successfully !!!');
+                return redirect()->to($redirectLink);
+            } else {
+                $this->session->setFlashdata('error_message', $this->data['title'].' Item Category, Alias Name, Billing Name, HSN, GST, Rate, Unit Must Be Entered Before Get Approved !!!');
+                return redirect()->to($redirectLink);
+            }
+        } else {
+            $this->session->setFlashdata('error_message', $this->data['title'].' Item Not Found !!!');
+            return redirect()->to($redirectLink);
+        }
     }
 }
