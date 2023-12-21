@@ -133,6 +133,7 @@ $routes->get('/', 'Home::index');
 			$routes->match(['get', 'post'], "companies/check-phone", "CompanyController::check_phone");
 			$routes->match(['get', 'post'], "companies/assign-category/(:any)", "CompanyController::assignCategory/$1");
 			$routes->match(['get', 'post'], "companies/manage-item/(:any)", "CompanyController::manageItem/$1");
+			$routes->match(['get', 'post'], "companies/approve-item", "CompanyController::approveItem");
 		// companies
 		// plants
 			$routes->match(['get'], "plants/list", "PlantController::list");

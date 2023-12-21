@@ -72,21 +72,21 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <?php
                                     $assignedCategoryCount = $common_model->find_data('ecomm_company_category', 'count', ['company_id' => $row->$primary_key, 'status!=' => 3]);
                                     if($assignedCategoryCount > 0){
-                                        $assignCategoryText = '<br>('.$assignedCategoryCount.' categories)';
+                                        $assignCategoryText = '('.$assignedCategoryCount.')';
                                     } else {
                                         $assignCategoryText = '';
                                     }
 
                                     $assignedItemCount = $common_model->find_data('ecomm_company_items', 'count', ['company_id' => $row->$primary_key, 'status!=' => 3]);
                                     if($assignedItemCount > 0){
-                                        $assignItemText = '<br>('.$assignedItemCount.' categories)';
+                                        $assignItemText = '('.$assignedItemCount.')';
                                     } else {
                                         $assignItemText = '';
                                     }
                                     ?>
-                                    <a href="<?=base_url('admin/' . $controller_route . '/assign-category/'.encoded($row->$primary_key))?>" class="btn btn-warning btn-sm" title="Manage Item Category"><i class="fa fa-tasks"></i> Item Categories <?=$assignCategoryText?></a>
+                                    <a href="<?=base_url('admin/' . $controller_route . '/assign-category/'.encoded($row->$primary_key))?>" class="btn btn-info btn-sm" title="Manage Item Category"><i class="fa fa-tasks"></i> Categories <?=$assignCategoryText?></a>
                                     <br><br>
-                                    <a href="<?=base_url('admin/' . $controller_route . '/manage-item/'.encoded($row->$primary_key))?>" class="btn btn-warning btn-sm" title="Manage Item"><i class="fa fa-tasks"></i> Items <?=$assignItemText?></a>
+                                    <a href="<?=base_url('admin/' . $controller_route . '/manage-item/'.encoded($row->$primary_key))?>" class="btn btn-info btn-sm" title="Manage Item"><i class="fa fa-tasks"></i> Items <?=$assignItemText?></a>
                                 </td>
                             </tr>
                             <?php } }?>
