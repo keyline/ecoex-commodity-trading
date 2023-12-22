@@ -77,7 +77,7 @@ $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['stat
                     <i class="fa fa-arrow-right"></i><span>Product Category</span>
                 </a>
             </li>
-            <li>
+            <!-- <li>
                 <a class="<?=(($pageSegment == 'products')?'active':'')?>" href="<?=base_url('admin/products/list')?>">
                     <i class="fa fa-arrow-right"></i><span>Products</span>
                 </a>
@@ -86,7 +86,7 @@ $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['stat
                 <a class="<?=(($pageSegment == 'pending-products')?'active':'')?>" href="<?=base_url('admin/pending-products/list')?>">
                     <i class="fa fa-arrow-right"></i><span>Pending Products</span>
                 </a>
-            </li>
+            </li> -->
             <li>
                 <a class="<?=(($pageSegment == 'units')?'active':'')?>" href="<?=base_url('admin/units/list')?>">
                     <i class="fa fa-arrow-right"></i><span>Units</span>
