@@ -202,4 +202,44 @@ class EnquiryRequestController extends BaseController {
         ];
         $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
     }
+    public function getImageModal(){
+        $apiStatus          = TRUE;
+        $apiMessage         = '';
+        $apiResponse        = [];
+        $requestData        = $this->request->getPost();
+        $enq_id             = $requestData['enq_id'];
+        $getEnquiry         = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+        $modalHeader        = '<b>Enquiry Request Images : '.(($getEnquiry)?$getEnquiry->enquiry_no:'').'</b>';
+        $enqImages          = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id], 'new_product_image');
+        $enquiryImages      = [];
+        if($enqImages){
+            foreach($enqImages as $enqImage){
+                $new_product_images = json_decode($enqImage->new_product_image);
+                if(!empty($new_product_images)){
+                    for($i=0;$i<count($new_product_images);$i++){
+                        $enquiryImages[]      = getenv('app.uploadsURL').'enquiry/'.$new_product_images[$i];
+                    }
+                }
+            }
+        }
+        $engImageHTML = '';
+        if(!empty($enquiryImages)){
+            for($enqImg=0;$enqImg<count($enquiryImages);$enqImg++){
+                $engImageHTML .= '<div class="item">
+                                    <div class="sucess_boximg">
+                                        <img src="'.$enquiryImages[$enqImg].'" class="img-fluid" alt="image">
+                                    </div>
+                                </div>';
+            }
+        }
+        $modalBody          =   '<div id="home-successstories" class="owl-carousel owl-theme owl-loaded owl-drag">
+                                '.$engImageHTML.'
+                                </div>';
+        // $modalBody = $engImageHTML;
+        $apiResponse        = [
+            'title' => $modalHeader,
+            'body'  => $modalBody,
+        ];
+        $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+    }
 }

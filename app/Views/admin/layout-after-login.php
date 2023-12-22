@@ -33,6 +33,7 @@
         <script src="<?=getenv('app.adminAssetsURL')?>assets/vendor/simple-datatables/simple-datatables.js"></script>
         <script src="<?=getenv('app.adminAssetsURL')?>assets/vendor/tinymce/tinymce.min.js"></script>
         <script src="<?=getenv('app.adminAssetsURL')?>assets/vendor/php-email-form/validate.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css" integrity="sha512-rRQtF4V2wtAvXsou4iUAs2kXHi3Lj9NE7xJR77DE7GHsxgY9RTWy93dzMXgDIG8ToiRTD45VsDNdTiUagOFeZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <!-- Template Main JS File -->
         <script src="<?=getenv('app.adminAssetsURL')?>assets/js/main.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -42,6 +43,8 @@
             });
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+        <link rel="stylesheet" href="<?=getenv('app.adminAssetsURL');?>assets/owl/owl3.css">
+        <script src="<?=getenv('app.adminAssetsURL');?>assets/owl/owl-min.js"></script>
         <script type="text/javascript">
             function toastAlert(type, message, redirectStatus = false, redirectUrl = ''){
                 toastr.options = {
@@ -238,6 +241,60 @@
                     });
                 });
             })
+
+
+            jQuery(document).ready(function() {
+                jQuery("#home-successstories").owlCarousel({
+                    loop: true,
+                    margin: 0,
+                    dots: false,
+                    nav: true,
+                    autoplay: true,
+                    autoplayTimeout: 2000,
+                    autoplayHoverPause: true,
+                    animateIn: 'fadeIn',
+                    animateOut: 'fadeOut',
+                    navText: ["<i class='zmdi zmdi-arrow-left'></i>", "<i class='zmdi zmdi-arrow-right'></i>"],
+                    responsive: {
+                        0: {
+                            items: 1,
+                        },
+                        600: {
+                            items: 1,
+                        },
+                        750: {
+                            items: 1,
+                        },
+                        1000: {
+                            items: 1,
+                        },
+                        1200: {
+                            items: 1,
+                        }
+                    }
+                });
+            });
+
+            // function getImageModal(enq_id){
+            //     let baseUrl = '<?=base_url()?>';
+            //     $.ajax({
+            //       type: "POST",
+            //       data: { enq_id: enq_id },
+            //       url: baseUrl+"/admin/get-image-modal",
+            //       dataType: "JSON",
+            //       success: function(res){
+            //         if(res.success){
+            //           $('#enquiryImage').modal('show');
+            //           $('#enquiryImageTitle').html(res.data.title);
+            //           $('#enquiryImageBody').append(res.data.body);
+            //         } else {
+            //           $('#enquiryImage').modal('hide');
+            //           $('#enquiryImageTitle').html('');
+            //           $('#enquiryImageBody').html('');
+            //         }
+            //       }
+            //     });
+            // }
         </script>
     </body>
 </html>
