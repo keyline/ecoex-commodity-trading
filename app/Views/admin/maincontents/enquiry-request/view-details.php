@@ -66,6 +66,37 @@
     .progress-bar-wrapper li.section.visited.current:before {
         box-shadow: 0 0 0 2px #26a541;
     }
+
+    #home-successstories .owl-nav {
+        position: absolute;
+        top: 50%;
+        transform: translate(0,-50%);
+        width: 100%;
+        display: block;
+    }
+    #home-successstories .owl-nav button {
+        width: 50px;
+        height: 50px;
+        border: 2px solid #fff;
+        color: #fff;
+        font-size: 22px;
+        border-radius: 50px;
+    }
+    #home-successstories .owl-nav button.owl-next {
+        right: 0;
+        position: absolute;
+    }
+
+    .sucess_boximg {
+        height: 500px;
+        object-fit: cover;
+        overflow: hidden;
+    }
+    .sucess_boximg img {
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+    }
   </style>
 <!-- for inquiry tracking -->
 <style type="text/css">
@@ -282,7 +313,8 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 <td><?=$enquiryProduct->remarks?></td>
                                                 <td>
                                                     <!-- <a href="" target="_blank"><img src="" class="img-thumbnail" style="width:100px; height: 100px;"></a> -->
-                                                    <p><i class="fas fa-image"></i></p>
+                                                    <!-- <p onclick="getImageModal(<?=$enquiryProduct->enq_id?>);"><i class="fas fa-image"></i></p> -->
+                                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#enquiryImageModal<?=$enquiryProduct->id?>"><i class="fas fa-image"></i></button>
                                                 </td>
                                                 <td>
                                                     <?php if($enquiryProduct->status){?>
@@ -384,7 +416,7 @@ $controller_route   = $moduleDetail['controller_route'];
 <?php } }?>
 <!-- reject request modal -->
     <div class="modal fade" id="rejectRequest" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
             <div class="modal-header" id="rejectRequestTitle">
               
@@ -396,10 +428,46 @@ $controller_route   = $moduleDetail['controller_route'];
         </div>
     </div>
 <!-- reject request modal -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<?php if($enquiryProducts){ $slNo=1; foreach($enquiryProducts as $enquiryProduct){?>
+    <?php
+    $enquiryImages      = [];
+    $new_product_images = json_decode($enquiryProduct->new_product_image);
+    if(!empty($new_product_images)){
+        for($i=0;$i<count($new_product_images);$i++){
+            $enquiryImages[]      = getenv('app.uploadsURL').'enquiry/'.$new_product_images[$i];
+        }
+    }
+        
+    ?>
+    <!-- image modal -->
+        <div class="modal fade" id="enquiryImageModal<?=$enquiryProduct->id?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg  modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header" id="enquiryImageTitle">
+                  dgdgdsds
+                </div>
+                <div class="modal-body" id="enquiryImageBody">
+                    <div id="home-successstories" class="owl-carousel owl-theme owl-loaded owl-drag">
+                        <?php if(!empty($enquiryImages)){ for($enqImg=0;$enqImg<count($enquiryImages);$enqImg++){?>
+                            <div class="item">
+                                <div class="sucess_boximg">
+                                    <img src="<?=$enquiryImages[$enqImg]?>" class="img-fluid" alt="image">
+                                </div>
+                            </div>
+                        <?php } }?>
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    <!-- image modal -->
+<?php } }?>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> -->
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <!-- progress bar -->
 <script src="<?=getenv('app.adminAssetsURL');?>assets/js/progress-bar.js"></script>
 <!-- progress bar -->
+
 <?php if($row->status != 9){?>
     <script type="text/javascript">
       //we can set animation delay as following in ms (default 1000)
