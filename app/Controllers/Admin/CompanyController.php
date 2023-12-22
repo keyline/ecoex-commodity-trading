@@ -558,6 +558,7 @@ class CompanyController extends BaseController {
         $data['assignItems']        = $this->data['model']->find_data('ecomm_company_items', 'array', $conditions, '', '', '', $order_by);
         
         if($this->request->getMethod() == 'post') {
+            pr($this->request->getPost());
             $company_id             = $this->request->getPost('company_id');
             $item_category          = $this->request->getPost('item_category');
             $item_name_ecoex        = $this->request->getPost('item_name_ecoex');
@@ -631,7 +632,7 @@ class CompanyController extends BaseController {
                     );
                     $this->data['model']->save_data('ecomm_company_items', $postData, $id, 'id');
                 /* company items */
-                /* company enquiry items */
+                /* company Enquiry items */
                     $enq_id         = $getItem->enq_id;
                     $enq_product_id = $getItem->enq_product_id;
                     $product_id     = $id;

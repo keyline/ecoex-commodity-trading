@@ -2011,7 +2011,7 @@ class ApiController extends BaseController
                         $memberType         = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
                         $step0_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId]);
                         $step1_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 1]);
-                        $step2_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status>=' => 2, 'status<=' => 7]);
+                        $step2_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status>=' => 0, 'status<=' => 7]);
                         $step3_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 9]);
                         $step4_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 8]);
                         $apiResponse        = [
@@ -2027,10 +2027,10 @@ class ApiController extends BaseController
                             'location'          => $getUser->location,
                             'email'             => $getUser->email,
                             'step0_label'       => 'Total',
-                            'step1_label'       => 'Add Request',
+                            'step1_label'       => 'New Request',
                             'step2_label'       => 'In Process Request',
                             'step3_label'       => 'Rejected Request',
-                            'step4_label'       => 'Close Request',
+                            'step4_label'       => 'Completed Request',
                             'step0_count'       => $step0_count,
                             'step1_count'       => $step1_count,
                             'step2_count'       => $step2_count,
