@@ -73,6 +73,34 @@ class EnquiryRequestController extends BaseController {
         $conditions                 = array('company_id' => $company_id, 'status!=' => 3);
         $data['assignItems']        = $this->data['model']->find_data('ecomm_company_items', 'array', $conditions, '', '', '', $order_by);
 
+        $order_by[0]                = array('field' => 'company_name', 'type' => 'asc');
+        $data['vendors']            = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1], 'id,company_name', '', '', $order_by);
+
+        if($this->request->getMethod() == 'post') {
+            if($this->request->getPost('mode') == 'share_vendor'){
+                $enq_id         = $this->request->getPost('enq_id');
+                $company_id     = $this->request->getPost('company_id');
+                $plant_id       = $this->request->getPost('plant_id');
+                $vendors        = $this->request->getPost('vendors');
+                if(!empty($vendors)){
+                    for($v=0;$v<count($vendors);$v++){
+                        $fields = [
+                            'enq_id'        => $enq_id,
+                            'company_id'    => $company_id,
+                            'plant_id'      => $plant_id,
+                            'vendor_id'     => $vendors[$v],
+                        ];
+                        $this->common_model->save_data('ecomm_enquiry_vendor_shares', $fields, '', 'id');
+                    }
+                    $this->session->setFlashdata('success_message', $this->data['title'].'  Details Successfully Shared To Vendors !!!');
+                    return redirect()->to(current_url());
+                } else {
+                    $this->session->setFlashdata('error_message', 'Atleast One Vendor Needs To Be Select Before Share Details To Vendors !!!');
+                    return redirect()->to(current_url());
+                }
+            }
+        }
+
         $title                      = 'View Details Of '.$data['row']->enquiry_no;
         $page_name                  = 'enquiry-request/view-details';
         echo $this->layout_after_login($title,$page_name,$data);
@@ -175,7 +203,7 @@ class EnquiryRequestController extends BaseController {
             $this->session->setFlashdata('success_message', $this->data['title'].' Rejected Successfully & Transfer To Rejected List !!!');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(9));
         } else {
-            $this->session->setFlashdata('success_message', $this->data['title'].' Not Found !!!');
+            $this->session->setFlashdata('error_message', $this->data['title'].' Not Found !!!');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(0));
         }
     }

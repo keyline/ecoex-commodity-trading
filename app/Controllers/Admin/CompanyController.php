@@ -558,7 +558,7 @@ class CompanyController extends BaseController {
         $data['assignItems']        = $this->data['model']->find_data('ecomm_company_items', 'array', $conditions, '', '', '', $order_by);
         
         if($this->request->getMethod() == 'post') {
-            pr($this->request->getPost());
+            // pr($this->request->getPost());
             $company_id             = $this->request->getPost('company_id');
             $item_category          = $this->request->getPost('item_category');
             $item_name_ecoex        = $this->request->getPost('item_name_ecoex');
@@ -570,37 +570,37 @@ class CompanyController extends BaseController {
             $unit                   = $this->request->getPost('unit');
 
             if(!empty($item_name_ecoex)){
-                $this->data['model']->save_data('ecomm_company_items', ['status' => 3], $company_id, 'company_id');
-                for($k=0;$k<count($item_name_ecoex);$k++){
-                    $checkCompanyItem = $this->common_model->find_data('ecomm_company_items', 'row', ['company_id' => $company_id, 'item_name_ecoex' => $item_name_ecoex[$k]]);
-                    if($checkCompanyItem){
-                        // update
-                        $postData   = array(
-                            'status'                    => 1,
-                        );
-                        $this->data['model']->save_data('ecomm_company_items', $postData, $checkCompanyItem->id, 'id');
-                    } else {
+                // $this->data['model']->save_data('ecomm_company_items', ['status' => 3], $company_id, 'company_id');
+                // for($k=0;$k<count($item_name_ecoex);$k++){
+                    // $checkCompanyItem = $this->common_model->find_data('ecomm_company_items', 'row', ['company_id' => $company_id, 'item_name_ecoex' => $item_name_ecoex[$k]]);
+                    // if($checkCompanyItem){
+                    //     // update
+                    //     $postData   = array(
+                    //         'status'                    => 1,
+                    //     );
+                    //     $this->data['model']->save_data('ecomm_company_items', $postData, $checkCompanyItem->id, 'id');
+                    // } else {
                         // insert
                         $postData   = array(
                             'company_id'                => $company_id,
-                            'item_category'             => $item_category[$k],
-                            'item_name_ecoex'           => $item_name_ecoex[$k],
-                            'alias_name'                => $alias_name[$k],
-                            'billing_name'              => $billing_name[$k],
-                            'hsn'                       => $hsn[$k],
-                            'gst'                       => $gst[$k],
-                            'rate'                      => $rate[$k],
-                            'unit'                      => $unit[$k],
+                            'item_category'             => $item_category[0],
+                            'item_name_ecoex'           => $item_name_ecoex[0],
+                            'alias_name'                => $alias_name[0],
+                            'billing_name'              => $billing_name[0],
+                            'hsn'                       => $hsn[0],
+                            'gst'                       => $gst[0],
+                            'rate'                      => $rate[0],
+                            'unit'                      => $unit[0],
                             'is_approved'               => 1,
                             'approved_date'             => date('Y-m-d H:i:s'),
                             'status'                    => 1,
                         );
                         // pr($postData);
                         $this->data['model']->save_data('ecomm_company_items', $postData, '', 'id');
-                    }
-                }
+                    // }
+                // }
             }
-            $this->session->setFlashdata('success_message', $this->data['title'].' Item Updated Successfully');
+            $this->session->setFlashdata('success_message', $this->data['title'].' Item Inserted Successfully');
             return redirect()->to(current_url());
         }        
         echo $this->layout_after_login($title,$page_name,$data);
@@ -627,7 +627,7 @@ class CompanyController extends BaseController {
                 /* company items */
                     $postData   = array(
                         'is_approved'               => 1,
-                        'approved_date'             => date('Y-m-d H:i:s'),
+                        'approved_date'             => (($getItem->approved_date == '')?date('Y-m-d H:i:s'):$getItem->approved_date),
                         'status'                    => 1,
                     );
                     $this->data['model']->save_data('ecomm_company_items', $postData, $id, 'id');
