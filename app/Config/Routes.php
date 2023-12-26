@@ -6,6 +6,7 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
+$routes->get('/enquiry-request/(:any)', 'Home::enquiryRequest/$1');
 
 /* ADMIN PANEL */
 	$routes->group("admin", ["namespace" => "App\Controllers\Admin"], function($routes){
@@ -157,7 +158,7 @@ $routes->get('/', 'Home::index');
 		// vendors
 		// enquiry requests
 			$routes->match(['get'], "enquiry-requests/list/(:any)", "EnquiryRequestController::list/$1");
-			$routes->match(['get'], "enquiry-requests/view-detail/(:any)", "EnquiryRequestController::viewDetail/$1");
+			$routes->match(['get', 'post'], "enquiry-requests/view-detail/(:any)", "EnquiryRequestController::viewDetail/$1");
 			$routes->match(['get', 'post'], "enquiry-requests/delete/(:any)", "EnquiryRequestController::confirm_delete/$1");
 			$routes->match(['get', 'post'], "enquiry-requests/accept-request/(:any)", "EnquiryRequestController::accept_request/$1");
 			$routes->match(['get', 'post'], "enquiry-requests/reject-request/(:any)", "EnquiryRequestController::reject_request/$1");

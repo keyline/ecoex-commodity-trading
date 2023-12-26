@@ -5,7 +5,7 @@ $controller_route   = $moduleDetail['controller_route'];
 ?>
 <style type="text/css">
     .item-cover{
-        border: 1px solid #00800047;
+        border: 1px solid #008000c7;
         padding: 13px;
         border-radius: 7px;
         margin-bottom: 10px;
@@ -48,8 +48,7 @@ $controller_route   = $moduleDetail['controller_route'];
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-body pt-3">
-                    <form method="POST" action="" enctype="multipart/form-data">
-                        <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">
+                    <!-- <form method="POST" action="" enctype="multipart/form-data"> -->
 
                         <div class="row">
                             <div class="col-md-1">
@@ -83,9 +82,10 @@ $controller_route   = $moduleDetail['controller_route'];
                         <div class="field_wrapper">
                             <?php if($assignItems){ foreach($assignItems as $assignItem){?>
                                 <form method="POST" action="<?=base_url('admin/companies/approve-item')?>">
+                                    <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">
                                     <input type="hidden" name="id" value="<?=encoded($assignItem->id)?>">
                                     <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">
-                                    <div class="row item-cover-existing">
+                                    <div class="row item-cover">
                                         <div class="col-md-1">
                                             <select class="form-control" name="item_category[]">
                                                 <option value="" selected>Select</option>
@@ -128,68 +128,75 @@ $controller_route   = $moduleDetail['controller_route'];
                                             </select>
                                         </div>
                                         <div class="col-md-1">
-                                            <a href="javascript:void(0);" class="remove_button" title="Remove Item"><i class="fa fa-minus-circle fa-2x text-danger"></i></a>
-                                            <br>
                                             <?php if($assignItem->status){?>
-                                                <span class="badge bg-success"><i class="fa fa-check-circle"></i> APPROVED</span>
+                                                <p><span class="badge bg-success"><i class="fa fa-check-circle"></i> APPROVED</span></p>
+                                                <button type="submit" onclick="return confirm('Do You Want To Approve This Item ?');" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Update</button>
                                             <?php } else {?>
-                                                <button type="submit" onclick="return confirm('Do You Want To Approve This Item ?');" class="btn btn-danger btn-sm"><i class="fa fa-times-circle"></i> Click Approve</button>
+                                                <button type="submit" onclick="return confirm('Do You Want To Approve This Item ?');" class="btn btn-warning btn-sm"><i class="fa fa-times-circle"></i> Click To Approve</button>
                                             <?php }?>
+                                            <br><br>
+                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm remove_button" title="Remove Item"><i class="fa fa-trash"></i> Remove</a>
                                         </div>
                                     </div>
                                 </form>
                             <?php } }?>
-                            <div class="row item-cover">
-                                <div class="col-md-1">
-                                    <select class="form-control" name="item_category[]">
-                                        <option value="" selected>Select</option>
-                                        <?php if($cats){ foreach($cats as $cat){?>
-                                        <option value="<?=$cat->category_id?>"><?=$cat->category_alias?></option>
-                                        <?php } }?>
-                                    </select>
+                            <form method="POST" action="">
+                                <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">
+                                <input type="hidden" name="id" value="<?=encoded($assignItem->id)?>">
+                                <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">
+                                <div class="row item-cover">
+                                    <div class="col-md-1">
+                                        <select class="form-control" name="item_category[]">
+                                            <option value="" selected>Select</option>
+                                            <?php if($cats){ foreach($cats as $cat){?>
+                                            <option value="<?=$cat->category_id?>"><?=$cat->category_alias?></option>
+                                            <?php } }?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input type="text" name="hsn[]" class="form-control" placeholder="HSN">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <select class="form-control" name="gst[]">
+                                            <option value="" selected>Select</option>
+                                            <option value="0">0 %</option>
+                                            <option value="5">5 %</option>
+                                            <option value="12">12 %</option>
+                                            <option value="18">18 %</option>
+                                            <option value="28">28 %</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input type="text" name="rate[]" class="form-control" placeholder="Rate">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <select class="form-control" name="unit[]">
+                                            <option value="" selected>Select</option>
+                                            <?php if($units){ foreach($units as $unit){?>
+                                            <option value="<?=$unit->id?>"><?=$unit->name?></option>
+                                            <?php } }?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="submit" onclick="return confirm('Do You Want To Add This Item ?');" class="btn btn-success btn-sm"><i class="fa fa-check-circle"></i> Click To Add</button>
+                                    </div>
                                 </div>
-                                <div class="col-md-2">
-                                    <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex">
-                                </div>
-                                <div class="col-md-2">
-                                    <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name">
-                                </div>
-                                <div class="col-md-2">
-                                    <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name">
-                                </div>
-                                <div class="col-md-1">
-                                    <input type="text" name="hsn[]" class="form-control" placeholder="HSN">
-                                </div>
-                                <div class="col-md-1">
-                                    <select class="form-control" name="gst[]">
-                                        <option value="" selected>Select</option>
-                                        <option value="0">0 %</option>
-                                        <option value="5">5 %</option>
-                                        <option value="12">12 %</option>
-                                        <option value="18">18 %</option>
-                                        <option value="28">28 %</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-1">
-                                    <input type="text" name="rate[]" class="form-control" placeholder="Rate">
-                                </div>
-                                <div class="col-md-1">
-                                    <select class="form-control" name="unit[]">
-                                        <option value="" selected>Select</option>
-                                        <?php if($units){ foreach($units as $unit){?>
-                                        <option value="<?=$unit->id?>"><?=$unit->name?></option>
-                                        <?php } }?>
-                                    </select>
-                                </div>
-                                <div class="col-md-1">
-                                    <a href="javascript:void(0);" class="add_button" title="Add Item"><i class="fa fa-plus-circle fa-2x text-success"></i></a>
-                                </div>
-                            </div>
+                            </form>
                         </div>
 
-                        <div class="text-center">
+                        <!-- <div class="text-center">
+                            <a href="javascript:void(0);" class="btn btn-success btn-sm add_button" title="Add New Item"><i class="fa fa-plus-circle"></i> Add More Items</a>
                             <button type="submit" class="btn btn-primary">Submit</button>
-                        </div>
+                        </div> -->
                     </form>
                 </div>
             </div>
@@ -221,52 +228,57 @@ $controller_route   = $moduleDetail['controller_route'];
         var maxField = 10; //Input fields increment limitation
         var addButton = $('.add_button'); //Add button selector
         var wrapper = $('.field_wrapper'); //Input field wrapper
-        var fieldHTML = '<div class="row item-cover">\
-                            <div class="col-md-1">\
-                                <select class="form-control" name="item_category[]">\
-                                    <option value="" selected>Select</option>\
-                                    <?php if($cats){ foreach($cats as $cat){?>
-                                    <option value="<?=$cat->category_id?>"><?=$cat->category_alias?></option>\
-                                    <?php } }?>
-                                </select>\
+        var fieldHTML = '<form method="POST" action="<?=base_url('admin/companies/approve-item')?>">\
+                            <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">\
+                            <input type="hidden" name="id" value="<?=encoded($assignItem->id)?>">\
+                            <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">\
+                            <div class="row item-cover">\
+                                <div class="col-md-1">\
+                                    <select class="form-control" name="item_category[]">\
+                                        <option value="" selected>Select</option>\
+                                        <?php if($cats){ foreach($cats as $cat){?>
+                                        <option value="<?=$cat->category_id?>"><?=$cat->category_alias?></option>\
+                                        <?php } }?>
+                                    </select>\
+                                </div>\
+                                <div class="col-md-2">\
+                                    <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex">\
+                                </div>\
+                                <div class="col-md-2">\
+                                    <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name">\
+                                </div>\
+                                <div class="col-md-2">\
+                                    <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name">\
+                                </div>\
+                                <div class="col-md-1">\
+                                    <input type="text" name="hsn[]" class="form-control" placeholder="HSN">\
+                                </div>\
+                                <div class="col-md-1">\
+                                    <select class="form-control" name="gst[]">\
+                                        <option value="" selected>Select</option>\
+                                        <option value="0">0 %</option>\
+                                        <option value="5">5 %</option>\
+                                        <option value="12">12 %</option>\
+                                        <option value="18">18 %</option>\
+                                        <option value="28">28 %</option>\
+                                    </select>\
+                                </div>\
+                                <div class="col-md-1">\
+                                    <input type="text" name="rate[]" class="form-control" placeholder="Rate">\
+                                </div>\
+                                <div class="col-md-1">\
+                                    <select class="form-control" name="unit[]">\
+                                        <option value="" selected>Select</option>\
+                                        <?php if($units){ foreach($units as $unit){?>
+                                        <option value="<?=$unit->id?>"><?=$unit->name?></option>\
+                                        <?php } }?>
+                                    </select>\
+                                </div>\
+                                <div class="col-md-1">\
+                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm remove_button" title="Remove Item"><i class="fa fa-trash"></i> Remove</a>\
+                                </div>\
                             </div>\
-                            <div class="col-md-2">\
-                                <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex">\
-                            </div>\
-                            <div class="col-md-2">\
-                                <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name">\
-                            </div>\
-                            <div class="col-md-2">\
-                                <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name">\
-                            </div>\
-                            <div class="col-md-1">\
-                                <input type="text" name="hsn[]" class="form-control" placeholder="HSN">\
-                            </div>\
-                            <div class="col-md-1">\
-                                <select class="form-control" name="gst[]">\
-                                    <option value="" selected>Select</option>\
-                                    <option value="0">0 %</option>\
-                                    <option value="5">5 %</option>\
-                                    <option value="12">12 %</option>\
-                                    <option value="18">18 %</option>\
-                                    <option value="28">28 %</option>\
-                                </select>\
-                            </div>\
-                            <div class="col-md-1">\
-                                <input type="text" name="rate[]" class="form-control" placeholder="Rate">\
-                            </div>\
-                            <div class="col-md-1">\
-                                <select class="form-control" name="unit[]">\
-                                    <option value="" selected>Select</option>\
-                                    <?php if($units){ foreach($units as $unit){?>
-                                    <option value="<?=$unit->id?>"><?=$unit->name?></option>\
-                                    <?php } }?>
-                                </select>\
-                            </div>\
-                            <div class="col-md-1">\
-                                <a href="javascript:void(0);" class="remove_button" title="Remove Item"><i class="fa fa-minus-circle fa-2x text-danger"></i></a>\
-                            </div>\
-                        </div>'; //New input field html 
+                        </form>';
         var x = 1; //Initial field counter is 1
         
         // Once add button is clicked

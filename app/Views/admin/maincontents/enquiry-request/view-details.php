@@ -1,3 +1,13 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+
+<style type="text/css">
+    .choices__list--multiple .choices__item {
+        background-color: #48974e;
+        border: 1px solid #48974e;
+    }
+</style>
+
 <!-- for inquiry tracking -->
   <style type="text/css">
     .progress-bar-wrapper ul.progress-bar {
@@ -181,10 +191,21 @@ $controller_route   = $moduleDetail['controller_route'];
                             <?php } else {?>
                                 <?php if($row->status == 1){?>
                                     <h6 class="badge bg-success"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
+                                    <p><?=(($row->accepted_date != '')?date_format(date_create($row->accepted_date), "M d, Y h:i A"):'')?></p>
+
+                                    <!-- share to vendors -->
+                                        <!-- <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#shareModal"><i class="fa fa-share-alt"></i> Share Details To Vendors</button> -->
+                                        <?php
+                                        $sharedLink = base_url('enquiry-request/'.encoded($row->id));
+                                        ?>
+                                        <a href="whatsapp://send?text=<?=$sharedLink?>" class="btn btn-primary btn-sm" data-action="share/whatsapp/share"><i class="fa fa-share-alt"></i> Share Details To Vendors via Whatsapp</a>
+                                    <!-- share to vendors -->
+
                                 <?php } elseif($row->status == 9){?>
                                     <h6 class="badge bg-danger"><i class="fa fa-times-circle"></i> REJECTED</h6>
+                                    <p><?=(($row->accepted_date != '')?date_format(date_create($row->accepted_date), "M d, Y h:i A"):'')?></p>
                                 <?php }?>
-                                <p><?=(($row->accepted_date != '')?date_format(date_create($row->accepted_date), "M d, Y h:i A"):'')?></p>
+                                
                             <?php }?>
                         </div>
                         <div class="col-md-6">
@@ -320,7 +341,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                                     <?php if($enquiryProduct->status){?>
                                                         <span class="badge bg-success">APPROVED</span>
                                                     <?php } else {?>
-                                                        <span class="badge bg-danger" data-bs-toggle="modal" data-bs-target="#verticalycentered<?=$enquiryProduct->id?>" data-backdrop="static" data-keyboard="false">CLICK APPROVED</span>
+                                                        <span class="badge bg-danger" data-bs-toggle="modal" data-bs-target="#verticalycentered<?=$enquiryProduct->id?>" data-backdrop="static" data-keyboard="false">CLICK TO APPROVED</span>
                                                     <?php }?>
                                                 </td>
                                             </tr>
@@ -337,17 +358,54 @@ $controller_route   = $moduleDetail['controller_route'];
 
     </div>
 </section>
-<?php if($enquiryPendingProducts){ $slNo=1; foreach($enquiryPendingProducts as $enquiryPendingProduct){?>
+
+<!-- share to vendor modal -->
+    <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form method="POST">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><strong>Share Details To Vendors : <?=$row->enquiry_no?></strong></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="mode" value="share_vendor">
+                        <input type="hidden" name="enq_id" value="<?=$row->id?>">
+                        <input type="hidden" name="company_id" value="<?=$row->company_id?>">
+                        <input type="hidden" name="plant_id" value="<?=$row->plant_id?>">
+                        <div class="form-group">
+                            <label for="choices-multiple-remove-button">Vendors</label>
+                            <select name="vendors[]" id="choices-multiple-remove-button" multiple>
+                                <?php if($vendors){ foreach($vendors as $vendor){?>
+                                    <?php
+                                    $checkVendorShare = $common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['enq_id' => $row->id, 'vendor_id' => $vendor->id]);
+                                    if($checkVendorShare <= 0){
+                                    ?>
+                                        <option value="<?=$vendor->id?>"><?=$vendor->company_name?></option>
+                                    <?php }?>
+                                <?php } }?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Share</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+<!-- share to vendor modal -->
+<!-- item approve modal-->
+    <?php if($enquiryPendingProducts){ $slNo=1; foreach($enquiryPendingProducts as $enquiryPendingProduct){?>
     <?php
     $getItem = $common_model->find_data('ecomm_company_items', 'row', ['enq_product_id' => $enquiryPendingProduct->id]);
     ?>
-    <!-- item approve modal-->
     <div class="modal fade" id="verticalycentered<?=$enquiryPendingProduct->id?>" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <form method="POST" action="<?=base_url('admin/companies/approve-item')?>">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Vertically Centered</h5>
+                        <h5 class="modal-title">Enquiry Item Approve</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -411,9 +469,9 @@ $controller_route   = $moduleDetail['controller_route'];
                 </div>
             </form>
         </div>
-      </div>
-    <!-- item approve modal-->
-<?php } }?>
+    </div>
+    <?php } }?>
+<!-- item approve modal-->
 <!-- reject request modal -->
     <div class="modal fade" id="rejectRequest" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -428,23 +486,22 @@ $controller_route   = $moduleDetail['controller_route'];
         </div>
     </div>
 <!-- reject request modal -->
-<?php if($enquiryProducts){ $slNo=1; foreach($enquiryProducts as $enquiryProduct){?>
-    <?php
-    $enquiryImages      = [];
-    $new_product_images = json_decode($enquiryProduct->new_product_image);
-    if(!empty($new_product_images)){
-        for($i=0;$i<count($new_product_images);$i++){
-            $enquiryImages[]      = getenv('app.uploadsURL').'enquiry/'.$new_product_images[$i];
-        }
-    }
-        
-    ?>
-    <!-- image modal -->
+<!-- image modal -->
+    <?php if($enquiryProducts){ $slNo=1; foreach($enquiryProducts as $enquiryProduct){?>
+        <?php
+        $enquiryImages      = [];
+        $new_product_images = json_decode($enquiryProduct->new_product_image);
+        if(!empty($new_product_images)){
+            for($i=0;$i<count($new_product_images);$i++){
+                $enquiryImages[]      = getenv('app.uploadsURL').'enquiry/'.$new_product_images[$i];
+            }
+        } 
+        ?>
         <div class="modal fade" id="enquiryImageModal<?=$enquiryProduct->id?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg  modal-dialog-centered" role="document">
               <div class="modal-content">
                 <div class="modal-header" id="enquiryImageTitle">
-                  dgdgdsds
+                  Enquiry Item Images : <?=$row->enquiry_no?>
                 </div>
                 <div class="modal-body" id="enquiryImageBody">
                     <div id="home-successstories" class="owl-carousel owl-theme owl-loaded owl-drag">
@@ -460,8 +517,9 @@ $controller_route   = $moduleDetail['controller_route'];
               </div>
             </div>
         </div>
-    <!-- image modal -->
-<?php } }?>
+    <?php } }?>
+<!-- image modal -->
+
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> -->
 <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <!-- progress bar -->
@@ -522,3 +580,14 @@ $controller_route   = $moduleDetail['controller_route'];
         });
     }
 </script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){    
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+            maxItemCount:30,
+            searchResultLimit:30,
+            renderChoiceLimit:30
+        });     
+    });
+</script> -->
