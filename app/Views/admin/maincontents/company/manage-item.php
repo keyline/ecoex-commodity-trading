@@ -142,7 +142,7 @@ $controller_route   = $moduleDetail['controller_route'];
                             <?php } }?>
                             <form method="POST" action="">
                                 <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">
-                                <input type="hidden" name="id" value="<?=encoded($assignItem->id)?>">
+                                <input type="hidden" name="id" value="<?=encoded($company_id)?>">
                                 <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">
                                 <div class="row item-cover">
                                     <div class="col-md-1">
@@ -230,7 +230,6 @@ $controller_route   = $moduleDetail['controller_route'];
         var wrapper = $('.field_wrapper'); //Input field wrapper
         var fieldHTML = '<form method="POST" action="<?=base_url('admin/companies/approve-item')?>">\
                             <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">\
-                            <input type="hidden" name="id" value="<?=encoded($assignItem->id)?>">\
                             <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">\
                             <div class="row item-cover">\
                                 <div class="col-md-1">\
