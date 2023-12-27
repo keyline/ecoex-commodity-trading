@@ -2809,6 +2809,7 @@ class ApiController extends BaseController
                                 'plant_state'           => (($getPlant)?$getPlant->state:''),
                                 'plant_pincode'         => (($getPlant)?$getPlant->pincode:''),
                                 'plant_location'        => (($getPlant)?$getPlant->location:''),
+                                'enquiry_remarks'       => $enquiry->enquiry_remarks,
                                 'requestList'           => $requestList,
                             ];
 
