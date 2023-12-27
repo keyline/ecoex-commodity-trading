@@ -193,11 +193,23 @@ $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['stat
     </li>
     
     <li class="nav-item">
-        <a class="nav-link <?=(($pageSegment == 'notifications')?'active':'')?>" href="<?=base_url('admin/notifications/list')?>">
-            <i class="fa fa-envelope"></i>
-            <span>Notifications</span>
+        <a class="nav-link <?=(($pageSegment == 'notifications' || $pageSegment == 'notifications')?'':'collapsed')?> <?=(($pageSegment == 'notifications' || $pageSegment == 'notifications')?'active':'')?>" data-bs-target="#notification-nav" data-bs-toggle="collapse" href="#">
+            <i class="fa fa-envelope"></i><span>Notifications</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
+        <ul id="notification-nav" class="nav-content collapse <?=(($pageSegment == 'notifications' || $pageSegment == 'notifications')?'show':'')?>" data-bs-parent="#sidebar-nav">
+            <li>
+                <a class="<?=(($pageSegment == 'notifications')?'active':'')?>" href="<?=base_url('admin/notifications/list')?>">
+                    <i class="fa fa-arrow-right"></i><span>From Admin</span>
+                </a>
+            </li>
+            <li>
+                <a class="<?=(($pageSegment == 'notifications')?'active':'')?>" href="<?=base_url('admin/notifications/list_from_app')?>">
+                    <i class="fa fa-arrow-right"></i><span>From App</span>
+                </a>
+            </li>
+        </ul>
     </li>
+    
     <li class="nav-item">
         <a class="nav-link <?=(($pageSegment == 'email-logs')?'active':'')?>" href="<?=base_url('admin/email-logs')?>">
             <i class="fa fa-envelope"></i>

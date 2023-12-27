@@ -296,5 +296,16 @@
             //     });
             // }
         </script>
+        <script type="text/javascript">
+            function copyToClipboard() {
+                var $temp = $("<input>");
+                $("body").append($temp);
+                $temp.val($('#whatsapp_link').text()).select();
+                console.log($temp.val($('#whatsapp_link').text()).select());
+                document.execCommand("copy");
+                $temp.remove();
+                toastAlert("success", 'Link Copied To Clipboard !!!');
+            }
+        </script>
     </body>
 </html>

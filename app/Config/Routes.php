@@ -172,6 +172,7 @@ $routes->get('/enquiry-request/(:any)', 'Home::enquiryRequest/$1');
 			$routes->match(['get', 'post'], "notifications/delete/(:any)", "NotificationController::confirm_delete/$1");
 			$routes->match(['get', 'post'], "notifications/change-status/(:any)", "NotificationController::change_status/$1");
 			$routes->match(['get', 'post'], "notifications/send/(:any)", "NotificationController::send/$1");
+			$routes->match(['get'], "notifications/list_from_app", "NotificationController::list_from_app");
 		// notifications
 	});
 /* ADMIN PANEL */

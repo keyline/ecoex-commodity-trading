@@ -25,10 +25,10 @@ class NotificationController extends BaseController {
     public function list()
     {
         $data['moduleDetail']       = $this->data;
-        $title                      = 'Manage '.$this->data['title'];
+        $title                      = 'Manage '.$this->data['title'].' From ADMIN';
         $page_name                  = 'notification/list';
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
-        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status!=' => 3], '', '', '', $order_by);
+        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status!=' => 3, 'source' => 'FROM ADMIN'], '', '', '', $order_by);
         echo $this->layout_after_login($title,$page_name,$data);
     }
     public function add()
@@ -155,5 +155,14 @@ class NotificationController extends BaseController {
             $this->session->setFlashdata('error_message', $this->data['title'].' not found');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
         }
+    }
+    public function list_from_app()
+    {
+        $data['moduleDetail']       = $this->data;
+        $title                      = 'Manage '.$this->data['title'].' From APP';
+        $page_name                  = 'notification/list-from-app';
+        $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
+        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status!=' => 3, 'source' => 'FROM APP'], '', '', '', $order_by);
+        echo $this->layout_after_login($title,$page_name,$data);
     }
 }

@@ -153,6 +153,18 @@ class EnquiryRequestController extends BaseController {
                                 'data'      => [],
                             ];
                             $this->pushNotification($fcm_token, $messageData);
+                            $users[]    = $getEnquiry->plant_id;
+                            $pushData   = [
+                                'source'            => 'FROM APP',
+                                'title'             => 'Enquiry Request Accepted',
+                                'description'       => 'Enquiry Request ('.(($getEnquiry)?$getEnquiry->enquiry_no:"").') Accepted By EcoEx',
+                                'user_type'         => 'PLANT',
+                                'users'             => json_encode($users),
+                                'is_send'           => 1,
+                                'send_timestamp'    => date('Y-m-d H:i:s'),
+                                'status'            => 1,
+                            ];
+                        $this->common_model->save_data('notifications', $pushData, '', 'id');
                         }
                     }
                 /* send push */
@@ -191,6 +203,18 @@ class EnquiryRequestController extends BaseController {
                             'data'      => [],
                         ];
                         $this->pushNotification($fcm_token, $messageData);
+                        $users[]    = $getEnquiry->plant_id;
+                        $pushData   = [
+                            'source'            => 'FROM APP',
+                            'title'             => 'Enquiry Request Rejected',
+                            'description'       => 'Enquiry Request ('.(($getEnquiry)?$getEnquiry->enquiry_no:"").') Rejected By EcoEx',
+                            'user_type'         => 'PLANT',
+                            'users'             => json_encode($users),
+                            'is_send'           => 1,
+                            'send_timestamp'    => date('Y-m-d H:i:s'),
+                            'status'            => 1,
+                        ];
+                        $this->common_model->save_data('notifications', $pushData, '', 'id');
                     }
                 }
             /* send push */

@@ -78,6 +78,26 @@ $controller_route   = $moduleDetail['controller_route'];
                             <td><?=(($row->email_verified_at != '')?date_format(date_create($row->email_verified_at), "M d Y h:i A"):'')?></td>
                         </tr>
                         <tr>
+                            <td>Alternate Email 1</td>
+                            <td><?=$row->alternate_email1?></td>
+                        </tr>
+                        <tr>
+                            <td>Alternate Email 2</td>
+                            <td><?=$row->alternate_email2?></td>
+                        </tr>
+                        <tr>
+                            <td>Alternate Email 3</td>
+                            <td><?=$row->alternate_email3?></td>
+                        </tr>
+                        <tr>
+                            <td>Alternate Email 4</td>
+                            <td><?=$row->alternate_email4?></td>
+                        </tr>
+                        <tr>
+                            <td>Alternate Email 5</td>
+                            <td><?=$row->alternate_email5?></td>
+                        </tr>
+                        <tr>
                             <td>Phone</td>
                             <td><?=$row->phone?></td>
                         </tr>
