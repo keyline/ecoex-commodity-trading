@@ -2584,7 +2584,7 @@ class ApiController extends BaseController
                                         'new_product'                   => 0,
                                         'product_id'                    => $requestList[$k]['product_id'],
                                         'hsn'                           => (($getCompanyProduct)?$getCompanyProduct->hsn:''),
-                                        'qty'                           => $requestList[$k]['qty'],
+                                        'qty'                           => (($requestList[$k]['qty'] != '')?$requestList[$k]['qty']:0.00),
                                         'unit'                          => (($getCompanyProduct)?$getCompanyProduct->unit:0),
                                         'new_product_image'             => json_encode($item_images),
                                         'status'                        => 1,
@@ -3056,7 +3056,7 @@ class ApiController extends BaseController
                                                 $fields2 = [
                                                     'product_id'                    => $requestList[$k]['product_id'],
                                                     'hsn'                           => $requestList[$k]['hsn'],
-                                                    'qty'                           => $requestList[$k]['qty'],
+                                                    'qty'                           => (($requestList[$k]['qty'] != '')?$requestList[$k]['qty']:0.00),
                                                     'unit'                          => (($getCompanyProduct)?$getCompanyProduct->unit:0),
                                                     'new_product_image'             => json_encode($item_images),
                                                     'status'                        => 1,
