@@ -173,7 +173,7 @@ $controller_route   = $moduleDetail['controller_route'];
                             $enquiryStatus = 'Completed';
                         } elseif($row->status == 9){
                             $enquiryStatus = 'Rejected';
-                        }                       
+                        }
                         ?>
                         <div class="progress-bar-wrapper" style="margin-bottom: 10px;"></div>
                     <!-- inquiry flow tracking -->
@@ -199,6 +199,9 @@ $controller_route   = $moduleDetail['controller_route'];
                                         $sharedLink = base_url('enquiry-request/'.encoded($row->id));
                                         ?>
                                         <a href="whatsapp://send?text=<?=$sharedLink?>" class="btn btn-primary btn-sm" data-action="share/whatsapp/share"><i class="fa fa-share-alt"></i> Share Details To Vendors via Whatsapp</a>
+                                        <a href="" class="btn btn-info btn-sm" onclick="copyToClipboard()"><i class="fa fa-copy"></i> Copy Whatsapp Link For Share</a>
+                                        <span id="whatsapp_link" style="display: none;"><?=$sharedLink?></span>
+                                        <input type="hidden" placeholder="Paste here" />
                                     <!-- share to vendors -->
 
                                 <?php } elseif($row->status == 9){?>

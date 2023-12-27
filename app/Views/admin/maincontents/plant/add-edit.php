@@ -176,7 +176,7 @@ $controller_route   = $moduleDetail['controller_route'];
                         <div class="row mb-3">
                             <label for="password" class="col-md-2 col-lg-2 col-form-label">Password <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="password" class="form-control" id="password" onkeypress="return isNumber(event)" maxlength="15" minlength="8" <?=(($row)?'':'required')?>>
+                                <input type="password" name="password" class="form-control" id="password" maxlength="15" minlength="8" <?=(($row)?'':'required')?>>
                                 <?php if($row){?>
                                     <small class="text-info">* Please leave blank when you dont want to change password</small><br>
                                 <?php }?>

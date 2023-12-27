@@ -43,6 +43,11 @@ $controller_route   = $moduleDetail['controller_route'];
               $pincode          = $row->pincode;
               $location         = $row->location;
               $email            = $row->email;
+              $alternate_email1            = $row->alternate_email1;
+              $alternate_email2            = $row->alternate_email2;
+              $alternate_email3            = $row->alternate_email3;
+              $alternate_email4            = $row->alternate_email4;
+              $alternate_email5            = $row->alternate_email5;
               $phone            = $row->phone;
               $password         = $row->password;
               $profile_image    = $row->profile_image;
@@ -68,6 +73,11 @@ $controller_route   = $moduleDetail['controller_route'];
               $pincode          = '';
               $location         = '';
               $email            = '';
+              $alternate_email1            = '';
+              $alternate_email2            = '';
+              $alternate_email3            = '';
+              $alternate_email4            = '';
+              $alternate_email5            = '';
               $phone            = '';
               $password         = '';
               $profile_image    = '';
@@ -148,6 +158,38 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <input type="email" name="email" class="form-control" id="company_email" value="<?=$email?>" required autocomplete="off">
                             </div>
                         </div>
+
+                        <div class="row mb-3">
+                            <label for="alternate_email1" class="col-md-2 col-lg-2 col-form-label">Alternate Email 1</label>
+                            <div class="col-md-10 col-lg-10">
+                                <input type="email" name="alternate_email1" class="form-control" id="alternate_email1" value="<?=$alternate_email1?>" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="alternate_email2" class="col-md-2 col-lg-2 col-form-label">Alternate Email 2</label>
+                            <div class="col-md-10 col-lg-10">
+                                <input type="email" name="alternate_email2" class="form-control" id="alternate_email2" value="<?=$alternate_email2?>" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="alternate_email3" class="col-md-2 col-lg-2 col-form-label">Alternate Email 3</label>
+                            <div class="col-md-10 col-lg-10">
+                                <input type="email" name="alternate_email3" class="form-control" id="alternate_email3" value="<?=$alternate_email3?>" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="alternate_email4" class="col-md-2 col-lg-2 col-form-label">Alternate Email 4</label>
+                            <div class="col-md-10 col-lg-10">
+                                <input type="email" name="alternate_email4" class="form-control" id="alternate_email4" value="<?=$alternate_email4?>" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="alternate_email5" class="col-md-2 col-lg-2 col-form-label">Alternate Email 5</label>
+                            <div class="col-md-10 col-lg-10">
+                                <input type="email" name="alternate_email5" class="form-control" id="alternate_email5" value="<?=$alternate_email5?>" autocomplete="off">
+                            </div>
+                        </div>
+
                         <div class="row mb-3">
                             <label for="company_phone" class="col-md-2 col-lg-2 col-form-label">Phone <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
@@ -157,7 +199,7 @@ $controller_route   = $moduleDetail['controller_route'];
                         <div class="row mb-3">
                             <label for="password" class="col-md-2 col-lg-2 col-form-label">Password <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="password" name="password" class="form-control" id="password" onkeypress="return isNumber(event)" maxlength="15" minlength="8" <?=(($row)?'':'required')?>>
+                                <input type="password" name="password" class="form-control" id="password" maxlength="15" minlength="8" <?=(($row)?'':'required')?>>
                                 <?php if($row){?>
                                     <small class="text-info">* Please leave blank when you dont want to change password</small><br>
                                 <?php }?>
