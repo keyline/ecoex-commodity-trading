@@ -24,11 +24,19 @@ class PlantController extends BaseController {
     }
     public function list()
     {
+        $userType                   = $this->session->user_type;
+        $company_id                 = $this->session->company_id;
         $data['moduleDetail']       = $this->data;
         $title                      = 'Manage '.$this->data['title'];
         $page_name                  = 'plant/list';
+
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
-        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status!=' => 3, 'type' => 'PLANT'], '', '', '', $order_by);
+        if($userType == 'MA'){
+            $conditions                 = ['status!=' => 3, 'type' => 'PLANT'];
+        } else {
+            $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'parent_id' => $company_id];
+        }
+        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
         echo $this->layout_after_login($title,$page_name,$data);
     }
     public function add()
@@ -132,6 +140,8 @@ class PlantController extends BaseController {
                 'account_type'          => $this->request->getPost('account_type'),
                 'account_number'        => $this->request->getPost('account_number'),
                 'cancelled_cheque'      => $cancelled_cheque,
+                'created_by'            => $this->session->user_id,
+                'updated_by'            => $this->session->user_id,
                 'status'                => 2,
             );
             // pr($postData);
@@ -241,6 +251,8 @@ class PlantController extends BaseController {
                     'account_type'          => $this->request->getPost('account_type'),
                     'account_number'        => $this->request->getPost('account_number'),
                     'cancelled_cheque'      => $cancelled_cheque,
+                    'created_by'            => $this->session->user_id,
+                    'updated_by'            => $this->session->user_id,
                 );
             } else {
                 $postData   = array(
@@ -268,6 +280,8 @@ class PlantController extends BaseController {
                     'account_type'          => $this->request->getPost('account_type'),
                     'account_number'        => $this->request->getPost('account_number'),
                     'cancelled_cheque'      => $cancelled_cheque,
+                    'created_by'            => $this->session->user_id,
+                    'updated_by'            => $this->session->user_id,
                 );
             }
             

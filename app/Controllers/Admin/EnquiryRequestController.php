@@ -24,6 +24,8 @@ class EnquiryRequestController extends BaseController {
     }
     public function list($status)
     {
+        $userType                   = $this->session->user_type;
+        $company_id                 = $this->session->company_id;
         $status                     = decoded($status);
         $data['moduleDetail']       = $this->data;
         if($status == 0){
@@ -49,8 +51,14 @@ class EnquiryRequestController extends BaseController {
         }
         $title                      = 'Manage '.$this->data['title'] . ' : '.$stepName;
         $page_name                  = 'enquiry-request/list';
+
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
-        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status' => $status], '', '', '', $order_by);
+        if($userType == 'MA'){
+            $conditions                 = ['status' => $status];
+        } else {
+            $conditions                 = ['status' => $status, 'company_id' => $company_id];
+        }
+        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
         echo $this->layout_after_login($title,$page_name,$data);
     }
     public function viewDetail($enq_id)

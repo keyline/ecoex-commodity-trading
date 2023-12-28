@@ -11,6 +11,9 @@ $getEnquiryItems            = $this->common_model->find_data('ecomm_enquiry_prod
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Enquiry Request Deatils</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Favicons -->
+    <link href="<?=getenv('app.uploadsURL').$general_settings->site_favicon?>" rel="icon">
+    <link href="<?=getenv('app.uploadsURL'.$general_settings->site_favicon)?>" rel="apple-touch-icon">
     <link rel="stylesheet" href="<?=getenv('app.adminAssetsURL')?>lightbox/lightbox.min.css">
     
     <style>
@@ -37,7 +40,11 @@ $getEnquiryItems            = $this->common_model->find_data('ecomm_enquiry_prod
 </head>
 <body>
 <div class="container mt-4">
-    <h3 class="text-center">Enquiry Request Details</h3>
+
+    <h3 class="text-center">
+        <img src="<?=getenv('app.uploadsURL').$general_settings->site_logo?>" alt="<?=$general_settings->site_name?>">
+        <p class="mt-3">Enquiry Request Details</p>
+    </h3>
     <div class=" justify-content-center d-flex">
         <div class="row col-md-8 ">
             <div class="col-md-4 tablelook">

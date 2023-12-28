@@ -1,12 +1,12 @@
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
-<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script> -->
 
-<style type="text/css">
+<!-- <style type="text/css">
     .choices__list--multiple .choices__item {
         background-color: #48974e;
         border: 1px solid #48974e;
     }
-</style>
+</style> -->
 
 <!-- for inquiry tracking -->
   <style type="text/css">
@@ -77,22 +77,22 @@
         box-shadow: 0 0 0 2px #26a541;
     }
 
-    #home-successstories .owl-nav {
+    .home-successstories .owl-nav {
         position: absolute;
         top: 50%;
         transform: translate(0,-50%);
         width: 100%;
         display: block;
     }
-    #home-successstories .owl-nav button {
+    .home-successstories .owl-nav button {
         width: 50px;
         height: 50px;
-        border: 2px solid #fff;
-        color: #fff;
-        font-size: 22px;
+        border: 2px solid #fff !important;
+        color: #fff !important;
+        font-size: 22px !important;
         border-radius: 50px;
     }
-    #home-successstories .owl-nav button.owl-next {
+    .home-successstories .owl-nav button.owl-next {
         right: 0;
         position: absolute;
     }
@@ -501,13 +501,13 @@ $controller_route   = $moduleDetail['controller_route'];
         } 
         ?>
         <div class="modal fade" id="enquiryImageModal<?=$enquiryProduct->id?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg  modal-dialog-centered" role="document">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
               <div class="modal-content">
                 <div class="modal-header" id="enquiryImageTitle">
                   Enquiry Item Images : <?=$row->enquiry_no?>
                 </div>
                 <div class="modal-body" id="enquiryImageBody">
-                    <div id="home-successstories" class="owl-carousel owl-theme owl-loaded owl-drag">
+                    <div id="" class="owl-carousel owl-theme owl-loaded home-successstories owl-drag">
                         <?php if(!empty($enquiryImages)){ for($enqImg=0;$enqImg<count($enquiryImages);$enqImg++){?>
                             <div class="item">
                                 <div class="sucess_boximg">

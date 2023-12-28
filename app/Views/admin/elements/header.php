@@ -1,3 +1,7 @@
+<?php
+$userType                   = $session->user_type;
+$company_id                 = $session->company_id;
+?>
 <div class="d-flex align-items-center justify-content-between">
     <a href="index.html" class="logo d-flex align-items-center">
     <!-- <img src="<?=getenv('app.adminAssetsURL')?>assets/img/logo.png" alt="<?=$general_settings->site_name?>"> -->
@@ -148,10 +152,25 @@
         <!-- End Messages Nav -->
         <li class="nav-item dropdown pe-3">
             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="javascript:void(0);" data-bs-toggle="dropdown">
-                <?php if($admin->profile_image != ''){?>
-                    <img src="<?=getenv('app.uploadsURL').$admin->profile_image?>" alt="<?=$admin->name?>" class="rounded-circle">
+                <?php if($userType == 'MA'){?>
+                    <?php if($admin->profile_image != ''){?>
+                        <img src="<?=getenv('app.uploadsURL').$admin->profile_image?>" alt="<?=$admin->name?>" class="rounded-circle">
+                    <?php } else {?>
+                        <img src="<?=getenv('app.NO_IMAGE')?>" alt="<?=$admin->name?>" class="rounded-circle">
+                    <?php }?>
                 <?php } else {?>
-                    <img src="<?=getenv('app.NO_IMAGE')?>" alt="<?=$admin->name?>" class="rounded-circle">
+                    <?php
+                    $getCompany = $common_model->find_data('ecoex_companies', 'row', ['id' => $company_id]);
+                    if($getCompany){
+                        if($getCompany->profile_image != ''){
+                    ?>
+                            <img src="<?=getenv('app.uploadsURL').'user/'.$getCompany->profile_image?>" alt="<?=$getCompany->company_name?>" class="rounded-circle">
+                        <?php } else {?>
+                            <img src="<?=getenv('app.NO_IMAGE')?>" alt="<?=$session->name?>" class="rounded-circle">
+                        <?php } ?>
+                    <?php } else {?>
+                        <img src="<?=getenv('app.NO_IMAGE')?>" alt="<?=$session->name?>" class="rounded-circle">
+                    <?php } ?>
                 <?php }?>
                 <span class="d-none d-md-block dropdown-toggle ps-2"><?=$session->name?></span>
             </a><!-- End Profile Iamge Icon -->
@@ -163,12 +182,14 @@
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                <li>
-                    <a class="dropdown-item d-flex align-items-center" href="<?=base_url('admin/settings')?>">
-                    <i class="bi bi-gear"></i>
-                    <span>Account Settings</span>
-                    </a>
-                </li>
+                <?php if($userType == 'MA'){?>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="<?=base_url('admin/settings')?>">
+                        <i class="bi bi-gear"></i>
+                        <span>Account Settings</span>
+                        </a>
+                    </li>
+                <?php }?>
                 <li>
                     <hr class="dropdown-divider">
                 </li>
