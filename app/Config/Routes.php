@@ -7,7 +7,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index');
 $routes->get('/enquiry-request/(:any)', 'Home::enquiryRequest/$1');
-
+$routes->get('/delete-account-request', 'Home::deleteAccountRequest');
 /* ADMIN PANEL */
 	$routes->group("admin", ["namespace" => "App\Controllers\Admin"], function($routes){
 		// authentication

@@ -41,9 +41,73 @@ class VendorController extends BaseController {
         $data['memberTypes']        = $this->data['model']->find_data('ecomm_member_types', 'array', ['status' => 1]);
 
         if($this->request->getMethod() == 'post') {
+            /* profile image */
+                $file = $this->request->getFile('profile_image');
+                $originalName = $file->getClientName();
+                $fieldName = 'profile_image';
+                if($file!='') {
+                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','image');
+                    if($upload_array['status']) {
+                        $profile_image = $upload_array['newFilename'];
+                    } else {
+                        $profile_image = $data['row']->profile_image;
+                    }
+                } else {
+                    $profile_image = $data['row']->profile_image;
+                }
+            /* profile image */
+            /* GST CERTIFICATE */
+                $file = $this->request->getFile('gst_certificate');
+                $originalName = $file->getClientName();
+                $fieldName = 'gst_certificate';
+                if($file!='') {
+                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
+                    if($upload_array['status']) {
+                        $gst_certificate = $upload_array['newFilename'];
+                    } else {
+                        $gst_certificate = '';
+                    }
+                } else {
+                    $gst_certificate = $data['row']->gst_certificate;
+                }
+            /* GST CERTIFICATE */
+            /* PAN CARD */
+                $file = $this->request->getFile('contact_person_document');
+                $originalName = $file->getClientName();
+                $fieldName = 'contact_person_document';
+                if($file!='') {
+                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
+                    if($upload_array['status']) {
+                        $contact_person_document = $upload_array['newFilename'];
+                    } else {
+                        $contact_person_document = '';
+                    }
+                } else {
+                    $contact_person_document = $data['row']->contact_person_document;
+                }
+            /* PAN CARD */
             $postData   = array(
-                'name'          => strtoupper($this->request->getPost('name')),
-                'created_by'    => $this->session->get('user_id'),
+                'gst_no'                                    => $this->request->getPost('gst_no'),
+                'gst_certificate'                           => $gst_certificate,
+                'company_name'                              => $this->request->getPost('company_name'),
+                'full_address'                              => $this->request->getPost('full_address'),
+                'holding_no'                                => $this->request->getPost('holding_no'),
+                'street'                                    => $this->request->getPost('street'),
+                'district'                                  => $this->request->getPost('district'),
+                'state'                                     => $this->request->getPost('state'),
+                'pincode'                                   => $this->request->getPost('pincode'),
+                'location'                                  => $this->request->getPost('location'),
+                'email'                                     => $this->request->getPost('email'),
+                'phone'                                     => $this->request->getPost('phone'),
+                'password'                                  => md5($this->request->getPost('password')),
+                'profile_image'                             => $profile_image,
+                'member_type'                               => $this->request->getPost('member_type'),
+                'contact_person_name'                       => $this->request->getPost('contact_person_name'),
+                'contact_person_designation'                => $this->request->getPost('contact_person_designation'),
+                'contact_person_document'                   => $contact_person_document,
+                'status'                                    => 2,
+                'created_by'                                => $this->session->user_id,
+                'updated_by'                                => $this->session->user_id,
             );
             $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);            
             $this->session->setFlashdata('success_message', $this->data['title'].' inserted successfully');
@@ -110,46 +174,50 @@ class VendorController extends BaseController {
             /* PAN CARD */
             if($this->request->getPost('password') != ''){
                 $postData   = array(
-                    'gst_no'                => $this->request->getPost('gst_no'),
-                    'gst_certificate'       => $gst_certificate,
-                    'company_name'          => $this->request->getPost('company_name'),
-                    'full_address'          => $this->request->getPost('full_address'),
-                    'holding_no'            => $this->request->getPost('holding_no'),
-                    'street'                => $this->request->getPost('street'),
-                    'district'              => $this->request->getPost('district'),
-                    'state'                 => $this->request->getPost('state'),
-                    'pincode'               => $this->request->getPost('pincode'),
-                    'location'              => $this->request->getPost('location'),
-                    'email'                 => $this->request->getPost('email'),
-                    'phone'                 => $this->request->getPost('phone'),
-                    'password'              => md5($this->request->getPost('password')),
-                    'profile_image'         => $profile_image,
-                    'member_type'           => $this->request->getPost('member_type'),
+                    'gst_no'                                    => $this->request->getPost('gst_no'),
+                    'gst_certificate'                           => $gst_certificate,
+                    'company_name'                              => $this->request->getPost('company_name'),
+                    'full_address'                              => $this->request->getPost('full_address'),
+                    'holding_no'                                => $this->request->getPost('holding_no'),
+                    'street'                                    => $this->request->getPost('street'),
+                    'district'                                  => $this->request->getPost('district'),
+                    'state'                                     => $this->request->getPost('state'),
+                    'pincode'                                   => $this->request->getPost('pincode'),
+                    'location'                                  => $this->request->getPost('location'),
+                    'email'                                     => $this->request->getPost('email'),
+                    'phone'                                     => $this->request->getPost('phone'),
+                    'password'                                  => md5($this->request->getPost('password')),
+                    'profile_image'                             => $profile_image,
+                    'member_type'                               => $this->request->getPost('member_type'),
                     'contact_person_name'                       => $this->request->getPost('contact_person_name'),
                     'contact_person_designation'                => $this->request->getPost('contact_person_designation'),
                     'contact_person_document'                   => $contact_person_document,
-                    'status'                => 2,
+                    'status'                                    => 2,
+                    'created_by'                                => $this->session->user_id,
+                    'updated_by'                                => $this->session->user_id,
                 );
             } else {
                 $postData   = array(
-                    'gst_no'                => $this->request->getPost('gst_no'),
-                    'gst_certificate'       => $gst_certificate,
-                    'company_name'          => $this->request->getPost('company_name'),
-                    'full_address'          => $this->request->getPost('full_address'),
-                    'holding_no'            => $this->request->getPost('holding_no'),
-                    'street'                => $this->request->getPost('street'),
-                    'district'              => $this->request->getPost('district'),
-                    'state'                 => $this->request->getPost('state'),
-                    'pincode'               => $this->request->getPost('pincode'),
-                    'location'              => $this->request->getPost('location'),
-                    'email'                 => $this->request->getPost('email'),
-                    'phone'                 => $this->request->getPost('phone'),
-                    'profile_image'         => $profile_image,
-                    'member_type'           => $this->request->getPost('member_type'),
+                    'gst_no'                                    => $this->request->getPost('gst_no'),
+                    'gst_certificate'                           => $gst_certificate,
+                    'company_name'                              => $this->request->getPost('company_name'),
+                    'full_address'                              => $this->request->getPost('full_address'),
+                    'holding_no'                                => $this->request->getPost('holding_no'),
+                    'street'                                    => $this->request->getPost('street'),
+                    'district'                                  => $this->request->getPost('district'),
+                    'state'                                     => $this->request->getPost('state'),
+                    'pincode'                                   => $this->request->getPost('pincode'),
+                    'location'                                  => $this->request->getPost('location'),
+                    'email'                                     => $this->request->getPost('email'),
+                    'phone'                                     => $this->request->getPost('phone'),
+                    'profile_image'                             => $profile_image,
+                    'member_type'                               => $this->request->getPost('member_type'),
                     'contact_person_name'                       => $this->request->getPost('contact_person_name'),
                     'contact_person_designation'                => $this->request->getPost('contact_person_designation'),
                     'contact_person_document'                   => $contact_person_document,
-                    'status'                => 2,
+                    'status'                                    => 2,
+                    'created_by'                                => $this->session->user_id,
+                    'updated_by'                                => $this->session->user_id,
                 );
             }
             $record = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);

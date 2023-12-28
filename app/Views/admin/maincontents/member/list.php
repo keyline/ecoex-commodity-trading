@@ -31,9 +31,9 @@ $controller_route   = $moduleDetail['controller_route'];
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <!-- <h5 class="card-title">
+                    <h5 class="card-title">
                         <a href="<?=base_url('admin/' . $controller_route . '/add/')?>" class="btn btn-outline-success btn-sm">Add <?=$title?></a>
-                    </h5> -->
+                    </h5>
                     <table class="table datatable">
                         <thead>
                             <tr>

@@ -33,6 +33,7 @@ class User extends BaseController {
                                                     'username'          => $checkEmail->username,
                                                     'name'              => $checkEmail->name,
                                                     'email'             => $checkEmail->email,
+                                                    'company_id'        => $checkEmail->company_id,
                                                     'is_admin_login'    => 1
                                                     );
                                 $this->session->set($session_data);
@@ -94,9 +95,6 @@ class User extends BaseController {
                             'activity_details'  => 'We Don\'t Recognize Your Email Address',
                         ];
                         $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
-                        // $this->db                 = \Config\Database::connect();
-                        // echo $this->db->getLastQuery();
-                        // pr($userActivityData);
                         $this->session->setFlashdata('error_message','We Don\'t Recognize Your Email Address !!!');
                         return redirect()->to(base_url("admin"));
                     }                
@@ -215,27 +213,50 @@ class User extends BaseController {
             if(!$this->session->get('is_admin_login')) {
                 return redirect()->to('/admin');
             }
-            $title      = 'Dashboard';
-            $page_name  = 'dashboard';
+            $userType                           = $this->session->user_type;
+            $company_id                         = $this->session->company_id;
+
+            $title                              = 'Dashboard';
+            $page_name                          = 'dashboard';
             $data['company']                    = $this->common_model->find_data('ecoex_companies', 'count', ['status!=' => 3]);
-            $data['plant']                      = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'PLANT']);
             $data['vendor']                     = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'VENDOR']);
-            $data['enquiry']                    = $this->common_model->find_data('ecomm_enquires', 'count', ['status!=' => 10]);
-            $data['approveItem']                = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['status' => 1]);
-            $data['pendingItem']                = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['status' => 0]);
-            $data['step0_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 0]);
-            $data['step1_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
-            $data['step2_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 2]);
-            $data['step3_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 3]);
-            $data['step4_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 4]);
-            $data['step5_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 5]);
-            $data['step6_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 6]);
-            $data['step7_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 7]);
-            $data['step8_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 8]);
-            $data['step9_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 9]);
-            $orderBy[0]                         =  ['field' => 'id', 'type' => 'DESC'];
-            $data['recent_enquiries']           = $this->common_model->find_data('ecomm_enquires', 'array', ['status!=' => 10], '', '', '', $orderBy, 10);
-            // pr($data['recent_enquiries']);
+            $data['itemCategory']               = $this->common_model->find_data('ecomm_product_categories', 'count', ['status' => 1]);
+
+            if($userType == 'MA'){
+                $data['plant']                      = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'PLANT']);
+                $data['enquiry']                    = $this->common_model->find_data('ecomm_enquires', 'count', ['status!=' => 10]);
+                $data['pendingItem']                = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['status' => 0]);
+
+                $data['step0_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 0]);
+                $data['step1_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
+                $data['step2_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 2]);
+                $data['step3_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 3]);
+                $data['step4_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 4]);
+                $data['step5_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 5]);
+                $data['step6_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 6]);
+                $data['step7_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 7]);
+                $data['step8_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 8]);
+                $data['step9_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 9]);
+                $orderBy[0]                         =  ['field' => 'id', 'type' => 'DESC'];
+                $data['recent_enquiries']           = $this->common_model->find_data('ecomm_enquires', 'array', ['status!=' => 10], '', '', '', $orderBy, 10);
+            } else {
+                $data['plant']                      = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'PLANT', 'parent_id' => $company_id]);
+                $data['enquiry']                    = $this->common_model->find_data('ecomm_enquires', 'count', ['status!=' => 10, 'company_id' => $company_id]);
+                $data['pendingItem']                = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['status' => 0, 'company_id' => $company_id]);
+
+                $data['step0_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 0, 'company_id' => $company_id]);
+                $data['step1_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 1, 'company_id' => $company_id]);
+                $data['step2_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 2, 'company_id' => $company_id]);
+                $data['step3_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 3, 'company_id' => $company_id]);
+                $data['step4_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 4, 'company_id' => $company_id]);
+                $data['step5_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 5, 'company_id' => $company_id]);
+                $data['step6_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 6, 'company_id' => $company_id]);
+                $data['step7_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 7, 'company_id' => $company_id]);
+                $data['step8_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 8, 'company_id' => $company_id]);
+                $data['step9_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 9, 'company_id' => $company_id]);
+                $orderBy[0]                         =  ['field' => 'id', 'type' => 'DESC'];
+                $data['recent_enquiries']           = $this->common_model->find_data('ecomm_enquires', 'array', ['status!=' => 10, 'company_id' => $company_id], '', '', '', $orderBy, 10);
+            }
             echo $this->layout_after_login($title,$page_name,$data);
         }
     /* dashboard */

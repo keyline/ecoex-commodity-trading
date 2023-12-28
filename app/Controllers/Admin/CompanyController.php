@@ -24,11 +24,19 @@ class CompanyController extends BaseController {
     }
     public function list()
     {
+        $userType                   = $this->session->user_type;
+        $company_id                 = $this->session->company_id;
         $data['moduleDetail']       = $this->data;
         $title                      = 'Manage '.$this->data['title'];
         $page_name                  = 'company/list';
+
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
-        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status!=' => 3, 'parent_id' => 0], '', '', '', $order_by);
+        if($userType == 'MA'){
+            $conditions                 = ['status!=' => 3, 'parent_id' => 0];
+        } else {
+            $conditions                 = ['status!=' => 3, 'parent_id' => 0, 'id' => $company_id];
+        }
+        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
         echo $this->layout_after_login($title,$page_name,$data);
     }
     public function add()
@@ -135,6 +143,8 @@ class CompanyController extends BaseController {
                 'account_type'          => $this->request->getPost('account_type'),
                 'account_number'        => $this->request->getPost('account_number'),
                 'cancelled_cheque'      => $cancelled_cheque,
+                'created_by'            => $this->session->user_id,
+                'updated_by'            => $this->session->user_id,
                 'status'                => 2,
             );
             // pr($postData);
@@ -154,6 +164,7 @@ class CompanyController extends BaseController {
                     'permanent_address'         => $this->request->getPost('full_address'),
                     'added_user'                => 1,
                     'updated_user'              => 1,
+                    'company_id'                => $record,
                 );
                 // pr($postData);
                 $this->data['model']->save_data('ecoex_admin_user', $postData2, '', 'id');
@@ -266,6 +277,8 @@ class CompanyController extends BaseController {
                     'account_type'          => $this->request->getPost('account_type'),
                     'account_number'        => $this->request->getPost('account_number'),
                     'cancelled_cheque'      => $cancelled_cheque,
+                    'created_by'            => $this->session->user_id,
+                    'updated_by'            => $this->session->user_id,
                 );
 
                 // insert as a sub user of masteradmin of type COMPANY ADMIN
@@ -282,6 +295,7 @@ class CompanyController extends BaseController {
                         'permanent_address'         => $this->request->getPost('full_address'),
                         'added_user'                => 1,
                         'updated_user'              => 1,
+                        'company_id'                => $id,
                     );
                 // insert as a sub user of masteradmin of type COMPANY ADMIN
             } else {
@@ -314,6 +328,8 @@ class CompanyController extends BaseController {
                     'account_type'          => $this->request->getPost('account_type'),
                     'account_number'        => $this->request->getPost('account_number'),
                     'cancelled_cheque'      => $cancelled_cheque,
+                    'created_by'            => $this->session->user_id,
+                    'updated_by'            => $this->session->user_id,
                 );
 
                 // insert as a sub user of masteradmin of type COMPANY ADMIN
@@ -328,6 +344,7 @@ class CompanyController extends BaseController {
                         'permanent_address'         => $this->request->getPost('full_address'),
                         'added_user'                => 1,
                         'updated_user'              => 1,
+                        'company_id'                => $id,
                     );
                 // insert as a sub user of masteradmin of type COMPANY ADMIN
             }

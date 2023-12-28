@@ -45,6 +45,10 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
         <link rel="stylesheet" href="<?=getenv('app.adminAssetsURL');?>assets/owl/owl3.css">
         <script src="<?=getenv('app.adminAssetsURL');?>assets/owl/owl-min.js"></script>
+
+        <!-- <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+        <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script> -->
+
         <script type="text/javascript">
             function toastAlert(type, message, redirectStatus = false, redirectUrl = ''){
                 toastr.options = {
@@ -244,7 +248,7 @@
 
 
             jQuery(document).ready(function() {
-                jQuery("#home-successstories").owlCarousel({
+                jQuery(".home-successstories").owlCarousel({
                     loop: true,
                     margin: 0,
                     dots: false,
