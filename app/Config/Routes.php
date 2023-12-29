@@ -8,6 +8,9 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 $routes->get('/enquiry-request/(:any)', 'Home::enquiryRequest/$1');
 $routes->get('/delete-account-request', 'Home::deleteAccountRequest');
+$routes->post('/delete-account-request', 'Home::deleteAccountRequest');
+$routes->post('/get-email-otp', 'Home::getEmailOTP');
+$routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 /* ADMIN PANEL */
 	$routes->group("admin", ["namespace" => "App\Controllers\Admin"], function($routes){
 		// authentication
