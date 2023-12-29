@@ -81,28 +81,52 @@ $this->common_model         = new CommonModel;
                     <input type="radio" id="user_type3" name="user_type" value="VENDOR" required><label for="user_type3" style="margin-left: 5px; margin-right: 10px;">VENDOR</label>
                 </div>
                 <div class="form-group mb-3">
-                    <label for="email" class="fw-bold">Email</label>
-                    <input type="text" class="form-control" id="email" name="email" placeholder="Email" required>
-                    <button type="button" class="btn btn-primary btn-sm" id="email-otp-btn">Get Email OTP</button>
-                    <input type="hidden" name="generated_email_otp" id="generated_email_otp">
+                    <div class="row align-items-end">
+                        <div class="col-md-10">
+                            <label for="email" class="fw-bold">Email</label>
+                            <input type="text" class="form-control" id="email" name="email" placeholder="Email" required>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-primary btn-sm w-100" id="email-otp-btn">Get Email OTP</button>
+                            <input type="hidden" name="generated_email_otp" id="generated_email_otp">
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group mb-3" id="email_otp_row">
-                    <label for="email_otp" class="fw-bold">Email OTP</label>
-                    <input type="text" class="form-control" id="email_otp" name="email_otp" placeholder="Email OTP" maxlength="6" minlength="6" required onkeypress="return isNumber(event)">
-                    <button type="button" class="btn btn-info btn-sm" id="email-validate-btn">Validate Email OTP</button>
-                    <input type="hidden" name="is_email_verify" id="is_email_verify" value="0">
+                    <div class="row align-items-end">
+                        <div class="col-md-10">
+                            <label for="email_otp" class="fw-bold">Email OTP</label>
+                            <input type="text" class="form-control" id="email_otp" name="email_otp" placeholder="Email OTP" maxlength="6" minlength="6" required onkeypress="return isNumber(event)">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-info btn-sm w-100" id="email-validate-btn">Validate Email</button>
+                            <input type="hidden" name="is_email_verify" id="is_email_verify" value="0">
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group mb-3">
-                    <label for="phone" class="fw-bold">Phone Number</label>
-                    <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone Number" maxlength="10" minlength="10" required onkeypress="return isNumber(event)">
-                    <button type="button" class="btn btn-primary btn-sm" id="phone-otp-btn">Get Phone OTP</button>
-                    <input type="hidden" name="generated_phone_otp" id="generated_phone_otp">
+                    <div class="row align-items-end">
+                        <div class="col-md-10">
+                            <label for="phone" class="fw-bold">Phone Number</label>
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone Number" maxlength="10" minlength="10" required onkeypress="return isNumber(event)">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-primary btn-sm w-100" id="phone-otp-btn">Get Phone OTP</button>
+                            <input type="hidden" name="generated_phone_otp" id="generated_phone_otp">
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group mb-3" id="phone_otp_row">
-                    <label for="phone_otp" class="fw-bold">Phone OTP</label>
-                    <input type="text" class="form-control" id="phone_otp" name="phone_otp" placeholder="Phone OTP" maxlength="6" minlength="6" required onkeypress="return isNumber(event)">
-                    <button type="button" class="btn btn-info btn-sm" id="phone-validate-btn">Validate Email OTP</button>
-                    <input type="hidden" name="is_phone_verify" id="is_phone_verify" value="0">
+                    <div class="row align-items-end">
+                        <div class="col-md-10">
+                            <label for="phone_otp" class="fw-bold">Phone OTP</label>
+                            <input type="text" class="form-control" id="phone_otp" name="phone_otp" placeholder="Phone OTP" maxlength="6" minlength="6" required onkeypress="return isNumber(event)">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-info btn-sm w-100" id="phone-validate-btn">Validate Phone</button>
+                            <input type="hidden" name="is_phone_verify" id="is_phone_verify" value="0">
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group mb-3">
                     <label for="comments" class="fw-bold">Comments</label>
@@ -157,8 +181,8 @@ $this->common_model         = new CommonModel;
         }
     }
     $(function(){
-        $('#email_otp_row').hide();
-        $('#phone_otp_row').hide();
+        // $('#email_otp_row').hide();
+        // $('#phone_otp_row').hide();
         $('#submit-btn').attr('disabled', true);
 
         $('#email-otp-btn').on('click', function(){
