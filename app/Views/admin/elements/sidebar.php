@@ -142,6 +142,14 @@ $company_id         = $session->company_id;
             </a>
         </li>
     <?php }?>
+    <?php if($userType == 'MA'){?>
+        <li class="nav-item">
+            <a class="nav-link <?=(($pageSegment == 'delete-account-request')?'active':'')?>" href="<?=base_url('admin/delete-account-request/list')?>">
+                <i class="fa fa-trash"></i>
+                <span>Delete Account Requests</span>
+            </a>
+        </li>
+    <?php }?>
     <li class="nav-item">
         <a class="nav-link <?=(($pageSegment == 'enquiry-requests')?'':'collapsed')?> <?=(($pageSegment == 'enquiry-requests')?'active':'')?>" data-bs-target="#enquiry-nav" data-bs-toggle="collapse" href="#">
             <i class="fa fa-question-circle"></i><span>Enquiry Requests</span><i class="bi bi-chevron-down ms-auto"></i>
