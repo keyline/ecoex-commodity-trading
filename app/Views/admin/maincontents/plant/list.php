@@ -34,11 +34,11 @@ $company_id                 = $session->company_id;
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <?php if($userType == 'MA'){?>
+                    <?php //if($userType == 'MA'){?>
                         <h5 class="card-title">
                             <a href="<?=base_url('admin/' . $controller_route . '/add/')?>" class="btn btn-outline-success btn-sm">Add <?=$title?></a>
                         </h5>
-                    <?php }?>
+                    <?php //}?>
                     <table class="table datatable">
                         <thead>
                             <tr>

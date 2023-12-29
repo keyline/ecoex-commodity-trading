@@ -932,19 +932,20 @@ class ApiController extends BaseController
                 $apiResponse        = [];
                 $this->isJSON(file_get_contents('php://input'));
                 $requestData        = $this->extract_json(file_get_contents('php://input'));
-                $requiredFields     = ['email', 'password', 'device_token'];
+                $requiredFields     = ['type', 'email', 'password', 'device_token'];
                 $headerData         = $this->request->headers();
                 if (!$this->validateArray($requiredFields, $requestData)){
                     $apiStatus          = FALSE;
                     $apiMessage         = 'All Data Are Not Present !!!';
                 }
                 if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $type                       = $requestData['type'];
                     $email                      = $requestData['email'];
                     $password                   = $requestData['password'];
                     $device_token               = $requestData['device_token'];
                     $fcm_token                  = $requestData['fcm_token'];
                     $device_type                = trim($headerData['Source'], "Source: ");
-                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['email' => $email, 'status>=' => 1]);
+                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['email' => $email, 'type' => $type, 'status>=' => 1]);
                     if($checkUser){
                         
                         if($checkUser->status != 3){
@@ -1129,15 +1130,16 @@ class ApiController extends BaseController
                 $apiResponse        = [];
                 $this->isJSON(file_get_contents('php://input'));
                 $requestData        = $this->extract_json(file_get_contents('php://input'));
-                $requiredFields     = ['phone'];
+                $requiredFields     = ['type', 'phone'];
                 $headerData         = $this->request->headers();
                 if (!$this->validateArray($requiredFields, $requestData)){
                     $apiStatus          = FALSE;
                     $apiMessage         = 'All Data Are Not Present !!!';
                 }
                 if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $type                       = $requestData['type'];
                     $phone                      = $requestData['phone'];
-                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['phone' => $phone, 'status>=' => 1]);
+                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['type' => $type, 'phone' => $phone, 'status>=' => 1]);
                     if($checkUser){
                         $mobile_otp = rand(100000,999999);
                         $postData = [

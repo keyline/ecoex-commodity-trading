@@ -2,6 +2,9 @@
 $title              = $moduleDetail['title'];
 $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
+
+$userType                   = $session->user_type;
+$company_id                 = $session->company_id;
 ?>
 <div class="pagetitle">
     <h1><?=$page_header?></h1>
@@ -93,15 +96,19 @@ $controller_route   = $moduleDetail['controller_route'];
                         <input type="hidden" name="holding_no" id="holding_no" value="<?=$holding_no?>">
                         <input type="hidden" name="location" id="location" value="<?=$location?>">
                         <div class="row mb-3">
-                            <label for="parent_id" class="col-md-2 col-lg-2 col-form-label">Company <span class="text-danger">*</span></label>
-                            <div class="col-md-10 col-lg-10">
-                                <select class="form-control" name="parent_id" id="parent_id" required>
-                                    <option value="" selected>Select Company</option>
-                                    <?php if($companyList){ foreach($companyList as $company){?>
-                                    <option value="<?=$company->id?>" <?=(($company->id == $parent_id)?'selected':'')?>><?=$company->company_name?></option>
-                                    <?php } }?>
-                                </select>
-                            </div>
+                            <?php if($userType == 'MA'){?>
+                                <label for="parent_id" class="col-md-2 col-lg-2 col-form-label">Company <span class="text-danger">*</span></label>
+                                <div class="col-md-10 col-lg-10">
+                                    <select class="form-control" name="parent_id" id="parent_id" required>
+                                        <option value="" selected>Select Company</option>
+                                        <?php if($companyList){ foreach($companyList as $company){?>
+                                        <option value="<?=$company->id?>" <?=(($company->id == $parent_id)?'selected':'')?>><?=$company->company_name?></option>
+                                        <?php } }?>
+                                    </select>
+                                </div>
+                            <?php } else {?>
+                                <input type="hidden" class="form-control" name="parent_id" id="parent_id" value="<?=$company_id?>" required>
+                            <?php }?>
                         </div>
                         <div class="row mb-3">
                             <label for="gst_no" class="col-md-2 col-lg-2 col-form-label">GST No. <span class="text-danger">*</span></label>

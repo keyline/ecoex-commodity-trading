@@ -159,6 +159,11 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 			$routes->match(['get', 'post'], "vendors/check-email", "VendorController::check_email");
 			$routes->match(['get', 'post'], "vendors/check-phone", "VendorController::check_phone");
 		// vendors
+		// delete account requests
+			$routes->match(['get'], "delete-account-request/list", "DeleteAccountRequestController::list");
+			$routes->match(['get', 'post'], "delete-account-request/delete/(:any)", "DeleteAccountRequestController::confirm_delete/$1");
+			$routes->match(['get', 'post'], "delete-account-request/change-status/(:any)", "DeleteAccountRequestController::change_status/$1");
+		// delete account requests
 		// enquiry requests
 			$routes->match(['get'], "enquiry-requests/list/(:any)", "EnquiryRequestController::list/$1");
 			$routes->match(['get', 'post'], "enquiry-requests/view-detail/(:any)", "EnquiryRequestController::viewDetail/$1");
