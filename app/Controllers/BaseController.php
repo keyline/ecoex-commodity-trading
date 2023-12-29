@@ -181,7 +181,7 @@ abstract class BaseController extends Controller
             //Print error if any
             if(curl_errno($ch))
             {
-                //echo 'error:' . curl_error($ch);
+                echo 'error:' . curl_error($ch);
                 return FALSE;
             } else {
                 return TRUE;
