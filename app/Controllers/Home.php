@@ -105,7 +105,7 @@ class Home extends BaseController
             $mobile_otp = rand(100000,999999);
             /* send sms */
                 $message = "Dear ".(($getEntity)?$getEntity->company_name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
-                $mobileNo = (($getEntity)?$getEntity->phone:'');
+                $mobileNo = $phone;
                 $this->sendSMS($mobileNo,$message);
 
                 $apiResponse        = [
