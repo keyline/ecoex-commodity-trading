@@ -679,7 +679,7 @@ class ApiController extends BaseController
                 $apiExtraData       = '';
                 $this->isJSON(file_get_contents('php://input'));
                 $requestData        = $this->extract_json(file_get_contents('php://input'));
-                $requiredFields     = ['email'];
+                $requiredFields     = ['type', 'email'];
                 $headerData         = $this->request->headers();
                 if (!$this->validateArray($requiredFields, $requestData)){              
                     http_response_code(406);
@@ -689,7 +689,8 @@ class ApiController extends BaseController
                     $apiExtraData       = http_response_code();
                 }           
                 if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                    $checkEmail = $this->common_model->find_data('ecomm_users', 'row', ['email' => $requestData['email']]);
+                    $type                       = $requestData['type'];
+                    $checkEmail                 = $this->common_model->find_data('ecomm_users', 'row', ['email' => $requestData['email'], 'type' => $type]);
                     if($checkEmail){
                         $remember_token  = rand(100000,999999);
                         $this->common_model->save_data('ecomm_users', ['remember_token' => $remember_token], $checkEmail->id, 'id');
