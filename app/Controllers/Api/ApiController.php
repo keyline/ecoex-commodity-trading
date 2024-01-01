@@ -723,7 +723,7 @@ class ApiController extends BaseController
                         $apiExtraData                       = http_response_code();
                     } else {
                         $apiStatus          = FALSE;
-                        http_response_code(404);
+                        http_response_code(200);
                         $apiMessage         = 'Email Not Registered With Us !!!';
                         $apiExtraField      = 'response_code';
                         $apiExtraData       = http_response_code();
