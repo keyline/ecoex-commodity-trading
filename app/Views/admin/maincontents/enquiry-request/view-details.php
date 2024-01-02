@@ -1,12 +1,12 @@
-<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
-<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script> -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
 
-<!-- <style type="text/css">
+<style type="text/css">
     .choices__list--multiple .choices__item {
         background-color: #48974e;
         border: 1px solid #48974e;
     }
-</style> -->
+</style>
 
 <!-- for inquiry tracking -->
   <style type="text/css">
@@ -194,7 +194,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <p><?=(($row->accepted_date != '')?date_format(date_create($row->accepted_date), "M d, Y h:i A"):'')?></p>
 
                                     <!-- share to vendors -->
-                                        <!-- <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#shareModal"><i class="fa fa-share-alt"></i> Share Details To Vendors</button> -->
+                                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#shareModal"><i class="fa fa-share-alt"></i> Share Details To Vendors</button>
                                         <?php
                                         $sharedLink = base_url('enquiry-request/'.encoded($row->id));
                                         ?>
@@ -379,12 +379,12 @@ $controller_route   = $moduleDetail['controller_route'];
                         <div class="form-group">
                             <label for="choices-multiple-remove-button">Vendors</label>
                             <select name="vendors[]" id="choices-multiple-remove-button" multiple>
-                                <?php if($vendors){ foreach($vendors as $vendor){?>
+                                <?php if($avlVendors){ foreach($avlVendors as $avlvendor){?>
                                     <?php
-                                    $checkVendorShare = $common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['enq_id' => $row->id, 'vendor_id' => $vendor->id]);
+                                    $checkVendorShare = $common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['enq_id' => $row->id, 'vendor_id' => $avlvendor->id]);
                                     if($checkVendorShare <= 0){
                                     ?>
-                                        <option value="<?=$vendor->id?>"><?=$vendor->company_name?></option>
+                                        <option value="<?=$avlvendor->id?>"><?=$avlvendor->company_name?></option>
                                     <?php }?>
                                 <?php } }?>
                             </select>
@@ -583,7 +583,7 @@ $controller_route   = $moduleDetail['controller_route'];
         });
     }
 </script>
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){    
         var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
@@ -593,4 +593,4 @@ $controller_route   = $moduleDetail['controller_route'];
             renderChoiceLimit:30
         });     
     });
-</script> -->
+</script>

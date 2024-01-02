@@ -51,11 +51,12 @@ $controller_route   = $moduleDetail['controller_route'];
                             <tr>
                                 <th scope="row"><?=$sl++?></th>
                                 <td>
-                                    <?php if($row->user_type == 'U'){?>
+                                    <!-- <?php if($row->user_type == 'U'){?>
                                       <span>Sub User</span>
                                     <?php } else {?>
                                       <span>CRM Manager</span>
-                                    <?php }?>
+                                    <?php }?> -->
+                                    <span><?=$row->user_type?></span>
                                     <br>
                                     <?php
                                     $role = $common_model->find_data('ecoex_roles', 'row', ['id' => $row->role_id]);

@@ -95,7 +95,7 @@ $controller_route   = $moduleDetail['controller_route'];
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="company_name" class="col-md-2 col-lg-2 col-form-label">Company Name <span class="text-danger">*</span></label>
+                            <label for="company_name" class="col-md-2 col-lg-2 col-form-label">Vendor Name <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
                                 <input type="text" name="company_name" class="form-control" id="company_name" value="<?=$company_name?>" required>
                             </div>

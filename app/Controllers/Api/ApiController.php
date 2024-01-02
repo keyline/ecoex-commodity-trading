@@ -1420,6 +1420,7 @@ class ApiController extends BaseController
                         $memberType         = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
 
                         if($getUser->type == 'VENDOR'){
+                            $getCompany         = [];
                             $is_contract_expire = 1;
                         } else {
                             $getCompany         = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $getUser->parent_id, 'status>=' => 1]);
@@ -1449,19 +1450,20 @@ class ApiController extends BaseController
                             'location'                              => $getUser->location,
                             'email'                                 => $getUser->email,
                             'phone'                                 => $getUser->phone,
-                            'contract_start'                        => date_format(date_create($getCompany->contract_start), "M d, Y"),
-                            'contract_end'                          => date_format(date_create($getCompany->contract_end), "M d, Y"),
+                            'contract_start'                        => (($getCompany)?date_format(date_create($getCompany->contract_start), "M d, Y"):''),
+                            'contract_end'                          => (($getCompany)?date_format(date_create($getCompany->contract_end), "M d, Y"):''),
                             'is_contract_expire'                    => $is_contract_expire,
                             'member_type'                           => (($memberType)?$memberType->name:''),
+                            'member_type_id'                        => $getUser->member_type,
                             'gst_certificate'                       => (($getUser->gst_certificate != '')?getenv('app.uploadsURL').'user/'.$getUser->gst_certificate:''),
                             'contact_person_name'                   => $getUser->contact_person_name,
                             'contact_person_designation'            => $getUser->contact_person_designation,
                             'contact_person_document'               => (($getUser->contact_person_document != '')?getenv('app.uploadsURL').'user/'.$getUser->contact_person_document:''),
-                            'bank_name'                             => $getUser->bank_name,
-                            'branch_name'                           => $getUser->branch_name,
-                            'ifsc_code'                             => $getUser->ifsc_code,
-                            'account_type'                          => $getUser->account_type,
-                            'account_number'                        => $getUser->account_number,
+                            'bank_name'                             => (($getUser->type != 'VENDOR')?$getUser->bank_name:''),
+                            'branch_name'                           => (($getUser->type != 'VENDOR')?$getUser->branch_name:''),
+                            'ifsc_code'                             => (($getUser->type != 'VENDOR')?$getUser->ifsc_code:''),
+                            'account_type'                          => (($getUser->type != 'VENDOR')?$getUser->account_type:''),
+                            'account_number'                        => (($getUser->type != 'VENDOR')?$getUser->account_number:''),
                             'cancelled_cheque'                      => (($getUser->cancelled_cheque != '')?getenv('app.uploadsURL').'user/'.$getUser->cancelled_cheque:''),
                         ];
 

@@ -82,7 +82,7 @@ class EnquiryRequestController extends BaseController {
         $data['assignItems']        = $this->data['model']->find_data('ecomm_company_items', 'array', $conditions, '', '', '', $order_by);
 
         $order_by[0]                = array('field' => 'company_name', 'type' => 'asc');
-        $data['vendors']            = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1], 'id,company_name', '', '', $order_by);
+        $data['avlVendors']            = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1], 'id,company_name', '', '', $order_by);
 
         if($this->request->getMethod() == 'post') {
             if($this->request->getPost('mode') == 'share_vendor'){

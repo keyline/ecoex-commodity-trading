@@ -28,7 +28,7 @@ class AdminSubUserController extends BaseController {
         $title                      = 'Manage '.$this->data['title'];
         $page_name                  = 'sub-users/list';
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
-        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status!=' => 3, 'user_type' => 'U'], '', '', '', $order_by);
+        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status!=' => 3, 'user_type!=' => 'MA'], '', '', '', $order_by);
         echo $this->layout_after_login($title,$page_name,$data);
     }
     public function add()
