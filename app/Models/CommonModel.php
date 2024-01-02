@@ -795,5 +795,41 @@ class CommonModel extends Model
         }
         return $leadData;
     }
-    
+    /* check module access */
+        public function checkModuleAccess($id){
+            $this->common_model = new CommonModel();
+            $this->session      = \Config\Services::session();
+            $userId             = $this->session->get('user_id');
+            $adminUser          = $this->common_model->find_data('ecoex_admin_user', 'row', ['id' => $userId]);
+            $checkExist         = $this->common_model->find_data('ecoex_role_module_function', 'count', ['module_id' => $id, 'role_id' => $adminUser->role_id, 'published' => 1]);
+            if($checkExist>0){
+                return TRUE;
+                // $checkExistFunction         = $this->common_model->find_data('ecoex_role_module_function', 'count', ['role_id' => $adminUser->role_id, 'module_id' => $id, 'function_id' => 9, 'published' => 1]);
+                // echo $checkExistFunction;die;
+                // if($checkExistFunction > 0){
+                //     return TRUE;
+                // } else {
+                //     return FALSE;
+                // }
+            } else {
+                return FALSE;
+            }
+        }
+    /* check module access */
+    /* check module function access */
+        public function checkModuleFunctionAccess($module_id, $function_id){
+            $this->db           = \Config\Database::connect();
+            $this->common_model = new CommonModel();
+            $this->session      = \Config\Services::session();
+            $userId             = $this->session->get('user_id');
+            $adminUser          = $this->common_model->find_data('ecoex_admin_user', 'row', ['id' => $userId]);        
+            $role_id = $adminUser->role_id;
+            $checkExist         = $this->common_model->find_data('ecoex_role_module_function', 'count', ['role_id' => $role_id, 'module_id' => $module_id, 'function_id' => $function_id, 'published' => 1]);
+            if($checkExist>0){
+                return TRUE;
+            } else {
+                return FALSE;
+            }
+        }
+    /* check module function access */
 }
