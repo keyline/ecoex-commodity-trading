@@ -77,7 +77,7 @@ $company_id         = $session->company_id;
             <ul id="master-nav" class="nav-content collapse <?=(($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'pending-products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages')?'show':'')?>" data-bs-parent="#sidebar-nav">
                 <li>
                     <a class="<?=(($pageSegment == 'product-category')?'active':'')?>" href="<?=base_url('admin/product-category/list')?>">
-                        <i class="fa fa-arrow-right"></i><span>Product Category</span>
+                        <i class="fa fa-arrow-right"></i><span>Item Category</span>
                     </a>
                 </li>
                 <!-- <li>
