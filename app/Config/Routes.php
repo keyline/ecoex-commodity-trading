@@ -219,25 +219,42 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 			$routes->match(['post'], "verify-mobile", "ApiController::verifyMobile");
 			$routes->match(['post'], "delete-account", "ApiController::deleteAccount");
 			
-			$routes->match(['post'], "dashboard", "ApiController::dashboard");
 			$routes->match(['post'], "get-product", "ApiController::getProduct");
 			$routes->match(['post'], "get-hsncode-product", "ApiController::getHSNCodeProduct");
 			$routes->match(['post'], "get-notifications", "ApiController::getNotifications");
 
-			// process request
-				$routes->match(['get', 'post'], "get-units", "ApiController::getUnits");
-				$routes->match(['get', 'post'], "process-request-list", "ApiController::processRequestList");
-				$routes->match(['get', 'post'], "process-request-add", "ApiController::processRequestAdd");
-				$routes->match(['get', 'post'], "process-request-delete", "ApiController::processRequestDelete");
-				$routes->match(['get', 'post'], "process-request-edit", "ApiController::processRequestEdit");
-				$routes->match(['get', 'post'], "process-request-update", "ApiController::processRequestUpdate");
-			// process request
-			// completed request
-				$routes->match(['get', 'post'], "completed-request-list", "ApiController::completedRequestList");
-			// completed request
-			// rejected request
-				$routes->match(['get', 'post'], "rejected-request-list", "ApiController::rejectedRequestList");
-			// rejected request
+			/* plant panel */
+				$routes->match(['post'], "dashboard", "ApiController::dashboard");
+				// process request
+					$routes->match(['get', 'post'], "get-units", "ApiController::getUnits");
+					$routes->match(['get', 'post'], "process-request-list", "ApiController::processRequestList");
+					$routes->match(['get', 'post'], "process-request-add", "ApiController::processRequestAdd");
+					$routes->match(['get', 'post'], "process-request-delete", "ApiController::processRequestDelete");
+					$routes->match(['get', 'post'], "process-request-edit", "ApiController::processRequestEdit");
+					$routes->match(['get', 'post'], "process-request-update", "ApiController::processRequestUpdate");
+				// process request
+				// completed request
+					$routes->match(['get', 'post'], "completed-request-list", "ApiController::completedRequestList");
+				// completed request
+				// rejected request
+					$routes->match(['get', 'post'], "rejected-request-list", "ApiController::rejectedRequestList");
+				// rejected request
+			/* plant panel */
+			/* vendor panel */
+				$routes->match(['post'], "vendor-dashboard", "ApiController::vendorDashboard");
+				// pending request
+					$routes->match(['post'], "pending-request-list", "ApiController::vendorPendingRequestList");
+				// pending request
+				// accepted request
+
+				// accepted request
+				// completed request
+
+				// completed request
+				// rejected request
+
+				// rejected request
+			/* vendor panel */
 		// after login
 	});
 /* API */
