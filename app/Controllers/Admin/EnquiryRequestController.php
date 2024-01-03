@@ -99,8 +99,53 @@ class EnquiryRequestController extends BaseController {
                             'vendor_id'     => $vendors[$v],
                         ];
                         $this->common_model->save_data('ecomm_enquiry_vendor_shares', $fields, '', 'id');
+                        /* mail functionality */
+                            $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendors[$v]]);
+                            $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+                            $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                            $subject                    = $generalSetting->site_name.' :: Enquiry Quotation Request Sent ('.(($getEnquiry)?$getEnquiry->enquiry_no:'').') ';
+                            $message                    = view('email-templates/enquiry-request-for-quotation',$fields);
+                            $this->sendMail($getVendor->email, $subject, $message);
+                        /* mail functionality */
+                        /* email log save */
+                            $postData2 = [
+                                'name'                  => $getVendor->company_name,
+                                'email'                 => $getVendor->email,
+                                'subject'               => $subject,
+                                'message'               => $message
+                            ];
+                            $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                        /* email log save */
+                        /* send push */
+                            $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendors[$v], 'fcm_token!=' => ''], 'fcm_token');
+                            if($getDeviceTokens){
+                                foreach($getDeviceTokens as $getDeviceToken){
+                                    $fcm_token          = $getDeviceToken->fcm_token;
+                                    $messageData = [
+                                        'title'     => 'Enquiry Quotation Submission Invited',
+                                        'body'      => 'Enquiry Request ('.(($getEnquiry)?$getEnquiry->enquiry_no:"").') Quotation Submission Invited By EcoEx',
+                                        'badge'     => 1,
+                                        'sound'     => 'Default',
+                                        'data'      => [],
+                                    ];
+                                    $this->pushNotification($fcm_token, $messageData);
+                                    $users[]    = $vendors[$v];
+                                    $pushData   = [
+                                        'source'            => 'FROM APP',
+                                        'title'             => 'Enquiry Quotation Submission Invited',
+                                        'description'       => 'Enquiry Request ('.(($getEnquiry)?$getEnquiry->enquiry_no:"").') Quotation Submission Invited By EcoEx',
+                                        'user_type'         => 'VENDOR',
+                                        'users'             => json_encode($users),
+                                        'is_send'           => 1,
+                                        'send_timestamp'    => date('Y-m-d H:i:s'),
+                                        'status'            => 1,
+                                    ];
+                                    $this->common_model->save_data('notifications', $pushData, '', 'id');
+                                }
+                            }
+                        /* send push */
                     }
-                    $this->session->setFlashdata('success_message', $this->data['title'].'  Details Successfully Shared To Vendors !!!');
+                    $this->session->setFlashdata('success_message', $this->data['title'].'  Details Successfully Shared To Vendors For Quotation Invitation !!!');
                     return redirect()->to(current_url());
                 } else {
                     $this->session->setFlashdata('error_message', 'Atleast One Vendor Needs To Be Select Before Share Details To Vendors !!!');

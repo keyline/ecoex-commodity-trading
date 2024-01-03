@@ -193,17 +193,23 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <h6 class="badge bg-success"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
                                     <p><?=(($row->accepted_date != '')?date_format(date_create($row->accepted_date), "M d, Y h:i A"):'')?></p>
 
-                                    <!-- share to vendors -->
-                                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#shareModal"><i class="fa fa-share-alt"></i> Share Details To Vendors</button>
-                                        <?php
-                                        $sharedLink = base_url('enquiry-request/'.encoded($row->id));
-                                        ?>
-                                        <a href="whatsapp://send?text=<?=$sharedLink?>" class="btn btn-primary btn-sm" data-action="share/whatsapp/share"><i class="fa fa-share-alt"></i> Share Details To Vendors via Whatsapp</a>
-                                        <a href="" class="btn btn-info btn-sm" onclick="copyToClipboard()"><i class="fa fa-copy"></i> Copy Whatsapp Link For Share</a>
-                                        <span id="whatsapp_link" style="display: none;"><?=$sharedLink?></span>
-                                        <input type="hidden" placeholder="Paste here" />
-                                    <!-- share to vendors -->
-
+                                    <!-- share to vendors panel -->
+                                        <p>
+                                            <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#shareModal"><i class="fa fa-share-alt"></i> Quotation Invitation To Vendors</button>
+                                            <a href="" class="btn btn-info btn-sm" data-action="share/whatsapp/share"><i class="fa fa-list-alt"></i> Shared Quotation Invitation To Vendors</a>
+                                        </p>
+                                    <!-- share to vendors panel -->
+                                    <!-- share to vendors via whatsapp -->
+                                        <p>
+                                            <?php
+                                            $sharedLink = base_url('enquiry-request/'.encoded($row->id));
+                                            ?>
+                                            <a href="whatsapp://send?text=<?=$sharedLink?>" class="btn btn-primary btn-sm" data-action="share/whatsapp/share"><i class="fa fa-share-alt"></i> Share Details To Vendors via Whatsapp</a>
+                                            <a href="" class="btn btn-primary btn-sm" onclick="copyToClipboard()"><i class="fa fa-copy"></i> Copy Whatsapp Link For Share</a>
+                                            <span id="whatsapp_link" style="display: none;"><?=$sharedLink?></span>
+                                            <input type="hidden" placeholder="Paste here" />
+                                        </p>
+                                    <!-- share to vendors via whatsapp -->
                                 <?php } elseif($row->status == 9){?>
                                     <h6 class="badge bg-danger"><i class="fa fa-times-circle"></i> REJECTED</h6>
                                     <p><?=(($row->accepted_date != '')?date_format(date_create($row->accepted_date), "M d, Y h:i A"):'')?></p>
