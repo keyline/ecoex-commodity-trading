@@ -1453,6 +1453,7 @@ class ApiController extends BaseController
                             'contract_start'                        => (($getCompany)?date_format(date_create($getCompany->contract_start), "M d, Y"):''),
                             'contract_end'                          => (($getCompany)?date_format(date_create($getCompany->contract_end), "M d, Y"):''),
                             'is_contract_expire'                    => $is_contract_expire,
+                            'profile_image'                         => (($getUser->profile_image != '')?getenv('app.uploadsURL').'user/'.$getUser->profile_image:''),
                             'member_type'                           => (($memberType)?$memberType->name:''),
                             'member_type_id'                        => $getUser->member_type,
                             'gst_certificate'                       => (($getUser->gst_certificate != '')?getenv('app.uploadsURL').'user/'.$getUser->gst_certificate:''),
@@ -1521,6 +1522,7 @@ class ApiController extends BaseController
                 $location                   = $requestData['location'];
                 $phone                      = $requestData['phone'];
                 // $email                      = $requestData['email'];
+                $member_type_id             = $requestData['member_type_id'];
 
                 $gst_certificate                            = $requestData['gst_certificate'];
                 $contact_person_name                        = $requestData['contact_person_name'];
@@ -1649,6 +1651,7 @@ class ApiController extends BaseController
                                 'location'                          => $location,
                                 'phone'                             => $phone,
                                 // 'email'                          => $email,
+                                'member_type'                       => $member_type_id,
                                 'gst_certificate'                   => $gst_docs,
                                 'contact_person_name'               => $contact_person_name,
                                 'contact_person_designation'        => $contact_person_designation,
