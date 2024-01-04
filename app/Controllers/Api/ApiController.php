@@ -3506,7 +3506,89 @@ class ApiController extends BaseController
                             }
                             $apiStatus          = TRUE;
                             http_response_code(200);
-                            $apiMessage         = 'Data Available !!!';
+                            $apiMessage         = 'Quotation Invitation Pending Enquiry Available !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'User Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
+            public function vendorPendingRequestAcceptReject()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['quotation_request_status', 'enq_id']; // 1 = accept or 3 = reject
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $quotation_request_status   = $requestData['quotation_request_status'];
+                    $enq_id                     = $requestData['enq_id'];
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            $fields = [
+                                'status' => $quotation_request_status
+                            ];
+                            $this->db = \Config\Database::connect();
+                            $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET status = '$quotation_request_status' WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+
+                            /* mail functionality */
+                                $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                                $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+                                $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                                if($quotation_request_status == 1){
+                                    $apiMessage         = 'Enquiry Invitation For Quotation Submission Accepted Successfully !!!';
+                                    $subject            = $generalSetting->site_name.' :: Enquiry Invitation For Quotation Submission Accepted ('.(($getEnquiry)?$getEnquiry->enquiry_no:'').') ';
+                                } else {
+                                    $apiMessage         = 'Enquiry Invitation For Quotation Submission Rejected Successfully !!!';
+                                    $subject            = $generalSetting->site_name.' :: Enquiry Invitation For Quotation Submission Rejected ('.(($getEnquiry)?$getEnquiry->enquiry_no:'').') ';
+                                }
+                                $getEnquiryVendorShare      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'row-array', ['enq_id' => $enq_id, 'vendor_id' => $uId]);
+                                $message                    = view('email-templates/enquiry-request-for-quotation-accept-reject',$getEnquiryVendorShare);
+                                $this->sendMail($getVendor->email, $subject, $message);
+                            /* mail functionality */
+                            /* email log save */
+                                $postData2 = [
+                                    'name'                  => $getVendor->company_name,
+                                    'email'                 => $getVendor->email,
+                                    'subject'               => $subject,
+                                    'message'               => $message
+                                ];
+                                $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                            /* email log save */
+
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
                             $apiExtraField      = 'response_code';
                             $apiExtraData       = http_response_code();
                         } else {
@@ -3534,13 +3616,295 @@ class ApiController extends BaseController
             }
         /* pending request */
         /* accepted request */
+            public function vendorAcceptedRequestList()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['order_field', 'order_type', 'page_no'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $order_field                = $requestData['order_field'];
+                    $order_type                 = $requestData['order_type'];
+                    $page_no                    = $requestData['page_no'];
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            if($order_field == 'request_id'){
+                                $fieldName = 'id';
+                            } elseif($order_field == 'added_date'){
+                                $fieldName = 'created_at';
+                            } else {
+                                $fieldName = 'id';
+                            }
+                            if($order_type != ''){
+                                $typeName = $order_type;
+                            } else {
+                                $typeName = 'DESC';
+                            }
+                            $orderBy[0]         = ['field' => 'ecomm_enquiry_vendor_shares.'.$fieldName, 'type' => $typeName];
+                            $limit              = 10; // per page elements
+                            if($page_no == 1){
+                                $offset = 0;
+                            } else {
+                                $offset = (($limit * $page_no) - $limit); // ((15 * 3) - 15)
+                            }
 
+                            $select             = 'ecomm_enquires.*';
+                            $join[0]            = ['table' => 'ecomm_enquiry_vendor_shares', 'field' => 'enq_id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'id', 'type' => 'INNER'];
+                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquiry_vendor_shares.vendor_id' => $uId, 'ecomm_enquiry_vendor_shares.status' => 1], $select, $join, '', $orderBy, $limit, $offset);
+                            // $this->db = \Config\Database::connect();
+                            // echo $this->db->getLastQuery();die;
+                            if($rows){
+                                foreach($rows as $row){
+                                    $itemCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
+                                    $getCompany              = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id], 'company_name');
+                                    $getPlant                = $this->common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
+                                    $apiResponse[] = [
+                                        'enq_id'        => $row->id,
+                                        'enquiry_no'    => $row->enquiry_no,
+                                        'company_name'  => (($getCompany)?$getCompany->company_name:''),
+                                        'plant_name'    => (($getPlant)?$getPlant->plant_name:''),
+                                        'status'        => 1,
+                                        'product_count' => $itemCount,
+                                        'created_at'    => date_format(date_create($row->created_at), "M d, Y h:i A"),
+                                        'updated_at'    => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                    ];
+                                }
+                            }
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Quotation Invitation Accepted Enquiry Available !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'User Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
         /* accepted request */
         /* completed request */
+            public function vendorCompletedRequestList()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['order_field', 'order_type', 'page_no'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $order_field                = $requestData['order_field'];
+                    $order_type                 = $requestData['order_type'];
+                    $page_no                    = $requestData['page_no'];
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            if($order_field == 'request_id'){
+                                $fieldName = 'id';
+                            } elseif($order_field == 'added_date'){
+                                $fieldName = 'created_at';
+                            } else {
+                                $fieldName = 'id';
+                            }
+                            if($order_type != ''){
+                                $typeName = $order_type;
+                            } else {
+                                $typeName = 'DESC';
+                            }
+                            $orderBy[0]         = ['field' => 'ecomm_enquiry_vendor_shares.'.$fieldName, 'type' => $typeName];
+                            $limit              = 10; // per page elements
+                            if($page_no == 1){
+                                $offset = 0;
+                            } else {
+                                $offset = (($limit * $page_no) - $limit); // ((15 * 3) - 15)
+                            }
 
+                            $select             = 'ecomm_enquires.*';
+                            $join[0]            = ['table' => 'ecomm_enquiry_vendor_shares', 'field' => 'enq_id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'id', 'type' => 'INNER'];
+                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquiry_vendor_shares.vendor_id' => $uId, 'ecomm_enquiry_vendor_shares.status' => 2], $select, $join, '', $orderBy, $limit, $offset);
+                            // $this->db = \Config\Database::connect();
+                            // echo $this->db->getLastQuery();die;
+                            if($rows){
+                                foreach($rows as $row){
+                                    $itemCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
+                                    $getCompany              = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id], 'company_name');
+                                    $getPlant                = $this->common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
+                                    $apiResponse[] = [
+                                        'enq_id'        => $row->id,
+                                        'enquiry_no'    => $row->enquiry_no,
+                                        'company_name'  => (($getCompany)?$getCompany->company_name:''),
+                                        'plant_name'    => (($getPlant)?$getPlant->plant_name:''),
+                                        'status'        => 2,
+                                        'product_count' => $itemCount,
+                                        'created_at'    => date_format(date_create($row->created_at), "M d, Y h:i A"),
+                                        'updated_at'    => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                    ];
+                                }
+                            }
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Quotation Invitation Completed Enquiry Available !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'User Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
         /* completed request */
         /* rejected request */
+            public function vendorRejectedRequestList()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['order_field', 'order_type', 'page_no'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $order_field                = $requestData['order_field'];
+                    $order_type                 = $requestData['order_type'];
+                    $page_no                    = $requestData['page_no'];
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            if($order_field == 'request_id'){
+                                $fieldName = 'id';
+                            } elseif($order_field == 'added_date'){
+                                $fieldName = 'created_at';
+                            } else {
+                                $fieldName = 'id';
+                            }
+                            if($order_type != ''){
+                                $typeName = $order_type;
+                            } else {
+                                $typeName = 'DESC';
+                            }
+                            $orderBy[0]         = ['field' => 'ecomm_enquiry_vendor_shares.'.$fieldName, 'type' => $typeName];
+                            $limit              = 10; // per page elements
+                            if($page_no == 1){
+                                $offset = 0;
+                            } else {
+                                $offset = (($limit * $page_no) - $limit); // ((15 * 3) - 15)
+                            }
 
+                            $select             = 'ecomm_enquires.*';
+                            $join[0]            = ['table' => 'ecomm_enquiry_vendor_shares', 'field' => 'enq_id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'id', 'type' => 'INNER'];
+                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquiry_vendor_shares.vendor_id' => $uId, 'ecomm_enquiry_vendor_shares.status' => 3], $select, $join, '', $orderBy, $limit, $offset);
+                            // $this->db = \Config\Database::connect();
+                            // echo $this->db->getLastQuery();die;
+                            if($rows){
+                                foreach($rows as $row){
+                                    $itemCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
+                                    $getCompany              = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id], 'company_name');
+                                    $getPlant                = $this->common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
+                                    $apiResponse[] = [
+                                        'enq_id'        => $row->id,
+                                        'enquiry_no'    => $row->enquiry_no,
+                                        'company_name'  => (($getCompany)?$getCompany->company_name:''),
+                                        'plant_name'    => (($getPlant)?$getPlant->plant_name:''),
+                                        'status'        => 3,
+                                        'product_count' => $itemCount,
+                                        'created_at'    => date_format(date_create($row->created_at), "M d, Y h:i A"),
+                                        'updated_at'    => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                    ];
+                                }
+                            }
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Quotation Invitation Rejected Enquiry Available !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'User Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
         /* rejected request */
     /* vendor panel */
 

@@ -243,16 +243,17 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 			/* vendor panel */
 				$routes->match(['post'], "vendor-dashboard", "ApiController::vendorDashboard");
 				// pending request
-					$routes->match(['post'], "pending-request-list", "ApiController::vendorPendingRequestList");
+					$routes->match(['post'], "pending-quotation-request-list", "ApiController::vendorPendingRequestList");
+					$routes->match(['post'], "pending-quotation-request-accept-reject", "ApiController::vendorPendingRequestAcceptReject");
 				// pending request
 				// accepted request
-
+					$routes->match(['post'], "accepted-quotation-request-list", "ApiController::vendorAcceptedRequestList");
 				// accepted request
 				// completed request
-
+					$routes->match(['post'], "completed-quotation-request-list", "ApiController::vendorCompletedRequestList");
 				// completed request
 				// rejected request
-
+					$routes->match(['post'], "rejected-quotation-request-list", "ApiController::vendorRejectedRequestList");
 				// rejected request
 			/* vendor panel */
 		// after login
