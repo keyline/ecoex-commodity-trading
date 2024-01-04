@@ -3474,7 +3474,7 @@ class ApiController extends BaseController
                             } else {
                                 $typeName = 'DESC';
                             }
-                            $orderBy[0]         = ['field' => 'ecomm_enquiry_vendor_shares.'.$fieldName, 'type' => $typeName];
+                            $orderBy[0]         = ['field' => 'ecomm_enquires.'.$fieldName, 'type' => $typeName];
                             $limit              = 10; // per page elements
                             if($page_no == 1){
                                 $offset = 0;
@@ -3653,7 +3653,7 @@ class ApiController extends BaseController
                             } else {
                                 $typeName = 'DESC';
                             }
-                            $orderBy[0]         = ['field' => 'ecomm_enquiry_vendor_shares.'.$fieldName, 'type' => $typeName];
+                            $orderBy[0]         = ['field' => 'ecomm_enquires.'.$fieldName, 'type' => $typeName];
                             $limit              = 10; // per page elements
                             if($page_no == 1){
                                 $offset = 0;
@@ -3750,7 +3750,7 @@ class ApiController extends BaseController
                             } else {
                                 $typeName = 'DESC';
                             }
-                            $orderBy[0]         = ['field' => 'ecomm_enquiry_vendor_shares.'.$fieldName, 'type' => $typeName];
+                            $orderBy[0]         = ['field' => 'ecomm_enquires.'.$fieldName, 'type' => $typeName];
                             $limit              = 10; // per page elements
                             if($page_no == 1){
                                 $offset = 0;
@@ -3847,7 +3847,7 @@ class ApiController extends BaseController
                             } else {
                                 $typeName = 'DESC';
                             }
-                            $orderBy[0]         = ['field' => 'ecomm_enquiry_vendor_shares.'.$fieldName, 'type' => $typeName];
+                            $orderBy[0]         = ['field' => 'ecomm_enquires.'.$fieldName, 'type' => $typeName];
                             $limit              = 10; // per page elements
                             if($page_no == 1){
                                 $offset = 0;
