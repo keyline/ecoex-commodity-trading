@@ -196,8 +196,66 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <!-- share to vendors panel -->
                                         <p>
                                             <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#shareModal"><i class="fa fa-share-alt"></i> Quotation Invitation To Vendors</button>
-                                            <a href="" class="btn btn-info btn-sm" data-action="share/whatsapp/share"><i class="fa fa-list-alt"></i> Shared Quotation Invitation To Vendors</a>
+
+                                            <a data-bs-toggle="collapse" href="#sharedVendor" role="button" aria-expanded="false" aria-controls="sharedVendor" class="btn btn-info btn-sm"><i class="fa fa-list-alt"></i> Click To View The Quotation Request Invited Vendors</a>
                                         </p>
+                                        <div class="collapse" id="sharedVendor">
+                                            <div class="card">
+                                                <div class="card-header bg-success text-light">
+                                                    <h5>Enquiry Quotation Request Invited Vendors</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <table class="table table-striped table-hovered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Name</th>
+                                                                <th>Email</th>
+                                                                <th>Phone</th>
+                                                                <th>GST No.</th>
+                                                                <th>Location</th>
+                                                                <th>Request Status</th>
+                                                                <th>Action Date/Time</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <?php
+                                                            $invitedVendors = $common_model->find_data('ecomm_enquiry_vendor_shares', 'array', ['enq_id' => $row->id]);
+                                                            if($invitedVendors){ $sl=1; foreach($invitedVendors as $invitedVendor){
+                                                                $getVendor = $common_model->find_data('ecomm_users', 'row', ['id' => $invitedVendor->vendor_id, 'type' => 'VENDOR'], 'gst_no,company_name,full_address,email,phone');
+                                                            ?>
+                                                                <tr>
+                                                                    <td><?=$sl++?></td>
+                                                                    <td><?=(($getVendor)?$getVendor->company_name:'')?></td>
+                                                                    <td><?=(($getVendor)?$getVendor->email:'')?></td>
+                                                                    <td><?=(($getVendor)?$getVendor->phone:'')?></td>
+                                                                    <td><?=(($getVendor)?$getVendor->gst_no:'')?></td>
+                                                                    <td><?=(($getVendor)?$getVendor->full_address:'')?></td>
+                                                                    <td>
+                                                                        <?php if($invitedVendor->status == 0){?>
+                                                                            <span class="badge bg-warning"><i class="fa-solid fa-clock"></i> PENDING</span>
+                                                                        <?php } elseif($invitedVendor->status == 1){?>
+                                                                            <span class="badge bg-success"><i class="fa-solid fa-check-circle"></i> ACCEPTED</span>
+                                                                        <?php } elseif($invitedVendor->status == 3){?>
+                                                                            <span class="badge bg-danger"><i class="fa-solid fa-times-circle"></i> REJECTED</span>
+                                                                        <?php }?>
+                                                                    </td>
+                                                                    <td>
+                                                                        <?php if($invitedVendor->status == 0){?>
+                                                                            <span class="text-warning fw-bold">Yet Not Action</span>
+                                                                        <?php } elseif($invitedVendor->status == 1){?>
+                                                                            <span class="text-success fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y")?></span>
+                                                                        <?php } elseif($invitedVendor->status == 3){?>
+                                                                            <span class="text-danger fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y")?></span>
+                                                                        <?php }?>
+                                                                    </td>
+                                                                </tr>
+                                                            <?php } }?>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
                                     <!-- share to vendors panel -->
                                     <!-- share to vendors via whatsapp -->
                                         <p>
@@ -205,6 +263,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                             $sharedLink = base_url('enquiry-request/'.encoded($row->id));
                                             ?>
                                             <a href="whatsapp://send?text=<?=$sharedLink?>" class="btn btn-primary btn-sm" data-action="share/whatsapp/share"><i class="fa fa-share-alt"></i> Share Details To Vendors via Whatsapp</a>
+
                                             <a href="" class="btn btn-primary btn-sm" onclick="copyToClipboard()"><i class="fa fa-copy"></i> Copy Whatsapp Link For Share</a>
                                             <span id="whatsapp_link" style="display: none;"><?=$sharedLink?></span>
                                             <input type="hidden" placeholder="Paste here" />
@@ -270,6 +329,9 @@ $controller_route   = $moduleDetail['controller_route'];
             </div>
 
             <div class="card">
+                <div class="card-header bg-success text-light">
+                    <h5>Enquiry Request Items</h5>
+                </div>
                 <div class="card-body">
                     <div class="row mt-3">
                         <div class="col-md-12">
@@ -327,7 +389,15 @@ $controller_route   = $moduleDetail['controller_route'];
                                                     }
                                                     ?>
                                                 </td>
-                                                <td><?=$productName?></td>
+                                                <td>
+                                                    <span class="fw-bold"><?=$productName?></span><br>
+                                                    <a data-bs-toggle="collapse" href="#viewQuotations<?=$enquiryProduct->id?>" role="button" aria-expanded="false" aria-controls="viewQuotations<?=$enquiryProduct->id?>" class="badge bg-primary"><i class="fa fa-list-alt"></i> Click To View The Quotations</a>
+
+                                                    <!-- quotaion list -->
+                                                        
+                                                    <!-- quotaion list -->
+
+                                                </td>
                                                 <td><?=(($getItem)?$getItem->alias_name:'')?></td>
                                                 <td><?=(($getItem)?$getItem->billing_name:'')?></td>
                                                 <td><?=$productHSNCode?></td>
@@ -362,9 +432,76 @@ $controller_route   = $moduleDetail['controller_route'];
                     </div>
                 </div>
             </div>
-
+            <!-- quotaion list -->
+            <?php
+            if($enquiryProducts){ $slNo=1; foreach($enquiryProducts as $enquiryProduct){
+                if($enquiryProduct->new_product){
+                    $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $enquiryProduct->product_id], 'id,item_category,item_name_ecoex,alias_name,billing_name,item_images,hsn,gst,rate,unit');
+                    if($getItem){
+                        $productName    = (($getItem)?$getItem->item_name_ecoex:'');
+                        $productHSNCode = (($getItem)?$getItem->hsn:'');
+                    } else {
+                        $productName    = $enquiryProduct->new_product_name;
+                        $productHSNCode = $enquiryProduct->new_hsn;
+                    }
+                } else {
+                    $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $enquiryProduct->product_id], 'id,item_category,item_name_ecoex,alias_name,billing_name,item_images,hsn,gst,rate,unit');
+                    $productName    = (($getItem)?$getItem->item_name_ecoex:'');
+                    $productHSNCode = (($getItem)?$getItem->hsn:'');
+                }
+            ?>
+                <div class="collapse" id="viewQuotations<?=$enquiryProduct->id?>">
+                    <div class="card">
+                        <div class="card-header bg-success text-light">
+                            <h5><?=$productName?> Quotations From Invited Accepted Vendors</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-striped table-hovered">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Location</th>
+                                        <th>Price</th>
+                                        <th>Qty/Unit</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>{{vendor name}}</td>
+                                            <td>{{vendor email}}</td>
+                                            <td>{{vendor phone}}</td>
+                                            <td>{{vendor location}}</td>
+                                            <td>{{vendor price}}</td>
+                                            <td>{{qty/unit name}}</td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="btn btn-success btn-sm"><i class="fa-solid fa-trophy"></i> Award</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>{{vendor name}}</td>
+                                            <td>{{vendor email}}</td>
+                                            <td>{{vendor phone}}</td>
+                                            <td>{{vendor location}}</td>
+                                            <td>{{vendor price}}</td>
+                                            <td>{{qty/unit name}}</td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="btn btn-success btn-sm"><i class="fa-solid fa-trophy"></i> Award</a>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            <?php } }?>
+            <!-- quotaion list -->
         </div>
-
     </div>
 </section>
 
