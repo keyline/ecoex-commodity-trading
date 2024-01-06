@@ -218,6 +218,7 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 			$routes->match(['post'], "send-mobile-otp", "ApiController::sendMobileOTP");
 			$routes->match(['post'], "verify-mobile", "ApiController::verifyMobile");
 			$routes->match(['post'], "delete-account", "ApiController::deleteAccount");
+			$routes->match(['post'], "update-profile-image", "ApiController::updateProfileImage");
 			
 			$routes->match(['post'], "get-product", "ApiController::getProduct");
 			$routes->match(['post'], "get-hsncode-product", "ApiController::getHSNCodeProduct");
@@ -245,6 +246,7 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 				// pending request
 					$routes->match(['post'], "pending-quotation-request-list", "ApiController::vendorPendingRequestList");
 					$routes->match(['post'], "pending-quotation-request-accept-reject", "ApiController::vendorPendingRequestAcceptReject");
+					$routes->match(['get', 'post'], "get-enquiry-request-for-vendor-quotation", "ApiController::getEnquiryRequestForVendorQuotation");
 				// pending request
 				// accepted request
 					$routes->match(['post'], "accepted-quotation-request-list", "ApiController::vendorAcceptedRequestList");

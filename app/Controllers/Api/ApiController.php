@@ -2189,6 +2189,86 @@ class ApiController extends BaseController
             }
             $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
         }
+        public function updateProfileImage()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));        
+            $requiredFields     = ['profile_image'];
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)){              
+                $apiStatus          = FALSE;
+                $apiMessage         = 'All Data Are Not Present !!!';
+            }
+            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if($getTokenValue['status']){
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if($getUser){
+                        $profile_image_post                            = $requestData['profile_image'];
+                        /* profile image */
+                            if(!empty($profile_image_post)){
+                                $profile_image      = $profile_image_post[0];
+                                $upload_type        = $profile_image['type'];
+                                if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
+                                    $apiStatus          = FALSE;
+                                    http_response_code(404);
+                                    $apiMessage         = 'Please Upload Profile Image !!!';
+                                    $apiExtraField      = 'response_code';
+                                    $apiExtraData       = http_response_code();
+                                } else {
+                                    $upload_base64      = $profile_image['base64'];
+                                    $img                = $upload_base64;
+                                    
+                                    $data           = base64_decode($img);
+                                    $fileName       = uniqid() . '.jpg';
+                                    $file           = 'public/uploads/user/' . $fileName;
+                                    $success        = file_put_contents($file, $data);
+                                    $profileImage   = $fileName;
+                                }
+                            } else {
+                                $profileImage = $getUser->profile_image;
+                            }
+                        /* profile image */
+                        $fields = [
+                            'profile_image'                            => $profileImage,
+                        ];
+                        $this->common_model->save_data('ecomm_users', $fields, $uId, 'id');
+
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Profle Image Updated Successfully !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }               
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
     /* after login */
     /* plant panel */
         public function dashboard()
@@ -3591,6 +3671,160 @@ class ApiController extends BaseController
                             http_response_code(200);
                             $apiExtraField      = 'response_code';
                             $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'User Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
+            public function getEnquiryRequestForVendorQuotation()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['enq_id'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $enq_id                     = $requestData['enq_id'];
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            $enquiry               = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+                            if($enquiry){
+                                $requestList = [];
+                                $enquiryProducts = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id, 'status!=' => 3]);
+                                if($enquiryProducts){
+                                    foreach($enquiryProducts as $enquiryProduct){
+                                        if($enquiryProduct->new_product){
+                                            $product_id     = $enquiryProduct->product_id;
+                                            $product_name   = $enquiryProduct->new_product_name;
+                                            $hsn            = $enquiryProduct->new_hsn;
+                                            // $product_image  = (($enquiryProduct->new_product_image != '')?getenv('app.uploadsURL').'enquiry/'.$enquiryProduct->new_product_image:getenv('app.NO_IMAGE'));
+                                        } else {
+                                            $getProduct     = $this->common_model->find_data('ecomm_products', 'row', ['id' => $enquiryProduct->product_id], 'name,hsn_code,product_image');
+                                            $product_id     = $enquiryProduct->product_id;
+                                            $product_name   = (($getProduct)?$getProduct->name:'');
+                                            $hsn            = (($getProduct)?$getProduct->hsn_code:'');
+                                            // $product_image  = (($getProduct->product_image != '')?getenv('app.uploadsURL').'enquiry/'.$getProduct->product_image:getenv('app.NO_IMAGE'));
+                                        }
+                                        $product_images     = [];
+                                        $new_product_image  = json_decode($enquiryProduct->new_product_image);
+                                        if(!empty($new_product_image)){
+                                            for($pi=0;$pi<count($new_product_image);$pi++){
+                                                $product_images[]     = [
+                                                    'id'    => $pi,
+                                                    'link'  => (($new_product_image[$pi] != '')?getenv('app.uploadsURL').'enquiry/'.$new_product_image[$pi]:getenv('app.NO_IMAGE'))
+                                                ];
+                                            }
+                                        }
+                                        $getUnit               = $this->common_model->find_data('ecomm_units', 'row', ['id' => $enquiryProduct->unit], 'name');
+                                        $requestList[] = [
+                                            'enq_id'            => $enq_id,
+                                            'enq_product_id'    => $enquiryProduct->id,
+                                            'product_id'        => $product_id,
+                                            'product_name'      => $product_name,
+                                            'hsn'               => $hsn,
+                                            'product_image'     => $product_images,
+                                            'productErr'        => '',
+                                            'new_product'       => (($enquiryProduct->new_product)?true:false),
+                                            'qty'               => "",
+                                            'quote_price'       => "",
+                                            'unit'              => $enquiryProduct->unit,
+                                            'unit_name'         => (($getUnit)?$getUnit->name:''),
+                                        ];
+                                    }
+                                }                            
+                                if($enquiry->status == 0){
+                                    $enquiryStatus = 'Pending';
+                                } elseif($enquiry->status == 1){
+                                    $enquiryStatus = 'Sent/Submitted';
+                                } elseif($enquiry->status == 2){
+                                    $enquiryStatus = 'Accepted/Rejected';
+                                } elseif($enquiry->status == 3){
+                                    $enquiryStatus = 'Pickup';
+                                } elseif($enquiry->status == 4){
+                                    $enquiryStatus = 'Vehicle Placed';
+                                } elseif($enquiry->status == 5){
+                                    $enquiryStatus = 'Vehicle Ready Despatch';
+                                } elseif($enquiry->status == 6){
+                                    $enquiryStatus = 'Material Lifted';
+                                } elseif($enquiry->status == 7){
+                                    $enquiryStatus = 'Invoiced';
+                                } elseif($enquiry->status == 8){
+                                    $enquiryStatus = 'Completed';
+                                } elseif($enquiry->status == 9){
+                                    $enquiryStatus = 'Rejected';
+                                }
+                                $getPlant = $this->common_model->find_data('ecomm_users', 'row', ['id' => $enquiry->plant_id], 'company_name,full_address,district,state,pincode,location');
+                                
+                                $apiResponse = [
+                                    'enq_id'                => $enquiry->id,
+                                    'enquiry_no'            => $enquiry->enquiry_no,
+                                    'total_step'            => 8,
+                                    'current_step_no'       => $enquiry->status,
+                                    'current_step_name'     => $enquiryStatus,
+                                    'accepted_date'         => $enquiry->accepted_date,
+                                    'collection_date'       => $enquiry->tentative_collection_date,
+                                    'booking_date'          => $enquiry->created_at,
+                                    'latitude'              => $enquiry->latitude,
+                                    'longitude'             => $enquiry->longitude,
+                                    'device_model'          => $enquiry->device_model,
+                                    'device_brand'          => $enquiry->device_brand,
+                                    'plant_id'              => $enquiry->plant_id,
+                                    'company_id'            => $enquiry->company_id,
+                                    'gps_image'             => (($enquiry->gps_tracking_image != '')?getenv('app.uploadsURL').'enquiry/'.$enquiry->gps_tracking_image:''),
+                                    'weighing_slip'         => (($enquiry->weighing_slip != '')?getenv('app.uploadsURL').'enquiry/'.$enquiry->weighing_slip:''),
+                                    'vehicle_image'         => (($enquiry->vehicle_image != '')?getenv('app.uploadsURL').'enquiry/'.$enquiry->vehicle_image:''),
+                                    'plant_name'            => (($getPlant)?$getPlant->company_name:''),
+                                    'plant_fulladress'      => (($getPlant)?$getPlant->full_address:''),
+                                    'plant_district'        => (($getPlant)?$getPlant->district:''),
+                                    'plant_state'           => (($getPlant)?$getPlant->state:''),
+                                    'plant_pincode'         => (($getPlant)?$getPlant->pincode:''),
+                                    'plant_location'        => (($getPlant)?$getPlant->location:''),
+                                    'enquiry_remarks'       => $enquiry->enquiry_remarks,
+                                    'requestList'           => $requestList,
+                                ];
+
+                                $apiStatus          = TRUE;
+                                http_response_code(200);
+                                $apiMessage         = 'Enquiry Data Available Successfully !!!';
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            } else {
+                                $apiStatus          = FALSE;
+                                http_response_code(200);
+                                $apiMessage         = 'Enquiry Not Found !!!';
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            }
                         } else {
                             $apiStatus          = FALSE;
                             http_response_code(404);
