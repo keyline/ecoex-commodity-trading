@@ -2923,7 +2923,7 @@ class ApiController extends BaseController
                                     'current_step_name'     => $enquiryStatus,
                                     'accepted_date'         => date_format(date_create($enquiry->accepted_date), "M d, Y"),
                                     'collection_date'       => date_format(date_create($enquiry->tentative_collection_date), "M d, Y"),
-                                    'booking_date'          => $enquiry->created_at,
+                                    'booking_date'          => date_format(date_create($enquiry->created_at), "M d, Y"),
                                     'latitude'              => $enquiry->latitude,
                                     'longitude'             => $enquiry->longitude,
                                     'device_model'          => $enquiry->device_model,
