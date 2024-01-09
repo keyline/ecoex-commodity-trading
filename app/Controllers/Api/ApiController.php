@@ -2488,7 +2488,7 @@ class ApiController extends BaseController
                                             }
                                         }
                                     }
-                                    $items = implode(", ", $itemArray);;
+                                    $items = implode(", ", $itemArray);
 
                                     $apiResponse[] = [
                                         'enq_id'            => $row->id,
@@ -3343,13 +3343,53 @@ class ApiController extends BaseController
                             if($rows){
                                 foreach($rows as $row){
                                     $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
+
+                                    if($row->status == 0){
+                                        $enquiryStatus = 'Pending';
+                                    } elseif($row->status == 1){
+                                        $enquiryStatus = 'Sent/Submitted';
+                                    } elseif($row->status == 2){
+                                        $enquiryStatus = 'Accepted/Rejected';
+                                    } elseif($row->status == 3){
+                                        $enquiryStatus = 'Pickup';
+                                    } elseif($row->status == 4){
+                                        $enquiryStatus = 'Vehicle Placed';
+                                    } elseif($row->status == 5){
+                                        $enquiryStatus = 'Vehicle Ready Despatch';
+                                    } elseif($row->status == 6){
+                                        $enquiryStatus = 'Material Lifted';
+                                    } elseif($row->status == 7){
+                                        $enquiryStatus = 'Invoiced';
+                                    } elseif($row->status == 8){
+                                        $enquiryStatus = 'Completed';
+                                    } elseif($row->status == 9){
+                                        $enquiryStatus = 'Rejected';
+                                    }
+
+                                    $itemArray = [];
+                                    $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status!=' => 3], 'product_id,new_product_name,new_product');
+                                    if($enquityProducts){
+                                        foreach($enquityProducts as $enquityProduct){
+                                            if($enquityProduct->new_product){
+                                                $itemArray[] = $enquityProduct->new_product_name;
+                                            } else {
+                                                $getProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $enquityProduct->product_id], 'alias_name');
+                                                $itemArray[] = (($getProduct)?$getProduct->alias_name:'');
+                                            }
+                                        }
+                                    }
+                                    $items = implode(", ", $itemArray);
+
                                     $apiResponse[] = [
-                                        'enq_id'        => $row->id,
-                                        'enquiry_no'    => $row->enquiry_no,
-                                        'status'        => $row->status,
-                                        'product_count' => $productCount,
-                                        'created_at'    => date_format(date_create($row->created_at), "M d, Y h:i A"),
-                                        'updated_at'    => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                        'enq_id'            => $row->id,
+                                        'enquiry_no'        => $row->enquiry_no,
+                                        'status'            => $row->status,
+                                        'status_name'       => $enquiryStatus,
+                                        'product_count'     => $productCount,
+                                        'created_at'        => date_format(date_create($row->created_at), "M d, Y h:i A"),
+                                        'updated_at'        => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                        'collection_date'   => date_format(date_create($row->tentative_collection_date), "M d, Y"),
+                                        'items'             => $items
                                     ];
                                 }
                             }
@@ -3433,13 +3473,53 @@ class ApiController extends BaseController
                             if($rows){
                                 foreach($rows as $row){
                                     $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
+
+                                    if($row->status == 0){
+                                        $enquiryStatus = 'Pending';
+                                    } elseif($row->status == 1){
+                                        $enquiryStatus = 'Sent/Submitted';
+                                    } elseif($row->status == 2){
+                                        $enquiryStatus = 'Accepted/Rejected';
+                                    } elseif($row->status == 3){
+                                        $enquiryStatus = 'Pickup';
+                                    } elseif($row->status == 4){
+                                        $enquiryStatus = 'Vehicle Placed';
+                                    } elseif($row->status == 5){
+                                        $enquiryStatus = 'Vehicle Ready Despatch';
+                                    } elseif($row->status == 6){
+                                        $enquiryStatus = 'Material Lifted';
+                                    } elseif($row->status == 7){
+                                        $enquiryStatus = 'Invoiced';
+                                    } elseif($row->status == 8){
+                                        $enquiryStatus = 'Completed';
+                                    } elseif($row->status == 9){
+                                        $enquiryStatus = 'Rejected';
+                                    }
+
+                                    $itemArray = [];
+                                    $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status!=' => 3], 'product_id,new_product_name,new_product');
+                                    if($enquityProducts){
+                                        foreach($enquityProducts as $enquityProduct){
+                                            if($enquityProduct->new_product){
+                                                $itemArray[] = $enquityProduct->new_product_name;
+                                            } else {
+                                                $getProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $enquityProduct->product_id], 'alias_name');
+                                                $itemArray[] = (($getProduct)?$getProduct->alias_name:'');
+                                            }
+                                        }
+                                    }
+                                    $items = implode(", ", $itemArray);
+
                                     $apiResponse[] = [
-                                        'enq_id'        => $row->id,
-                                        'enquiry_no'    => $row->enquiry_no,
-                                        'status'        => $row->status,
-                                        'product_count' => $productCount,
-                                        'created_at'    => date_format(date_create($row->created_at), "M d, Y h:i A"),
-                                        'updated_at'    => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                        'enq_id'            => $row->id,
+                                        'enquiry_no'        => $row->enquiry_no,
+                                        'status'            => $row->status,
+                                        'status_name'       => $enquiryStatus,
+                                        'product_count'     => $productCount,
+                                        'created_at'        => date_format(date_create($row->created_at), "M d, Y h:i A"),
+                                        'updated_at'        => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                        'collection_date'   => date_format(date_create($row->tentative_collection_date), "M d, Y"),
+                                        'items'             => $items
                                     ];
                                 }
                             }
