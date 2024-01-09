@@ -2294,6 +2294,7 @@ class ApiController extends BaseController
                         $step4_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 8]);
                         $apiResponse        = [
                             'plant_id'          => $getUser->id,
+                            'plant_name'        => $getUser->plant_name,
                             'gst_no'            => $getUser->gst_no,
                             'company_name'      => $getUser->company_name,
                             'full_address'      => $getUser->full_address,
