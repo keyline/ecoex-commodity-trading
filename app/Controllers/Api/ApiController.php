@@ -3551,6 +3551,70 @@ class ApiController extends BaseController
                 }
                 $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
             }
+            public function convertRejectedToPending()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['enq_ids'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $enq_ids                    = $requestData['enq_ids'];
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            if(empty($enq_ids)){
+                                $apiStatus          = FALSE;
+                                http_response_code(200);
+                                $apiMessage         = 'Atleast One Enquiry Must Be Select For Convert Into Pending Request !!!';
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            } else {
+                                if(!empty($enq_ids)){
+                                    for($k=0;$k<count($enq_ids);$k++){
+                                        $this->common_model->save_data('ecomm_enquires', ['status' => 0], $enq_ids[$k], 'id');
+                                    }
+                                }
+                                $apiStatus          = TRUE;
+                                http_response_code(200);
+                                $apiMessage         = 'Selected Rejected Enquiry Converted Into Pending Enquiry !!!';
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            }
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'User Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
         /* rejected request */
     /* plant panel */
     /* vendor panel */
