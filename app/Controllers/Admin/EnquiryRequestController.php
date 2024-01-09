@@ -274,9 +274,18 @@ class EnquiryRequestController extends BaseController {
             $postData = array(
                                 'status'                    => 9,
                                 'enquiry_remarks'           => $this->request->getPost('enquiry_remarks'),
-                                'accepted_date'             => date('y-m-d H:i:s')
+                                'accepted_date'             => date('Y-m-d H:i:s')
                             );
             $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
+
+            $postData2 = array(
+                'enq_id'                    => $id,
+                'remarks'                   => $this->request->getPost('enquiry_remarks'),
+                'rejected_timestamp'        => date('Y-m-d H:i:s'),
+                'status'                    => 9,
+            );
+            $updateData = $this->common_model->save_data('ecomm_rejected_requests',$postData2,'',$this->data['primary_key']);
+
             $this->session->setFlashdata('success_message', $this->data['title'].' Rejected Successfully & Transfer To Rejected List !!!');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(9));
         } else {

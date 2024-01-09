@@ -239,6 +239,7 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 				// completed request
 				// rejected request
 					$routes->match(['get', 'post'], "rejected-request-list", "ApiController::rejectedRequestList");
+					$routes->match(['get', 'post'], "convert-rejected-to-pending", "ApiController::convertRejectedToPending");
 				// rejected request
 			/* plant panel */
 			/* vendor panel */
