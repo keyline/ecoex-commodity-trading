@@ -155,483 +155,434 @@ class ApiController extends BaseController
     /* before login */
     /* authentication */
         // signup
-        public function getCompanyDetails(){
-            $apiStatus          = TRUE;
-            $apiMessage         = '';
-            $apiResponse        = [];
-            $apiExtraField      = '';
-            $apiExtraData       = '';
-            $this->isJSON(file_get_contents('php://input'));
-            $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            $requiredFields     = ['gst_no'];
-            $headerData         = $this->request->headers();
-            if (!$this->validateArray($requiredFields, $requestData)){              
-                http_response_code(406);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            }
-            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $generalSetting = $this->common_model->find_data('general_settings', 'row');
-                $gst_no         = $requestData['gst_no'];
-                $checkGST       = $this->common_model->find_data('ecomm_users', 'row', ['gst_no' => $gst_no]);
-                if($checkGST){
-                    $apiStatus      = FALSE;
-                    $apiMessage     = "GSTIN No. Already Exists !!!";
-                } else {
-                    $ch = curl_init();
-                    // curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/edb8e6902f3ca57767d04972cd7a1ad2/'.$gst_no);
-                    curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/'.$generalSetting->gst_api_code.'/'.$gst_no); //info@leylines.net
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                    $response = json_decode(curl_exec($ch));
-                    if($response){
-                        if($response->flag){
-                            $gstResponse    = [
-                                'trade_name'    => trim($response->data->tradeNam, " "),
-                                'gstin'         => trim($response->data->gstin, " "),
-                                'address'       => trim($response->data->pradr->adr, " "),
-                                'holding_no'    => (($response->data->pradr->addr->bnm != '')?trim($response->data->pradr->addr->bnm, " "):trim($response->data->pradr->addr->flno, " ")),
-                                'street'        => trim($response->data->pradr->addr->st, " "),
-                                'district'      => trim($response->data->pradr->addr->dst, " "),
-                                'state'         => trim($response->data->pradr->addr->stcd, " "),
-                                'pincode'       => trim($response->data->pradr->addr->pncd, " "),
-                                'location'      => trim($response->data->pradr->addr->loc, " "),
-                            ];
-                            $apiResponse    = $gstResponse;
-                            // pr($apiResponse);
-                            http_response_code(200);
-                            $apiStatus          = TRUE;
-                            $apiMessage         = "Company Details Available !!!";
-                            $apiExtraField      = 'response_code';
-                            $apiExtraData       = http_response_code();
-                        } else {
-                            http_response_code(400);
-                            $apiStatus          = FALSE;
-                            $apiMessage         = "Company Details Not Available !!!";
-                            $apiExtraField      = 'response_code';
-                            $apiExtraData       = http_response_code();
-                        }
-                    } else {
-                        http_response_code(400);
-                        $apiStatus          = FALSE;
-                        $apiMessage         = "Not Valid GSTIN No. !!!";
-                        $apiExtraField      = 'response_code';
-                        $apiExtraData       = http_response_code();
-                    }
+            public function getCompanyDetails(){
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $apiExtraField      = '';
+                $apiExtraData       = '';
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['gst_no'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    http_response_code(406);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
                 }
-            } else {
-                http_response_code(400);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            }
-            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
-        }
-        public function getCompanyDetails2(){
-            $apiStatus          = TRUE;
-            $apiMessage         = '';
-            $apiResponse        = [];
-            $apiExtraField      = '';
-            $apiExtraData       = '';
-            $this->isJSON(file_get_contents('php://input'));
-            $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            $requiredFields     = ['gst_no'];
-            $headerData         = $this->request->headers();
-            if (!$this->validateArray($requiredFields, $requestData)){              
-                http_response_code(406);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            }
-            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $generalSetting = $this->common_model->find_data('general_settings', 'row');
-                $gst_no         = $requestData['gst_no'];
-                $checkGST       = $this->common_model->find_data('ecoex_companies', 'row', ['gst_no' => $gst_no]);
-                if($checkGST){
-                    $ch = curl_init();
-                    // curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/edb8e6902f3ca57767d04972cd7a1ad2/'.$gst_no);
-                    curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/'.$generalSetting->gst_api_code.'/'.$gst_no); //info@leylines.net
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                    $response = json_decode(curl_exec($ch));
-                    if($response){
-                        if($response->flag){
-                            $gstResponse    = [
-                                'trade_name'    => trim($response->data->tradeNam, " "),
-                                'gstin'         => trim($response->data->gstin, " "),
-                                'address'       => trim($response->data->pradr->adr, " "),
-                                'holding_no'    => (($response->data->pradr->addr->bnm != '')?trim($response->data->pradr->addr->bnm, " "):trim($response->data->pradr->addr->flno, " ")),
-                                'street'        => trim($response->data->pradr->addr->st, " "),
-                                'district'      => trim($response->data->pradr->addr->dst, " "),
-                                'state'         => trim($response->data->pradr->addr->stcd, " "),
-                                'pincode'       => trim($response->data->pradr->addr->pncd, " "),
-                                'location'      => trim($response->data->pradr->addr->loc, " "),
-                            ];
-                            $apiResponse    = $gstResponse;
-                            // pr($apiResponse);
-                            http_response_code(200);
-                            $apiStatus          = TRUE;
-                            $apiMessage         = "Company Details Available !!!";
-                            $apiExtraField      = 'response_code';
-                            $apiExtraData       = http_response_code();
-                        } else {
-                            http_response_code(400);
-                            $apiStatus          = FALSE;
-                            $apiMessage         = "Company Details Not Available !!!";
-                            $apiExtraField      = 'response_code';
-                            $apiExtraData       = http_response_code();
-                        }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $generalSetting = $this->common_model->find_data('general_settings', 'row');
+                    $gst_no         = $requestData['gst_no'];
+                    $checkGST       = $this->common_model->find_data('ecomm_users', 'row', ['gst_no' => $gst_no]);
+                    if($checkGST){
+                        $apiStatus      = FALSE;
+                        $apiMessage     = "GSTIN No. Already Exists !!!";
                     } else {
-                        http_response_code(400);
-                        $apiStatus          = FALSE;
-                        $apiMessage         = "Not Valid GSTIN No. !!!";
-                        $apiExtraField      = 'response_code';
-                        $apiExtraData       = http_response_code();
-                    }
-                } else {
-                    $ch = curl_init();
-                    // curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/edb8e6902f3ca57767d04972cd7a1ad2/'.$gst_no);
-                    curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/'.$generalSetting->gst_api_code.'/'.$gst_no); //info@leylines.net
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                    $response = json_decode(curl_exec($ch));
-                    if($response){
-                        if($response->flag){
-                            $gstResponse    = [
-                                'trade_name'    => trim($response->data->tradeNam, " "),
-                                'gstin'         => trim($response->data->gstin, " "),
-                                'address'       => trim($response->data->pradr->adr, " "),
-                                'holding_no'    => (($response->data->pradr->addr->bnm != '')?trim($response->data->pradr->addr->bnm, " "):trim($response->data->pradr->addr->flno, " ")),
-                                'street'        => trim($response->data->pradr->addr->st, " "),
-                                'district'      => trim($response->data->pradr->addr->dst, " "),
-                                'state'         => trim($response->data->pradr->addr->stcd, " "),
-                                'pincode'       => trim($response->data->pradr->addr->pncd, " "),
-                                'location'      => trim($response->data->pradr->addr->loc, " "),
-                            ];
-                            $apiResponse    = $gstResponse;
-                            // pr($apiResponse);
-                            http_response_code(200);
-                            $apiStatus          = TRUE;
-                            $apiMessage         = "Company Details Available !!!";
-                            $apiExtraField      = 'response_code';
-                            $apiExtraData       = http_response_code();
-                        } else {
-                            http_response_code(400);
-                            $apiStatus          = FALSE;
-                            $apiMessage         = "Company Details Not Available !!!";
-                            $apiExtraField      = 'response_code';
-                            $apiExtraData       = http_response_code();
-                        }
-                    } else {
-                        http_response_code(400);
-                        $apiStatus          = FALSE;
-                        $apiMessage         = "Not Valid GSTIN No. !!!";
-                        $apiExtraField      = 'response_code';
-                        $apiExtraData       = http_response_code();
-                    }
-                }
-            } else {
-                http_response_code(400);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            }
-            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
-        }
-        public function signup()
-        {
-            $apiStatus          = TRUE;
-            $apiMessage         = '';
-            $apiResponse        = [];
-            $apiExtraField      = '';
-            $apiExtraData       = '';
-            $this->isJSON(file_get_contents('php://input'));
-            $requestData        = $this->extract_json(file_get_contents('php://input'));
-            $requiredFields     = ['gst_no', 'company_name', 'full_address', 'district', 'state', 'pincode', 'location', 'email', 'phone', 'password', 'confirm_password', 'member_type'];
-            $headerData         = $this->request->headers();
-            if (!$this->validateArray($requiredFields, $requestData)){              
-                http_response_code(406);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            }
-            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $phone      = $requestData['phone'];
-                $checkEmail = $this->common_model->find_data('ecomm_users', 'row', ['email' => $requestData['email']]);
-                if(empty($checkEmail)){
-                    $checkPhone = $this->common_model->find_data('ecomm_users', 'count', ['phone' => $phone]);
-                    if($checkPhone <= 0){
-                        if($requestData['password'] == $requestData['confirm_password']){
-                            $remember_token = rand(100000,999999);
-                            $mobile_otp     = rand(100000,999999);
-                            $postData       = [
-                                'type'                      => 'VENDOR',
-                                'gst_no'                    => $requestData['gst_no'],
-                                'company_name'              => $requestData['company_name'],
-                                'full_address'              => $requestData['full_address'],
-                                'holding_no'                => $requestData['holding_no'],
-                                'street'                    => $requestData['street'],
-                                'district'                  => $requestData['district'],
-                                'state'                     => $requestData['state'],
-                                'pincode'                   => $requestData['pincode'],
-                                'location'                  => $requestData['location'],
-                                'email'                     => $requestData['email'],
-                                'email_verified_at'         => date('Y-m-d H:i:s'),
-                                'phone'                     => $phone,
-                                'password'                  => md5($requestData['password']),
-                                'remember_token'            => $remember_token,
-                                'mobile_otp'                => $mobile_otp,
-                                'member_type'               => $requestData['member_type']
-                            ];
-                            // pr($postData);
-                            $getUser = $this->common_model->find_data('ecomm_users', 'row', ['email' => $requestData['email']]);
-                            if(!$getUser){
-                                $id = $this->common_model->save_data('ecomm_users', $postData, '', 'id');
-                            } else {
-                                $this->common_model->save_data('ecomm_users', $postData, $getUser->id, 'id');
-                                $id = $getUser->id;
-                            }
-                            $getUser = $this->common_model->find_data('ecomm_users', 'row', ['id' => $id]);
-                            $mailData                   = [
-                                'id'            => $getUser->id,
-                                'email'         => $getUser->email,
-                                'otp'           => $remember_token,
-                                'mobile_otp'    => $mobile_otp,
-                            ];
-                            /* send email */
-                                $generalSetting             = $this->common_model->find_data('general_settings', 'row');
-                                $subject                    = $generalSetting->site_name.' :: Email Verify OTP For Signup';
-                                $message                    = view('email-templates/otp',$mailData);
-                                // echo $message;die;
-                                $this->sendMail($getUser->email, $subject, $message);
-                            /* send email */
-                            /* send sms */
-                                $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
-                                $message = "Dear ".(($memberType)?$memberType->name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
-                                $mobileNo = (($getUser)?$getUser->phone:'');
-                                $this->sendSMS($mobileNo,$message);
-                            /* send sms */
-
-                            /* email log save */
-                                $postData2 = [
-                                    'name'                  => $getUser->company_name,
-                                    'email'                 => $getUser->email,
-                                    'subject'               => $subject,
-                                    'message'               => $message
+                        $ch = curl_init();
+                        // curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/edb8e6902f3ca57767d04972cd7a1ad2/'.$gst_no);
+                        curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/'.$generalSetting->gst_api_code.'/'.$gst_no); //info@leylines.net
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                        $response = json_decode(curl_exec($ch));
+                        if($response){
+                            if($response->flag){
+                                $gstResponse    = [
+                                    'trade_name'    => trim($response->data->tradeNam, " "),
+                                    'gstin'         => trim($response->data->gstin, " "),
+                                    'address'       => trim($response->data->pradr->adr, " "),
+                                    'holding_no'    => (($response->data->pradr->addr->bnm != '')?trim($response->data->pradr->addr->bnm, " "):trim($response->data->pradr->addr->flno, " ")),
+                                    'street'        => trim($response->data->pradr->addr->st, " "),
+                                    'district'      => trim($response->data->pradr->addr->dst, " "),
+                                    'state'         => trim($response->data->pradr->addr->stcd, " "),
+                                    'pincode'       => trim($response->data->pradr->addr->pncd, " "),
+                                    'location'      => trim($response->data->pradr->addr->loc, " "),
                                 ];
-                                $this->common_model->save_data('email_logs', $postData2, '', 'id');
-                            /* email log save */
-
-                            $apiResponse                        = $mailData;
-                            
-                            $apiStatus          = TRUE;
-                            http_response_code(200);
-                            $apiMessage         = 'Signup Partially Completed. Please Verify Email & Phone. Get Notify After Admin Approval !!!';
+                                $apiResponse    = $gstResponse;
+                                // pr($apiResponse);
+                                http_response_code(200);
+                                $apiStatus          = TRUE;
+                                $apiMessage         = "Company Details Available !!!";
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            } else {
+                                http_response_code(400);
+                                $apiStatus          = FALSE;
+                                $apiMessage         = "Company Details Not Available !!!";
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            }
+                        } else {
+                            http_response_code(400);
+                            $apiStatus          = FALSE;
+                            $apiMessage         = "Not Valid GSTIN No. !!!";
                             $apiExtraField      = 'response_code';
                             $apiExtraData       = http_response_code();
-                            
+                        }
+                    }
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+            }
+            public function getCompanyDetails2(){
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $apiExtraField      = '';
+                $apiExtraData       = '';
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['gst_no'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    http_response_code(406);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $generalSetting = $this->common_model->find_data('general_settings', 'row');
+                    $gst_no         = $requestData['gst_no'];
+                    $checkGST       = $this->common_model->find_data('ecoex_companies', 'row', ['gst_no' => $gst_no]);
+                    if($checkGST){
+                        $ch = curl_init();
+                        // curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/edb8e6902f3ca57767d04972cd7a1ad2/'.$gst_no);
+                        curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/'.$generalSetting->gst_api_code.'/'.$gst_no); //info@leylines.net
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                        $response = json_decode(curl_exec($ch));
+                        if($response){
+                            if($response->flag){
+                                $gstResponse    = [
+                                    'trade_name'    => trim($response->data->tradeNam, " "),
+                                    'gstin'         => trim($response->data->gstin, " "),
+                                    'address'       => trim($response->data->pradr->adr, " "),
+                                    'holding_no'    => (($response->data->pradr->addr->bnm != '')?trim($response->data->pradr->addr->bnm, " "):trim($response->data->pradr->addr->flno, " ")),
+                                    'street'        => trim($response->data->pradr->addr->st, " "),
+                                    'district'      => trim($response->data->pradr->addr->dst, " "),
+                                    'state'         => trim($response->data->pradr->addr->stcd, " "),
+                                    'pincode'       => trim($response->data->pradr->addr->pncd, " "),
+                                    'location'      => trim($response->data->pradr->addr->loc, " "),
+                                ];
+                                $apiResponse    = $gstResponse;
+                                // pr($apiResponse);
+                                http_response_code(200);
+                                $apiStatus          = TRUE;
+                                $apiMessage         = "Company Details Available !!!";
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            } else {
+                                http_response_code(400);
+                                $apiStatus          = FALSE;
+                                $apiMessage         = "Company Details Not Available !!!";
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            }
+                        } else {
+                            http_response_code(400);
+                            $apiStatus          = FALSE;
+                            $apiMessage         = "Not Valid GSTIN No. !!!";
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        $ch = curl_init();
+                        // curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/edb8e6902f3ca57767d04972cd7a1ad2/'.$gst_no);
+                        curl_setopt($ch, CURLOPT_URL, 'https://sheet.gstincheck.co.in/check/'.$generalSetting->gst_api_code.'/'.$gst_no); //info@leylines.net
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                        $response = json_decode(curl_exec($ch));
+                        if($response){
+                            if($response->flag){
+                                $gstResponse    = [
+                                    'trade_name'    => trim($response->data->tradeNam, " "),
+                                    'gstin'         => trim($response->data->gstin, " "),
+                                    'address'       => trim($response->data->pradr->adr, " "),
+                                    'holding_no'    => (($response->data->pradr->addr->bnm != '')?trim($response->data->pradr->addr->bnm, " "):trim($response->data->pradr->addr->flno, " ")),
+                                    'street'        => trim($response->data->pradr->addr->st, " "),
+                                    'district'      => trim($response->data->pradr->addr->dst, " "),
+                                    'state'         => trim($response->data->pradr->addr->stcd, " "),
+                                    'pincode'       => trim($response->data->pradr->addr->pncd, " "),
+                                    'location'      => trim($response->data->pradr->addr->loc, " "),
+                                ];
+                                $apiResponse    = $gstResponse;
+                                // pr($apiResponse);
+                                http_response_code(200);
+                                $apiStatus          = TRUE;
+                                $apiMessage         = "Company Details Available !!!";
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            } else {
+                                http_response_code(400);
+                                $apiStatus          = FALSE;
+                                $apiMessage         = "Company Details Not Available !!!";
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            }
+                        } else {
+                            http_response_code(400);
+                            $apiStatus          = FALSE;
+                            $apiMessage         = "Not Valid GSTIN No. !!!";
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    }
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+            }
+            public function signup()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $apiExtraField      = '';
+                $apiExtraData       = '';
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));
+                $requiredFields     = ['gst_no', 'company_name', 'full_address', 'district', 'state', 'pincode', 'location', 'email', 'phone', 'password', 'confirm_password', 'member_type'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    http_response_code(406);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $phone      = $requestData['phone'];
+                    $checkEmail = $this->common_model->find_data('ecomm_users', 'row', ['email' => $requestData['email']]);
+                    if(empty($checkEmail)){
+                        $checkPhone = $this->common_model->find_data('ecomm_users', 'count', ['phone' => $phone]);
+                        if($checkPhone <= 0){
+                            if($requestData['password'] == $requestData['confirm_password']){
+                                $remember_token = rand(100000,999999);
+                                $mobile_otp     = rand(100000,999999);
+                                $postData       = [
+                                    'type'                      => 'VENDOR',
+                                    'gst_no'                    => $requestData['gst_no'],
+                                    'company_name'              => $requestData['company_name'],
+                                    'full_address'              => $requestData['full_address'],
+                                    'holding_no'                => $requestData['holding_no'],
+                                    'street'                    => $requestData['street'],
+                                    'district'                  => $requestData['district'],
+                                    'state'                     => $requestData['state'],
+                                    'pincode'                   => $requestData['pincode'],
+                                    'location'                  => $requestData['location'],
+                                    'email'                     => $requestData['email'],
+                                    'email_verified_at'         => date('Y-m-d H:i:s'),
+                                    'phone'                     => $phone,
+                                    'password'                  => md5($requestData['password']),
+                                    'remember_token'            => $remember_token,
+                                    'mobile_otp'                => $mobile_otp,
+                                    'member_type'               => $requestData['member_type']
+                                ];
+                                // pr($postData);
+                                $getUser = $this->common_model->find_data('ecomm_users', 'row', ['email' => $requestData['email']]);
+                                if(!$getUser){
+                                    $id = $this->common_model->save_data('ecomm_users', $postData, '', 'id');
+                                } else {
+                                    $this->common_model->save_data('ecomm_users', $postData, $getUser->id, 'id');
+                                    $id = $getUser->id;
+                                }
+                                $getUser = $this->common_model->find_data('ecomm_users', 'row', ['id' => $id]);
+                                $mailData                   = [
+                                    'id'            => $getUser->id,
+                                    'email'         => $getUser->email,
+                                    'otp'           => $remember_token,
+                                    'mobile_otp'    => $mobile_otp,
+                                ];
+                                /* send email */
+                                    $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                                    $subject                    = $generalSetting->site_name.' :: Email Verify OTP For Signup';
+                                    $message                    = view('email-templates/otp',$mailData);
+                                    // echo $message;die;
+                                    $this->sendMail($getUser->email, $subject, $message);
+                                /* send email */
+                                /* send sms */
+                                    $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
+                                    $message = "Dear ".(($memberType)?$memberType->name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
+                                    $mobileNo = (($getUser)?$getUser->phone:'');
+                                    $this->sendSMS($mobileNo,$message);
+                                /* send sms */
+
+                                /* email log save */
+                                    $postData2 = [
+                                        'name'                  => $getUser->company_name,
+                                        'email'                 => $getUser->email,
+                                        'subject'               => $subject,
+                                        'message'               => $message
+                                    ];
+                                    $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                                /* email log save */
+
+                                $apiResponse                        = $mailData;
+                                
+                                $apiStatus          = TRUE;
+                                http_response_code(200);
+                                $apiMessage         = 'Signup Partially Completed. Please Verify Email & Phone. Get Notify After Admin Approval !!!';
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                                
+                            } else {
+                                $apiStatus          = FALSE;
+                                http_response_code(404);
+                                $apiMessage         = 'Password & Confirm Password Does Not Matched !!!';
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            }
                         } else {
                             $apiStatus          = FALSE;
                             http_response_code(404);
-                            $apiMessage         = 'Password & Confirm Password Does Not Matched !!!';
+                            $apiMessage         = 'Phone Already Registered !!!';
                             $apiExtraField      = 'response_code';
                             $apiExtraData       = http_response_code();
                         }
                     } else {
                         $apiStatus          = FALSE;
                         http_response_code(404);
-                        $apiMessage         = 'Phone Already Registered !!!';
+                        $apiMessage         = 'Email Already Registered !!!';
                         $apiExtraField      = 'response_code';
                         $apiExtraData       = http_response_code();
                     }
                 } else {
+                    http_response_code(400);
                     $apiStatus          = FALSE;
-                    http_response_code(404);
-                    $apiMessage         = 'Email Already Registered !!!';
+                    $apiMessage         = $this->getResponseCode(http_response_code());
                     $apiExtraField      = 'response_code';
                     $apiExtraData       = http_response_code();
                 }
-            } else {
-                http_response_code(400);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
             }
-            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
-        }
-        public function signupOTPResend()
-        {
-            $apiStatus          = TRUE;
-            $apiMessage         = '';
-            $apiResponse        = [];
-            $apiExtraField      = '';
-            $apiExtraData       = '';
-            $this->isJSON(file_get_contents('php://input'));
-            $requestData        = $this->extract_json(file_get_contents('php://input'));
-            $requiredFields     = ['id'];
-            $headerData         = $this->request->headers();
-            if (!$this->validateArray($requiredFields, $requestData)){              
-                http_response_code(406);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            }
-            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $getUser = $this->common_model->find_data('ecomm_users', 'row', ['id' => $requestData['id']]);
-                if($getUser){
-                    $remember_token = rand(100000,999999);
-                    $mobile_otp     = rand(100000,999999);
-                    $this->common_model->save_data('ecomm_users', ['remember_token' => $remember_token, 'mobile_otp' => $mobile_otp], $requestData['id'], 'id');
-                    $mailData                   = [
-                        'id'            => $getUser->id,
-                        'email'         => $getUser->email,
-                        'phone'         => $getUser->phone,
-                        'otp'           => $remember_token,
-                        'mobile_otp'    => $mobile_otp,
-                    ];
-                    /* send email */
-                        $generalSetting             = $this->common_model->find_data('general_settings', 'row');
-                        $subject                    = $generalSetting->site_name.' :: Email Verify OTP For Signup';
-                        $message                    = view('email-templates/otp',$mailData);
-                        // echo $message;die;
-                        $this->sendMail($getUser->email, $subject, $message);
-                    /* send email */
-                    /* send sms */
-                        $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
-                        $message = "Dear ".(($memberType)?$memberType->name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
-                        $mobileNo = (($getUser)?$getUser->phone:'');
-                        $this->sendSMS($mobileNo,$message);
-                    /* send sms */
-
-                    /* email log save */
-                        $postData2 = [
-                            'name'                  => $getUser->company_name,
-                            'email'                 => $getUser->email,
-                            'subject'               => $subject,
-                            'message'               => $message
+            public function signupOTPResend()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $apiExtraField      = '';
+                $apiExtraData       = '';
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));
+                $requiredFields     = ['id'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    http_response_code(406);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $getUser = $this->common_model->find_data('ecomm_users', 'row', ['id' => $requestData['id']]);
+                    if($getUser){
+                        $remember_token = rand(100000,999999);
+                        $mobile_otp     = rand(100000,999999);
+                        $this->common_model->save_data('ecomm_users', ['remember_token' => $remember_token, 'mobile_otp' => $mobile_otp], $requestData['id'], 'id');
+                        $mailData                   = [
+                            'id'            => $getUser->id,
+                            'email'         => $getUser->email,
+                            'phone'         => $getUser->phone,
+                            'otp'           => $remember_token,
+                            'mobile_otp'    => $mobile_otp,
                         ];
-                        $this->common_model->save_data('email_logs', $postData2, '', 'id');
-                    /* email log save */
+                        /* send email */
+                            $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                            $subject                    = $generalSetting->site_name.' :: Email Verify OTP For Signup';
+                            $message                    = view('email-templates/otp',$mailData);
+                            // echo $message;die;
+                            $this->sendMail($getUser->email, $subject, $message);
+                        /* send email */
+                        /* send sms */
+                            $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
+                            $message = "Dear ".(($memberType)?$memberType->name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
+                            $mobileNo = (($getUser)?$getUser->phone:'');
+                            $this->sendSMS($mobileNo,$message);
+                        /* send sms */
 
-                    $apiResponse        = $mailData;
-                    $apiStatus          = TRUE;
-                    http_response_code(200);
-                    $apiMessage         = 'OTP Resend To Email & SMS Successfully !!!';
-                    $apiExtraField      = 'response_code';
-                    $apiExtraData       = http_response_code();
-                } else {
-                    $apiStatus          = FALSE;
-                    http_response_code(404);
-                    $apiMessage         = 'User Not Found !!!';
-                    $apiExtraField      = 'response_code';
-                    $apiExtraData       = http_response_code();
-                }
-            } else {
-                http_response_code(400);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            }
-            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
-        }
-        public function signupOTPVerify(){
-            $apiStatus          = TRUE;
-            $apiMessage         = '';
-            $apiResponse        = [];
-            $apiExtraField      = '';
-            $apiExtraData       = '';
-            $this->isJSON(file_get_contents('php://input'));
-            $requestData        = $this->extract_json(file_get_contents('php://input'));
-            $requiredFields     = ['id'];
-            $headerData         = $this->request->headers();
-            if (!$this->validateArray($requiredFields, $requestData)){              
-                http_response_code(406);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            }           
-            if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
-                $getUser = $this->common_model->find_data('ecomm_users', 'row', ['id' => $requestData['id']]);
-                if($getUser){
-                    $email_otp_input        = $requestData['email_otp_input'];
-                    $mobile_otp_input       = $requestData['mobile_otp_input'];
-                    $remember_token         = $getUser->remember_token;
-                    $mobile_otp             = $getUser->mobile_otp;
+                        /* email log save */
+                            $postData2 = [
+                                'name'                  => $getUser->company_name,
+                                'email'                 => $getUser->email,
+                                'subject'               => $subject,
+                                'message'               => $message
+                            ];
+                            $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                        /* email log save */
 
-                    if($email_otp_input == '' && $mobile_otp_input == ''){
+                        $apiResponse        = $mailData;
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'OTP Resend To Email & SMS Successfully !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
                         $apiStatus          = FALSE;
                         http_response_code(404);
-                        $apiMessage         = 'Email Or Mobile OTP Required !!!';
+                        $apiMessage         = 'User Not Found !!!';
                         $apiExtraField      = 'response_code';
-                    } else {
-                        /* email & mobile verify */
-                            if(($email_otp_input != '') && ($mobile_otp_input != '')){
-                                if($remember_token == $email_otp_input){
-                                    if($mobile_otp == $mobile_otp_input){
-                                        $this->common_model->save_data('ecomm_users', ['mobile_otp' => '', 'remember_token' => ''], $getUser->id, 'id');
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+            }
+            public function signupOTPVerify(){
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $apiExtraField      = '';
+                $apiExtraData       = '';
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));
+                $requiredFields     = ['id'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    http_response_code(406);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }           
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $getUser = $this->common_model->find_data('ecomm_users', 'row', ['id' => $requestData['id']]);
+                    if($getUser){
+                        $email_otp_input        = $requestData['email_otp_input'];
+                        $mobile_otp_input       = $requestData['mobile_otp_input'];
+                        $remember_token         = $getUser->remember_token;
+                        $mobile_otp             = $getUser->mobile_otp;
 
-                                        $apiResponse        = [
-                                            'id'    => $getUser->id,
-                                            'email' => $getUser->email,
-                                            'phone' => $getUser->phone,
-                                        ];
-                                        $apiStatus                          = TRUE;
-                                        http_response_code(200);
-                                        $apiMessage                         = 'Email & Mobile OTP Validated Successfully !!!';
-                                        $apiExtraField                      = 'response_code';
-                                        $apiExtraData                       = http_response_code();
-                                    } else {
-                                        $apiStatus          = FALSE;
-                                        http_response_code(404);
-                                        $apiMessage         = 'Mobile OTP Mismatched !!!';
-                                        $apiExtraField      = 'response_code';
-                                    }
-                                } else {
-                                    $apiStatus          = FALSE;
-                                    http_response_code(404);
-                                    $apiMessage         = 'Email OTP Mismatched !!!';
-                                    $apiExtraField      = 'response_code';
-                                }
-                            } else {
-                                /* email verify */
-                                    if($email_otp_input != ''){
-                                        if($remember_token == $email_otp_input){
-                                            $this->common_model->save_data('ecomm_users', ['remember_token' => ''], $getUser->id, 'id');
-                                            $apiResponse        = [
-                                                'id'    => $getUser->id,
-                                                'email' => $getUser->email,
-                                                'phone' => $getUser->phone,
-                                            ];
-                                            $apiStatus                          = TRUE;
-                                            http_response_code(200);
-                                            $apiMessage                         = 'Email OTP Validated Successfully !!!';
-                                            $apiExtraField                      = 'response_code';
-                                            $apiExtraData                       = http_response_code();
-                                        } else {
-                                            $apiStatus          = FALSE;
-                                            http_response_code(404);
-                                            $apiMessage         = 'Email OTP Mismatched !!!';
-                                            $apiExtraField      = 'response_code';
-                                        }
-                                    }
-                                /* email verify */
-                                /* mobile verify */
-                                    if($mobile_otp_input != ''){
+                        if($email_otp_input == '' && $mobile_otp_input == ''){
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'Email Or Mobile OTP Required !!!';
+                            $apiExtraField      = 'response_code';
+                        } else {
+                            /* email & mobile verify */
+                                if(($email_otp_input != '') && ($mobile_otp_input != '')){
+                                    if($remember_token == $email_otp_input){
                                         if($mobile_otp == $mobile_otp_input){
-                                            $this->common_model->save_data('ecomm_users', ['mobile_otp' => ''], $getUser->id, 'id');
+                                            $this->common_model->save_data('ecomm_users', ['mobile_otp' => '', 'remember_token' => ''], $getUser->id, 'id');
+
                                             $apiResponse        = [
                                                 'id'    => $getUser->id,
                                                 'email' => $getUser->email,
@@ -639,7 +590,7 @@ class ApiController extends BaseController
                                             ];
                                             $apiStatus                          = TRUE;
                                             http_response_code(200);
-                                            $apiMessage                         = 'Mobile OTP Validated Successfully !!!';
+                                            $apiMessage                         = 'Email & Mobile OTP Validated Successfully !!!';
                                             $apiExtraField                      = 'response_code';
                                             $apiExtraData                       = http_response_code();
                                         } else {
@@ -648,27 +599,76 @@ class ApiController extends BaseController
                                             $apiMessage         = 'Mobile OTP Mismatched !!!';
                                             $apiExtraField      = 'response_code';
                                         }
+                                    } else {
+                                        $apiStatus          = FALSE;
+                                        http_response_code(404);
+                                        $apiMessage         = 'Email OTP Mismatched !!!';
+                                        $apiExtraField      = 'response_code';
                                     }
-                                /* mobile verify */
-                            }
-                        /* email & mobile verify */
+                                } else {
+                                    /* email verify */
+                                        if($email_otp_input != ''){
+                                            if($remember_token == $email_otp_input){
+                                                $this->common_model->save_data('ecomm_users', ['remember_token' => ''], $getUser->id, 'id');
+                                                $apiResponse        = [
+                                                    'id'    => $getUser->id,
+                                                    'email' => $getUser->email,
+                                                    'phone' => $getUser->phone,
+                                                ];
+                                                $apiStatus                          = TRUE;
+                                                http_response_code(200);
+                                                $apiMessage                         = 'Email OTP Validated Successfully !!!';
+                                                $apiExtraField                      = 'response_code';
+                                                $apiExtraData                       = http_response_code();
+                                            } else {
+                                                $apiStatus          = FALSE;
+                                                http_response_code(404);
+                                                $apiMessage         = 'Email OTP Mismatched !!!';
+                                                $apiExtraField      = 'response_code';
+                                            }
+                                        }
+                                    /* email verify */
+                                    /* mobile verify */
+                                        if($mobile_otp_input != ''){
+                                            if($mobile_otp == $mobile_otp_input){
+                                                $this->common_model->save_data('ecomm_users', ['mobile_otp' => ''], $getUser->id, 'id');
+                                                $apiResponse        = [
+                                                    'id'    => $getUser->id,
+                                                    'email' => $getUser->email,
+                                                    'phone' => $getUser->phone,
+                                                ];
+                                                $apiStatus                          = TRUE;
+                                                http_response_code(200);
+                                                $apiMessage                         = 'Mobile OTP Validated Successfully !!!';
+                                                $apiExtraField                      = 'response_code';
+                                                $apiExtraData                       = http_response_code();
+                                            } else {
+                                                $apiStatus          = FALSE;
+                                                http_response_code(404);
+                                                $apiMessage         = 'Mobile OTP Mismatched !!!';
+                                                $apiExtraField      = 'response_code';
+                                            }
+                                        }
+                                    /* mobile verify */
+                                }
+                            /* email & mobile verify */
+                        }
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
                     }
                 } else {
+                    http_response_code(400);
                     $apiStatus          = FALSE;
-                    http_response_code(404);
-                    $apiMessage         = 'User Not Found !!!';
+                    $apiMessage         = $this->getResponseCode(http_response_code());
                     $apiExtraField      = 'response_code';
                     $apiExtraData       = http_response_code();
                 }
-            } else {
-                http_response_code(400);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
             }
-            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
-        }
         // signup
         // forgot password
             public function forgotPassword(){
@@ -2451,14 +2451,55 @@ class ApiController extends BaseController
                             // echo $this->db->getLastQuery();die;
                             if($rows){
                                 foreach($rows as $row){
+                                    $status_name = '';
                                     $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
+
+                                    if($row->status == 0){
+                                        $enquiryStatus = 'Pending';
+                                    } elseif($row->status == 1){
+                                        $enquiryStatus = 'Sent/Submitted';
+                                    } elseif($row->status == 2){
+                                        $enquiryStatus = 'Accepted/Rejected';
+                                    } elseif($row->status == 3){
+                                        $enquiryStatus = 'Pickup';
+                                    } elseif($row->status == 4){
+                                        $enquiryStatus = 'Vehicle Placed';
+                                    } elseif($row->status == 5){
+                                        $enquiryStatus = 'Vehicle Ready Despatch';
+                                    } elseif($row->status == 6){
+                                        $enquiryStatus = 'Material Lifted';
+                                    } elseif($row->status == 7){
+                                        $enquiryStatus = 'Invoiced';
+                                    } elseif($row->status == 8){
+                                        $enquiryStatus = 'Completed';
+                                    } elseif($row->status == 9){
+                                        $enquiryStatus = 'Rejected';
+                                    }
+
+                                    $itemArray = [];
+                                    $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status!=' => 3], 'product_id,new_product_name,new_product');
+                                    if($enquityProducts){
+                                        foreach($enquityProducts as $enquityProduct){
+                                            if($enquityProduct->new_product){
+                                                $itemArray[] = $enquityProduct->new_product_name;
+                                            } else {
+                                                $getProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $enquityProduct->product_id], 'alias_name');
+                                                $itemArray[] = (($getProduct)?$getProduct->alias_name:'');
+                                            }
+                                        }
+                                    }
+                                    $items = implode(", ", $itemArray);;
+
                                     $apiResponse[] = [
-                                        'enq_id'        => $row->id,
-                                        'enquiry_no'    => $row->enquiry_no,
-                                        'status'        => $row->status,
-                                        'product_count' => $productCount,
-                                        'created_at'    => date_format(date_create($row->created_at), "M d, Y h:i A"),
-                                        'updated_at'    => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                        'enq_id'            => $row->id,
+                                        'enquiry_no'        => $row->enquiry_no,
+                                        'status'            => $row->status,
+                                        'status_name'       => $enquiryStatus,
+                                        'product_count'     => $productCount,
+                                        'created_at'        => date_format(date_create($row->created_at), "M d, Y h:i A"),
+                                        'updated_at'        => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                        'collection_date'   => date_format(date_create($row->tentative_collection_date), "M d, Y"),
+                                        'items'             => $items
                                     ];
                                 }
                             }
