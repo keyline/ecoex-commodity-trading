@@ -4326,6 +4326,77 @@ class ApiController extends BaseController
                 $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
             }
         /* rejected request */
+        /* quotation */
+            public function submitQuotation()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['enq_id', 'requestList'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $enq_id                     = $requestData['enq_id'];
+                    $requestList                = $requestData['requestList'];
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            if($requestList){
+                                foreach($requestList as $rqlt){
+                                    $fields = [
+                                        'enq_id'        => $enq_id,
+                                        'enq_item_id'   => $rqlt['enq_product_id'],
+                                        'vendor_id'     => $uId,
+                                        'item_id'       => $rqlt['product_id'],
+                                        'item_name'     => $rqlt['product_name'],
+                                        'item_hsn'      => $rqlt['hsn'],
+                                        'quote_price'   => $rqlt['quote_price'],
+                                        'qty'           => $rqlt['qty'],
+                                        'unit_id'       => $rqlt['unit'],
+                                        'unit_name'     => $rqlt['unit_name'],
+                                    ];
+                                    $this->common_model->save_data('ecomm_enquiry_vendor_quotations', $fields, '', 'id');
+                                }
+                            }
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Quotation Submitted Available !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'Vendor Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
+        /* quotation */
     /* vendor panel */
 
     /* apply watermark */
