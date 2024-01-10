@@ -2447,7 +2447,7 @@ class ApiController extends BaseController
                             } else {
                                 $offset = (($limit * $page_no) - $limit); // ((15 * 3) - 15)
                             }
-                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['plant_id' => $uId, 'status<' => 10], '', '', '', $orderBy, $limit, $offset);
+                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['plant_id' => $uId, 'status<' => 8], '', '', '', $orderBy, $limit, $offset);
                             // $this->db = \Config\Database::connect();
                             // echo $this->db->getLastQuery();die;
                             if($rows){
