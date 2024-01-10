@@ -2,6 +2,12 @@
 $title              = $moduleDetail['title'];
 $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
+$userType           = $session->user_type;
+if($userType == 'COMPANY'){
+    $readonly = 'readonly';
+} else {
+    $readonly = '';
+}
 ?>
 <div class="pagetitle">
     <h1><?=$page_header?></h1>
@@ -103,7 +109,7 @@ $controller_route   = $moduleDetail['controller_route'];
                         <div class="row mb-3">
                             <label for="gst_no" class="col-md-2 col-lg-2 col-form-label">GST No. <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="gst_no" class="form-control" id="gst_no" value="<?=$gst_no?>" required>
+                                <input type="text" name="gst_no" class="form-control" id="gst_no" value="<?=$gst_no?>" required <?=$readonly?>>
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -119,43 +125,43 @@ $controller_route   = $moduleDetail['controller_route'];
                         <div class="row mb-3">
                             <label for="company_name" class="col-md-2 col-lg-2 col-form-label">Company Name <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="company_name" class="form-control" id="company_name" value="<?=$company_name?>" required>
+                                <input type="text" name="company_name" class="form-control" id="company_name" value="<?=$company_name?>" required <?=$readonly?>>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="full_address" class="col-md-2 col-lg-2 col-form-label">Company Address <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <textarea name="full_address" class="form-control" id="full_address" required><?=$full_address?></textarea>
+                                <textarea name="full_address" class="form-control" id="full_address" required <?=$readonly?>><?=$full_address?></textarea>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="street" class="col-md-2 col-lg-2 col-form-label">Street <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="street" class="form-control" id="street" value="<?=$street?>" required>
+                                <input type="text" name="street" class="form-control" id="street" value="<?=$street?>" required <?=$readonly?>>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="district" class="col-md-2 col-lg-2 col-form-label">District <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="district" class="form-control" id="district" value="<?=$district?>" required>
+                                <input type="text" name="district" class="form-control" id="district" value="<?=$district?>" required <?=$readonly?>>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="state" class="col-md-2 col-lg-2 col-form-label">State <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="state" class="form-control" id="state" value="<?=$state?>" required>
+                                <input type="text" name="state" class="form-control" id="state" value="<?=$state?>" required <?=$readonly?>>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="pincode" class="col-md-2 col-lg-2 col-form-label">Pincode <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="pincode" class="form-control" id="pincode" onkeypress="return isNumber(event)" maxlength="6" minlength="6" value="<?=$location?>" required>
+                                <input type="text" name="pincode" class="form-control" id="pincode" onkeypress="return isNumber(event)" maxlength="6" minlength="6" value="<?=$location?>" required <?=$readonly?>>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="company_email" class="col-md-2 col-lg-2 col-form-label">Email <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="email" name="email" class="form-control" id="company_email" value="<?=$email?>" required autocomplete="off">
+                                <input type="email" name="email" class="form-control" id="company_email" value="<?=$email?>" required autocomplete="off" <?=$readonly?>>
                             </div>
                         </div>
 
@@ -193,7 +199,7 @@ $controller_route   = $moduleDetail['controller_route'];
                         <div class="row mb-3">
                             <label for="company_phone" class="col-md-2 col-lg-2 col-form-label">Phone <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="phone" class="form-control" id="company_phone" value="<?=$phone?>" onkeypress="return isNumber(event)" maxlength="10" minlength="10" required>
+                                <input type="text" name="phone" class="form-control" id="company_phone" value="<?=$phone?>" onkeypress="return isNumber(event)" maxlength="10" minlength="10" required <?=$readonly?>>
                             </div>
                         </div>
                         <div class="row mb-3">
