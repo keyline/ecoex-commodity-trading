@@ -258,6 +258,9 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 				// rejected request
 					$routes->match(['post'], "rejected-quotation-request-list", "ApiController::vendorRejectedRequestList");
 				// rejected request
+				// quotation
+					$routes->match(['post'], "submit-quotation", "ApiController::submitQuotation");
+				// quotation
 			/* vendor panel */
 		// after login
 	});
