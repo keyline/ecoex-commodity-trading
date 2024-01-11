@@ -3758,6 +3758,21 @@ class ApiController extends BaseController
                                     $itemCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
                                     $getCompany              = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id], 'company_name');
                                     $getPlant                = $this->common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
+
+                                    $itemArray = [];
+                                    $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status!=' => 3], 'product_id,new_product_name,new_product');
+                                    if($enquityProducts){
+                                        foreach($enquityProducts as $enquityProduct){
+                                            if($enquityProduct->new_product){
+                                                $itemArray[] = $enquityProduct->new_product_name;
+                                            } else {
+                                                $getProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $enquityProduct->product_id], 'alias_name');
+                                                $itemArray[] = (($getProduct)?$getProduct->alias_name:'');
+                                            }
+                                        }
+                                    }
+                                    $items = implode(", ", $itemArray);
+
                                     $apiResponse[] = [
                                         'enq_id'        => $row->id,
                                         'enquiry_no'    => $row->enquiry_no,
@@ -3767,6 +3782,7 @@ class ApiController extends BaseController
                                         'product_count' => $itemCount,
                                         'created_at'    => date_format(date_create($row->created_at), "M d, Y h:i A"),
                                         'updated_at'    => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                        'items'        => $items,
                                     ];
                                 }
                             }
@@ -4091,6 +4107,21 @@ class ApiController extends BaseController
                                     $itemCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
                                     $getCompany              = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id], 'company_name');
                                     $getPlant                = $this->common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
+
+                                    $itemArray = [];
+                                    $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status!=' => 3], 'product_id,new_product_name,new_product');
+                                    if($enquityProducts){
+                                        foreach($enquityProducts as $enquityProduct){
+                                            if($enquityProduct->new_product){
+                                                $itemArray[] = $enquityProduct->new_product_name;
+                                            } else {
+                                                $getProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $enquityProduct->product_id], 'alias_name');
+                                                $itemArray[] = (($getProduct)?$getProduct->alias_name:'');
+                                            }
+                                        }
+                                    }
+                                    $items = implode(", ", $itemArray);
+
                                     $apiResponse[] = [
                                         'enq_id'        => $row->id,
                                         'enquiry_no'    => $row->enquiry_no,
@@ -4100,6 +4131,7 @@ class ApiController extends BaseController
                                         'product_count' => $itemCount,
                                         'created_at'    => date_format(date_create($row->created_at), "M d, Y h:i A"),
                                         'updated_at'    => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                        'items'        => $items,
                                     ];
                                 }
                             }
@@ -4188,6 +4220,21 @@ class ApiController extends BaseController
                                     $itemCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
                                     $getCompany              = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id], 'company_name');
                                     $getPlant                = $this->common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
+
+                                    $itemArray = [];
+                                    $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status!=' => 3], 'product_id,new_product_name,new_product');
+                                    if($enquityProducts){
+                                        foreach($enquityProducts as $enquityProduct){
+                                            if($enquityProduct->new_product){
+                                                $itemArray[] = $enquityProduct->new_product_name;
+                                            } else {
+                                                $getProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $enquityProduct->product_id], 'alias_name');
+                                                $itemArray[] = (($getProduct)?$getProduct->alias_name:'');
+                                            }
+                                        }
+                                    }
+                                    $items = implode(", ", $itemArray);
+
                                     $apiResponse[] = [
                                         'enq_id'        => $row->id,
                                         'enquiry_no'    => $row->enquiry_no,
@@ -4197,6 +4244,7 @@ class ApiController extends BaseController
                                         'product_count' => $itemCount,
                                         'created_at'    => date_format(date_create($row->created_at), "M d, Y h:i A"),
                                         'updated_at'    => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                        'items'        => $items,
                                     ];
                                 }
                             }
@@ -4285,6 +4333,21 @@ class ApiController extends BaseController
                                     $itemCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
                                     $getCompany              = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id], 'company_name');
                                     $getPlant                = $this->common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
+
+                                    $itemArray = [];
+                                    $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status!=' => 3], 'product_id,new_product_name,new_product');
+                                    if($enquityProducts){
+                                        foreach($enquityProducts as $enquityProduct){
+                                            if($enquityProduct->new_product){
+                                                $itemArray[] = $enquityProduct->new_product_name;
+                                            } else {
+                                                $getProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $enquityProduct->product_id], 'alias_name');
+                                                $itemArray[] = (($getProduct)?$getProduct->alias_name:'');
+                                            }
+                                        }
+                                    }
+                                    $items = implode(", ", $itemArray);
+
                                     $apiResponse[] = [
                                         'enq_id'        => $row->id,
                                         'enquiry_no'    => $row->enquiry_no,
@@ -4294,6 +4357,7 @@ class ApiController extends BaseController
                                         'product_count' => $itemCount,
                                         'created_at'    => date_format(date_create($row->created_at), "M d, Y h:i A"),
                                         'updated_at'    => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                        'items'         => $items,
                                     ];
                                 }
                             }
