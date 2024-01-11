@@ -3931,10 +3931,10 @@ class ApiController extends BaseController
                                             $hsn            = $enquiryProduct->new_hsn;
                                             // $product_image  = (($enquiryProduct->new_product_image != '')?getenv('app.uploadsURL').'enquiry/'.$enquiryProduct->new_product_image:getenv('app.NO_IMAGE'));
                                         } else {
-                                            $getProduct     = $this->common_model->find_data('ecomm_products', 'row', ['id' => $enquiryProduct->product_id], 'name,hsn_code,product_image');
+                                            $getProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $enquiryProduct->product_id], 'alias_name,hsn');
                                             $product_id     = $enquiryProduct->product_id;
-                                            $product_name   = (($getProduct)?$getProduct->name:'');
-                                            $hsn            = (($getProduct)?$getProduct->hsn_code:'');
+                                            $product_name   = (($getProduct)?$getProduct->alias_name:'');
+                                            $hsn            = (($getProduct)?$getProduct->hsn:'');
                                             // $product_image  = (($getProduct->product_image != '')?getenv('app.uploadsURL').'enquiry/'.$getProduct->product_image:getenv('app.NO_IMAGE'));
                                         }
                                         $product_images     = [];
