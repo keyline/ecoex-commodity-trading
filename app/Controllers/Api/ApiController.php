@@ -3987,6 +3987,12 @@ class ApiController extends BaseController
                                 }
                                 $getPlant = $this->common_model->find_data('ecomm_users', 'row', ['id' => $enquiry->plant_id], 'company_name,full_address,district,state,pincode,location');
                                 
+                                $getVendorQuotationAcceptRejectStatus = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'row', ['enq_id' => $enq_id, 'vendor_id' => $uId], 'status');
+                                if($getVendorQuotationAcceptRejectStatus){
+                                    $vendorQuotationAcceptRejectStatus = $getVendorQuotationAcceptRejectStatus->status;
+                                } else {
+                                    $vendorQuotationAcceptRejectStatus = 0;
+                                }
                                 $apiResponse = [
                                     'enq_id'                => $enquiry->id,
                                     'enquiry_no'            => $enquiry->enquiry_no,
@@ -4012,6 +4018,7 @@ class ApiController extends BaseController
                                     'plant_pincode'         => (($getPlant)?$getPlant->pincode:''),
                                     'plant_location'        => (($getPlant)?$getPlant->location:''),
                                     'enquiry_remarks'       => $enquiry->enquiry_remarks,
+                                    'vendorQuotationAcceptRejectStatus' => $vendorQuotationAcceptRejectStatus,
                                     'requestList'           => $requestList,
                                 ];
 
