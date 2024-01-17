@@ -227,26 +227,26 @@ if($userType == 'COMPANY'){
                         <div class="row mb-3">
                             <label for="contract_start" class="col-md-2 col-lg-2 col-form-label">Contract Start Date <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="date" name="contract_start" class="form-control" id="contract_start" value="<?=$contract_start?>" required>
+                                <input type="date" name="contract_start" class="form-control" id="contract_start" value="<?=$contract_start?>">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="contract_end" class="col-md-2 col-lg-2 col-form-label">Contract Start End <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="date" name="contract_end" class="form-control" id="contract_end" value="<?=$contract_end?>" required>
+                                <input type="date" name="contract_end" class="form-control" id="contract_end" value="<?=$contract_end?>">
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <label for="cin_no" class="col-md-2 col-lg-2 col-form-label">CIN No. <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="cin_no" class="form-control" id="cin_no" value="<?=$cin_no?>" required>
+                                <input type="text" name="cin_no" class="form-control" id="cin_no" value="<?=$cin_no?>">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="cin_document" class="col-md-2 col-lg-2 col-form-label">CIN Document <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="file" name="cin_document" class="form-control" id="cin_document" <?=(($row)?'':'required')?>>
+                                <input type="file" name="cin_document" class="form-control" id="cin_document">
                                 <small class="text-info">* Only pdf files are allowed</small><br>
                                 <?php if($cin_document != ''){?>
                                     <a href="<?=getenv('app.uploadsURL').'user/'.$cin_document?>" class="badge bg-primary" target="_blank" title="<?=$company_name?>">View Document</a>
@@ -257,25 +257,25 @@ if($userType == 'COMPANY'){
                         <div class="row mb-3">
                             <label for="bank_name" class="col-md-2 col-lg-2 col-form-label">Bank Name <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="bank_name" class="form-control" id="bank_name" value="<?=$bank_name?>" required>
+                                <input type="text" name="bank_name" class="form-control" id="bank_name" value="<?=$bank_name?>">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="branch_name" class="col-md-2 col-lg-2 col-form-label">Branch Name <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="branch_name" class="form-control" id="branch_name" value="<?=$branch_name?>" required>
+                                <input type="text" name="branch_name" class="form-control" id="branch_name" value="<?=$branch_name?>">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="ifsc_code" class="col-md-2 col-lg-2 col-form-label">IFSC Code <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="ifsc_code" class="form-control" id="ifsc_code" value="<?=$ifsc_code?>" required>
+                                <input type="text" name="ifsc_code" class="form-control" id="ifsc_code" value="<?=$ifsc_code?>">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="account_type" class="col-md-2 col-lg-2 col-form-label">Account Type <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <select name="account_type" class="form-control" id="account_type" required>
+                                <select name="account_type" class="form-control" id="account_type">
                                     <option value="" selected>Select Account Type</option>
                                     <option value="SAVINGS" <?=(($account_type == 'SAVINGS')?'selected':'')?>>SAVINGS</option>
                                     <option value="CURRENT" <?=(($account_type == 'CURRENT')?'selected':'')?>>CURRENT</option>
@@ -285,13 +285,13 @@ if($userType == 'COMPANY'){
                         <div class="row mb-3">
                             <label for="account_number" class="col-md-2 col-lg-2 col-form-label">Account No. <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="account_number" class="form-control" id="account_number" value="<?=$account_number?>" required>
+                                <input type="text" name="account_number" class="form-control" id="account_number" value="<?=$account_number?>">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="cancelled_cheque" class="col-md-2 col-lg-2 col-form-label">Cancelled Cheque <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="file" name="cancelled_cheque" class="form-control" id="cancelled_cheque" <?=(($row)?'':'required')?>>
+                                <input type="file" name="cancelled_cheque" class="form-control" id="cancelled_cheque">
                                 <small class="text-info">* Only pdf files are allowed</small><br>
                                 <?php if($cancelled_cheque != ''){?>
                                     <a href="<?=getenv('app.uploadsURL').'user/'.$cancelled_cheque?>" class="badge bg-primary" target="_blank" title="<?=$company_name?>">View Document</a>
