@@ -1522,7 +1522,7 @@ class ApiController extends BaseController
                 $location                   = $requestData['location'];
                 $phone                      = $requestData['phone'];
                 // $email                      = $requestData['email'];
-                $member_type_id             = $requestData['member_type_id'];
+                $member_type_id             = ((!empty($requestData['member_type_id']))?$requestData['member_type_id']:0);
 
                 $gst_certificate                            = $requestData['gst_certificate'];
                 $contact_person_name                        = $requestData['contact_person_name'];
@@ -1560,7 +1560,6 @@ class ApiController extends BaseController
                             $apiExtraField      = 'response_code';
                             $apiExtraData       = http_response_code();
                         } else {
-                            // pr($requestData);die;
                             /* gst certificate */
                                 if(!empty($gst_certificate)){
                                     $gst_certificate    = $gst_certificate[0];
