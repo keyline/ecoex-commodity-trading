@@ -1503,7 +1503,7 @@ class ApiController extends BaseController
             $apiResponse        = [];
             $this->isJSON(file_get_contents('php://input'));
             $requestData        = $this->extract_json(file_get_contents('php://input'));        
-            $requiredFields     = ['type', 'gst_no', 'company_name', 'full_address', 'street', 'district', 'state', 'pincode', 'phone', 'gst_certificate', 'contact_person_name', 'contact_person_designation', 'contact_person_document'];
+            $requiredFields     = ['type', 'gst_no', 'company_name', 'full_address', 'street', 'district', 'state', 'pincode', 'phone', 'contact_person_name', 'contact_person_designation'];
             $headerData         = $this->request->headers();
             if (!$this->validateArray($requiredFields, $requestData)){              
                 $apiStatus          = FALSE;
