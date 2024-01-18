@@ -47,7 +47,7 @@ class PlantController extends BaseController {
         $page_name                  = 'plant/add-edit';        
         $data['row']                = [];
         $orderBy[0]                 = ['field' => 'company_name', 'type' => 'ASC'];
-        $data['companyList']        = $this->data['model']->find_data('ecoex_companies', 'array', ['status>=' => 1, 'parent_id' => 0], '', '', '', $orderBy);
+        $data['companyList']        = $this->data['model']->find_data('ecoex_companies', 'array', ['status!=' => 3, 'parent_id' => 0], '', '', '', $orderBy);
         if($this->request->getMethod() == 'post') {
             /* profile image */
                 $file = $this->request->getFile('profile_image');
@@ -161,7 +161,7 @@ class PlantController extends BaseController {
         $conditions                 = array($this->data['primary_key']=>$id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
         $orderBy[0]                 = ['field' => 'company_name', 'type' => 'ASC'];
-        $data['companyList']        = $this->data['model']->find_data('ecoex_companies', 'array', ['status>=' => 1, 'parent_id' => 0], '', '', '', $orderBy);
+        $data['companyList']        = $this->data['model']->find_data('ecoex_companies', 'array', ['status!=' => 3, 'parent_id' => 0], '', '', '', $orderBy);
 
         if($this->request->getMethod() == 'post') {
             /* profile image */
