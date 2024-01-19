@@ -115,8 +115,10 @@ if($userType == 'COMPANY'){
                         <div class="row mb-3">
                             <label for="gst_certificate" class="col-md-2 col-lg-2 col-form-label">GST Certificate <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="file" name="gst_certificate" class="form-control" id="gst_certificate" <?=(($row)?'':'required')?>>
-                                <small class="text-info">* Only pdf files are allowed</small><br>
+                                <?php if($userType == 'MA'){ ?>
+                                    <input type="file" name="gst_certificate" class="form-control" id="gst_certificate" <?=(($row)?'':'required')?>>
+                                    <small class="text-info">* Only pdf files are allowed</small><br>
+                                <?php }?>
                                 <?php if($gst_certificate != ''){?>
                                     <a href="<?=getenv('app.uploadsURL').'user/'.$gst_certificate?>" class="badge bg-primary" target="_blank" title="<?=$company_name?>">View Document</a>
                                 <?php }?>
