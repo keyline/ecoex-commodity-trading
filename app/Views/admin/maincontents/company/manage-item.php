@@ -2,6 +2,7 @@
 $title              = $moduleDetail['title'];
 $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
+$userType           = $session->user_type;
 ?>
 <style type="text/css">
     .item-cover{
@@ -130,12 +131,18 @@ $controller_route   = $moduleDetail['controller_route'];
                                         <div class="col-md-1">
                                             <?php if($assignItem->status){?>
                                                 <p><span class="badge bg-success"><i class="fa fa-check-circle"></i> APPROVED</span></p>
-                                                <button type="submit" onclick="return confirm('Do You Want To Approve This Item ?');" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Update</button>
+                                                <?php if($userType == 'MA'){?>
+                                                    <button type="submit" onclick="return confirm('Do You Want To Approve This Item ?');" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Update</button>
+                                                <?php }?>
                                             <?php } else {?>
-                                                <button type="submit" onclick="return confirm('Do You Want To Approve This Item ?');" class="btn btn-warning btn-sm"><i class="fa fa-times-circle"></i> Click To Approve</button>
+                                                <?php if($userType == 'MA'){?>
+                                                    <button type="submit" onclick="return confirm('Do You Want To Approve This Item ?');" class="btn btn-warning btn-sm"><i class="fa fa-times-circle"></i> Click To Approve</button>
+                                                <?php }?>
                                             <?php }?>
-                                            <br><br>
-                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm remove_button" title="Remove Item"><i class="fa fa-trash"></i> Remove</a>
+                                            <?php if($userType == 'MA'){?>
+                                                <br><br>
+                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm remove_button" title="Remove Item"><i class="fa fa-trash"></i> Remove</a>
+                                            <?php }?>
                                         </div>
                                     </div>
                                 </form>
@@ -187,7 +194,9 @@ $controller_route   = $moduleDetail['controller_route'];
                                         </select>
                                     </div>
                                     <div class="col-md-1">
-                                        <button type="submit" onclick="return confirm('Do You Want To Add This Item ?');" class="btn btn-success btn-sm"><i class="fa fa-check-circle"></i> Click To Add</button>
+                                        <?php if($userType == 'MA'){?>
+                                            <button type="submit" onclick="return confirm('Do You Want To Add This Item ?');" class="btn btn-success btn-sm"><i class="fa fa-check-circle"></i> Click To Add</button>
+                                        <?php }?>
                                     </div>
                                 </div>
                             </form>

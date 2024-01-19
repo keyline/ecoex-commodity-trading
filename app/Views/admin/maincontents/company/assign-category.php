@@ -2,6 +2,7 @@
 $title              = $moduleDetail['title'];
 $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
+$userType           = $session->user_type;
 ?>
 <div class="pagetitle">
     <h1><?=$page_header?></h1>
@@ -71,9 +72,11 @@ $controller_route   = $moduleDetail['controller_route'];
                                 </div>
                             </div>
                         <?php } }?>
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary">Assign</button>
-                        </div>
+                        <?php if($userType == 'MA'){?>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Assign</button>
+                            </div>
+                        <?php }?>
                     </form>
                 </div>
             </div>
