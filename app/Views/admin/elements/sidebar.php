@@ -15,19 +15,32 @@ if($segmentCount > 3){
 } else {
     $paramerId = '';
 }
-$step0_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 0]);
-$step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
-$step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2]);
-$step3_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 3]);
-$step4_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 4]);
-$step5_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 5]);
-$step6_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 6]);
-$step7_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 7]);
-$step8_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 8]);
-$step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 9]);
-
 $userType           = $session->user_type;
+$userId             = $session->user_id;
 $company_id         = $session->company_id;
+if($userType == 'MA'){
+    $step0_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 0]);
+    $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
+    $step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2]);
+    $step3_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 3]);
+    $step4_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 4]);
+    $step5_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 5]);
+    $step6_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 6]);
+    $step7_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 7]);
+    $step8_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 8]);
+    $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 9]);
+} else {
+    $step0_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 0, 'company_id' => $company_id]);
+    $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1, 'company_id' => $company_id]);
+    $step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2, 'company_id' => $company_id]);
+    $step3_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 3, 'company_id' => $company_id]);
+    $step4_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 4, 'company_id' => $company_id]);
+    $step5_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 5, 'company_id' => $company_id]);
+    $step6_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 6, 'company_id' => $company_id]);
+    $step7_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 7, 'company_id' => $company_id]);
+    $step8_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 8, 'company_id' => $company_id]);
+    $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 9, 'company_id' => $company_id]);
+}
 ?>
 <style type="text/css">
     a.nav-link.active {
@@ -154,6 +167,18 @@ $company_id         = $session->company_id;
                 <span><?=(($userType == 'MA')?'Companies':'Settings')?></span>
             </a>
         </li>
+        <?php if($userType == 'COMPANY'){?>
+            <li class="nav-item">
+                <a class="nav-link <?=(($pageSegment == 'companies/assign-category')?'active':'')?>" href="<?=base_url('admin/companies/assign-category/'.encoded($company_id))?>">
+                    <i class="fa fa-list-alt"></i><span>Item Categories</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?=(($pageSegment == 'companies/manage-item')?'active':'')?>" href="<?=base_url('admin/companies/manage-item/'.encoded($company_id))?>">
+                    <i class="fa-solid fa-list"></i><span>Items</span>
+                </a>
+            </li>
+        <?php }?>
     <?php }?>
     <?php if($common_model->checkModuleAccess(15)){?>
         <li class="nav-item">
