@@ -2291,11 +2291,12 @@ class ApiController extends BaseController
                         $step2_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status>=' => 0, 'status<=' => 7]);
                         $step3_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 9]);
                         $step4_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 8]);
+                        $getCompany         = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $getUser->parent_id]);
                         $apiResponse        = [
                             'plant_id'          => $getUser->id,
                             'plant_name'        => $getUser->plant_name,
                             'gst_no'            => $getUser->gst_no,
-                            'company_name'      => $getUser->company_name,
+                            'company_name'      => (($getCompany)?$getCompany->company_name:''),
                             'full_address'      => $getUser->full_address,
                             'holding_no'        => $getUser->holding_no,
                             'street'            => $getUser->street,
