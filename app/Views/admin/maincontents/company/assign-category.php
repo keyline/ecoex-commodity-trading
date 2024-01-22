@@ -38,9 +38,11 @@ $userType           = $session->user_type;
                     <form method="POST" action="" enctype="multipart/form-data">
                         <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">
                         <div class="row">
+                            <?php if($userType == 'MA'){?>
                             <div class="col-md-2">
                                 <h5 class="text-success fw-bold">Select</h5>
                             </div>
+                            <?php }?>
                             <div class="col-md-5">
                                 <h5 class="text-success fw-bold">Product Category</h5>
                             </div>
@@ -59,11 +61,23 @@ $userType           = $session->user_type;
                                 $category_id    = '';
                                 $category_alias = clean($cat->name).'-'.clean($company_name);
                             }
+
+                            if($userType == 'MA'){
+                                $display = '';
+                            } else {
+                                if($category_id != ''){
+                                    $display = '';
+                                } else {
+                                    $display = 'none';
+                                }
+                            }
                             ?>
-                            <div class="row" style="border:1px solid #0080003b; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                            <div class="row" style="border:1px solid #0080003b; padding: 10px; border-radius: 5px; margin-bottom: 10px; display: <?=$display?>;">
+                                <?php if($userType == 'MA'){?>
                                 <div class="col-md-2">
                                     <input type="checkbox" name="category_id[]" value="<?=$cat->id?>" id="category_id<?=$cat->id?>" <?=(($category_id != '')?'checked':'')?>>
                                 </div>
+                                <?php }?>
                                 <div class="col-md-5">
                                     <h6><label for="category_id<?=$cat->id?>"><?=$cat->name?></label></h6>
                                 </div>

@@ -147,59 +147,61 @@ $userType           = $session->user_type;
                                     </div>
                                 </form>
                             <?php } }?>
-                            <form method="POST" action="">
-                                <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">
-                                <input type="hidden" name="id" value="<?=encoded($company_id)?>">
-                                <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">
-                                <div class="row item-cover">
-                                    <div class="col-md-1">
-                                        <select class="form-control" name="item_category[]">
-                                            <option value="" selected>Select</option>
-                                            <?php if($cats){ foreach($cats as $cat){?>
-                                            <option value="<?=$cat->category_id?>"><?=$cat->category_alias?></option>
-                                            <?php } }?>
-                                        </select>
+                            <?php if($userType == 'MA'){?>
+                                <form method="POST" action="">
+                                    <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">
+                                    <input type="hidden" name="id" value="<?=encoded($company_id)?>">
+                                    <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">
+                                    <div class="row item-cover">
+                                        <div class="col-md-1">
+                                            <select class="form-control" name="item_category[]">
+                                                <option value="" selected>Select</option>
+                                                <?php if($cats){ foreach($cats as $cat){?>
+                                                <option value="<?=$cat->category_id?>"><?=$cat->category_alias?></option>
+                                                <?php } }?>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <input type="text" name="hsn[]" class="form-control" placeholder="HSN">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <select class="form-control" name="gst[]">
+                                                <option value="" selected>Select</option>
+                                                <option value="0">0 %</option>
+                                                <option value="5">5 %</option>
+                                                <option value="12">12 %</option>
+                                                <option value="18">18 %</option>
+                                                <option value="28">28 %</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <input type="text" name="rate[]" class="form-control" placeholder="Rate">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <select class="form-control" name="unit[]">
+                                                <option value="" selected>Select</option>
+                                                <?php if($units){ foreach($units as $unit){?>
+                                                <option value="<?=$unit->id?>"><?=$unit->name?></option>
+                                                <?php } }?>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <?php if($userType == 'MA'){?>
+                                                <button type="submit" onclick="return confirm('Do You Want To Add This Item ?');" class="btn btn-success btn-sm"><i class="fa fa-check-circle"></i> Click To Add</button>
+                                            <?php }?>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name">
-                                    </div>
-                                    <div class="col-md-1">
-                                        <input type="text" name="hsn[]" class="form-control" placeholder="HSN">
-                                    </div>
-                                    <div class="col-md-1">
-                                        <select class="form-control" name="gst[]">
-                                            <option value="" selected>Select</option>
-                                            <option value="0">0 %</option>
-                                            <option value="5">5 %</option>
-                                            <option value="12">12 %</option>
-                                            <option value="18">18 %</option>
-                                            <option value="28">28 %</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <input type="text" name="rate[]" class="form-control" placeholder="Rate">
-                                    </div>
-                                    <div class="col-md-1">
-                                        <select class="form-control" name="unit[]">
-                                            <option value="" selected>Select</option>
-                                            <?php if($units){ foreach($units as $unit){?>
-                                            <option value="<?=$unit->id?>"><?=$unit->name?></option>
-                                            <?php } }?>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <?php if($userType == 'MA'){?>
-                                            <button type="submit" onclick="return confirm('Do You Want To Add This Item ?');" class="btn btn-success btn-sm"><i class="fa fa-check-circle"></i> Click To Add</button>
-                                        <?php }?>
-                                    </div>
-                                </div>
-                            </form>
+                                </form>
+                            <?php }?>
                         </div>
 
                         <!-- <div class="text-center">
