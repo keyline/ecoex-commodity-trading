@@ -82,7 +82,18 @@ $userType           = $session->user_type;
                         </div>
                         <div class="field_wrapper">
                             <?php if($assignItems){ foreach($assignItems as $assignItem){?>
-                                <form method="POST" action="<?=base_url('admin/companies/approve-item')?>">
+                                <?php
+                                if($userType == 'MA'){
+                                    $display = '';
+                                } else {
+                                    if($assignItem->status){
+                                        $display = '';
+                                    } else {
+                                        $display = 'none';
+                                    }
+                                }
+                                ?>
+                                <form method="POST" action="<?=base_url('admin/companies/approve-item')?>" style="display: <?=$display?>;">
                                     <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">
                                     <input type="hidden" name="id" value="<?=encoded($assignItem->id)?>">
                                     <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">
