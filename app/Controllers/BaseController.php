@@ -134,8 +134,8 @@ abstract class BaseController extends Controller
         {
             $siteSetting        = $this->common_model->find_data('general_settings', 'row');
             $email              = \Config\Services::email();        
-            $from_email         = 'no-reply@market.ecoex.market';
-            $from_name          = $siteSetting->site_name;
+            $from_email         = $siteSetting->from_email;
+            $from_name          = $siteSetting->from_name;
             $email->setFrom($from_email, $from_name);
             $email->setTo($to_email);
             $email->setBCC('subhomoy@keylines.net', 'Ecoex Commodity Trading');
