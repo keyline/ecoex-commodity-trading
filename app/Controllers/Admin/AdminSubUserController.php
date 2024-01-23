@@ -87,7 +87,7 @@ class AdminSubUserController extends BaseController {
                         $emailTemplate2   = str_replace("{password}", $this->request->getPost('password'), $emailTemplate1);
                         $message2         = str_replace("{login_link}", $base , $emailTemplate2);
                         // echo $message2;die;
-                        $this->common_model->sendEmail($to2,$subject2,$message2);
+                        $this->sendMail($to2,$subject2,$message2);
                     /* login credentials email */
                 }
                 $this->session->setFlashdata('success_message', $this->data['title'].' inserted successfully');
