@@ -549,4 +549,15 @@ class User extends BaseController {
             echo $this->layout_after_login($title,$page_name,$data);
         }
     /* login logs */
+    /* test email */
+        public function testEmail(){
+            $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+            $subject                    = 'Test email subject on '.date('Y-m-d H:i:s');
+            $message                    = 'Test email message body on '.date('Y-m-d H:i:s');
+            $this->sendMail($generalSetting->site_mail, $subject, $message);
+
+            $this->session->setFlashdata('success_message', 'Test Email Sent Successfully !!!');
+            return redirect()->to('/admin/settings');
+        }
+    /* test email */
 }
