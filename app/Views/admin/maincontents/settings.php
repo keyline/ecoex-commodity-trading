@@ -328,6 +328,7 @@ $user_type = session('user_type');
               </form><!-- End change password Form -->
             </div>
             <div class="tab-pane fade pt-3" id="tab4">
+              <h3>Email Configuration</h3>
               <!-- email settings Form -->
               <form method="POST" action="<?=base_url('admin/email-settings')?>" enctype="multipart/form-data">
                 <div class="row mb-3">
@@ -372,7 +373,7 @@ $user_type = session('user_type');
               </form><!-- End email settings Form -->
 
               <h3>Test Email</h3>
-              <a href="<?=base_url('admin/test-email')?>" class="btn btn-success">Click To Send Test Email</a>
+              <a href="<?=base_url('admin/test-email')?>" class="btn btn-success"><i class="fa fa-envelope"></i> Click To Send Test Email</a>
             </div>
             <div class="tab-pane fade pt-3" id="tab5">
               <!-- sms settings Form -->
