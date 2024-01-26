@@ -38,65 +38,69 @@ if($userType == 'COMPANY'){
         </div>
         <?php
             if($row){
-              $gst_no           = $row->gst_no;
-              $gst_certificate  = $row->gst_certificate;
-              $company_name     = $row->company_name;
-              $full_address     = $row->full_address;
-              $holding_no       = $row->holding_no;
-              $street           = $row->street;
-              $district         = $row->district;
-              $state            = $row->state;
-              $pincode          = $row->pincode;
-              $location         = $row->location;
-              $email            = $row->email;
-              $alternate_email1            = $row->alternate_email1;
-              $alternate_email2            = $row->alternate_email2;
-              $alternate_email3            = $row->alternate_email3;
-              $alternate_email4            = $row->alternate_email4;
-              $alternate_email5            = $row->alternate_email5;
-              $phone            = $row->phone;
-              $password         = $row->password;
-              $profile_image    = $row->profile_image;
-              $contract_start   = $row->contract_start;
-              $contract_end     = $row->contract_end;
-              $cin_no           = $row->cin_no;
-              $cin_document     = $row->cin_document;
-              $bank_name        = $row->bank_name;
-              $branch_name      = $row->branch_name;
-              $ifsc_code        = $row->ifsc_code;
-              $account_type     = $row->account_type;
-              $account_number   = $row->account_number;
-              $cancelled_cheque = $row->cancelled_cheque;
+              $gst_no                       = $row->gst_no;
+              $gst_certificate              = $row->gst_certificate;
+              $company_name                 = $row->company_name;
+              $full_address                 = $row->full_address;
+              $holding_no                   = $row->holding_no;
+              $street                       = $row->street;
+              $district                     = $row->district;
+              $state                        = $row->state;
+              $pincode                      = $row->pincode;
+              $location                     = $row->location;
+              $email                        = $row->email;
+              $alternate_email1             = $row->alternate_email1;
+              $alternate_email2             = $row->alternate_email2;
+              $alternate_email3             = $row->alternate_email3;
+              $alternate_email4             = $row->alternate_email4;
+              $alternate_email5             = $row->alternate_email5;
+              $phone                        = $row->phone;
+              $password                     = $row->password;
+              $profile_image                = $row->profile_image;
+              $contract_start               = $row->contract_start;
+              $contract_end                 = $row->contract_end;
+              $agreement_document           = $row->agreement_document;
+              $ho_contact_person_name       = $row->ho_contact_person_name;
+              $cin_no                       = $row->cin_no;
+              $cin_document                 = $row->cin_document;
+              $bank_name                    = $row->bank_name;
+              $branch_name                  = $row->branch_name;
+              $ifsc_code                    = $row->ifsc_code;
+              $account_type                 = $row->account_type;
+              $account_number               = $row->account_number;
+              $cancelled_cheque             = $row->cancelled_cheque;
             } else {
-              $gst_no           = '';
-              $gst_certificate  = '';
-              $company_name     = '';
-              $full_address     = '';
-              $holding_no       = '';
-              $street           = '';
-              $district         = '';
-              $state            = '';
-              $pincode          = '';
-              $location         = '';
-              $email            = '';
-              $alternate_email1            = '';
-              $alternate_email2            = '';
-              $alternate_email3            = '';
-              $alternate_email4            = '';
-              $alternate_email5            = '';
-              $phone            = '';
-              $password         = '';
-              $profile_image    = '';
-              $contract_start   = '';
-              $contract_end     = '';
-              $cin_no           = '';
-              $cin_document     = '';
-              $bank_name        = '';
-              $branch_name      = '';
-              $ifsc_code        = '';
-              $account_type     = '';
-              $account_number   = '';
-              $cancelled_cheque = '';
+              $gst_no                       = '';
+              $gst_certificate              = '';
+              $company_name                 = '';
+              $full_address                 = '';
+              $holding_no                   = '';
+              $street                       = '';
+              $district                     = '';
+              $state                        = '';
+              $pincode                      = '';
+              $location                     = '';
+              $email                        = '';
+              $alternate_email1             = '';
+              $alternate_email2             = '';
+              $alternate_email3             = '';
+              $alternate_email4             = '';
+              $alternate_email5             = '';
+              $phone                        = '';
+              $password                     = '';
+              $profile_image                = '';
+              $contract_start               = '';
+              $contract_end                 = '';
+              $agreement_document           = '';
+              $ho_contact_person_name       = '';
+              $cin_no                       = '';
+              $cin_document                 = '';
+              $bank_name                    = '';
+              $branch_name                  = '';
+              $ifsc_code                    = '';
+              $account_type                 = '';
+              $account_number               = '';
+              $cancelled_cheque             = '';
             }
             ?>
         <div class="col-xl-12">
@@ -236,6 +240,24 @@ if($userType == 'COMPANY'){
                             <label for="contract_end" class="col-md-2 col-lg-2 col-form-label">Contract Start End</label>
                             <div class="col-md-10 col-lg-10">
                                 <input type="date" name="contract_end" class="form-control" id="contract_end" value="<?=$contract_end?>">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="agreement_document" class="col-md-2 col-lg-2 col-form-label">Agreement Document <span class="text-danger">*</span></label>
+                            <div class="col-md-10 col-lg-10">
+                                <?php if($userType == 'MA'){ ?>
+                                    <input type="file" name="agreement_document" class="form-control" id="agreement_document" <?=(($row)?'':'required')?>>
+                                    <small class="text-info">* Only pdf files are allowed</small><br>
+                                <?php }?>
+                                <?php if($agreement_document != ''){?>
+                                    <a href="<?=getenv('app.uploadsURL').'user/'.$agreement_document?>" class="badge bg-primary" target="_blank" title="<?=$company_name?>">View Document</a>
+                                <?php }?>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="ho_contact_person_name" class="col-md-2 col-lg-2 col-form-label">Contact Person Name <span class="text-danger">*</span></label>
+                            <div class="col-md-10 col-lg-10">
+                                <input type="text" name="ho_contact_person_name" class="form-control" id="ho_contact_person_name" value="<?=$ho_contact_person_name?>" required>
                             </div>
                         </div>
 

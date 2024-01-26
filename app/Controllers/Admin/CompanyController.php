@@ -107,6 +107,21 @@ class CompanyController extends BaseController {
                     $cancelled_cheque = '';
                 }
             /* cancelled cheque */
+            /* AGREEMENT DOCUMENT */
+                $file = $this->request->getFile('agreement_document');
+                $originalName = $file->getClientName();
+                $fieldName = 'agreement_document';
+                if($file!='') {
+                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
+                    if($upload_array['status']) {
+                        $agreement_document = $upload_array['newFilename'];
+                    } else {
+                        $agreement_document = '';
+                    }
+                } else {
+                    $agreement_document = '';
+                }
+            /* AGREEMENT DOCUMENT */
             $postData   = array(
                 'type'                  => 'COMPANY',
                 'parent_id'             => 0,
@@ -135,6 +150,8 @@ class CompanyController extends BaseController {
                 'profile_image'         => $profile_image,
                 'contract_start'        => date_format(date_create($this->request->getPost('contract_start')), "Y-m-d"),
                 'contract_end'          => date_format(date_create($this->request->getPost('contract_end')), "Y-m-d"),
+                'agreement_document'    => $agreement_document,
+                'ho_contact_person_name'                => $this->request->getPost('ho_contact_person_name'),
                 'cin_no'                => $this->request->getPost('cin_no'),
                 'cin_document'          => $cin_document,
                 'bank_name'             => $this->request->getPost('bank_name'),
@@ -147,7 +164,6 @@ class CompanyController extends BaseController {
                 'updated_by'            => $this->session->user_id,
                 'status'                => 2,
             );
-            // pr($postData);
             $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
 
             // insert as a sub user of masteradmin of type COMPANY ADMIN
@@ -166,7 +182,6 @@ class CompanyController extends BaseController {
                     'updated_user'              => 1,
                     'company_id'                => $record,
                 );
-                // pr($postData);
                 $this->data['model']->save_data('ecoex_admin_user', $postData2, '', 'id');
             // insert as a sub user of masteradmin of type COMPANY ADMIN
 
@@ -246,6 +261,21 @@ class CompanyController extends BaseController {
                     $cancelled_cheque = $data['row']->cancelled_cheque;
                 }
             /* cancelled cheque */
+            /* AGREEMENT DOCUMENT */
+                $file = $this->request->getFile('agreement_document');
+                $originalName = $file->getClientName();
+                $fieldName = 'agreement_document';
+                if($file!='') {
+                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
+                    if($upload_array['status']) {
+                        $agreement_document = $upload_array['newFilename'];
+                    } else {
+                        $agreement_document = '';
+                    }
+                } else {
+                    $agreement_document = $data['row']->agreement_document;
+                }
+            /* AGREEMENT DOCUMENT */
             if($this->request->getPost('password') != ''){
                 $postData   = array(
                     'gst_no'                => $this->request->getPost('gst_no'),
@@ -269,6 +299,8 @@ class CompanyController extends BaseController {
                     'profile_image'         => $profile_image,
                     'contract_start'        => date_format(date_create($this->request->getPost('contract_start')), "Y-m-d"),
                     'contract_end'          => date_format(date_create($this->request->getPost('contract_end')), "Y-m-d"),
+                    'agreement_document'    => $agreement_document,
+                    'ho_contact_person_name'                => $this->request->getPost('ho_contact_person_name'),
                     'cin_no'                => $this->request->getPost('cin_no'),
                     'cin_document'          => $cin_document,
                     'bank_name'             => $this->request->getPost('bank_name'),
@@ -320,6 +352,8 @@ class CompanyController extends BaseController {
                     'profile_image'         => $profile_image,
                     'contract_start'        => date_format(date_create($this->request->getPost('contract_start')), "Y-m-d"),
                     'contract_end'          => date_format(date_create($this->request->getPost('contract_end')), "Y-m-d"),
+                    'agreement_document'    => $agreement_document,
+                    'ho_contact_person_name'                => $this->request->getPost('ho_contact_person_name'),
                     'cin_no'                => $this->request->getPost('cin_no'),
                     'cin_document'          => $cin_document,
                     'bank_name'             => $this->request->getPost('bank_name'),
@@ -350,7 +384,7 @@ class CompanyController extends BaseController {
             }
             $record = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
 
-            $checkCompanySubuser = $this->common_model->find_data('ecoex_admin_user', 'row', ['email' => $this->request->getPost('email')]);
+            $checkCompanySubuser = $this->common_model->find_data('ecoex_admin_user', 'row', ['company_id' => $id]);
             if($checkCompanySubuser){
                 $this->data['model']->save_data('ecoex_admin_user', $postData2, $checkCompanySubuser->id, 'id');
             } else {
@@ -690,5 +724,25 @@ class CompanyController extends BaseController {
             $this->session->setFlashdata('error_message', $this->data['title'].' Item Not Found !!!');
             return redirect()->to($redirectLink);
         }
+    }
+
+    public function send_credentials($id)
+    {
+        $id                         = decoded($id);
+        $getSubUser                 = $this->common_model->find_data('ecoex_admin_user', 'row', ['company_id' => $id]);
+        /* login credentials email */
+            $base               = base_url('/admin');
+            $emailTemplate      = $this->common_model->find_data('ecoex_email_template', 'row', ['id' => 12]);
+            $to2                = (($getSubUser)?$getSubUser->email:'');
+            $subject2           = "Welcome ".(($getSubUser)?$getSubUser->name:'')." to Ecoex Commodity Trading Portal";                        
+            $emailTemplate    = str_replace("{company}", (($getSubUser)?$getSubUser->name:''), $emailTemplate->content);
+            $emailTemplate1   = str_replace("{customer_email}", (($getSubUser)?$getSubUser->email:''), $emailTemplate);
+            $emailTemplate2   = str_replace("{password}", (($getSubUser)?$getSubUser->original_password:''), $emailTemplate1);
+            $message2         = str_replace("{login_link}", $base , $emailTemplate2);
+            // echo $message2;die;
+            $this->sendMail($to2,$subject2,$message2);
+        /* login credentials email */
+        $this->session->setFlashdata('success_message', 'Signin Credential Sent Successfully !!!');
+        return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
     }
 }

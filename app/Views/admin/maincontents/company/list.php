@@ -46,7 +46,7 @@ $company_id                 = $session->company_id;
                                 <!-- <th scope="col">Type</th> -->
                                 <th scope="col">GST No.<br>Company Name</th>
                                 <th scope="col">Company Address<br>Location</th>
-                                <th scope="col">Email<br>Phone</th>
+                                <th scope="col">Contact Person Name<br>Email<br>Phone</th>
                                 <th scope="col">Contact Start<br>End</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -58,7 +58,7 @@ $company_id                 = $session->company_id;
                                 <!-- <td><?=$row->type?></td> -->
                                 <td><?=$row->gst_no?><br><b><?=$row->company_name?></b></td>
                                 <td><?=wordwrap($row->full_address,25,"<br>\n")?><br><?=$row->location?></td>
-                                <td><?=$row->email?><br><?=$row->phone?></td>
+                                <td><?=$row->ho_contact_person_name?><br><?=$row->email?><br><?=$row->phone?></td>
                                 <td>
                                     <?=(($row->contract_start != '')?date_format(date_create($row->contract_start), "M d, Y"):'')?><br>
                                     <?=(($row->contract_end != '')?date_format(date_create($row->contract_end), "M d, Y"):'')?>
@@ -94,6 +94,8 @@ $company_id                 = $session->company_id;
                                     <a href="<?=base_url('admin/' . $controller_route . '/assign-category/'.encoded($row->$primary_key))?>" class="btn btn-info btn-sm" title="Manage Item Category"><i class="fa fa-tasks"></i> Categories <?=$assignCategoryText?></a>
                                     <br><br>
                                     <a href="<?=base_url('admin/' . $controller_route . '/manage-item/'.encoded($row->$primary_key))?>" class="btn btn-info btn-sm" title="Manage Item"><i class="fa fa-tasks"></i> Items <?=$assignItemText?></a>
+                                    <br><br>
+                                    <a href="<?=base_url('admin/' . $controller_route . '/send-credentials/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Send Credential <?=$title?>" onclick="return confirm('Do You Want To Send Signin Credentials To This <?=$title?>');"><i class="fa fa-envelope"></i> Send Credentials</a>
                                 </td>
                             </tr>
                             <?php } }?>

@@ -67,6 +67,7 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 				$routes->match(['get', 'post'], "sub-users/edit/(:any)", "AdminSubUserController::edit/$1");
 				$routes->match(['get', 'post'], "sub-users/delete/(:any)", "AdminSubUserController::confirm_delete/$1");
 				$routes->match(['get', 'post'], "sub-users/change-status/(:any)", "AdminSubUserController::change_status/$1");
+				$routes->match(['get', 'post'], "sub-users/send-credentials/(:any)", "AdminSubUserController::send_credentials/$1");
 			/* admin sub users */
 		// access & permission
 		// master
@@ -139,6 +140,7 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 			$routes->match(['get', 'post'], "companies/assign-category/(:any)", "CompanyController::assignCategory/$1");
 			$routes->match(['get', 'post'], "companies/manage-item/(:any)", "CompanyController::manageItem/$1");
 			$routes->match(['get', 'post'], "companies/approve-item", "CompanyController::approveItem");
+			$routes->match(['get', 'post'], "companies/send-credentials/(:any)", "CompanyController::send_credentials/$1");
 		// companies
 		// plants
 			$routes->match(['get'], "plants/list", "PlantController::list");
