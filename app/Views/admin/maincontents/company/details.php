@@ -113,6 +113,28 @@ $controller_route   = $moduleDetail['controller_route'];
                             <td>Profile Image</td>
                             <td><img src="<?=(($row->profile_image != '')?getenv('app.uploadsURL').'user/'.$row->profile_image:getenv('app.NO_IMAGE'))?>" class="img-thumbnail" style="width: 250px; height: auto;"></td>
                         </tr>
+
+                        <tr>
+                            <td>Contract Start</td>
+                            <td><?=(($row->contract_start != '')?date_format(date_create($row->contract_start), "M d Y"):'')?></td>
+                        </tr>
+                        <tr>
+                            <td>Contract End</td>
+                            <td><?=(($row->contract_end != '')?date_format(date_create($row->contract_end), "M d Y"):'')?></td>
+                        </tr>
+                        <tr>
+                            <td>Company Contact Person Name</td>
+                            <td><?=$row->ho_contact_person_name?></td>
+                        </tr>
+                        <tr>
+                            <td>Agreement Document</td>
+                            <td>
+                                <?php if($row->agreement_document != ''){?>
+                                    <a href="<?=getenv('app.uploadsURL').'user/'.$row->agreement_document?>" class="badge bg-primary" target="_blank">View Document</a>
+                                <?php }?>
+                            </td>
+                        </tr>
+
                         <tr>
                             <td>GST Certificate</td>
                             <td>
