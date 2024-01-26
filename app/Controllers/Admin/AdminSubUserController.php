@@ -15,7 +15,7 @@ class AdminSubUserController extends BaseController {
         $this->data = array(
             'model'                 => $model,
             'session'               => $session,
-            'title'                 => 'Admin Sub User',
+            'title'                 => 'Admin User',
             'controller_route'      => 'sub-users',
             'controller'            => 'AdminSubUserController',
             'table_name'            => 'ecoex_admin_user',
@@ -81,7 +81,7 @@ class AdminSubUserController extends BaseController {
                         $base = base_url('/admin');
                         $emailTemplate      = $this->common_model->find_data('ecoex_email_template', 'row', ['id' => 12]);
                         $to2                = $this->request->getPost('email');
-                        $subject2           = "Welcome ".$this->request->getPost('name')." to Ecoex Portal";                        
+                        $subject2           = "Welcome ".$this->request->getPost('name')." to Ecoex Commodity Trading Portal";                        
                         $emailTemplate    = str_replace("{company}", $this->request->getPost('name'), $emailTemplate->content);
                         $emailTemplate1   = str_replace("{customer_email}", $this->request->getPost('email'), $emailTemplate);
                         $emailTemplate2   = str_replace("{password}", $this->request->getPost('password'), $emailTemplate1);
@@ -166,6 +166,25 @@ class AdminSubUserController extends BaseController {
                         );
         $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
         $this->session->setFlashdata('success_message', $this->data['title'].' '.$msg.' successfully');
+        return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+    }
+    public function send_credentials($id)
+    {
+        $id                         = decoded($id);
+        $getSubUser                 = $this->common_model->find_data('ecoex_admin_user', 'row', ['id' => $id]);
+        /* login credentials email */
+            $base               = base_url('/admin');
+            $emailTemplate      = $this->common_model->find_data('ecoex_email_template', 'row', ['id' => 12]);
+            $to2                = (($getSubUser)?$getSubUser->email:'');
+            $subject2           = "Welcome ".(($getSubUser)?$getSubUser->name:'')." to Ecoex Commodity Trading Portal";                        
+            $emailTemplate    = str_replace("{company}", (($getSubUser)?$getSubUser->name:''), $emailTemplate->content);
+            $emailTemplate1   = str_replace("{customer_email}", (($getSubUser)?$getSubUser->email:''), $emailTemplate);
+            $emailTemplate2   = str_replace("{password}", (($getSubUser)?$getSubUser->original_password:''), $emailTemplate1);
+            $message2         = str_replace("{login_link}", $base , $emailTemplate2);
+            // echo $message2;die;
+            $this->sendMail($to2,$subject2,$message2);
+        /* login credentials email */
+        $this->session->setFlashdata('success_message', 'Signin Credential Sent Successfully !!!');
         return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
     }
 }

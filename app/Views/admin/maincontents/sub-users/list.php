@@ -41,8 +41,8 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <th scope="col">User Type<br>Role</th>
                                 <th scope="col">Name<br>Employee No</th>
                                 <th scope="col">Mobile<br>Email<br>Password</th>
-                                <th scope="col">Present Address<br>Permanent Address</th>
-                                <th scope="col">Team Members</th>
+                                <!-- <th scope="col">Present Address<br>Permanent Address</th>
+                                <th scope="col">Team Members</th> -->
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -65,18 +65,18 @@ $controller_route   = $moduleDetail['controller_route'];
                                 </td>
                                 <td>
                                     <i class="fas fa-user-tie"></i> <?=$row->name?><br>
-                                    <i class="fas fa-id-card"></i> <?=$row->employee_no?>
+                                    <?php if($row->employee_no != ''){?><i class="fas fa-id-card"></i> <?=$row->employee_no?><?php }?>
                                 </td>
                                 <td>
                                     <i class="fa fa-mobile"></i> <?=$row->mobileNo?><br>
                                     <i class="fa fa-envelope"></i> <?=$row->username?><br>
                                     <i class="fa fa-key"></i> <?=$row->original_password?>
                                 </td>
-                                <td>
+                                <!--<td>
                                     <i class="fa fa-map-pin"></i> <?=$row->present_address?><br><br>
                                     <i class="fa fa-map-marker"></i> <?=$row->permanent_address?>
                                 </td>
-                                <td>
+                                 <td>
                                     <?php
                                     $memberList = [];
                                     $team_members = json_decode($row->team_members);
@@ -86,15 +86,17 @@ $controller_route   = $moduleDetail['controller_route'];
                                     } }
                                     echo implode(", ", $memberList);
                                     ?>
-                                </td>
+                                </td> -->
                                 <td>
                                     <a href="<?=base_url('admin/' . $controller_route . '/edit/'.encoded($row->$primary_key))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$title?>"><i class="fa fa-edit"></i></a>
                                     <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i></a>
                                     <?php if($row->status){?>
-                                    <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-success btn-sm" title="Activate <?=$title?>" onclick="return confirm('Do You Want To Deactivate This <?=$title?>');"><i class="fa fa-check"></i></a>
+                                        <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-success btn-sm" title="Activate <?=$title?>" onclick="return confirm('Do You Want To Deactivate This <?=$title?>');"><i class="fa fa-check"></i></a>
                                     <?php } else {?>
-                                    <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-warning btn-sm" title="Deactivate <?=$title?>" onclick="return confirm('Do You Want To Activate This <?=$title?>');"><i class="fa fa-times"></i></a>
+                                        <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-warning btn-sm" title="Deactivate <?=$title?>" onclick="return confirm('Do You Want To Activate This <?=$title?>');"><i class="fa fa-times"></i></a>
                                     <?php }?>
+                                    <br><br>
+                                    <a href="<?=base_url('admin/' . $controller_route . '/send-credentials/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Send Credential <?=$title?>" onclick="return confirm('Do You Want To Send Signin Credentials To This <?=$title?>');"><i class="fa fa-envelope"></i> Send Credentials</a>
                                 </td>
                             </tr>
                             <?php } }?>
