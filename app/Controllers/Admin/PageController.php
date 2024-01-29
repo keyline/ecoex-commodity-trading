@@ -24,6 +24,13 @@ class PageController extends BaseController {
     }
     public function list()
     {
+        if(!$this->common_model->checkModuleFunctionAccess(13,61)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $data['moduleDetail']       = $this->data;
         $title                      = 'Manage '.$this->data['title'];
         $page_name                  = 'pages/list';
@@ -33,10 +40,17 @@ class PageController extends BaseController {
     }
     public function add()
     {
+        if(!$this->common_model->checkModuleFunctionAccess(13,63)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Add';
         $title                      = $data['action'].' '.$this->data['title'];
-        $page_name                  = 'pages/add-edit';        
+        $page_name                  = 'pages/add-edit';
         $data['row']                = [];
         if($this->request->getMethod() == 'post') {
             $postData   = array(
@@ -57,6 +71,13 @@ class PageController extends BaseController {
     }
     public function edit($id)
     {
+        if(!$this->common_model->checkModuleFunctionAccess(13,66)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $id                         = decoded($id);
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Edit';
