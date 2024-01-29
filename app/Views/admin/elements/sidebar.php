@@ -94,68 +94,70 @@ if($userType == 'MA'){
                 </ul>
             </li>
         <?php }?>
-        <?php if(($common_model->checkModuleAccess(8)) || ($common_model->checkModuleAccess(9)) || ($common_model->checkModuleAccess(10)) || ($common_model->checkModuleAccess(11)) || ($common_model->checkModuleAccess(12)) || ($common_model->checkModuleAccess(13))){?>
-            <li class="nav-item">
-                <a class="nav-link <?=(($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'pending-products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages')?'':'collapsed')?> <?=(($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'pending-products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages')?'active':'')?>" data-bs-target="#master-nav" data-bs-toggle="collapse" href="#">
-                    <i class="fa fa-database"></i><span>Masters</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="master-nav" class="nav-content collapse <?=(($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'pending-products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages')?'show':'')?>" data-bs-parent="#sidebar-nav">
-                    <?php if($common_model->checkModuleAccess(8)){?>
-                        <li>
-                            <a class="<?=(($pageSegment == 'product-category')?'active':'')?>" href="<?=base_url('admin/product-category/list')?>">
-                                <i class="fa fa-arrow-right"></i><span>Item Category</span>
-                            </a>
-                        </li>
-                    <?php }?>
-                    <!-- <li>
-                        <a class="<?=(($pageSegment == 'products')?'active':'')?>" href="<?=base_url('admin/products/list')?>">
-                            <i class="fa fa-arrow-right"></i><span>Products</span>
+    <?php }?>
+    
+    <?php if(($common_model->checkModuleAccess(8)) || ($common_model->checkModuleAccess(9)) || ($common_model->checkModuleAccess(10)) || ($common_model->checkModuleAccess(11)) || ($common_model->checkModuleAccess(12)) || ($common_model->checkModuleAccess(13))){?>
+        <li class="nav-item">
+            <a class="nav-link <?=(($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'pending-products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages')?'':'collapsed')?> <?=(($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'pending-products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages')?'active':'')?>" data-bs-target="#master-nav" data-bs-toggle="collapse" href="#">
+                <i class="fa fa-database"></i><span>Masters</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="master-nav" class="nav-content collapse <?=(($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'pending-products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages')?'show':'')?>" data-bs-parent="#sidebar-nav">
+                <?php if($common_model->checkModuleAccess(8)){?>
+                    <li>
+                        <a class="<?=(($pageSegment == 'product-category')?'active':'')?>" href="<?=base_url('admin/product-category/list')?>">
+                            <i class="fa fa-arrow-right"></i><span>Item Category</span>
                         </a>
                     </li>
+                <?php }?>
+                <!-- <li>
+                    <a class="<?=(($pageSegment == 'products')?'active':'')?>" href="<?=base_url('admin/products/list')?>">
+                        <i class="fa fa-arrow-right"></i><span>Products</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="<?=(($pageSegment == 'pending-products')?'active':'')?>" href="<?=base_url('admin/pending-products/list')?>">
+                        <i class="fa fa-arrow-right"></i><span>Pending Products</span>
+                    </a>
+                </li> -->
+                <?php if($common_model->checkModuleAccess(9)){?>
                     <li>
-                        <a class="<?=(($pageSegment == 'pending-products')?'active':'')?>" href="<?=base_url('admin/pending-products/list')?>">
-                            <i class="fa fa-arrow-right"></i><span>Pending Products</span>
+                        <a class="<?=(($pageSegment == 'units')?'active':'')?>" href="<?=base_url('admin/units/list')?>">
+                            <i class="fa fa-arrow-right"></i><span>Units</span>
                         </a>
-                    </li> -->
-                    <?php if($common_model->checkModuleAccess(9)){?>
-                        <li>
-                            <a class="<?=(($pageSegment == 'units')?'active':'')?>" href="<?=base_url('admin/units/list')?>">
-                                <i class="fa fa-arrow-right"></i><span>Units</span>
-                            </a>
-                        </li>
-                    <?php }?>
-                    <?php if($common_model->checkModuleAccess(10)){?>
-                        <li>
-                            <a class="<?=(($pageSegment == 'states')?'active':'')?>" href="<?=base_url('admin/states/list')?>">
-                                <i class="fa fa-arrow-right"></i><span>States</span>
-                            </a>
-                        </li>
-                    <?php }?>
-                    <?php if($common_model->checkModuleAccess(11)){?>
-                        <li>
-                            <a class="<?=(($pageSegment == 'districts')?'active':'')?>" href="<?=base_url('admin/districts/list')?>">
-                                <i class="fa fa-arrow-right"></i><span>Districts</span>
-                            </a>
-                        </li>
-                    <?php }?>
-                    <?php if($common_model->checkModuleAccess(12)){?>
-                        <li>
-                            <a class="<?=(($pageSegment == 'member-types')?'active':'')?>" href="<?=base_url('admin/member-types/list')?>">
-                                <i class="fa fa-arrow-right"></i><span>Vendor Types</span>
-                            </a>
-                        </li>
-                    <?php }?>
-                    <?php if($common_model->checkModuleAccess(13)){?>
-                        <li>
-                            <a class="<?=(($pageSegment == 'pages')?'active':'')?>" href="<?=base_url('admin/pages/list')?>">
-                                <i class="fa fa-arrow-right"></i><span>Pages</span>
-                            </a>
-                        </li>
-                    <?php }?>
-                </ul>
-            </li>
-        <?php }?>
+                    </li>
+                <?php }?>
+                <?php if($common_model->checkModuleAccess(10)){?>
+                    <li>
+                        <a class="<?=(($pageSegment == 'states')?'active':'')?>" href="<?=base_url('admin/states/list')?>">
+                            <i class="fa fa-arrow-right"></i><span>States</span>
+                        </a>
+                    </li>
+                <?php }?>
+                <?php if($common_model->checkModuleAccess(11)){?>
+                    <li>
+                        <a class="<?=(($pageSegment == 'districts')?'active':'')?>" href="<?=base_url('admin/districts/list')?>">
+                            <i class="fa fa-arrow-right"></i><span>Districts</span>
+                        </a>
+                    </li>
+                <?php }?>
+                <?php if($common_model->checkModuleAccess(12)){?>
+                    <li>
+                        <a class="<?=(($pageSegment == 'member-types')?'active':'')?>" href="<?=base_url('admin/member-types/list')?>">
+                            <i class="fa fa-arrow-right"></i><span>Vendor Types</span>
+                        </a>
+                    </li>
+                <?php }?>
+                <?php if($common_model->checkModuleAccess(13)){?>
+                    <li>
+                        <a class="<?=(($pageSegment == 'pages')?'active':'')?>" href="<?=base_url('admin/pages/list')?>">
+                            <i class="fa fa-arrow-right"></i><span>Pages</span>
+                        </a>
+                    </li>
+                <?php }?>
+            </ul>
+        </li>
     <?php }?>
+    
     <?php if($common_model->checkModuleAccess(14)){?>
         <li class="nav-item">
             <?php if($userType == 'MA'){?>
