@@ -24,6 +24,13 @@ class CompanyController extends BaseController {
     }
     public function list()
     {
+        if(!$this->common_model->checkModuleFunctionAccess(14,67)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $userType                   = $this->session->user_type;
         $company_id                 = $this->session->company_id;
         $data['moduleDetail']       = $this->data;
@@ -33,6 +40,8 @@ class CompanyController extends BaseController {
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
         if($userType == 'MA'){
             $conditions                 = ['status!=' => 3, 'parent_id' => 0];
+        } elseif($userType == 'U'){
+            $conditions                 = ['status!=' => 3, 'parent_id' => 0];
         } else {
             $conditions                 = ['status!=' => 3, 'parent_id' => 0, 'id' => $company_id];
         }
@@ -41,6 +50,13 @@ class CompanyController extends BaseController {
     }
     public function add()
     {
+        if(!$this->common_model->checkModuleFunctionAccess(14,113)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Add';
         $title                      = $data['action'].' '.$this->data['title'];
@@ -192,6 +208,13 @@ class CompanyController extends BaseController {
     }
     public function edit($id)
     {
+        if(!$this->common_model->checkModuleFunctionAccess(14,71)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $id                         = decoded($id);
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Edit';
@@ -458,6 +481,13 @@ class CompanyController extends BaseController {
     }
     public function view($id)
     {
+        if(!$this->common_model->checkModuleFunctionAccess(14,72)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $id                         = decoded($id);
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'View';
