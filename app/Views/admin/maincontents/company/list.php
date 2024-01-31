@@ -34,7 +34,7 @@ $company_id                 = $session->company_id;
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <?php if($userType == 'MA'){?>
+                    <?php if($common_model->checkModuleFunctionAccess(14,63)){?>
                         <h5 class="card-title">
                             <a href="<?=base_url('admin/' . $controller_route . '/add/')?>" class="btn btn-outline-success btn-sm">Add <?=$title?></a>
                         </h5>
@@ -64,17 +64,27 @@ $company_id                 = $session->company_id;
                                     <?=(($row->contract_end != '')?date_format(date_create($row->contract_end), "M d, Y"):'')?>
                                 </td>
                                 <td>
-                                    <a href="<?=base_url('admin/' . $controller_route . '/edit/'.encoded($row->$primary_key))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$title?>"><i class="fa fa-edit"></i></a>
-                                    <a target="_blank" href="<?=base_url('admin/' . $controller_route . '/view/'.encoded($row->$primary_key))?>" class="btn btn-outline-info btn-sm" title="View <?=$title?>"><i class="fa fa-info-circle"></i></a>
-                                    <?php if($userType == 'MA'){?>
-                                        <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i></a>
-                                        <br><br>
-                                        <?php if($row->status){?>
-                                        <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-success btn-sm" title="Deactivate <?=$title?>" onclick="return confirm('Do You Want To Deactivate This <?=$title?>');"><i class="fa fa-check"></i> Click To Disapprove</a>
-                                        <?php } else {?>
-                                        <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Activate <?=$title?>" onclick="return confirm('Do You Want To Activate This <?=$title?>');"><i class="fa fa-times"></i> Click To Approve</a>
-                                        <?php }?>
+                                    <?php if($common_model->checkModuleFunctionAccess(14,71)){?>
+                                        <a href="<?=base_url('admin/' . $controller_route . '/edit/'.encoded($row->$primary_key))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$title?>"><i class="fa fa-edit"></i></a>
                                     <?php }?>
+                                    <?php if($common_model->checkModuleFunctionAccess(14,72)){?>
+                                        <a target="_blank" href="<?=base_url('admin/' . $controller_route . '/view/'.encoded($row->$primary_key))?>" class="btn btn-outline-info btn-sm" title="View <?=$title?>"><i class="fa fa-info-circle"></i></a>
+                                    <?php }?>
+                                    <?php //if($userType == 'MA'){?>
+                                        <?php if($common_model->checkModuleFunctionAccess(14,70)){?>
+                                            <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i></a>
+                                            <br><br>
+                                        <?php }?>
+                                        <?php if($row->status){?>
+                                            <?php if($common_model->checkModuleFunctionAccess(14,69)){?>
+                                                <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-success btn-sm" title="Deactivate <?=$title?>" onclick="return confirm('Do You Want To Deactivate This <?=$title?>');"><i class="fa fa-check"></i> Click To Disapprove</a>
+                                            <?php }?>
+                                        <?php } else {?>
+                                            <?php if($common_model->checkModuleFunctionAccess(14,68)){?>
+                                                <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Activate <?=$title?>" onclick="return confirm('Do You Want To Activate This <?=$title?>');"><i class="fa fa-times"></i> Click To Approve</a>
+                                            <?php }?>
+                                        <?php }?>
+                                    <?php //}?>
                                     <br><br>
                                     <?php
                                     $assignedCategoryCount = $common_model->find_data('ecomm_company_category', 'count', ['company_id' => $row->$primary_key, 'status!=' => 3]);
@@ -91,11 +101,17 @@ $company_id                 = $session->company_id;
                                         $assignItemText = '';
                                     }
                                     ?>
-                                    <a href="<?=base_url('admin/' . $controller_route . '/assign-category/'.encoded($row->$primary_key))?>" class="btn btn-info btn-sm" title="Manage Item Category"><i class="fa fa-tasks"></i> Categories <?=$assignCategoryText?></a>
-                                    <br><br>
-                                    <a href="<?=base_url('admin/' . $controller_route . '/manage-item/'.encoded($row->$primary_key))?>" class="btn btn-info btn-sm" title="Manage Item"><i class="fa fa-tasks"></i> Items <?=$assignItemText?></a>
-                                    <br><br>
-                                    <a href="<?=base_url('admin/' . $controller_route . '/send-credentials/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Send Credential <?=$title?>" onclick="return confirm('Do You Want To Send Signin Credentials To This <?=$title?>');"><i class="fa fa-envelope"></i> Send Credentials</a>
+                                    <?php if($common_model->checkModuleFunctionAccess(14,73)){?>
+                                        <a href="<?=base_url('admin/' . $controller_route . '/assign-category/'.encoded($row->$primary_key))?>" class="btn btn-info btn-sm" title="Manage Item Category"><i class="fa fa-tasks"></i> Categories <?=$assignCategoryText?></a>
+                                        <br><br>
+                                    <?php }?>
+                                    <?php if($common_model->checkModuleFunctionAccess(14,74)){?>
+                                        <a href="<?=base_url('admin/' . $controller_route . '/manage-item/'.encoded($row->$primary_key))?>" class="btn btn-info btn-sm" title="Manage Item"><i class="fa fa-tasks"></i> Items <?=$assignItemText?></a>
+                                        <br><br>
+                                    <?php }?>
+                                    <?php if($common_model->checkModuleFunctionAccess(14,114)){?>
+                                        <a href="<?=base_url('admin/' . $controller_route . '/send-credentials/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Send Credential <?=$title?>" onclick="return confirm('Do You Want To Send Signin Credentials To This <?=$title?>');"><i class="fa fa-envelope"></i> Send Credentials</a>
+                                    <?php }?>
                                 </td>
                             </tr>
                             <?php } }?>

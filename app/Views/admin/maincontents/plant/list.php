@@ -34,11 +34,11 @@ $company_id                 = $session->company_id;
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <?php //if($userType == 'MA'){?>
+                    <?php if($common_model->checkModuleFunctionAccess(15,115)){?>
                         <h5 class="card-title">
                             <a href="<?=base_url('admin/' . $controller_route . '/add/')?>" class="btn btn-outline-success btn-sm">Add <?=$title?></a>
                         </h5>
-                    <?php //}?>
+                    <?php }?>
                     <table class="table datatable">
                         <thead>
                             <tr>
@@ -67,15 +67,23 @@ $company_id                 = $session->company_id;
                                 <td><?=$row->email?></td>
                                 <td><?=$row->phone?></td>
                                 <td>
-                                    <a href="<?=base_url('admin/' . $controller_route . '/edit/'.encoded($row->$primary_key))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$title?>"><i class="fa fa-edit"></i></a>
-                                    <a target="_blank" href="<?=base_url('admin/' . $controller_route . '/view/'.encoded($row->$primary_key))?>" class="btn btn-outline-info btn-sm" title="View <?=$title?>"><i class="fa fa-info-circle"></i></a>
-                                    <?php if($userType == 'MA'){?>
+                                    <?php if($common_model->checkModuleFunctionAccess(15,79)){?>
+                                        <a href="<?=base_url('admin/' . $controller_route . '/edit/'.encoded($row->$primary_key))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$title?>"><i class="fa fa-edit"></i></a>
+                                    <?php }?>
+                                    <?php if($common_model->checkModuleFunctionAccess(15,80)){?>
+                                        <a target="_blank" href="<?=base_url('admin/' . $controller_route . '/view/'.encoded($row->$primary_key))?>" class="btn btn-outline-info btn-sm" title="View <?=$title?>"><i class="fa fa-info-circle"></i></a>
+                                    <?php }?>
+                                    <?php if($common_model->checkModuleFunctionAccess(15,78)){?>
                                         <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i></a>
                                         <br><br>
-                                        <?php if($row->status){?>
-                                        <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-success btn-sm" title="Deactivate <?=$title?>" onclick="return confirm('Do You Want To Deactivate This <?=$title?>');"><i class="fa fa-check"></i> Click To Disapprove</a>
-                                        <?php } else {?>
-                                        <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Activate <?=$title?>" onclick="return confirm('Do You Want To Activate This <?=$title?>');"><i class="fa fa-times"></i> Click To Approve</a>
+                                    <?php }?>
+                                    <?php if($row->status){?>
+                                        <?php if($common_model->checkModuleFunctionAccess(15,77)){?>
+                                            <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-success btn-sm" title="Deactivate <?=$title?>" onclick="return confirm('Do You Want To Deactivate This <?=$title?>');"><i class="fa fa-check"></i> Click To Disapprove</a>
+                                        <?php }?>
+                                    <?php } else {?>
+                                        <?php if($common_model->checkModuleFunctionAccess(15,76)){?>
+                                            <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Activate <?=$title?>" onclick="return confirm('Do You Want To Activate This <?=$title?>');"><i class="fa fa-times"></i> Click To Approve</a>
                                         <?php }?>
                                     <?php }?>
                                 </td>

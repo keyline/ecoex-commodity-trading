@@ -24,6 +24,13 @@ class VendorController extends BaseController {
     }
     public function list()
     {
+        if(!$this->common_model->checkModuleFunctionAccess(16,81)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $data['moduleDetail']       = $this->data;
         $title                      = 'Manage '.$this->data['title'];
         $page_name                  = 'member/list';
@@ -33,6 +40,13 @@ class VendorController extends BaseController {
     }
     public function add()
     {
+        if(!$this->common_model->checkModuleFunctionAccess(16,112)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Add';
         $title                      = $data['action'].' '.$this->data['title'];
@@ -117,6 +131,13 @@ class VendorController extends BaseController {
     }
     public function edit($id)
     {
+        if(!$this->common_model->checkModuleFunctionAccess(16,85)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $id                         = decoded($id);
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Edit';
@@ -288,6 +309,13 @@ class VendorController extends BaseController {
     }
     public function view($id)
     {
+        if(!$this->common_model->checkModuleFunctionAccess(16,86)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $id                         = decoded($id);
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'View';

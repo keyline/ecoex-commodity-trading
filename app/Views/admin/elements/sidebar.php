@@ -162,11 +162,13 @@ if($userType == 'MA'){
         <li class="nav-item">
             <?php if($userType == 'MA'){?>
                 <a class="nav-link <?=(($pageSegment == 'companies')?'active':'')?>" href="<?=base_url('admin/companies/list')?>">
+            <?php } elseif($userType == 'U'){?>
+                <a class="nav-link <?=(($pageSegment == 'companies')?'active':'')?>" href="<?=base_url('admin/companies/list')?>">
             <?php } else {?>
                 <a class="nav-link <?=(($pageSegment == 'companies')?'active':'')?>" href="<?=base_url('admin/companies/edit/'.encoded($company_id))?>">
             <?php }?>
                 <i class="fa fa-building"></i>
-                <span><?=(($userType == 'MA')?'Companies':'Settings')?></span>
+                <span><?=(($userType == 'COMPANY')?'Settings':'Companies')?></span>
             </a>
         </li>
         <?php if($userType == 'COMPANY'){?>
@@ -190,7 +192,7 @@ if($userType == 'MA'){
             </a>
         </li>
     <?php }?>
-    <?php if($userType == 'MA'){?>
+    <?php //if($userType == 'MA'){?>
         <?php if($common_model->checkModuleAccess(16)){?>
             <li class="nav-item">
                 <a class="nav-link <?=(($pageSegment == 'vendors')?'active':'')?>" href="<?=base_url('admin/vendors/list')?>">
@@ -199,8 +201,8 @@ if($userType == 'MA'){
                 </a>
             </li>
         <?php }?>
-    <?php }?>
-    <?php if($userType == 'MA'){?>
+    <?php //}?>
+    <?php //if($userType == 'MA'){?>
         <?php if($common_model->checkModuleAccess(17)){?>
             <li class="nav-item">
                 <a class="nav-link <?=(($pageSegment == 'delete-account-request')?'active':'')?>" href="<?=base_url('admin/delete-account-request/list')?>">
@@ -209,7 +211,7 @@ if($userType == 'MA'){
                 </a>
             </li>
         <?php }?>
-    <?php }?>
+    <?php //}?>
     <li class="nav-item">
         <a class="nav-link <?=(($pageSegment == 'enquiry-requests')?'':'collapsed')?> <?=(($pageSegment == 'enquiry-requests')?'active':'')?>" data-bs-target="#enquiry-nav" data-bs-toggle="collapse" href="#">
             <i class="fa fa-question-circle"></i><span>Enquiry Requests</span><i class="bi bi-chevron-down ms-auto"></i>
