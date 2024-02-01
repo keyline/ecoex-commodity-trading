@@ -24,6 +24,13 @@ class NotificationController extends BaseController {
     }
     public function list()
     {
+        if(!$this->common_model->checkModuleFunctionAccess(19,90)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $data['moduleDetail']       = $this->data;
         $title                      = 'Manage '.$this->data['title'].' From ADMIN';
         $page_name                  = 'notification/list';
@@ -33,6 +40,13 @@ class NotificationController extends BaseController {
     }
     public function add()
     {
+        if(!$this->common_model->checkModuleFunctionAccess(19,92)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Add';
         $title                      = $data['action'].' '.$this->data['title'];
@@ -61,6 +75,13 @@ class NotificationController extends BaseController {
     }
     public function edit($id)
     {
+        if(!$this->common_model->checkModuleFunctionAccess(19,95)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $id                         = decoded($id);
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Edit';
@@ -120,6 +141,13 @@ class NotificationController extends BaseController {
     }
     public function send($id)
     {
+        if(!$this->common_model->checkModuleFunctionAccess(19,96)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $id                         = decoded($id);
         $getNotification            = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $id]);
         if($getNotification){
@@ -158,6 +186,13 @@ class NotificationController extends BaseController {
     }
     public function list_from_app()
     {
+        if(!$this->common_model->checkModuleFunctionAccess(20,97)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $data['moduleDetail']       = $this->data;
         $title                      = 'Manage '.$this->data['title'].' From APP';
         $page_name                  = 'notification/list-from-app';
