@@ -515,6 +515,13 @@ class User extends BaseController {
             if(!$this->session->get('is_admin_login')) {
                 return redirect()->to('/admin');
             }
+            if(!$this->common_model->checkModuleAccess(21)){
+                $data['action']             = 'Access Forbidden';
+                $title                      = $data['action'].' '.$this->data['title'];
+                $page_name                  = 'access-forbidden';        
+                echo $this->layout_after_login($title,$page_name,$data);
+                exit;
+            }
             $title              = 'Email Logs';
             $page_name          = 'email-logs';
             $order_by[0]        = array('field' => 'id', 'type' => 'desc');
@@ -525,6 +532,13 @@ class User extends BaseController {
         {
             if(!$this->session->get('is_admin_login')) {
                 return redirect()->to('/admin');
+            }
+            if(!$this->common_model->checkModuleAccess(21)){
+                $data['action']             = 'Access Forbidden';
+                $title                      = $data['action'].' '.$this->data['title'];
+                $page_name                  = 'access-forbidden';        
+                echo $this->layout_after_login($title,$page_name,$data);
+                exit;
             }
             $id                 = decoded($id);
             $title              = 'Email Logs Details';
@@ -538,6 +552,13 @@ class User extends BaseController {
         {
             if(!$this->session->get('is_admin_login')) {
                 return redirect()->to('/admin');
+            }
+            if(!$this->common_model->checkModuleAccess(22)){
+                $data['action']             = 'Access Forbidden';
+                $title                      = $data['action'].' '.$this->data['title'];
+                $page_name                  = 'access-forbidden';        
+                echo $this->layout_after_login($title,$page_name,$data);
+                exit;
             }
             $title              = 'Login Logs';
             $page_name          = 'login-logs';

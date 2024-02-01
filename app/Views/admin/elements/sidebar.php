@@ -269,11 +269,11 @@ if($userType == 'MA'){
             </li>
         </ul>
     </li>
-    <?php if($userType == 'MA'){?>
+    
         <?php if(($common_model->checkModuleAccess(19)) || ($common_model->checkModuleAccess(20))){?>
             <li class="nav-item">
                 <a class="nav-link <?=(($pageSegment == 'notifications' || $pageSegment == 'notifications')?'':'collapsed')?> <?=(($pageSegment == 'notifications' || $pageSegment == 'notifications')?'active':'')?>" data-bs-target="#notification-nav" data-bs-toggle="collapse" href="#">
-                    <i class="fa fa-envelope"></i><span>Notifications</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="fa fa-bell"></i><span>Notifications</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="notification-nav" class="nav-content collapse <?=(($pageSegment == 'notifications' || $pageSegment == 'notifications')?'show':'')?>" data-bs-parent="#sidebar-nav">
                     <?php if($common_model->checkModuleAccess(19)){?>
@@ -309,6 +309,7 @@ if($userType == 'MA'){
                 </a>
             </li>
         <?php }?>
+    <?php if($userType == 'MA'){?>
         <li class="nav-item">
             <a class="nav-link <?=(($pageSegment == 'settings')?'active':'')?>" href="<?=base_url('admin/settings')?>">
                 <i class="fa fa-gear"></i>

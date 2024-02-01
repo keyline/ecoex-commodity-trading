@@ -47,7 +47,9 @@ $user_type = session('user_type');
                         <td><?=$row->email?></td>
                         <td><?=$row->subject?></td>
                         <td>
+                          <?php if($common_model->checkModuleFunctionAccess(21,99)){?>
                             <a target="_blank" href="<?=base_url('admin/email-logs-details/'.encoded($row->id))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$row->subject?>"><i class="fa fa-info-circle"></i></a>
+                          <?php } ?>
                         </td>
                     </tr>
                     <?php } }?>
