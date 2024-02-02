@@ -29,6 +29,17 @@ if($userType == 'MA'){
     $step7_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 7]);
     $step8_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 8]);
     $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 9]);
+} elseif($userType == 'U'){
+    $step0_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 0]);
+    $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
+    $step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2]);
+    $step3_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 3]);
+    $step4_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 4]);
+    $step5_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 5]);
+    $step6_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 6]);
+    $step7_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 7]);
+    $step8_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 8]);
+    $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 9]);
 } else {
     $step0_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 0, 'company_id' => $company_id]);
     $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1, 'company_id' => $company_id]);
@@ -192,123 +203,123 @@ if($userType == 'MA'){
             </a>
         </li>
     <?php }?>
-    <?php //if($userType == 'MA'){?>
-        <?php if($common_model->checkModuleAccess(16)){?>
-            <li class="nav-item">
-                <a class="nav-link <?=(($pageSegment == 'vendors')?'active':'')?>" href="<?=base_url('admin/vendors/list')?>">
-                    <i class="fa fa-users"></i>
-                    <span>Vendors</span>
-                </a>
-            </li>
-        <?php }?>
-    <?php //}?>
-    <?php //if($userType == 'MA'){?>
-        <?php if($common_model->checkModuleAccess(17)){?>
-            <li class="nav-item">
-                <a class="nav-link <?=(($pageSegment == 'delete-account-request')?'active':'')?>" href="<?=base_url('admin/delete-account-request/list')?>">
-                    <i class="fa fa-trash"></i>
-                    <span>Delete Account Requests</span>
-                </a>
-            </li>
-        <?php }?>
-    <?php //}?>
-    <li class="nav-item">
-        <a class="nav-link <?=(($pageSegment == 'enquiry-requests')?'':'collapsed')?> <?=(($pageSegment == 'enquiry-requests')?'active':'')?>" data-bs-target="#enquiry-nav" data-bs-toggle="collapse" href="#">
-            <i class="fa fa-question-circle"></i><span>Enquiry Requests</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="enquiry-nav" class="nav-content collapse <?=(($pageSegment == 'enquiry-requests')?'show':'')?>" data-bs-parent="#sidebar-nav">
-            <li>
-                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 0))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(0))?>">
-                    <i class="fa fa-arrow-right"></i><span>Pending (<?=$step0_count?>)</span>
-                </a>
-            </li>
-            <li>
-                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 1))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(1))?>">
-                    <i class="fa fa-arrow-right"></i><span>Sent/Submitted (<?=$step1_count?>)</span>
-                </a>
-            </li>
-            <li>
-                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 2))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(2))?>">
-                    <i class="fa fa-arrow-right"></i><span>Accepted/Rejected (<?=$step2_count?>)</span>
-                </a>
-            </li>
-            <li>
-                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 3))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(3))?>">
-                    <i class="fa fa-arrow-right"></i><span>Pickup (<?=$step3_count?>)</span>
-                </a>
-            </li>
-            <li>
-                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 4))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(4))?>">
-                    <i class="fa fa-arrow-right"></i><span>Vehicle Placed (<?=$step4_count?>)</span>
-                </a>
-            </li>
-            <li>
-                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 5))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(5))?>">
-                    <i class="fa fa-arrow-right"></i><span>Vehicle Ready Despatch (<?=$step5_count?>)</span>
-                </a>
-            </li>
-            <li>
-                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 6))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(6))?>">
-                    <i class="fa fa-arrow-right"></i><span>Material Lifted (<?=$step6_count?>)</span>
-                </a>
-            </li>
-            <li>
-                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 7))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(7))?>">
-                    <i class="fa fa-arrow-right"></i><span>Invoiced (<?=$step7_count?>)</span>
-                </a>
-            </li>
-            <li>
-                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 8))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(8))?>">
-                    <i class="fa fa-arrow-right"></i><span>Completed (<?=$step8_count?>)</span>
-                </a>
-            </li>
-            <li>
-                <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 9))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(9))?>">
-                    <i class="fa fa-arrow-right"></i><span>Rejected (<?=$step9_count?>)</span>
-                </a>
-            </li>
-        </ul>
-    </li>
     
-        <?php if(($common_model->checkModuleAccess(19)) || ($common_model->checkModuleAccess(20))){?>
-            <li class="nav-item">
-                <a class="nav-link <?=(($pageSegment == 'notifications' || $pageSegment == 'notifications')?'':'collapsed')?> <?=(($pageSegment == 'notifications' || $pageSegment == 'notifications')?'active':'')?>" data-bs-target="#notification-nav" data-bs-toggle="collapse" href="#">
-                    <i class="fa fa-bell"></i><span>Notifications</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="notification-nav" class="nav-content collapse <?=(($pageSegment == 'notifications' || $pageSegment == 'notifications')?'show':'')?>" data-bs-parent="#sidebar-nav">
-                    <?php if($common_model->checkModuleAccess(19)){?>
-                        <li>
-                            <a class="<?=(($pageSegment == 'notifications')?'active':'')?>" href="<?=base_url('admin/notifications/list')?>">
-                                <i class="fa fa-arrow-right"></i><span>From Admin</span>
-                            </a>
-                        </li>
-                    <?php }?>
-                    <?php if($common_model->checkModuleAccess(20)){?>
-                        <li>
-                            <a class="<?=(($pageSegment == 'notifications')?'active':'')?>" href="<?=base_url('admin/notifications/list_from_app')?>">
-                                <i class="fa fa-arrow-right"></i><span>From App</span>
-                            </a>
-                        </li>
-                    <?php }?>
-                </ul>
-            </li>
-        <?php }?>
-        <?php if($common_model->checkModuleAccess(21)){?>
-            <li class="nav-item">
-                <a class="nav-link <?=(($pageSegment == 'email-logs')?'active':'')?>" href="<?=base_url('admin/email-logs')?>">
-                    <i class="fa fa-envelope"></i>
-                    <span>Email Logs</span>
-                </a>
-            </li>
-        <?php }?>
-        <?php if($common_model->checkModuleAccess(22)){?>
-            <li class="nav-item">
-                <a class="nav-link <?=(($pageSegment == 'login-logs')?'active':'')?>" href="<?=base_url('admin/login-logs')?>">
-                    <i class="fa fa-list"></i>
-                    <span>Login Logs</span>
-                </a>
-            </li>
-        <?php }?>
+    <?php if($common_model->checkModuleAccess(16)){?>
+        <li class="nav-item">
+            <a class="nav-link <?=(($pageSegment == 'vendors')?'active':'')?>" href="<?=base_url('admin/vendors/list')?>">
+                <i class="fa fa-users"></i>
+                <span>Vendors</span>
+            </a>
+        </li>
+    <?php }?>
+
+
+    <?php if($common_model->checkModuleAccess(17)){?>
+        <li class="nav-item">
+            <a class="nav-link <?=(($pageSegment == 'delete-account-request')?'active':'')?>" href="<?=base_url('admin/delete-account-request/list')?>">
+                <i class="fa fa-trash"></i>
+                <span>Delete Account Requests</span>
+            </a>
+        </li>
+    <?php }?>
+    <?php if($common_model->checkModuleAccess(23)){?>
+        <li class="nav-item">
+            <a class="nav-link <?=(($pageSegment == 'enquiry-requests')?'':'collapsed')?> <?=(($pageSegment == 'enquiry-requests')?'active':'')?>" data-bs-target="#enquiry-nav" data-bs-toggle="collapse" href="#">
+                <i class="fa fa-question-circle"></i><span>Enquiry Requests</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="enquiry-nav" class="nav-content collapse <?=(($pageSegment == 'enquiry-requests')?'show':'')?>" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 0))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(0))?>">
+                        <i class="fa fa-arrow-right"></i><span>Pending (<?=$step0_count?>)</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 1))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(1))?>">
+                        <i class="fa fa-arrow-right"></i><span>Sent/Submitted (<?=$step1_count?>)</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 2))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(2))?>">
+                        <i class="fa fa-arrow-right"></i><span>Accepted/Rejected (<?=$step2_count?>)</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 3))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(3))?>">
+                        <i class="fa fa-arrow-right"></i><span>Pickup (<?=$step3_count?>)</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 4))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(4))?>">
+                        <i class="fa fa-arrow-right"></i><span>Vehicle Placed (<?=$step4_count?>)</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 5))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(5))?>">
+                        <i class="fa fa-arrow-right"></i><span>Vehicle Ready Despatch (<?=$step5_count?>)</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 6))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(6))?>">
+                        <i class="fa fa-arrow-right"></i><span>Material Lifted (<?=$step6_count?>)</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 7))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(7))?>">
+                        <i class="fa fa-arrow-right"></i><span>Invoiced (<?=$step7_count?>)</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 8))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(8))?>">
+                        <i class="fa fa-arrow-right"></i><span>Completed (<?=$step8_count?>)</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 9))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(9))?>">
+                        <i class="fa fa-arrow-right"></i><span>Rejected (<?=$step9_count?>)</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    <?php }?>
+    <?php if(($common_model->checkModuleAccess(19)) || ($common_model->checkModuleAccess(20))){?>
+        <li class="nav-item">
+            <a class="nav-link <?=(($pageSegment == 'notifications' || $pageSegment == 'notifications')?'':'collapsed')?> <?=(($pageSegment == 'notifications' || $pageSegment == 'notifications')?'active':'')?>" data-bs-target="#notification-nav" data-bs-toggle="collapse" href="#">
+                <i class="fa fa-bell"></i><span>Notifications</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="notification-nav" class="nav-content collapse <?=(($pageSegment == 'notifications' || $pageSegment == 'notifications')?'show':'')?>" data-bs-parent="#sidebar-nav">
+                <?php if($common_model->checkModuleAccess(19)){?>
+                    <li>
+                        <a class="<?=(($pageSegment == 'notifications')?'active':'')?>" href="<?=base_url('admin/notifications/list')?>">
+                            <i class="fa fa-arrow-right"></i><span>From Admin</span>
+                        </a>
+                    </li>
+                <?php }?>
+                <?php if($common_model->checkModuleAccess(20)){?>
+                    <li>
+                        <a class="<?=(($pageSegment == 'notifications')?'active':'')?>" href="<?=base_url('admin/notifications/list_from_app')?>">
+                            <i class="fa fa-arrow-right"></i><span>From App</span>
+                        </a>
+                    </li>
+                <?php }?>
+            </ul>
+        </li>
+    <?php }?>
+    <?php if($common_model->checkModuleAccess(21)){?>
+        <li class="nav-item">
+            <a class="nav-link <?=(($pageSegment == 'email-logs')?'active':'')?>" href="<?=base_url('admin/email-logs')?>">
+                <i class="fa fa-envelope"></i>
+                <span>Email Logs</span>
+            </a>
+        </li>
+    <?php }?>
+    <?php if($common_model->checkModuleAccess(22)){?>
+        <li class="nav-item">
+            <a class="nav-link <?=(($pageSegment == 'login-logs')?'active':'')?>" href="<?=base_url('admin/login-logs')?>">
+                <i class="fa fa-list"></i>
+                <span>Login Logs</span>
+            </a>
+        </li>
+    <?php }?>
     <?php if($userType == 'MA'){?>
         <li class="nav-item">
             <a class="nav-link <?=(($pageSegment == 'settings')?'active':'')?>" href="<?=base_url('admin/settings')?>">

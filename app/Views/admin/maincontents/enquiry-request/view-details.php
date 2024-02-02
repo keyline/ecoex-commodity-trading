@@ -420,7 +420,9 @@ $controller_route   = $moduleDetail['controller_route'];
                                                     <?php if($enquiryProduct->status){?>
                                                         <span class="badge bg-success">APPROVED</span>
                                                     <?php } else {?>
-                                                        <span class="badge bg-danger" data-bs-toggle="modal" data-bs-target="#verticalycentered<?=$enquiryProduct->id?>" data-backdrop="static" data-keyboard="false">CLICK TO APPROVED</span>
+                                                        <?php if($common_model->checkModuleFunctionAccess(23,108)){?>
+                                                            <span class="badge bg-danger" data-bs-toggle="modal" data-bs-target="#verticalycentered<?=$enquiryProduct->id?>" data-backdrop="static" data-keyboard="false">CLICK TO APPROVED</span>
+                                                        <?php }?>
                                                     <?php }?>
                                                 </td>
                                             </tr>

@@ -24,6 +24,13 @@ class EnquiryRequestController extends BaseController {
     }
     public function list($status)
     {
+        if(!$this->common_model->checkModuleFunctionAccess(23,104)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $userType                   = $this->session->user_type;
         $company_id                 = $this->session->company_id;
         $status                     = decoded($status);
@@ -55,6 +62,8 @@ class EnquiryRequestController extends BaseController {
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
         if($userType == 'MA'){
             $conditions                 = ['status' => $status];
+        } elseif($userType == 'U'){
+            $conditions                 = ['status' => $status];
         } else {
             $conditions                 = ['status' => $status, 'company_id' => $company_id];
         }
@@ -63,6 +72,13 @@ class EnquiryRequestController extends BaseController {
     }
     public function viewDetail($enq_id)
     {
+        if(!$this->common_model->checkModuleFunctionAccess(23,109)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $enq_id                     = decoded($enq_id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
         $data['moduleDetail']       = $this->data;
@@ -160,6 +176,13 @@ class EnquiryRequestController extends BaseController {
     }
     public function confirm_delete($id)
     {
+        if(!$this->common_model->checkModuleFunctionAccess(23,107)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $id                         = decoded($id);
         $postData = array(
                             'status' => 10
@@ -188,6 +211,13 @@ class EnquiryRequestController extends BaseController {
     }
     public function accept_request($id)
     {
+        if(!$this->common_model->checkModuleFunctionAccess(23,110)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $id                         = decoded($id);
         $getEnquiry                 = $this->common_model->find_data($this->data['table_name'], 'row', ['id' => $id]);
         if($getEnquiry){
@@ -240,6 +270,13 @@ class EnquiryRequestController extends BaseController {
     }
     public function reject_request($id)
     {
+        if(!$this->common_model->checkModuleFunctionAccess(23,111)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $id                         = decoded($id);
         $getEnquiry                 = $this->common_model->find_data($this->data['table_name'], 'row', ['id' => $id]);
         if($getEnquiry){
