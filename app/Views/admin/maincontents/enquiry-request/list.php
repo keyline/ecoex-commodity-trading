@@ -80,13 +80,21 @@ $controller_route   = $moduleDetail['controller_route'];
                                         </h6>
                                     </td>
                                     <td>
-                                        <a href="<?=base_url('admin/' . $controller_route . '/view-detail/'.encoded($row->$primary_key))?>" class="btn btn-outline-info btn-sm" title="Edit <?=$title?>"><i class="fa fa-eye"></i> View Details</a>
-                                        <br><br>
-                                        <?php if($row->status == 0){?>
-                                            <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i> Delete</a>
+                                        <?php if($common_model->checkModuleFunctionAccess(23,109)){?>
+                                            <a href="<?=base_url('admin/' . $controller_route . '/view-detail/'.encoded($row->$primary_key))?>" class="btn btn-outline-info btn-sm" title="Edit <?=$title?>"><i class="fa fa-eye"></i> View Details</a>
                                             <br><br>
-                                            <a href="<?=base_url('admin/' . $controller_route . '/accept-request/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Accept <?=$title?>" onclick="return confirm('Do You Want To Accept This <?=$title?>');"><i class="fa fa-check"></i> Click To Accept</a>
-                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Reject <?=$title?>" onclick="getRejectModal(<?=$row->$primary_key?>);"><i class="fa fa-times"></i> Click To Reject</a>
+                                        <?php }?>
+                                        <?php if($row->status == 0){?>
+                                            <?php if($common_model->checkModuleFunctionAccess(23,107)){?>
+                                                <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i> Delete</a>
+                                                <br><br>
+                                            <?php }?>
+                                            <?php if($common_model->checkModuleFunctionAccess(23,110)){?>
+                                                <a href="<?=base_url('admin/' . $controller_route . '/accept-request/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Accept <?=$title?>" onclick="return confirm('Do You Want To Accept This <?=$title?>');"><i class="fa fa-check"></i> Click To Accept</a>
+                                            <?php }?>
+                                            <?php if($common_model->checkModuleFunctionAccess(23,111)){?>
+                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Reject <?=$title?>" onclick="getRejectModal(<?=$row->$primary_key?>);"><i class="fa fa-times"></i> Click To Reject</a>
+                                            <?php }?>
                                         <?php } else {?>
                                             <?php if($row->status == 1){?>
                                                 <h6 class="badge bg-success"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
