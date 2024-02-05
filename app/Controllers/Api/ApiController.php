@@ -4441,7 +4441,7 @@ class ApiController extends BaseController
                             }
                             $apiStatus          = TRUE;
                             http_response_code(200);
-                            $apiMessage         = 'Quotation Submitted Available !!!';
+                            $apiMessage         = 'Quotation Submitted Successfully !!!';
                             $apiExtraField      = 'response_code';
                             $apiExtraData       = http_response_code();
                         } else {
