@@ -146,6 +146,7 @@ abstract class BaseController extends Controller
             $emailSetting->setCC($siteSetting->system_email, 'Ecoex Commodity Trading');
             $emailSetting->setSubject($email_subject);
             $emailSetting->setMessage($mailbody);
+            pr($emailSetting);
             if($attachment != ''){
                 $emailSetting->attach($attachment);
             }
