@@ -31,11 +31,11 @@ class EnquiryRequestController extends BaseController {
             echo $this->layout_after_login($title,$page_name,$data);
             exit;
         }
-        $data['current_status']     = $status;
+        
         $userType                   = $this->session->user_type;
         $company_id                 = $this->session->company_id;
         $status                     = decoded($status);
-
+        $data['current_status']     = $status;
         $data['moduleDetail']       = $this->data;
         if($status == 0){
             $stepName = 'Request Pending';
