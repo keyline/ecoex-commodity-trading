@@ -133,19 +133,23 @@ abstract class BaseController extends Controller
         public function sendMail($to_email, $email_subject, $mailbody, $attachment = '')
         {
             $siteSetting        = $this->common_model->find_data('general_settings', 'row');
-            $email              = \Config\Services::email();        
+            $emailSetting       = \Config\Services::email();
             $from_email         = $siteSetting->from_email;
             $from_name          = $siteSetting->from_name;
-            $email->setFrom($from_email, $from_name);
-            $email->setTo($to_email);
-            $email->setBCC('subhomoy@keylines.net', 'Ecoex Commodity Trading');
-            $email->setCC($siteSetting->system_email, 'Ecoex Commodity Trading');
-            $email->setSubject($email_subject);
-            $email->setMessage($mailbody);
+
+            $emailSetting->SMTPHost = $siteSetting->smtp_host;
+            $emailSetting->SMTPUser = $siteSetting->smtp_username;
+            $emailSetting->SMTPPass = $siteSetting->smtp_password;
+            $emailSetting->setFrom($from_email, $from_name);
+            $emailSetting->setTo($to_email);
+            $emailSetting->setBCC('subhomoy@keylines.net', 'Ecoex Commodity Trading');
+            $emailSetting->setCC($siteSetting->system_email, 'Ecoex Commodity Trading');
+            $emailSetting->setSubject($email_subject);
+            $emailSetting->setMessage($mailbody);
             if($attachment != ''){
-                $email->attach($attachment);
+                $emailSetting->attach($attachment);
             }
-            $email->send();
+            $emailSetting->send();
             return true;
         }
     // send email
