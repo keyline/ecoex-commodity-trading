@@ -140,6 +140,7 @@ abstract class BaseController extends Controller
             $emailSetting->SMTPHost = $siteSetting->smtp_host;
             $emailSetting->SMTPUser = $siteSetting->smtp_username;
             $emailSetting->SMTPPass = $siteSetting->smtp_password;
+            $emailSetting->protocol = 'sendmail';
             $emailSetting->setFrom($from_email, $from_name);
             $emailSetting->setTo($to_email);
             $emailSetting->setBCC('subhomoy@keylines.net', 'Ecoex Commodity Trading');
