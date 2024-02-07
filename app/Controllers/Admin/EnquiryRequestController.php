@@ -31,9 +31,11 @@ class EnquiryRequestController extends BaseController {
             echo $this->layout_after_login($title,$page_name,$data);
             exit;
         }
+        $data['current_status']     = $status;
         $userType                   = $this->session->user_type;
         $company_id                 = $this->session->company_id;
         $status                     = decoded($status);
+
         $data['moduleDetail']       = $this->data;
         if($status == 0){
             $stepName = 'Request Pending';
@@ -174,7 +176,7 @@ class EnquiryRequestController extends BaseController {
         $page_name                  = 'enquiry-request/view-details';
         echo $this->layout_after_login($title,$page_name,$data);
     }
-    public function confirm_delete($id)
+    public function confirm_delete($id, $current_status)
     {
         if(!$this->common_model->checkModuleFunctionAccess(23,107)){
             $data['action']             = 'Access Forbidden';
@@ -189,7 +191,7 @@ class EnquiryRequestController extends BaseController {
                         );
         $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
         $this->session->setFlashdata('success_message', $this->data['title'].' deleted successfully');
-        return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(0));
+        return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded($current_status));
     }
     public function change_status($id)
     {
