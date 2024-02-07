@@ -63,9 +63,9 @@ $controller_route   = $moduleDetail['controller_route'];
                                             <?=(($row->created_at != '')?date_format(date_create($row->created_at), "M d, Y h:i A"):'')?><br>
                                             <?php
                                             if($row->created_by > 0){
-                                                $adminUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->created_by], 'company_name');
+                                                $actionUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->created_by], 'plant_name');
                                             ?>
-                                                <small><?=(($adminUser)?$adminUser->company_name:'')?></small>
+                                                <small><?=(($actionUser)?$actionUser->plant_name:'')?></small>
                                             <?php }?>
                                             <hr>
                                         </h6>
@@ -73,9 +73,9 @@ $controller_route   = $moduleDetail['controller_route'];
                                             <?=(($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):'')?><br>
                                             <?php
                                             if($row->updated_by > 0){
-                                                $adminUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->updated_by], 'company_name');
+                                                $actionUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->updated_by], 'plant_name');
                                             ?>
-                                                <small><?=(($adminUser)?$adminUser->company_name:'')?></small>
+                                                <small><?=(($actionUser)?$actionUser->plant_name:'')?></small>
                                             <?php }?>
                                         </h6>
                                     </td>
