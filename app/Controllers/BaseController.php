@@ -153,7 +153,6 @@ abstract class BaseController extends Controller
                 $emailSetting->attach($attachment);
             }
             $emailSetting->send();
-            pr($emailSetting);
             return true;
         }
     // send email
