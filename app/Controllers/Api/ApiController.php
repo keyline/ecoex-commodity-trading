@@ -2622,7 +2622,7 @@ class ApiController extends BaseController
                                 $company                    = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $company_id]);
                                 $subject                    = $generalSetting->site_name.' :: Request Submitted ('.$plantName.') '.(($company)?$company->company_name:'');
                                 $message                    = view('email-templates/enquiry1',$fields1);
-                                echo $message;die;
+                                // echo $message;die;
                                 $this->sendMail($generalSetting->system_email, $subject, $message);
                             /* email notification */
                             $enq_id = $this->common_model->save_data('ecomm_enquires', $fields1, '', 'id');
