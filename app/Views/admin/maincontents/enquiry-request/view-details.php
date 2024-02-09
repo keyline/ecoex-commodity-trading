@@ -289,8 +289,8 @@ $controller_route   = $moduleDetail['controller_route'];
                             <h5 class="fw-bold text-success">Plant Name</h5>
                             <h6>
                                 <?php
-                                $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'company_name');
-                                echo (($getPlant)?$getPlant->company_name:'');
+                                $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
+                                echo (($getPlant)?$getPlant->plant_name:'');
                                 ?>
                             </h6>
                         </div>
