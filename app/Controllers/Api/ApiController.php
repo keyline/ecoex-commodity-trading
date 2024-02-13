@@ -3980,6 +3980,9 @@ class ApiController extends BaseController
                                             }
                                         }
                                         $getUnit               = $this->common_model->find_data('ecomm_units', 'row', ['id' => $enquiryProduct->unit], 'name');
+
+                                        $getVendorQuotation = $this->common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => $enq_id, 'item_id' => $product_id, 'vendor_id' => $uId], 'quote_price,qty');
+
                                         $requestList[] = [
                                             'enq_id'            => $enq_id,
                                             'enq_product_id'    => $enquiryProduct->id,
@@ -3989,8 +3992,8 @@ class ApiController extends BaseController
                                             'product_image'     => $product_images,
                                             'productErr'        => '',
                                             'new_product'       => (($enquiryProduct->new_product)?true:false),
-                                            'qty'               => "",
-                                            'quote_price'       => "",
+                                            'qty'               => (($getVendorQuotation)?$getVendorQuotation->qty:''),
+                                            'quote_price'       => (($getVendorQuotation)?$getVendorQuotation->quote_price:''),
                                             'unit'              => $enquiryProduct->unit,
                                             'unit_name'         => (($getUnit)?$getUnit->name:''),
                                         ];
@@ -4027,11 +4030,15 @@ class ApiController extends BaseController
                                 }
                                 $getPlant = $this->common_model->find_data('ecomm_users', 'row', ['id' => $enquiry->plant_id], 'company_name,full_address,district,state,pincode,location');
                                 
-                                $getVendorQuotationAcceptRejectStatus = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'row', ['enq_id' => $enq_id, 'vendor_id' => $uId], 'status');
+                                $getVendorQuotationAcceptRejectStatus = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'row', ['enq_id' => $enq_id, 'vendor_id' => $uId], 'status,is_quotation_submit,is_editable');
                                 if($getVendorQuotationAcceptRejectStatus){
-                                    $vendorQuotationAcceptRejectStatus = $getVendorQuotationAcceptRejectStatus->status;
+                                    $vendorQuotationAcceptRejectStatus  = $getVendorQuotationAcceptRejectStatus->status;
+                                    $is_quotation_submit                = $getVendorQuotationAcceptRejectStatus->is_quotation_submit;
+                                    $is_editable                        = $getVendorQuotationAcceptRejectStatus->is_editable;
                                 } else {
-                                    $vendorQuotationAcceptRejectStatus = 0;
+                                    $vendorQuotationAcceptRejectStatus  = 0;
+                                    $is_quotation_submit                = 0;
+                                    $is_editable                        = 0;
                                 }
                                 $apiResponse = [
                                     'enq_id'                => $enquiry->id,
@@ -4059,6 +4066,8 @@ class ApiController extends BaseController
                                     'plant_location'        => (($getPlant)?$getPlant->location:''),
                                     'enquiry_remarks'       => $enquiry->enquiry_remarks,
                                     'vendorQuotationAcceptRejectStatus' => $vendorQuotationAcceptRejectStatus,
+                                    'is_quotation_submit'   => $is_quotation_submit,
+                                    'is_editable'           => $is_editable,
                                     'requestList'           => $requestList,
                                 ];
 
@@ -4479,6 +4488,8 @@ class ApiController extends BaseController
                                     $this->common_model->save_data('ecomm_enquiry_vendor_quotations', $fields, '', 'id');
                                 }
                             }
+
+                            $this->db->query("UPDATE is_quotation_submit = 1, is_editable = 0 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
                             $apiStatus          = TRUE;
                             http_response_code(200);
                             $apiMessage         = 'Quotation Submitted Successfully !!!';
