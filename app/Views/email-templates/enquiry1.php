@@ -28,7 +28,7 @@ $company                    = $this->common_model->find_data('ecoex_companies', 
                 </tr>
                 <tr>
                   <th style="background: #3e9854; color: #fff; padding: 10px; text-align: left; font-family: sans-serif; font-size: 14px;">Plant Name</th>
-                  <td style="padding: 10px; background: #89b33c; text-align: left; color: #fff;font-family: sans-serif;font-size: 15px; font-weight: 600;"><?=(($plant)?$plant->company_name:'')?></td>
+                  <td style="padding: 10px; background: #89b33c; text-align: left; color: #fff;font-family: sans-serif;font-size: 15px; font-weight: 600;"><?=(($plant)?$plant->plant_name:'')?></td>
                 </tr>
                 <tr>
                   <th style="background: #3e9854; color: #fff; padding: 10px; text-align: left; font-family: sans-serif; font-size: 14px;">Enquiry No.</th>

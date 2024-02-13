@@ -2625,7 +2625,7 @@ class ApiController extends BaseController
                             // pr($fields1);die;
 
                             /* email notification */
-                                $plantName                  = $getUser->company_name;
+                                $plantName                  = $getUser->plant_name;
                                 $generalSetting             = $this->common_model->find_data('general_settings', 'row');
                                 $company                    = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $company_id]);
                                 $subject                    = $generalSetting->site_name.' :: Request Submitted ('.$plantName.') '.(($company)?$company->company_name:'');
