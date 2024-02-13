@@ -3782,7 +3782,7 @@ class ApiController extends BaseController
 
                             $select             = 'ecomm_enquires.*';
                             $join[0]            = ['table' => 'ecomm_enquiry_vendor_shares', 'field' => 'enq_id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'id', 'type' => 'INNER'];
-                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquiry_vendor_shares.vendor_id' => $uId, 'ecomm_enquiry_vendor_shares.status' => 0, 'ecomm_enquires.status!=' => 10], $select, $join, '', $orderBy, $limit, $offset);
+                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquiry_vendor_shares.vendor_id' => $uId, 'ecomm_enquiry_vendor_shares.status' => 0, 'ecomm_enquires.status!=' => 14], $select, $join, '', $orderBy, $limit, $offset);
                             // $this->db = \Config\Database::connect();
                             // echo $this->db->getLastQuery();die;
                             if($rows){
@@ -3995,27 +3995,35 @@ class ApiController extends BaseController
                                             'unit_name'         => (($getUnit)?$getUnit->name:''),
                                         ];
                                     }
-                                }                            
+                                }
                                 if($enquiry->status == 0){
-                                    $enquiryStatus = 'Pending';
+                                    $enquiryStatus = 'Request Submitted';
                                 } elseif($enquiry->status == 1){
-                                    $enquiryStatus = 'Sent/Submitted';
+                                    $enquiryStatus = 'Accept Request';
                                 } elseif($enquiry->status == 2){
-                                    $enquiryStatus = 'Accepted/Rejected';
+                                    $enquiryStatus = 'Vendor Allocated';
                                 } elseif($enquiry->status == 3){
-                                    $enquiryStatus = 'Pickup';
+                                    $enquiryStatus = 'Vendor Assigned';
                                 } elseif($enquiry->status == 4){
-                                    $enquiryStatus = 'Vehicle Placed';
+                                    $enquiryStatus = 'Pickup Scheduled';
                                 } elseif($enquiry->status == 5){
-                                    $enquiryStatus = 'Vehicle Ready Despatch';
+                                    $enquiryStatus = 'Vehicle Placed';
                                 } elseif($enquiry->status == 6){
-                                    $enquiryStatus = 'Material Lifted';
+                                    $enquiryStatus = 'Material Weighed';
                                 } elseif($enquiry->status == 7){
-                                    $enquiryStatus = 'Invoiced';
+                                    $enquiryStatus = 'Invoice from HO';
                                 } elseif($enquiry->status == 8){
-                                    $enquiryStatus = 'Completed';
+                                    $enquiryStatus = 'Invoice to Vendor';
                                 } elseif($enquiry->status == 9){
-                                    $enquiryStatus = 'Rejected';
+                                    $enquiryStatus = 'Payment received from Vendor';
+                                } elseif($enquiry->status == 10){
+                                    $enquiryStatus = 'Vehicle Dispatched';
+                                } elseif($enquiry->status == 11){
+                                    $enquiryStatus = 'Payment to HO';
+                                } elseif($enquiry->status == 12){
+                                    $enquiryStatus = 'Order Complete';
+                                } elseif($enquiry->status == 13){
+                                    $enquiryStatus = 'Reject Request';
                                 }
                                 $getPlant = $this->common_model->find_data('ecomm_users', 'row', ['id' => $enquiry->plant_id], 'company_name,full_address,district,state,pincode,location');
                                 
@@ -4028,7 +4036,7 @@ class ApiController extends BaseController
                                 $apiResponse = [
                                     'enq_id'                => $enquiry->id,
                                     'enquiry_no'            => $enquiry->enquiry_no,
-                                    'total_step'            => 8,
+                                    'total_step'            => 14,
                                     'current_step_no'       => $enquiry->status,
                                     'current_step_name'     => $enquiryStatus,
                                     'accepted_date'         => $enquiry->accepted_date,
@@ -4138,7 +4146,7 @@ class ApiController extends BaseController
 
                             $select             = 'ecomm_enquires.*';
                             $join[0]            = ['table' => 'ecomm_enquiry_vendor_shares', 'field' => 'enq_id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'id', 'type' => 'INNER'];
-                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquiry_vendor_shares.vendor_id' => $uId, 'ecomm_enquiry_vendor_shares.status' => 1, 'ecomm_enquires.status!=' => 10], $select, $join, '', $orderBy, $limit, $offset);
+                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquiry_vendor_shares.vendor_id' => $uId, 'ecomm_enquiry_vendor_shares.status' => 1, 'ecomm_enquires.status!=' => 14], $select, $join, '', $orderBy, $limit, $offset);
                             // $this->db = \Config\Database::connect();
                             // echo $this->db->getLastQuery();die;
                             if($rows){
@@ -4251,7 +4259,7 @@ class ApiController extends BaseController
 
                             $select             = 'ecomm_enquires.*';
                             $join[0]            = ['table' => 'ecomm_enquiry_vendor_shares', 'field' => 'enq_id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'id', 'type' => 'INNER'];
-                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquiry_vendor_shares.vendor_id' => $uId, 'ecomm_enquiry_vendor_shares.status' => 2, 'ecomm_enquires.status!=' => 10], $select, $join, '', $orderBy, $limit, $offset);
+                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquiry_vendor_shares.vendor_id' => $uId, 'ecomm_enquiry_vendor_shares.status' => 2, 'ecomm_enquires.status!=' => 14], $select, $join, '', $orderBy, $limit, $offset);
                             // $this->db = \Config\Database::connect();
                             // echo $this->db->getLastQuery();die;
                             if($rows){
@@ -4364,7 +4372,7 @@ class ApiController extends BaseController
 
                             $select             = 'ecomm_enquires.*';
                             $join[0]            = ['table' => 'ecomm_enquiry_vendor_shares', 'field' => 'enq_id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'id', 'type' => 'INNER'];
-                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquiry_vendor_shares.vendor_id' => $uId, 'ecomm_enquiry_vendor_shares.status' => 3, 'ecomm_enquires.status!=' => 10], $select, $join, '', $orderBy, $limit, $offset);
+                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquiry_vendor_shares.vendor_id' => $uId, 'ecomm_enquiry_vendor_shares.status' => 3, 'ecomm_enquires.status!=' => 14], $select, $join, '', $orderBy, $limit, $offset);
                             // $this->db = \Config\Database::connect();
                             // echo $this->db->getLastQuery();die;
                             if($rows){
