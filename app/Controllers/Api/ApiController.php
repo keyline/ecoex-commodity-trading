@@ -4489,7 +4489,7 @@ class ApiController extends BaseController
                                 }
                             }
 
-                            $this->db->query("UPDATE is_quotation_submit = 1, is_editable = 0 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+                            $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quotation_submit = 1, is_editable = 0 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
                             $apiStatus          = TRUE;
                             http_response_code(200);
                             $apiMessage         = 'Quotation Submitted Successfully !!!';
