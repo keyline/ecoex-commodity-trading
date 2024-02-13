@@ -237,6 +237,10 @@ class User extends BaseController {
                 $data['step7_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 7]);
                 $data['step8_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 8]);
                 $data['step9_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 9]);
+                $data['step10_count']               = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 10]);
+                $data['step11_count']               = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 11]);
+                $data['step12_count']               = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 12]);
+                $data['step13_count']               = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 13]);
                 $orderBy[0]                         =  ['field' => 'id', 'type' => 'DESC'];
                 $data['recent_enquiries']           = $this->common_model->find_data('ecomm_enquires', 'array', ['status!=' => 10], '', '', '', $orderBy, 10);
             } else {

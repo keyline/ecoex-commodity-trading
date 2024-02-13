@@ -154,25 +154,33 @@ $controller_route   = $moduleDetail['controller_route'];
                     <!-- inquiry flow tracking -->
                         <?php
                         if($row->status == 0){
-                            $enquiryStatus = 'Pending';
+                            $enquiryStatus = 'Request Submitted';
                         } elseif($row->status == 1){
-                            $enquiryStatus = 'Sent/Submitted';
+                            $enquiryStatus = 'Accept Request';
                         } elseif($row->status == 2){
-                            $enquiryStatus = 'Accepted/Rejected';
+                            $enquiryStatus = 'Vendor Allocated';
                         } elseif($row->status == 3){
-                            $enquiryStatus = 'Pickup';
+                            $enquiryStatus = 'Vendor Assigned';
                         } elseif($row->status == 4){
-                            $enquiryStatus = 'Vehicle Placed';
+                            $enquiryStatus = 'Pickup Scheduled';
                         } elseif($row->status == 5){
-                            $enquiryStatus = 'Vehicle Ready Despatch';
+                            $enquiryStatus = 'Vehicle Placed';
                         } elseif($row->status == 6){
-                            $enquiryStatus = 'Material Lifted';
+                            $enquiryStatus = 'Material Weighed';
                         } elseif($row->status == 7){
-                            $enquiryStatus = 'Invoiced';
+                            $enquiryStatus = 'Invoice from HO';
                         } elseif($row->status == 8){
-                            $enquiryStatus = 'Completed';
+                            $enquiryStatus = 'Invoice to Vendor';
                         } elseif($row->status == 9){
-                            $enquiryStatus = 'Rejected';
+                            $enquiryStatus = 'Payment received from Vendor';
+                        } elseif($row->status == 10){
+                            $enquiryStatus = 'Vehicle Dispatched';
+                        } elseif($row->status == 11){
+                            $enquiryStatus = 'Payment to HO';
+                        } elseif($row->status == 12){
+                            $enquiryStatus = 'Order Complete';
+                        } elseif($row->status == 13){
+                            $enquiryStatus = 'Reject Request';
                         }
                         ?>
                         <div class="progress-bar-wrapper" style="margin-bottom: 10px;"></div>
@@ -679,15 +687,20 @@ $controller_route   = $moduleDetail['controller_route'];
       //we can set animation delay as following in ms (default 1000)
       ProgressBar.singleStepAnimation = 700;
       ProgressBar.init(
-        [   'Pending',
-            'Sent/Submitted',
-            'Accepted/Rejected',
-            'Pickup',
+        [   'Request Submitted',
+            'Accept Request',
+            'Vendor Allocated',
+            'Vendor Assigned',
+            'Pickup Scheduled',
             'Vehicle Placed',
-            'Vehicle Ready Despatch',
-            'Material Lifted',
-            'Invoiced',
-            'Completed'
+            'Material Weighed',
+            'Invoice from HO',
+            'Invoice to Vendor',
+            'Payment received from Vendor',
+            'Vehicle Dispatched',
+            'Payment to HO',
+            'Order Complete',
+            'Reject Request'
         ],
         '<?=$enquiryStatus?>',
         'progress-bar-wrapper' // created this optional parameter for container name (otherwise default container created)
@@ -698,8 +711,8 @@ $controller_route   = $moduleDetail['controller_route'];
       //we can set animation delay as following in ms (default 1000)
       ProgressBar.singleStepAnimation = 700;
       ProgressBar.init(
-        [   'Pending',
-            'Rejected'
+        [   'Request Submitted',
+            'Reject Request'
         ],
         '<?=$enquiryStatus?>',
         'progress-bar-wrapper' // created this optional parameter for container name (otherwise default container created)

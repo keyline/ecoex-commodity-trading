@@ -249,34 +249,46 @@ $userType           = $session->user_type;
                                             <td>
                                                 <?php
                                                 if($recent_enquiry->status == 0){
-                                                    $enquiryStatus  = 'Pending';
+                                                    $enquiryStatus  = 'Request Submitted';
                                                     $bgcolor        =   '#4154f1';
                                                 } elseif($recent_enquiry->status == 1){
-                                                    $enquiryStatus  = 'Sent/Submitted';
+                                                    $enquiryStatus  = 'Accept Request';
                                                     $bgcolor        =   '#4154f1';
                                                 } elseif($recent_enquiry->status == 2){
-                                                    $enquiryStatus  = 'Accepted/Rejected';
+                                                    $enquiryStatus  = 'Vendor Allocated';
                                                     $bgcolor        =   '#4154f1';
                                                 } elseif($recent_enquiry->status == 3){
-                                                    $enquiryStatus  = 'Pickup';
+                                                    $enquiryStatus  = 'Vendor Assigned';
                                                     $bgcolor        =   '#4154f1';
                                                 } elseif($recent_enquiry->status == 4){
-                                                    $enquiryStatus  = 'Vehicle Placed';
+                                                    $enquiryStatus  = 'Pickup Scheduled';
                                                     $bgcolor        =   '#4154f1';
                                                 } elseif($recent_enquiry->status == 5){
-                                                    $enquiryStatus  = 'Vehicle Ready Despatch';
+                                                    $enquiryStatus  = 'Vehicle Placed';
                                                     $bgcolor        =   '#4154f1';
                                                 } elseif($recent_enquiry->status == 6){
-                                                    $enquiryStatus  = 'Material Lifted';
+                                                    $enquiryStatus  = 'Material Weighed';
                                                     $bgcolor        =   '#4154f1';
                                                 } elseif($recent_enquiry->status == 7){
-                                                    $enquiryStatus  = 'Invoiced';
+                                                    $enquiryStatus  = 'Invoice from HO';
                                                     $bgcolor        =   '#4154f1';
                                                 } elseif($recent_enquiry->status == 8){
-                                                    $enquiryStatus  = 'Completed';
+                                                    $enquiryStatus  = 'Invoice to Vendor';
                                                     $bgcolor        =   '#4154f1';
                                                 } elseif($recent_enquiry->status == 9){
-                                                    $enquiryStatus  = 'Rejected';
+                                                    $enquiryStatus  = 'Payment received from Vendor';
+                                                    $bgcolor        =   '#ff0000';
+                                                } elseif($recent_enquiry->status == 10){
+                                                    $enquiryStatus  = 'Vehicle Dispatched';
+                                                    $bgcolor        =   '#ff0000';
+                                                } elseif($recent_enquiry->status == 11){
+                                                    $enquiryStatus  = 'Payment to HO';
+                                                    $bgcolor        =   '#ff0000';
+                                                } elseif($recent_enquiry->status == 12){
+                                                    $enquiryStatus  = 'Order Complete';
+                                                    $bgcolor        =   '#ff0000';
+                                                } elseif($recent_enquiry->status == 13){
+                                                    $enquiryStatus  = 'Reject Request';
                                                     $bgcolor        =   '#ff0000';
                                                 } 
                                                 ?>
@@ -342,43 +354,59 @@ $userType           = $session->user_type;
                               },
                               data: [{
                                   value: <?=$step0_count?>,
-                                  name: 'Pending'
+                                  name: 'Request Submitted'
                                 },
                                 {
                                   value: <?=$step1_count?>,
-                                  name: 'Sent/Submitted'
+                                  name: 'Accept Request'
                                 },
                                 {
                                   value: <?=$step2_count?>,
-                                  name: 'Accepted/Rejected'
+                                  name: 'Vendor Allocated'
                                 },
                                 {
                                   value: <?=$step3_count?>,
-                                  name: 'Pickup'
+                                  name: 'Vendor Assigned'
                                 },
                                 {
                                   value: <?=$step4_count?>,
-                                  name: 'Vehicle Placed'
+                                  name: 'Pickup Scheduled'
                                 },
                                 {
                                   value: <?=$step5_count?>,
-                                  name: 'Vehicle Ready Despatch'
+                                  name: 'Vehicle Placed'
                                 },
                                 {
                                   value: <?=$step6_count?>,
-                                  name: 'Material Lifted'
+                                  name: 'Material Weighed'
                                 },
                                 {
                                   value: <?=$step7_count?>,
-                                  name: 'Invoiced'
+                                  name: 'Invoice from HO'
                                 },
                                 {
                                   value: <?=$step8_count?>,
-                                  name: 'Completed'
+                                  name: 'Invoice to Vendor'
                                 },
                                 {
                                   value: <?=$step9_count?>,
-                                  name: 'Rejected'
+                                  name: 'Payment received from Vendor'
+                                },
+                                {
+                                  value: <?=$step10_count?>,
+                                  name: 'Vehicle Dispatched'
+                                },
+                                {
+                                  value: <?=$step11_count?>,
+                                  name: 'Payment to HO'
+                                },
+                                {
+                                  value: <?=$step12_count?>,
+                                  name: 'Order Complete'
+                                },
+                                {
+                                  value: <?=$step13_count?>,
+                                  name: 'Reject Request'
                                 }
                               ]
                             }]
