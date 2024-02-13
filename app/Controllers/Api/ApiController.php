@@ -2287,10 +2287,10 @@ class ApiController extends BaseController
                     if($getUser){
                         $memberType         = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
                         $step0_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId]);
-                        $step1_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 1]);
-                        $step2_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status>=' => 0, 'status<=' => 7]);
-                        $step3_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 9]);
-                        $step4_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 8]);
+                        $step1_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 0]);
+                        $step2_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status>=' => 0, 'status<=' => 11]);
+                        $step3_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 13]);
+                        $step4_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 12]);
                         $getCompany         = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $getUser->parent_id]);
                         $apiResponse        = [
                             'plant_id'          => $getUser->id,
@@ -2447,7 +2447,7 @@ class ApiController extends BaseController
                             } else {
                                 $offset = (($limit * $page_no) - $limit); // ((15 * 3) - 15)
                             }
-                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['plant_id' => $uId, 'status<' => 8], '', '', '', $orderBy, $limit, $offset);
+                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['plant_id' => $uId, 'status<' => 11], '', '', '', $orderBy, $limit, $offset);
                             // $this->db = \Config\Database::connect();
                             // echo $this->db->getLastQuery();die;
                             if($rows){
@@ -2456,25 +2456,33 @@ class ApiController extends BaseController
                                     $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
 
                                     if($row->status == 0){
-                                        $enquiryStatus = 'Pending';
+                                        $enquiryStatus = 'Request Submitted';
                                     } elseif($row->status == 1){
-                                        $enquiryStatus = 'Sent/Submitted';
+                                        $enquiryStatus = 'Accept Request';
                                     } elseif($row->status == 2){
-                                        $enquiryStatus = 'Accepted/Rejected';
+                                        $enquiryStatus = 'Vendor Allocated';
                                     } elseif($row->status == 3){
-                                        $enquiryStatus = 'Pickup';
+                                        $enquiryStatus = 'Vendor Assigned';
                                     } elseif($row->status == 4){
-                                        $enquiryStatus = 'Vehicle Placed';
+                                        $enquiryStatus = 'Pickup Scheduled';
                                     } elseif($row->status == 5){
-                                        $enquiryStatus = 'Vehicle Ready Despatch';
+                                        $enquiryStatus = 'Vehicle Placed';
                                     } elseif($row->status == 6){
-                                        $enquiryStatus = 'Material Lifted';
+                                        $enquiryStatus = 'Material Weighed';
                                     } elseif($row->status == 7){
-                                        $enquiryStatus = 'Invoiced';
+                                        $enquiryStatus = 'Invoice from HO';
                                     } elseif($row->status == 8){
-                                        $enquiryStatus = 'Completed';
+                                        $enquiryStatus = 'Invoice to Vendor';
                                     } elseif($row->status == 9){
-                                        $enquiryStatus = 'Rejected';
+                                        $enquiryStatus = 'Payment received from Vendor';
+                                    } elseif($row->status == 10){
+                                        $enquiryStatus = 'Vehicle Dispatched';
+                                    } elseif($row->status == 11){
+                                        $enquiryStatus = 'Payment to HO';
+                                    } elseif($row->status == 12){
+                                        $enquiryStatus = 'Order Complete';
+                                    } elseif($row->status == 13){
+                                        $enquiryStatus = 'Reject Request';
                                     }
 
                                     $itemArray = [];
@@ -2787,7 +2795,7 @@ class ApiController extends BaseController
                         if($getUser){
                             $enquiry               = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
                             if($enquiry){
-                                $this->common_model->save_data('ecomm_enquires', ['status' => 10], $enq_id, 'id');
+                                $this->common_model->save_data('ecomm_enquires', ['status' => 14], $enq_id, 'id');
                                 $apiStatus          = TRUE;
                                 http_response_code(200);
                                 $apiMessage         = 'Enquiry Deleted Successfully !!!';
@@ -2892,27 +2900,35 @@ class ApiController extends BaseController
                                             'approve_date'      => (($enquiryProduct->approved_date != '')?$enquiryProduct->approved_date:''),
                                         ];
                                     }
-                                }                            
+                                }
                                 if($enquiry->status == 0){
-                                    $enquiryStatus = 'Pending';
+                                    $enquiryStatus = 'Request Submitted';
                                 } elseif($enquiry->status == 1){
-                                    $enquiryStatus = 'Sent/Submitted';
+                                    $enquiryStatus = 'Accept Request';
                                 } elseif($enquiry->status == 2){
-                                    $enquiryStatus = 'Accepted/Rejected';
+                                    $enquiryStatus = 'Vendor Allocated';
                                 } elseif($enquiry->status == 3){
-                                    $enquiryStatus = 'Pickup';
+                                    $enquiryStatus = 'Vendor Assigned';
                                 } elseif($enquiry->status == 4){
-                                    $enquiryStatus = 'Vehicle Placed';
+                                    $enquiryStatus = 'Pickup Scheduled';
                                 } elseif($enquiry->status == 5){
-                                    $enquiryStatus = 'Vehicle Ready Despatch';
+                                    $enquiryStatus = 'Vehicle Placed';
                                 } elseif($enquiry->status == 6){
-                                    $enquiryStatus = 'Material Lifted';
+                                    $enquiryStatus = 'Material Weighed';
                                 } elseif($enquiry->status == 7){
-                                    $enquiryStatus = 'Invoiced';
+                                    $enquiryStatus = 'Invoice from HO';
                                 } elseif($enquiry->status == 8){
-                                    $enquiryStatus = 'Completed';
+                                    $enquiryStatus = 'Invoice to Vendor';
                                 } elseif($enquiry->status == 9){
-                                    $enquiryStatus = 'Rejected';
+                                    $enquiryStatus = 'Payment received from Vendor';
+                                } elseif($enquiry->status == 10){
+                                    $enquiryStatus = 'Vehicle Dispatched';
+                                } elseif($enquiry->status == 11){
+                                    $enquiryStatus = 'Payment to HO';
+                                } elseif($enquiry->status == 12){
+                                    $enquiryStatus = 'Order Complete';
+                                } elseif($enquiry->status == 13){
+                                    $enquiryStatus = 'Reject Request';
                                 }
                                 $getPlant = $this->common_model->find_data('ecomm_users', 'row', ['id' => $enquiry->plant_id], 'company_name,full_address,district,state,pincode,location');
                                 
@@ -3338,7 +3354,7 @@ class ApiController extends BaseController
                             } else {
                                 $offset = (($limit * $page_no) - $limit); // ((15 * 3) - 15)
                             }
-                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['plant_id' => $uId, 'status' => 8], '', '', '', $orderBy, $limit, $offset);
+                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['plant_id' => $uId, 'status' => 12], '', '', '', $orderBy, $limit, $offset);
                             // $this->db = \Config\Database::connect();
                             // echo $this->db->getLastQuery();die;
                             if($rows){
@@ -3346,25 +3362,33 @@ class ApiController extends BaseController
                                     $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
 
                                     if($row->status == 0){
-                                        $enquiryStatus = 'Pending';
+                                        $enquiryStatus = 'Request Submitted';
                                     } elseif($row->status == 1){
-                                        $enquiryStatus = 'Sent/Submitted';
+                                        $enquiryStatus = 'Accept Request';
                                     } elseif($row->status == 2){
-                                        $enquiryStatus = 'Accepted/Rejected';
+                                        $enquiryStatus = 'Vendor Allocated';
                                     } elseif($row->status == 3){
-                                        $enquiryStatus = 'Pickup';
+                                        $enquiryStatus = 'Vendor Assigned';
                                     } elseif($row->status == 4){
-                                        $enquiryStatus = 'Vehicle Placed';
+                                        $enquiryStatus = 'Pickup Scheduled';
                                     } elseif($row->status == 5){
-                                        $enquiryStatus = 'Vehicle Ready Despatch';
+                                        $enquiryStatus = 'Vehicle Placed';
                                     } elseif($row->status == 6){
-                                        $enquiryStatus = 'Material Lifted';
+                                        $enquiryStatus = 'Material Weighed';
                                     } elseif($row->status == 7){
-                                        $enquiryStatus = 'Invoiced';
+                                        $enquiryStatus = 'Invoice from HO';
                                     } elseif($row->status == 8){
-                                        $enquiryStatus = 'Completed';
+                                        $enquiryStatus = 'Invoice to Vendor';
                                     } elseif($row->status == 9){
-                                        $enquiryStatus = 'Rejected';
+                                        $enquiryStatus = 'Payment received from Vendor';
+                                    } elseif($row->status == 10){
+                                        $enquiryStatus = 'Vehicle Dispatched';
+                                    } elseif($row->status == 11){
+                                        $enquiryStatus = 'Payment to HO';
+                                    } elseif($row->status == 12){
+                                        $enquiryStatus = 'Order Complete';
+                                    } elseif($row->status == 13){
+                                        $enquiryStatus = 'Reject Request';
                                     }
 
                                     $itemArray = [];
@@ -3468,7 +3492,7 @@ class ApiController extends BaseController
                             } else {
                                 $offset = (($limit * $page_no) - $limit); // ((15 * 3) - 15)
                             }
-                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['plant_id' => $uId, 'status' => 9], '', '', '', $orderBy, $limit, $offset);
+                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['plant_id' => $uId, 'status' => 13], '', '', '', $orderBy, $limit, $offset);
                             // $this->db = \Config\Database::connect();
                             // echo $this->db->getLastQuery();die;
                             if($rows){
@@ -3476,25 +3500,33 @@ class ApiController extends BaseController
                                     $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
 
                                     if($row->status == 0){
-                                        $enquiryStatus = 'Pending';
+                                        $enquiryStatus = 'Request Submitted';
                                     } elseif($row->status == 1){
-                                        $enquiryStatus = 'Sent/Submitted';
+                                        $enquiryStatus = 'Accept Request';
                                     } elseif($row->status == 2){
-                                        $enquiryStatus = 'Accepted/Rejected';
+                                        $enquiryStatus = 'Vendor Allocated';
                                     } elseif($row->status == 3){
-                                        $enquiryStatus = 'Pickup';
+                                        $enquiryStatus = 'Vendor Assigned';
                                     } elseif($row->status == 4){
-                                        $enquiryStatus = 'Vehicle Placed';
+                                        $enquiryStatus = 'Pickup Scheduled';
                                     } elseif($row->status == 5){
-                                        $enquiryStatus = 'Vehicle Ready Despatch';
+                                        $enquiryStatus = 'Vehicle Placed';
                                     } elseif($row->status == 6){
-                                        $enquiryStatus = 'Material Lifted';
+                                        $enquiryStatus = 'Material Weighed';
                                     } elseif($row->status == 7){
-                                        $enquiryStatus = 'Invoiced';
+                                        $enquiryStatus = 'Invoice from HO';
                                     } elseif($row->status == 8){
-                                        $enquiryStatus = 'Completed';
+                                        $enquiryStatus = 'Invoice to Vendor';
                                     } elseif($row->status == 9){
-                                        $enquiryStatus = 'Rejected';
+                                        $enquiryStatus = 'Payment received from Vendor';
+                                    } elseif($row->status == 10){
+                                        $enquiryStatus = 'Vehicle Dispatched';
+                                    } elseif($row->status == 11){
+                                        $enquiryStatus = 'Payment to HO';
+                                    } elseif($row->status == 12){
+                                        $enquiryStatus = 'Order Complete';
+                                    } elseif($row->status == 13){
+                                        $enquiryStatus = 'Reject Request';
                                     }
 
                                     $itemArray = [];
