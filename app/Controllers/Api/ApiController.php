@@ -2935,7 +2935,7 @@ class ApiController extends BaseController
                                 $apiResponse = [
                                     'enq_id'                => $enquiry->id,
                                     'enquiry_no'            => $enquiry->enquiry_no,
-                                    'total_step'            => 9,
+                                    'total_step'            => 14,
                                     'current_step_no'       => $enquiry->status,
                                     'current_step_name'     => $enquiryStatus,
                                     'accepted_date'         => $enquiry->accepted_date,
