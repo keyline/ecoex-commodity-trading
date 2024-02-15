@@ -399,7 +399,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 </td>
                                                 <td>
                                                     <span class="fw-bold"><?=$productName?></span><br>
-                                                    <a data-bs-toggle="collapse" href="#viewQuotations<?=$enquiryProduct->id?>" role="button" aria-expanded="false" aria-controls="viewQuotations<?=$enquiryProduct->id?>" class="badge bg-primary"><i class="fa fa-list-alt"></i> Click To View The Quotations</a>
+                                                    <!-- <a data-bs-toggle="collapse" href="#viewQuotations<?=$enquiryProduct->id?>" role="button" aria-expanded="false" aria-controls="viewQuotations<?=$enquiryProduct->id?>" class="badge bg-primary"><i class="fa fa-list-alt"></i> Click To View The Quotations</a> -->
 
                                                     <!-- quotaion list -->
                                                         
@@ -460,7 +460,7 @@ $controller_route   = $moduleDetail['controller_route'];
                     $productHSNCode = (($getItem)?$getItem->hsn:'');
                 }
             ?>
-                <div class="collapse" id="viewQuotations<?=$enquiryProduct->id?>">
+                <!-- <div class="collapse" id="viewQuotations<?=$enquiryProduct->id?>">
                     <div class="card">
                         <div class="card-header bg-success text-light">
                             <h5><?=$productName?> Quotations From Invited Accepted Vendors</h5>
@@ -508,7 +508,7 @@ $controller_route   = $moduleDetail['controller_route'];
                             </table>
                         </div>
                     </div>
-                </div>
+                </div> -->
             <?php } }?>
             <!-- quotaion list -->
         </div>
