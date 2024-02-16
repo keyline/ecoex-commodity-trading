@@ -37,27 +37,37 @@ class EnquiryRequestController extends BaseController {
         $status                     = decoded($status);
         $data['current_status']     = $status;
         $data['moduleDetail']       = $this->data;
+
         if($status == 0){
-            $stepName = 'Request Pending';
+            $stepName = 'Request Submitted';
         } elseif($status == 1){
-            $stepName = 'Sent/Submitted';
+            $stepName = 'Accept Request';
         } elseif($status == 2){
-            $stepName = 'Accepted/Rejected';
+            $stepName = 'Vendor Allocated';
         } elseif($status == 3){
-            $stepName = 'Pickup';
+            $stepName = 'Vendor Assigned';
         } elseif($status == 4){
-            $stepName = 'Vehicle Placed';
+            $stepName = 'Pickup Scheduled';
         } elseif($status == 5){
-            $stepName = 'Vehicle Ready Despatch';
+            $stepName = 'Vehicle Placed';
         } elseif($status == 6){
-            $stepName = 'Material Lifted';
+            $stepName = 'Material Weighed';
         } elseif($status == 7){
-            $stepName = 'Invoiced';
+            $stepName = 'Invoice from HO';
         } elseif($status == 8){
-            $stepName = 'Completed';
+            $stepName = 'Invoice to Vendor';
         } elseif($status == 9){
-            $stepName = 'Rejected';
+            $stepName = 'Payment received from Vendor';
+        } elseif($status == 10){
+            $stepName = 'Vehicle Dispatched';
+        } elseif($status == 11){
+            $stepName = 'Payment to HO';
+        } elseif($status == 12){
+            $stepName = 'Order Complete';
+        } elseif($status == 13){
+            $stepName = 'Reject Request';
         }
+
         $title                      = 'Manage '.$this->data['title'] . ' : '.$stepName;
         $page_name                  = 'enquiry-request/list';
 
