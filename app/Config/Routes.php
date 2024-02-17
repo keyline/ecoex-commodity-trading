@@ -175,6 +175,7 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 			$routes->match(['get', 'post'], "enquiry-requests/reject-request/(:any)", "EnquiryRequestController::reject_request/$1");
 			$routes->match(['post'], "get-reject-modal", "EnquiryRequestController::getRejectModal");
 			$routes->match(['post'], "get-image-modal", "EnquiryRequestController::getImageModal");
+			$routes->match(['get', 'post'], "enquiry-requests/quotation-access/(:any)/(:any)", "EnquiryRequestController::quotation_access/$1/$2");
 		// enquiry requests
 		// notifications
 			$routes->match(['get'], "notifications/list", "NotificationController::list");

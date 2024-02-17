@@ -92,6 +92,7 @@ class EnquiryRequestController extends BaseController {
             exit;
         }
         $enq_id                     = decoded($enq_id);
+        $data['enq_id']             = $enq_id;
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
         $data['moduleDetail']       = $this->data;
         $data['enquiryStatus']      = (($data['row'])?$data['row']->status:1);
@@ -110,7 +111,9 @@ class EnquiryRequestController extends BaseController {
         $data['assignItems']        = $this->data['model']->find_data('ecomm_company_items', 'array', $conditions, '', '', '', $order_by);
 
         $order_by[0]                = array('field' => 'company_name', 'type' => 'asc');
-        $data['avlVendors']            = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1], 'id,company_name', '', '', $order_by);
+        $data['avlVendors']         = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1], 'id,company_name', '', '', $order_by);
+
+        $data['sharedVendors']      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'array', ['enq_id' => $enq_id]);
 
         if($this->request->getMethod() == 'post') {
             if($this->request->getPost('mode') == 'share_vendor'){
@@ -220,6 +223,31 @@ class EnquiryRequestController extends BaseController {
         $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
         $this->session->setFlashdata('success_message', $this->data['title'].' '.$msg.' successfully');
         return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+    }
+    public function quotation_access($enq_id, $vendor_id)
+    {
+        $enq_id                     = decoded($enq_id);
+        $vendor_id                  = decoded($vendor_id);
+        $data['row']                = $this->data['model']->find_data('ecomm_enquiry_vendor_shares', 'row', ['enq_id' => $enq_id, 'vendor_id' => $vendor_id]);
+        if($data['row']){
+            $id = $data['row']->id;
+            if($data['row']->is_editable){
+                $is_editable  = 0;
+                $msg        = 'Access Closed';
+            } else {
+                $is_editable  = 1;
+                $msg        = 'Access Opened';
+            }
+            $postData = array(
+                                'is_editable' => $is_editable
+                            );
+            $updateData = $this->common_model->save_data('ecomm_enquiry_vendor_shares', $postData, $id, 'id');
+            $this->session->setFlashdata('success_message', 'Vendor Quotation Edit '.$msg.' Successfully !!!');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/view-detail/'.encoded($enq_id));
+        } else {
+            $this->session->setFlashdata('success_message', 'Enquiry Vendor Not Found !!!');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/view-detail/'.encoded($enq_id));
+        }
     }
     public function accept_request($id)
     {
