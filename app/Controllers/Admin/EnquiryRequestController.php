@@ -284,7 +284,6 @@ class EnquiryRequestController extends BaseController {
                 $generalSetting             = $this->common_model->find_data('general_settings', 'row');
                 $subject                    = $generalSetting->site_name.' :: Enquiry Quotation Request Edit Access ('.(($getEnquiry)?$getEnquiry->enquiry_no:'').') ';
                 $message                    = view('email-templates/enquiry-request-for-quotation-edit-access',$fields);
-                echo $message;die;
                 $this->sendMail($getVendor->email, $subject, $message);
             /* send mail */
 
