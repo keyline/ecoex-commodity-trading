@@ -508,12 +508,12 @@
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered">
                                 <tr>
-                                    <th rowspan="2" class="text-center" style="vertical-align: middle;">Items</th>
+                                    <th rowspan="2" class="text-center" style="vertical-align: middle;width: 10%;background: #a8e7ae;">Items</th>
                                     <?php
                                     if($sharedVendors) { foreach($sharedVendors as $sharedVendor){
                                         $getVendor = $common_model->find_data('ecomm_users', 'row', ['id' => $sharedVendor->vendor_id], 'id,company_name');
                                     ?>
-                                        <th colspan="2" class="text-center">
+                                        <th colspan="2" class="text-center w-25">
                                             <span><?=(($getVendor)?$getVendor->company_name:'')?></span>
                                             <?php if($sharedVendor->is_editable){?>
                                                 <a href="<?=base_url('admin/enquiry-requests/quotation-access/'.encoded($enq_id).'/'.encoded($sharedVendor->vendor_id))?>" title="Access Close" onclick="return confirm('Do you want to access close of quotation submit for this vendor ?');"><i class="fas fa-unlock text-success"></i></a>

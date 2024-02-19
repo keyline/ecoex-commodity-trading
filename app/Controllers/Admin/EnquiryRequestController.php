@@ -227,6 +227,7 @@ class EnquiryRequestController extends BaseController {
     public function quotation_access($enq_id, $vendor_id)
     {
         $enq_id                     = decoded($enq_id);
+        $getEnquiry                 = $this->data['model']->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
         $vendor_id                  = decoded($vendor_id);
         $data['row']                = $this->data['model']->find_data('ecomm_enquiry_vendor_shares', 'row', ['enq_id' => $enq_id, 'vendor_id' => $vendor_id]);
         if($data['row']){
@@ -242,6 +243,51 @@ class EnquiryRequestController extends BaseController {
                                 'is_editable' => $is_editable
                             );
             $updateData = $this->common_model->save_data('ecomm_enquiry_vendor_shares', $postData, $id, 'id');
+
+            /* send push */
+                $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
+                if($getDeviceTokens){
+                    foreach($getDeviceTokens as $getDeviceToken){
+                        $fcm_token          = $getDeviceToken->fcm_token;
+                        $messageData = [
+                            'title'     => 'Enquiry Request Quotation Edit '.$msg,
+                            'body'      => 'Enquiry Request ('.(($getEnquiry)?$getEnquiry->enquiry_no:"").') Quotation Edit '.$msg.' By EcoEx',
+                            'badge'     => 1,
+                            'sound'     => 'Default',
+                            'data'      => [],
+                        ];
+                        $this->pushNotification($fcm_token, $messageData);
+                        $users[]    = $getEnquiry->plant_id;
+                        $pushData   = [
+                            'source'            => 'FROM APP',
+                            'title'             => 'Enquiry Request Quotation Edit '.$msg,
+                            'description'       => 'Enquiry Request ('.(($getEnquiry)?$getEnquiry->enquiry_no:"").') Quotation Edit '.$msg.' By EcoEx',
+                            'user_type'         => 'PLANT',
+                            'users'             => json_encode($users),
+                            'is_send'           => 1,
+                            'send_timestamp'    => date('Y-m-d H:i:s'),
+                            'status'            => 1,
+                        ];
+                        $this->common_model->save_data('notifications', $pushData, '', 'id');
+                    }
+                }
+            /* send push */
+            /* send mail */
+                $fields = [
+                    'enq_id'        => $enq_id,
+                    'company_id'    => (($getEnquiry)?$getEnquiry->company_id:0),
+                    'plant_id'      => (($getEnquiry)?$getEnquiry->plant_id:0),
+                    'vendor_id'     => $vendor_id,
+                ];
+                $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendor_id]);
+                $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+                $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                $subject                    = $generalSetting->site_name.' :: Enquiry Quotation Request Edit Access ('.(($getEnquiry)?$getEnquiry->enquiry_no:'').') ';
+                $message                    = view('email-templates/enquiry-request-for-quotation-edit-access',$fields);
+                echo $message;die;
+                $this->sendMail($getVendor->email, $subject, $message);
+            /* send mail */
+
             $this->session->setFlashdata('success_message', 'Vendor Quotation Edit '.$msg.' Successfully !!!');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/view-detail/'.encoded($enq_id));
         } else {
@@ -349,7 +395,7 @@ class EnquiryRequestController extends BaseController {
                 }
             /* send push */
             $postData = array(
-                                'status'                    => 9,
+                                'status'                    => 13,
                                 'enquiry_remarks'           => $this->request->getPost('enquiry_remarks'),
                                 'accepted_date'             => date('Y-m-d H:i:s')
                             );
@@ -359,7 +405,7 @@ class EnquiryRequestController extends BaseController {
                 'enq_id'                    => $id,
                 'remarks'                   => $this->request->getPost('enquiry_remarks'),
                 'rejected_timestamp'        => date('Y-m-d H:i:s'),
-                'status'                    => 9,
+                'status'                    => 13,
             );
             $updateData = $this->common_model->save_data('ecomm_rejected_requests',$postData2,'',$this->data['primary_key']);
 
