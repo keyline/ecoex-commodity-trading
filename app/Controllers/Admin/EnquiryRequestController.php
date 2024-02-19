@@ -278,6 +278,7 @@ class EnquiryRequestController extends BaseController {
                     'company_id'    => (($getEnquiry)?$getEnquiry->company_id:0),
                     'plant_id'      => (($getEnquiry)?$getEnquiry->plant_id:0),
                     'vendor_id'     => $vendor_id,
+                    'msg'           => $msg,
                 ];
                 $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendor_id]);
                 $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);

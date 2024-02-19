@@ -21,7 +21,7 @@ $getVendor                  = $this->common_model->find_data('ecomm_users', 'row
           </div>
           <div>
             <h3 style="text-align: center; font-size: 25px; color: #5c5b5b; font-family: sans-serif;">Hi, Welcome <?=(($plant)?$getVendor->company_name:'')?>!</h3>
-            <h4 style="text-align: center; font-size: 15px; color: green; font-family: sans-serif;">You Have Successfully Invited For Quotation Submission</h4>
+            <h4 style="text-align: center; font-size: 15px; color: green; font-family: sans-serif;">Enquiry Quotation Edit <?=$msg?></h4>
             <h5 style="text-align: center; font-size: 15px; color: green; font-family: sans-serif;">Please Check App For This</h5>
             <table style="width: 100%;  border-spacing: 2px;">
               <tbody>
