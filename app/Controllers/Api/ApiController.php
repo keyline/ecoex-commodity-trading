@@ -4507,7 +4507,7 @@ class ApiController extends BaseController
                                         'item_name'     => $rqlt['product_name'],
                                         'item_hsn'      => $rqlt['hsn'],
                                         'quote_price'   => $rqlt['quote_price'],
-                                        'qty'           => $rqlt['qty'],
+                                        'qty'           => 0,
                                         'unit_id'       => $rqlt['unit'],
                                         'unit_name'     => $rqlt['unit_name'],
                                     ];
@@ -4526,7 +4526,7 @@ class ApiController extends BaseController
                                         'item_name'     => $rqlt['product_name'],
                                         'item_hsn'      => $rqlt['hsn'],
                                         'quote_price'   => $rqlt['quote_price'],
-                                        'qty'           => $rqlt['qty'],
+                                        'qty'           => 0,
                                         'unit_id'       => $rqlt['unit'],
                                         'unit_name'     => $rqlt['unit_name'],
                                     ];
