@@ -4195,7 +4195,7 @@ class ApiController extends BaseController
                                     /* quotation submitted count */
                                         $submittedDates         = [];
                                         $groupBy[0]             = 'enq_id,vendor_id,item_id';
-                                        $checkQuotationSubmits  = $this->common_model->find_data('ecomm_enquiry_vendor_quotation_logs', 'array', ['enq_id' => $enquiry->id, 'vendor_id' => $uId], 'created_at', '', $groupBy);
+                                        $checkQuotationSubmits  = $this->common_model->find_data('ecomm_enquiry_vendor_quotation_logs', 'array', ['enq_id' => $row->id, 'vendor_id' => $uId], 'created_at', '', $groupBy);
                                         if($checkQuotationSubmits){
                                             foreach($checkQuotationSubmits as $checkQuotationSubmit){
                                                 $submittedDates[]         = date_format(date_create($checkQuotationSubmit->created_at), "M d, Y h:i A");
