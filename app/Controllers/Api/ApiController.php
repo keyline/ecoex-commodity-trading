@@ -4486,6 +4486,20 @@ class ApiController extends BaseController
                                         'unit_name'     => $rqlt['unit_name'],
                                     ];
                                     $this->common_model->save_data('ecomm_enquiry_vendor_quotations', $fields, '', 'id');
+
+                                    // $fields = [
+                                    //     'enq_id'        => $enq_id,
+                                    //     'enq_item_id'   => $rqlt['enq_product_id'],
+                                    //     'vendor_id'     => $uId,
+                                    //     'item_id'       => $rqlt['product_id'],
+                                    //     'item_name'     => $rqlt['product_name'],
+                                    //     'item_hsn'      => $rqlt['hsn'],
+                                    //     'quote_price'   => $rqlt['quote_price'],
+                                    //     'qty'           => $rqlt['qty'],
+                                    //     'unit_id'       => $rqlt['unit'],
+                                    //     'unit_name'     => $rqlt['unit_name'],
+                                    // ];
+                                    // $this->common_model->save_data('ecomm_enquiry_vendor_quotation_logs', $fields, '', 'id');
                                 }
                             }
 

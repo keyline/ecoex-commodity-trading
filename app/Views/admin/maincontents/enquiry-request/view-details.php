@@ -528,8 +528,8 @@
                                     if($sharedVendors) { foreach($sharedVendors as $sharedVendor){
                                         $getVendor = $common_model->find_data('ecomm_users', 'row', ['id' => $sharedVendor->vendor_id], 'id,company_name');
                                     ?>
-                                        <th style="text-align: center;background-color: darkgrey;">Price</th>
-                                        <th style="text-align: center;background-color: darkgrey;">Qty</th>
+                                        <th colspan="2" style="text-align: center;background-color: darkgrey;">Unit Price</th>
+                                        <!-- <th style="text-align: center;background-color: darkgrey;">Qty</th> -->
                                     <?php } }?>
                                 </tr>
 
@@ -547,20 +547,20 @@
                                             $getVendor      = $common_model->find_data('ecomm_users', 'row', ['id' => $sharedVendor->vendor_id], 'id,company_name');
                                             $getQuotePrice  = $common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => $enq_id, 'vendor_id' => $sharedVendor->vendor_id, 'item_id' => $enquiryProduct->product_id, 'status' => 1], 'quote_price,qty,unit_name');
                                         ?>
-                                            <td style="text-align:center;">
+                                            <td style="text-align:center;" colspan="2">
                                                 <?php if($getQuotePrice){?>
-                                                    <span><i class="fa fa-inr"></i> <?=$getQuotePrice->quote_price?></span>
+                                                    <span><i class="fa fa-inr"></i> <?=$getQuotePrice->quote_price?> / <?=$getQuotePrice->unit_name?></span>
                                                 <?php } else {?>
                                                     <span class="text-danger">Not Quote Yet</span>
                                                 <?php }?>
                                             </td>
-                                            <td style="text-align:center;">
+                                            <!-- <td style="text-align:center;">
                                                 <?php if($getQuotePrice){?>
                                                     <span><?=$getQuotePrice->qty?> <?=$getQuotePrice->unit_name?></span>
                                                 <?php } else {?>
                                                     <span class="text-danger">NA</span>
                                                 <?php }?>
-                                            </td>
+                                            </td> -->
                                         <?php } }?>
                                     </tr>
                                     <tr>
