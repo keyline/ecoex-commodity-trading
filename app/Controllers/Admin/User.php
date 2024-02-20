@@ -224,7 +224,7 @@ class User extends BaseController {
 
             if($userType == 'MA'){
                 $data['plant']                      = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'PLANT']);
-                $data['enquiry']                    = $this->common_model->find_data('ecomm_enquires', 'count', ['status!=' => 10]);
+                $data['enquiry']                    = $this->common_model->find_data('ecomm_enquires', 'count', ['status!=' => 14]);
                 $data['pendingItem']                = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['status' => 0]);
 
                 $data['step0_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 0]);
@@ -242,10 +242,10 @@ class User extends BaseController {
                 $data['step12_count']               = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 12]);
                 $data['step13_count']               = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 13]);
                 $orderBy[0]                         =  ['field' => 'id', 'type' => 'DESC'];
-                $data['recent_enquiries']           = $this->common_model->find_data('ecomm_enquires', 'array', ['status!=' => 10], '', '', '', $orderBy, 10);
+                $data['recent_enquiries']           = $this->common_model->find_data('ecomm_enquires', 'array', ['status!=' => 14], '', '', '', $orderBy, 10);
             } else {
                 $data['plant']                      = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'PLANT', 'parent_id' => $company_id]);
-                $data['enquiry']                    = $this->common_model->find_data('ecomm_enquires', 'count', ['status!=' => 10, 'company_id' => $company_id]);
+                $data['enquiry']                    = $this->common_model->find_data('ecomm_enquires', 'count', ['status!=' => 14, 'company_id' => $company_id]);
                 $data['pendingItem']                = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['status' => 0, 'company_id' => $company_id]);
 
                 $data['step0_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 0, 'company_id' => $company_id]);
@@ -258,8 +258,12 @@ class User extends BaseController {
                 $data['step7_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 7, 'company_id' => $company_id]);
                 $data['step8_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 8, 'company_id' => $company_id]);
                 $data['step9_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 9, 'company_id' => $company_id]);
+                $data['step10_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 10, 'company_id' => $company_id]);
+                $data['step11_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 11, 'company_id' => $company_id]);
+                $data['step12_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 12, 'company_id' => $company_id]);
+                $data['step13_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 13, 'company_id' => $company_id]);
                 $orderBy[0]                         =  ['field' => 'id', 'type' => 'DESC'];
-                $data['recent_enquiries']           = $this->common_model->find_data('ecomm_enquires', 'array', ['status!=' => 10, 'company_id' => $company_id], '', '', '', $orderBy, 10);
+                $data['recent_enquiries']           = $this->common_model->find_data('ecomm_enquires', 'array', ['status!=' => 14, 'company_id' => $company_id], '', '', '', $orderBy, 10);
             }
             echo $this->layout_after_login($title,$page_name,$data);
         }
