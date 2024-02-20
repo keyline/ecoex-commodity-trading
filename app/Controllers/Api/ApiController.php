@@ -4040,6 +4040,17 @@ class ApiController extends BaseController
                                     $is_quotation_submit                = 0;
                                     $is_editable                        = 0;
                                 }
+
+                                /* quotation submitted count */
+                                    $submittedDates         = [];
+                                    $checkQuotationSubmits  = $this->common_model->find_data('ecomm_enquiry_vendor_quotation_logs', 'array', ['enq_id' => $enquiry->id, 'vendor_id' => $uId], 'created_at');
+                                    if($checkQuotationSubmits){
+                                        foreach($checkQuotationSubmits as $checkQuotationSubmit){
+                                            $submittedDates[]         = date_format(date_create($checkQuotationSubmit->created_at), "M d, Y h:i A");
+                                        }
+                                    }
+                                /* quotation submitted count */
+
                                 $apiResponse = [
                                     'enq_id'                => $enquiry->id,
                                     'enquiry_no'            => $enquiry->enquiry_no,
@@ -4068,6 +4079,8 @@ class ApiController extends BaseController
                                     'vendorQuotationAcceptRejectStatus' => $vendorQuotationAcceptRejectStatus,
                                     'is_quotation_submit'   => $is_quotation_submit,
                                     'is_editable'           => $is_editable,
+                                    'submitted_count'       => count($submittedDates),
+                                    'submitted_dates'       => $submittedDates,
                                     'requestList'           => $requestList,
                                 ];
 
@@ -4178,16 +4191,29 @@ class ApiController extends BaseController
                                     }
                                     $items = implode(", ", $itemArray);
 
+                                    /* quotation submitted count */
+                                        $submittedDates         = [];
+                                        $checkQuotationSubmits  = $this->common_model->find_data('ecomm_enquiry_vendor_quotation_logs', 'array', ['enq_id' => $row->id, 'vendor_id' => $uId], 'created_at');
+                                        if($checkQuotationSubmits){
+                                            foreach($checkQuotationSubmits as $checkQuotationSubmit){
+                                                $submittedDates[]         = date_format(date_create($checkQuotationSubmit->created_at), "M d, Y h:i A");
+                                            }
+                                        }
+                                    /* quotation submitted count */
+
                                     $apiResponse[] = [
-                                        'enq_id'        => $row->id,
-                                        'enquiry_no'    => $row->enquiry_no,
-                                        'company_name'  => (($getCompany)?$getCompany->company_name:''),
-                                        'plant_name'    => (($getPlant)?$getPlant->plant_name:''),
-                                        'status'        => 1,
-                                        'product_count' => $itemCount,
-                                        'created_at'    => date_format(date_create($row->created_at), "M d, Y h:i A"),
-                                        'updated_at'    => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
-                                        'items'        => $items,
+                                        'enq_id'                    => $row->id,
+                                        'enquiry_no'                => $row->enquiry_no,
+                                        'company_name'              => (($getCompany)?$getCompany->company_name:''),
+                                        'plant_name'                => (($getPlant)?$getPlant->plant_name:''),
+                                        'status'                    => 1,
+                                        'product_count'             => $itemCount,
+                                        'created_at'                => date_format(date_create($row->created_at), "M d, Y h:i A"),
+                                        'updated_at'                => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                        'items'                     => $items,
+                                        'submitted_count'           => count($submittedDates),
+                                        'submitted_dates'           => $submittedDates,
+                                        'items'                     => $items,
                                     ];
                                 }
                             }
@@ -4485,21 +4511,26 @@ class ApiController extends BaseController
                                         'unit_id'       => $rqlt['unit'],
                                         'unit_name'     => $rqlt['unit_name'],
                                     ];
-                                    $this->common_model->save_data('ecomm_enquiry_vendor_quotations', $fields, '', 'id');
+                                    $checkQuotationExist = $this->common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => $enq_id, 'item_id' => $rqlt['product_id'], 'vendor_id' => $uId]);
+                                    if($checkQuotationExist){
+                                        $this->common_model->save_data('ecomm_enquiry_vendor_quotations', $fields, $checkQuotationExist->id, 'id');
+                                    } else {
+                                        $this->common_model->save_data('ecomm_enquiry_vendor_quotations', $fields, '', 'id');
+                                    }
 
-                                    // $fields = [
-                                    //     'enq_id'        => $enq_id,
-                                    //     'enq_item_id'   => $rqlt['enq_product_id'],
-                                    //     'vendor_id'     => $uId,
-                                    //     'item_id'       => $rqlt['product_id'],
-                                    //     'item_name'     => $rqlt['product_name'],
-                                    //     'item_hsn'      => $rqlt['hsn'],
-                                    //     'quote_price'   => $rqlt['quote_price'],
-                                    //     'qty'           => $rqlt['qty'],
-                                    //     'unit_id'       => $rqlt['unit'],
-                                    //     'unit_name'     => $rqlt['unit_name'],
-                                    // ];
-                                    // $this->common_model->save_data('ecomm_enquiry_vendor_quotation_logs', $fields, '', 'id');
+                                    $fields = [
+                                        'enq_id'        => $enq_id,
+                                        'enq_item_id'   => $rqlt['enq_product_id'],
+                                        'vendor_id'     => $uId,
+                                        'item_id'       => $rqlt['product_id'],
+                                        'item_name'     => $rqlt['product_name'],
+                                        'item_hsn'      => $rqlt['hsn'],
+                                        'quote_price'   => $rqlt['quote_price'],
+                                        'qty'           => $rqlt['qty'],
+                                        'unit_id'       => $rqlt['unit'],
+                                        'unit_name'     => $rqlt['unit_name'],
+                                    ];
+                                    $this->common_model->save_data('ecomm_enquiry_vendor_quotation_logs', $fields, '', 'id');
                                 }
                             }
 
