@@ -3999,6 +3999,7 @@ class ApiController extends BaseController
                                         ];
                                     }
                                 }
+
                                 if($enquiry->status == 0){
                                     $enquiryStatus = 'Request Submitted';
                                 } elseif($enquiry->status == 1){
@@ -4028,6 +4029,9 @@ class ApiController extends BaseController
                                 } elseif($enquiry->status == 13){
                                     $enquiryStatus = 'Reject Request';
                                 }
+                                echo $enquiry->status;
+                                echo $enquiryStatus;
+                                die;
                                 $getPlant = $this->common_model->find_data('ecomm_users', 'row', ['id' => $enquiry->plant_id], 'company_name,full_address,district,state,pincode,location');
                                 
                                 $getVendorQuotationAcceptRejectStatus = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'row', ['enq_id' => $enq_id, 'vendor_id' => $uId], 'status,is_quotation_submit,is_editable');
