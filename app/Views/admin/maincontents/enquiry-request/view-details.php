@@ -20,7 +20,7 @@
     .progress-bar-wrapper li.section {
     display: inline-block !important;
     padding-top: 45px;
-    font-size: 13px;
+    font-size: 10px;
     font-weight: bold;
     line-height: 16px;
     color: gray;
@@ -29,6 +29,7 @@
     text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;
+    word-wrap: break-word;
     }
     .progress-bar-wrapper li.section:before {
     content: 'x';
@@ -584,10 +585,26 @@
                                     <tr>
                                         <?php
                                         if($sharedVendors) { foreach($sharedVendors as $sharedVendor){
-                                            $getVendor = $common_model->find_data('ecomm_users', 'row', ['id' => $sharedVendor->vendor_id], 'id,company_name');
+                                            $getVendor      = $common_model->find_data('ecomm_users', 'row', ['id' => $sharedVendor->vendor_id], 'id,company_name');
+                                            $vendor_name    = (($getVendor)?$getVendor->company_name:'');
+                                            $item_name      = (($companyItem)?$companyItem->item_name_ecoex:'');
                                         ?>
                                             <td colspan="2" class="text-center">
-                                                <button type="button" class="btn btn-success btn-sm"><i class="fa fa-trophy"></i> Mark As Allocated</button>
+                                                <?php
+                                                $checkVendorAllocation = $common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enq_id, 'item_id' => $enquiryProduct->product_id]);
+                                                if(empty($checkVendorAllocation)){
+                                                ?>
+                                                    <a href="<?=base_url('admin/enquiry-requests/vendor-allocation/'.encoded($enq_id).'/'.encoded($sharedVendor->vendor_id).'/'.encoded($enquiryProduct->product_id))?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to allocate <?=$vendor_name?> for <?=$item_name?> ?');"><i class="fa fa-trophy"></i> Mark As Assigned</a>
+                                                <?php } else {?>
+                                                    <?php if($checkVendorAllocation->vendor_id == $sharedVendor->vendor_id){?>
+                                                        <!-- win -->
+                                                        <h6 class="text-success fw-bold">ASSIGNED</h6>
+                                                        <small class="fw-bold"><?=$checkVendorAllocation->sub_enquiry_no?></small>
+                                                    <?php } else {?>
+                                                        <!-- lost -->
+                                                        <h6 class="text-danger fw-bold">NOT ASSIGNED</h6>
+                                                    <?php }?>
+                                                <?php }?>
                                             </td>
                                         <?php } }?>
                                     </tr>

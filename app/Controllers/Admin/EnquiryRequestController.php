@@ -520,4 +520,60 @@ class EnquiryRequestController extends BaseController {
         $page_name                  = 'enquiry-request/view-quotation-logs';
         echo $this->layout_after_login($title,$page_name,$data);
     }
+    public function vendorAllocation($enq_id, $vendor_id, $item_id){
+        if(!$this->common_model->checkModuleFunctionAccess(23,109)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
+        $enq_id                     = decoded($enq_id);
+        $vendor_id                  = decoded($vendor_id);
+        $item_id                    = decoded($item_id);
+        $data['enq_id']             = $enq_id;
+        $data['vendor_id']          = $vendor_id;
+        $data['item_id']            = $item_id;
+
+        $getEnquiry                 = $this->data['model']->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+        $getEnquiryProductCount     = $this->data['model']->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $enq_id]);
+        $getProduct                 = $this->data['model']->find_data('ecomm_company_items', 'row', ['id' => $item_id], 'id,item_name_ecoex');
+        $getVendor                  = $this->data['model']->find_data('ecomm_users', 'row', ['id' => $vendor_id], 'id,company_name');
+        $enquiry_no                 = (($getEnquiry)?$getEnquiry->enquiry_no:'');
+        /* sl no*/
+            $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
+            $checkEnq = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enq_id], 'sub_sl_no,vendor_id,max(sub_sl_no) as max_sub_sl_no');
+            if($checkEnq){
+                $checkEnqVendor = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enq_id, 'vendor_id' => $vendor_id], 'sub_sl_no,vendor_id');
+                if($checkEnqVendor){
+                    $sub_sl_no         = $checkEnqVendor->sub_sl_no;
+                } else {
+                    $sub_sl_no         = $checkEnq->max_sub_sl_no + 1;
+                }
+            } else {
+                $sub_sl_no         = 0;
+            }
+            $alphabet       = range('A', 'Z');
+            $getCharacter   = $alphabet[$sub_sl_no];
+            $sub_enquiry_no = $enquiry_no.'-'.$getCharacter;
+        /* sl no*/
+        $fields = [
+            'enq_id'                    => $enq_id,
+            'enquiry_no'                => $enquiry_no,
+            'vendor_id'                 => $vendor_id,
+            'item_id'                   => $item_id,
+            'sub_sl_no'                 => $sub_sl_no,
+            'sub_enquiry_no'            => $sub_enquiry_no,
+        ];
+        // pr($fields);
+        $this->common_model->save_data('ecomm_sub_enquires', $fields, '', 'id');
+
+        $alreadyAllocatedCount     = $this->data['model']->find_data('ecomm_sub_enquires', 'count', ['enq_id' => $enq_id]);
+        if($getEnquiryProductCount == $alreadyAllocatedCount){
+            $this->common_model->save_data('ecomm_enquires', ['status' => 3], $enq_id, 'id');
+        }
+
+        $this->session->setFlashdata('success_message', 'Vendor '.(($getVendor)?$getVendor->company_name:"").' Successfully Assigned With '.(($getProduct)?$getProduct->item_name_ecoex:"").' Against '.$enquiry_no.' !!!');
+        return redirect()->to(base_url('admin/enquiry-requests/view-detail/'.encoded($enq_id)));
+    }
 }
