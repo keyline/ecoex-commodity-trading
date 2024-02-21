@@ -201,6 +201,15 @@
                             <p>
                                 <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#shareModal"><i class="fa fa-share-alt"></i> Quotation Invitation To Vendors</button>
                                 <a data-bs-toggle="collapse" href="#sharedVendor" role="button" aria-expanded="false" aria-controls="sharedVendor" class="btn btn-info btn-sm"><i class="fa fa-list-alt"></i> Click To View The Quotation Request Invited Vendors</a>
+
+                                <?php
+                                    $sharedLink = base_url('enquiry-request/'.encoded($row->id));
+                                    ?>
+                                <a href="whatsapp://send?text=<?=$sharedLink?>" class="btn btn-primary btn-sm" data-action="share/whatsapp/share"><i class="fa fa-share-alt"></i> Share Details To Vendors via Whatsapp</a>
+                                <a href="" class="btn btn-primary btn-sm" onclick="copyToClipboard()"><i class="fa fa-copy"></i> Copy Whatsapp Link For Share</a>
+                                <span id="whatsapp_link" style="display: none;"><?=$sharedLink?></span>
+                                <input type="hidden" placeholder="Paste here" />
+
                             </p>
                             <div class="collapse" id="sharedVendor">
                                 <div class="card">
@@ -262,13 +271,7 @@
                             <!-- share to vendors panel -->
                             <!-- share to vendors via whatsapp -->
                             <p>
-                                <?php
-                                    $sharedLink = base_url('enquiry-request/'.encoded($row->id));
-                                    ?>
-                                <a href="whatsapp://send?text=<?=$sharedLink?>" class="btn btn-primary btn-sm" data-action="share/whatsapp/share"><i class="fa fa-share-alt"></i> Share Details To Vendors via Whatsapp</a>
-                                <a href="" class="btn btn-primary btn-sm" onclick="copyToClipboard()"><i class="fa fa-copy"></i> Copy Whatsapp Link For Share</a>
-                                <span id="whatsapp_link" style="display: none;"><?=$sharedLink?></span>
-                                <input type="hidden" placeholder="Paste here" />
+                                
                             </p>
                             <!-- share to vendors via whatsapp -->
                             <?php } elseif($row->status == 9){?>
@@ -505,6 +508,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row mt-3">
+                        <h3>Quotations</h3>
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered">
                                 <tr>
@@ -519,6 +523,20 @@
                                                 <a href="<?=base_url('admin/enquiry-requests/quotation-access/'.encoded($enq_id).'/'.encoded($sharedVendor->vendor_id))?>" title="Access Close" onclick="return confirm('Do you want to access close of quotation submit for this vendor ?');"><i class="fas fa-unlock text-success"></i></a>
                                             <?php } else {?>
                                                 <a href="<?=base_url('admin/enquiry-requests/quotation-access/'.encoded($enq_id).'/'.encoded($sharedVendor->vendor_id))?>" title="Access Open" onclick="return confirm('Do you want to access open quotation submit for this vendor ?');"><i class="fas fa-lock text-danger"></i></a>
+                                            <?php }?>
+                                            <?php
+                                            $submittedDates         = [];
+                                            $checkQuotationSubmits  = $common_model->find_data('ecomm_enquiry_vendor_quotation_logs', 'array', ['enq_id' => $enq_id, 'vendor_id' => $sharedVendor->vendor_id, 'item_id' => $enquiryProducts[0]->product_id], 'created_at');
+                                            if($checkQuotationSubmits){
+                                                foreach($checkQuotationSubmits as $checkQuotationSubmit){
+                                                    $submittedDates[]         = date_format(date_create($checkQuotationSubmit->created_at), "M d, Y h:i A");
+                                                }
+                                            }
+                                            ?>
+                                            <?php if(count($submittedDates) > 0){?>
+                                                <p>
+                                                    <a href="<?=base_url('admin/enquiry-requests/view-quotation-logs/'.encoded($enq_id).'/'.encoded($sharedVendor->vendor_id))?>" target="_blank" class="badge bg-success"><small>Submitted : <?=count($submittedDates)?> time(s)</small></a>
+                                                </p>
                                             <?php }?>
                                         </th>
                                     <?php } }?>

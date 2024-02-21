@@ -479,4 +479,45 @@ class EnquiryRequestController extends BaseController {
         ];
         $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
     }
+    public function viewQuotationLogs($enq_id, $vendor_id)
+    {
+        if(!$this->common_model->checkModuleFunctionAccess(23,109)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
+        $enq_id                     = decoded($enq_id);
+        $vendor_id                  = decoded($vendor_id);
+        $data['enq_id']             = $enq_id;
+        $data['vendor_id']          = $vendor_id;
+        $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
+        $data['vendor']             = $this->data['model']->find_data('ecomm_users', 'row', ['id' => $vendor_id], 'id,company_name');
+        $data['moduleDetail']       = $this->data;
+        $data['enquiryStatus']      = (($data['row'])?$data['row']->status:1);
+        $data['enquiryProducts']    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id]);
+        $data['enquiryPendingProducts']    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id, 'status' => 0]);
+
+        $company_id                 = $data['row']->company_id;
+        $orderBy[0]                 = ['field' => 'category_alias', 'type' => 'ASC'];
+        $data['cats']               = $this->common_model->find_data('ecomm_company_category', 'array', ['status' => 1, 'company_id' => $company_id], 'category_id,category_alias', '', '', $orderBy);
+
+        $orderBy[0]                 = ['field' => 'name', 'type' => 'ASC'];
+        $data['units']              = $this->common_model->find_data('ecomm_units', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
+
+        $order_by[0]                = array('field' => 'id', 'type' => 'asc');
+        $conditions                 = array('company_id' => $company_id, 'status!=' => 3);
+        $data['assignItems']        = $this->data['model']->find_data('ecomm_company_items', 'array', $conditions, '', '', '', $order_by);
+
+        $order_by[0]                = array('field' => 'company_name', 'type' => 'asc');
+        $data['avlVendors']         = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1], 'id,company_name', '', '', $order_by);
+
+        $data['sharedVendors']      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'array', ['enq_id' => $enq_id]);
+        $data['enquiryItems']       = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id]);
+
+        $title                      = 'View Quotation Logs Of '.(($data['vendor'])?$data['vendor']->company_name:'').' Within '.$data['row']->enquiry_no;
+        $page_name                  = 'enquiry-request/view-quotation-logs';
+        echo $this->layout_after_login($title,$page_name,$data);
+    }
 }
