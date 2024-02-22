@@ -4587,7 +4587,7 @@ class ApiController extends BaseController
                     $order_field                = $requestData['order_field'];
                     $order_type                 = $requestData['order_type'];
                     $page_no                    = $requestData['page_no'];
-                    $sub_status                 = (float)$requestData['sub_status'];
+                    $sub_status                 = $requestData['sub_status'];
                     if($getTokenValue['status']){
                         $uId        = $getTokenValue['data'][1];
                         $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
@@ -4613,7 +4613,19 @@ class ApiController extends BaseController
                                 $offset = (($limit * $page_no) - $limit); // ((15 * 3) - 15)
                             }
                             $groupBy[0]         = 'vendor_id';
-                            $rows               = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['vendor_id' => $uId, 'status' => $sub_status], '', '', $groupBy, $orderBy, $limit, $offset);
+                            // $rows               = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['vendor_id' => $uId, 'status' => $sub_status], '', '', $groupBy, $orderBy, $limit, $offset);
+
+                            if(count($sub_status) > 0){
+                                $conditions = '(';
+                                for($ss=0;$ss<count($sub_status);$ss++){
+                                    $conditions .= 'status = '.$sub_status[$ss];
+                                    if($ss <= (count($sub_status) - 2)){
+                                        $conditions .= ' or ';
+                                    }
+                                }
+                                $conditions .= ')';
+                            }
+                            $rows               = $this->db->query("SELECT * FROM `ecomm_sub_enquires` WHERE `vendor_id` = '$uId' and $conditions group by vendor_id order by $fieldName $typeName limit $offset,$limit")->getResult();
                             if($rows){
                                 foreach($rows as $row){
                                     $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $row->enq_id]);
