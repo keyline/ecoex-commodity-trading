@@ -262,7 +262,7 @@ class EnquiryRequestController extends BaseController {
                             'source'            => 'FROM APP',
                             'title'             => 'Enquiry Request Quotation Edit '.$msg,
                             'description'       => 'Enquiry Request ('.(($getEnquiry)?$getEnquiry->enquiry_no:"").') Quotation Edit '.$msg.' By EcoEx',
-                            'user_type'         => 'PLANT',
+                            'user_type'         => 'VENDOR',
                             'users'             => json_encode($users),
                             'is_send'           => 1,
                             'send_timestamp'    => date('Y-m-d H:i:s'),
@@ -541,9 +541,8 @@ class EnquiryRequestController extends BaseController {
         $getVendor                  = $this->data['model']->find_data('ecomm_users', 'row', ['id' => $vendor_id], 'id,company_name');
         $enquiry_no                 = (($getEnquiry)?$getEnquiry->enquiry_no:'');
         /* sl no*/
-            $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
             $checkEnq = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enq_id], 'sub_sl_no,vendor_id,max(sub_sl_no) as max_sub_sl_no');
-            if($checkEnq){
+            if($checkEnq->max_sub_sl_no != ''){
                 $checkEnqVendor = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enq_id, 'vendor_id' => $vendor_id], 'sub_sl_no,vendor_id');
                 if($checkEnqVendor){
                     $sub_sl_no         = $checkEnqVendor->sub_sl_no;
@@ -564,9 +563,54 @@ class EnquiryRequestController extends BaseController {
             'item_id'                   => $item_id,
             'sub_sl_no'                 => $sub_sl_no,
             'sub_enquiry_no'            => $sub_enquiry_no,
+            'status'                    => 3.3,
+            'assigned_date'             => date('Y-m-d H:i:s'),
         ];
-        // pr($fields);
         $this->common_model->save_data('ecomm_sub_enquires', $fields, '', 'id');
+        /* send push */
+            $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
+            if($getDeviceTokens){
+                foreach($getDeviceTokens as $getDeviceToken){
+                    $fcm_token          = $getDeviceToken->fcm_token;
+                    $messageData = [
+                        'title'     => 'Enquiry Assigned To You',
+                        'body'      => 'Enquiry ('.$sub_enquiry_no.') Assigned To You By EcoEx',
+                        'badge'     => 1,
+                        'sound'     => 'Default',
+                        'data'      => [],
+                    ];
+                    $this->pushNotification($fcm_token, $messageData);
+                    $users[]    = $getEnquiry->plant_id;
+                    $pushData   = [
+                        'source'            => 'FROM APP',
+                        'title'             => 'Enquiry Assigned To You',
+                        'description'       => 'Enquiry ('.$sub_enquiry_no.') Assigned To You By EcoEx',
+                        'user_type'         => 'VENDOR',
+                        'users'             => json_encode($users),
+                        'is_send'           => 1,
+                        'send_timestamp'    => date('Y-m-d H:i:s'),
+                        'status'            => 1,
+                    ];
+                    $this->common_model->save_data('notifications', $pushData, '', 'id');
+                }
+            }
+        /* send push */
+        /* send mail */
+            $fields = [
+                'enq_id'                => $enq_id,
+                'company_id'            => (($getEnquiry)?$getEnquiry->company_id:0),
+                'plant_id'              => (($getEnquiry)?$getEnquiry->plant_id:0),
+                'vendor_id'             => $vendor_id,
+                'sub_enquiry_no'        => $sub_enquiry_no,
+                'msg'                   => 'Enquiry ('.$sub_enquiry_no.') Assigned To You By EcoEx',
+            ];
+            $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendor_id]);
+            $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+            $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+            $subject                    = $generalSetting->site_name.' :: Enquiry ('.(($getEnquiry)?$getEnquiry->enquiry_no:"").') Assigned To You By EcoEx';
+            $message                    = view('email-templates/enquiry-request-assigned',$fields);
+            $this->sendMail($getVendor->email, $subject, $message);
+        /* send mail */
 
         $alreadyAllocatedCount     = $this->data['model']->find_data('ecomm_sub_enquires', 'count', ['enq_id' => $enq_id]);
         if($getEnquiryProductCount == $alreadyAllocatedCount){

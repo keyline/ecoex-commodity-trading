@@ -4566,6 +4566,155 @@ class ApiController extends BaseController
                 $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
             }
         /* quotation */
+        /* assign request */
+            public function vendorProcessRequest()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['order_field', 'order_type', 'page_no'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $order_field                = $requestData['order_field'];
+                    $order_type                 = $requestData['order_type'];
+                    $page_no                    = $requestData['page_no'];
+                    $sub_status                 = (float)$requestData['sub_status'];
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            if($order_field == 'request_id'){
+                                $fieldName = 'id';
+                            } elseif($order_field == 'added_date'){
+                                $fieldName = 'created_at';
+                            } else {
+                                $fieldName = 'id';
+                            }
+                            if($order_type != ''){
+                                $typeName = $order_type;
+                            } else {
+                                $typeName = 'DESC';
+                            }
+                            $orderBy[0]         = ['field' => $fieldName, 'type' => $typeName];
+                            $limit              = 10; // per page elements
+                            if($page_no == 1){
+                                $offset = 0;
+                            } else {
+                                $offset = (($limit * $page_no) - $limit); // ((15 * 3) - 15)
+                            }
+                            $groupBy[0]         = 'vendor_id';
+                            $rows               = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['vendor_id' => $uId, 'status' => $sub_status], '', '', $groupBy, $orderBy, $limit, $offset);
+                            if($rows){
+                                foreach($rows as $row){
+                                    $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $row->enq_id]);
+                                    if($getEnquiry){
+                                        if($getEnquiry->status == 0){
+                                            $enquiryMainStatus = 'Request Submitted';
+                                        } elseif($getEnquiry->status == 1){
+                                            $enquiryMainStatus = 'Accept Request';
+                                        } elseif($getEnquiry->status == 2){
+                                            $enquiryMainStatus = 'Vendor Allocated';
+                                        } elseif($getEnquiry->status == 3){
+                                            $enquiryMainStatus = 'Vendor Assigned';
+                                        } elseif($getEnquiry->status == 4){
+                                            $enquiryMainStatus = 'Pickup Scheduled';
+                                        } elseif($getEnquiry->status == 5){
+                                            $enquiryMainStatus = 'Vehicle Placed';
+                                        } elseif($getEnquiry->status == 6){
+                                            $enquiryMainStatus = 'Material Weighed';
+                                        } elseif($getEnquiry->status == 7){
+                                            $enquiryMainStatus = 'Invoice from HO';
+                                        } elseif($getEnquiry->status == 8){
+                                            $enquiryMainStatus = 'Invoice to Vendor';
+                                        } elseif($getEnquiry->status == 9){
+                                            $enquiryMainStatus = 'Payment received from Vendor';
+                                        } elseif($getEnquiry->status == 10){
+                                            $enquiryMainStatus = 'Vehicle Dispatched';
+                                        } elseif($getEnquiry->status == 11){
+                                            $enquiryMainStatus = 'Payment to HO';
+                                        } elseif($getEnquiry->status == 12){
+                                            $enquiryMainStatus = 'Order Complete';
+                                        } elseif($getEnquiry->status == 13){
+                                            $enquiryMainStatus = 'Reject Request';
+                                        }
+                                    } else {
+                                        $enquiryMainStatus = '';
+                                    }
+                                    if($row->status == 3.3){
+                                        $enquirySubStatus = 'Vendor Assigned';
+                                    } elseif($row->status == 4.4){
+                                        $enquirySubStatus = 'Pickup Scheduled';
+                                    } elseif($row->status == 5.5){
+                                        $enquirySubStatus = 'Vehicle Placed';
+                                    } elseif($row->status == 6.6){
+                                        $enquirySubStatus = 'Material Weighed';
+                                    } elseif($row->status == 8.8){
+                                        $enquirySubStatus = 'Invoice to Vendor';
+                                    } elseif($row->status == 9.9){
+                                        $enquirySubStatus = 'Payment received from Vendor';
+                                    } elseif($row->status == 10.10){
+                                        $enquirySubStatus = 'Vehicle Dispatched';
+                                    } elseif($row->status == 12.12){
+                                        $enquirySubStatus = 'Order Complete';
+                                    }
+                                    $product_count               = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['vendor_id' => $uId, 'enq_id' => $row->enq_id], 'item_id');
+                                    $apiResponse[] = [
+                                        'enq_id'                            => $row->enq_id,
+                                        'enquiry_no'                        => $row->enquiry_no,
+                                        'enquiry_main_status'               => $enquiryMainStatus,
+                                        'sub_enq_id'                        => $row->id,
+                                        'sub_enquiry_no'                    => $row->sub_enquiry_no,
+                                        'enquiry_sub_status'                => $enquirySubStatus,
+                                        'product_count'                     => count($product_count),
+                                        'assigned_date'                     => (($row->assigned_date != '')?date_format(date_create($row->assigned_date), "M d, Y h:i A"):''),
+                                        'pickup_scheduled_date'             => (($row->pickup_scheduled_date != '')?date_format(date_create($row->pickup_scheduled_date), "M d, Y h:i A"):''),
+                                        'vehicle_placed_date'               => (($row->vehicle_placed_date != '')?date_format(date_create($row->vehicle_placed_date), "M d, Y h:i A"):''),
+                                        'material_weighted_date'            => (($row->material_weighted_date != '')?date_format(date_create($row->material_weighted_date), "M d, Y h:i A"):''),
+                                        'invoice_to_vendor_date'            => (($row->invoice_to_vendor_date != '')?date_format(date_create($row->invoice_to_vendor_date), "M d, Y h:i A"):''),
+                                        'vendor_payment_received_date'      => (($row->vendor_payment_received_date != '')?date_format(date_create($row->vendor_payment_received_date), "M d, Y h:i A"):''),
+                                        'vehicle_dispatched_date'           => (($row->vehicle_dispatched_date != '')?date_format(date_create($row->vehicle_dispatched_date), "M d, Y h:i A"):''),
+                                    ];
+                                }
+                            }
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Vendor Process Data Available !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'User Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
+        /* assign request */
     /* vendor panel */
 
     /* apply watermark */
