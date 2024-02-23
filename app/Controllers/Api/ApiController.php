@@ -4840,6 +4840,7 @@ class ApiController extends BaseController
                                     'sub_enq_id'                        => $rows[0]->id,
                                     'sub_enquiry_no'                    => $rows[0]->sub_enquiry_no,
                                     'enquiry_sub_status'                => $enquirySubStatus,
+                                    'enquiry_sub_status_id'             => $rows[0]->status,
                                     'assigned_date'                     => (($rows[0]->assigned_date != '')?date_format(date_create($rows[0]->assigned_date), "M d, Y h:i A"):''),
                                     'pickup_scheduled_date'             => (($rows[0]->pickup_scheduled_date != '')?date_format(date_create($rows[0]->pickup_scheduled_date), "M d, Y h:i A"):''),
                                     'vehicle_placed_date'               => (($rows[0]->vehicle_placed_date != '')?date_format(date_create($rows[0]->vehicle_placed_date), "M d, Y h:i A"):''),
