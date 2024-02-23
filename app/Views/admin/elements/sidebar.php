@@ -18,50 +18,57 @@ if($segmentCount > 3){
 $userType           = $session->user_type;
 $userId             = $session->user_id;
 $company_id         = $session->company_id;
+$groupBy[0]         = 'sub_enquiry_no';
 if($userType == 'MA'){
     $step0_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 0]);
     $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
     $step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2]);
-    $step3_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 3]);
-    $step4_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 4]);
-    $step5_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 5]);
-    $step6_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 6]);
-    $step7_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 7]);
-    $step8_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 8]);
-    $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 9]);
-    $step10_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 10]);
-    $step11_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 11]);
-    $step12_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 12]);
+
+    $step3_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 3.3], '', '', $groupBy);
+    $step4_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 4.4], '', '', $groupBy);
+    $step5_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 5.5], '', '', $groupBy);
+    $step6_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 6.6], '', '', $groupBy);
+    $step7_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 7.7], '', '', $groupBy);
+    $step8_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 8.8], '', '', $groupBy);
+    $step9_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 9.9], '', '', $groupBy);
+    $step10_count       = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 10.10], '', '', $groupBy);
+    $step11_count       = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 11.11], '', '', $groupBy);
+    $step12_count       = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 12.12], '', '', $groupBy);
+
     $step13_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 13]);
 } elseif($userType == 'U'){
     $step0_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 0]);
     $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
     $step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2]);
-    $step3_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 3]);
-    $step4_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 4]);
-    $step5_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 5]);
-    $step6_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 6]);
-    $step7_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 7]);
-    $step8_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 8]);
-    $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 9]);
-    $step10_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 10]);
-    $step11_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 11]);
-    $step12_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 12]);
+
+    $step3_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 3.3], '', '', $groupBy);
+    $step4_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 4.4], '', '', $groupBy);
+    $step5_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 5.5], '', '', $groupBy);
+    $step6_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 6.6], '', '', $groupBy);
+    $step7_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 7.7], '', '', $groupBy);
+    $step8_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 8.8], '', '', $groupBy);
+    $step9_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 9.9], '', '', $groupBy);
+    $step10_count       = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 10.10], '', '', $groupBy);
+    $step11_count       = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 11.11], '', '', $groupBy);
+    $step12_count       = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 12.12], '', '', $groupBy);
+
     $step13_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 13]);
 } else {
     $step0_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 0, 'company_id' => $company_id]);
     $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1, 'company_id' => $company_id]);
     $step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2, 'company_id' => $company_id]);
-    $step3_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 3, 'company_id' => $company_id]);
-    $step4_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 4, 'company_id' => $company_id]);
-    $step5_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 5, 'company_id' => $company_id]);
-    $step6_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 6, 'company_id' => $company_id]);
-    $step7_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 7, 'company_id' => $company_id]);
-    $step8_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 8, 'company_id' => $company_id]);
-    $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 9, 'company_id' => $company_id]);
-    $step10_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 10, 'company_id' => $company_id]);
-    $step11_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 11, 'company_id' => $company_id]);
-    $step12_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 12, 'company_id' => $company_id]);
+
+    $step3_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 3.3, 'company_id' => $company_id], '', '', $groupBy);
+    $step4_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 4.4, 'company_id' => $company_id], '', '', $groupBy);
+    $step5_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 5.5, 'company_id' => $company_id], '', '', $groupBy);
+    $step6_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 6.6, 'company_id' => $company_id], '', '', $groupBy);
+    $step7_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 7.7, 'company_id' => $company_id], '', '', $groupBy);
+    $step8_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 8.8, 'company_id' => $company_id], '', '', $groupBy);
+    $step9_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 9.9, 'company_id' => $company_id], '', '', $groupBy);
+    $step10_count       = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 10.10, 'company_id' => $company_id], '', '', $groupBy);
+    $step11_count       = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 11.11, 'company_id' => $company_id], '', '', $groupBy);
+    $step12_count       = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 12.12, 'company_id' => $company_id], '', '', $groupBy);
+
     $step13_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 13, 'company_id' => $company_id]);
 }
 ?>
@@ -256,52 +263,52 @@ if($userType == 'MA'){
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 3))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(3))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 3.3))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(3.3))?>">
                         <i class="fa fa-arrow-right"></i><span>Vendor Assigned (<?=$step3_count?>)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 4))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(4))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 4.4))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(4.4))?>">
                         <i class="fa fa-arrow-right"></i><span>Pickup Scheduled (<?=$step4_count?>)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 5))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(5))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 5.5))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(5.5))?>">
                         <i class="fa fa-arrow-right"></i><span>Vehicle Placed (<?=$step5_count?>)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 6))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(6))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 6.6))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(6.6))?>">
                         <i class="fa fa-arrow-right"></i><span>Material Weighed (<?=$step6_count?>)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 7))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(7))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 7))?'active':'')?>" href="javascript:void(0);">
                         <i class="fa fa-arrow-right"></i><span>Invoice from HO (<?=$step7_count?>)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 8))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(8))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 8.8))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(8.8))?>">
                         <i class="fa fa-arrow-right"></i><span>Invoice to Vendor (<?=$step8_count?>)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 9))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(9))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 9.9))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(9.9))?>">
                         <i class="fa fa-arrow-right"></i><span>Payment received from Vendor (<?=$step9_count?>)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 10))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(10))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 10.10))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(10.10))?>">
                         <i class="fa fa-arrow-right"></i><span>Vehicle Dispatched (<?=$step10_count?>)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 11))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(11))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 11))?'active':'')?>" href="javascript:void(0);">
                         <i class="fa fa-arrow-right"></i><span>Payment to HO (<?=$step11_count?>)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 12))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(12))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 12.12))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(12.12))?>">
                         <i class="fa fa-arrow-right"></i><span>Order Complete (<?=$step12_count?>)</span>
                     </a>
                 </li>

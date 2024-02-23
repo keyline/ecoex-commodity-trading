@@ -559,12 +559,15 @@ class EnquiryRequestController extends BaseController {
         /* sl no*/
         $fields = [
             'enq_id'                    => $enq_id,
+            'company_id'                => (($getEnquiry)?$getEnquiry->company_id:0),
+            'plant_id'                  => (($getEnquiry)?$getEnquiry->plant_id:0),
             'enquiry_no'                => $enquiry_no,
             'vendor_id'                 => $vendor_id,
             'item_id'                   => $item_id,
             'sub_sl_no'                 => $sub_sl_no,
             'sub_enquiry_no'            => $sub_enquiry_no,
             'status'                    => 3.3,
+            'main_status'               => 3,
             'assigned_date'             => date('Y-m-d H:i:s'),
         ];
         $this->common_model->save_data('ecomm_sub_enquires', $fields, '', 'id');
@@ -621,4 +624,55 @@ class EnquiryRequestController extends BaseController {
         $this->session->setFlashdata('success_message', 'Vendor '.(($getVendor)?$getVendor->company_name:"").' Successfully Assigned With '.(($getProduct)?$getProduct->item_name_ecoex:"").' Against '.$enquiry_no.' !!!');
         return redirect()->to(base_url('admin/enquiry-requests/view-detail/'.encoded($enq_id)));
     }
+
+    /* process enquiry requests */
+        public function processRequestList($enq_sub_status)
+        {
+            if(!$this->common_model->checkModuleFunctionAccess(23,109)){
+                $data['action']             = 'Access Forbidden';
+                $title                      = $data['action'].' '.$this->data['title'];
+                $page_name                  = 'access-forbidden';        
+                echo $this->layout_after_login($title,$page_name,$data);
+                exit;
+            }
+            $userType                   = $this->session->user_type;
+            $company_id                 = $this->session->company_id;
+            $data['moduleDetail']       = $this->data;
+            $enq_sub_status             = decoded($enq_sub_status);
+            $data['enq_sub_status']     = $enq_sub_status;
+
+            if($enq_sub_status == 3.3){
+                $stepName = 'Vendor Assigned';
+            } elseif($enq_sub_status == 4.4){
+                $stepName = 'Pickup Scheduled';
+            } elseif($enq_sub_status == 5.5){
+                $stepName = 'Vehicle Placed';
+            } elseif($enq_sub_status == 6.6){
+                $stepName = 'Material Weighed';
+            } elseif($enq_sub_status == 8.8){
+                $stepName = 'Invoice to Vendor';
+            } elseif($enq_sub_status == 9.9){
+                $stepName = 'Payment received from Vendor';
+            } elseif($enq_sub_status == 10.10){
+                $stepName = 'Vehicle Dispatched';
+            } elseif($enq_sub_status == 12.12){
+                $stepName = 'Order Complete';
+            }
+
+            $title                      = 'Manage '.$this->data['title'] . ' : '.$stepName;
+            $page_name                  = 'enquiry-request/process-request-list';
+
+            $order_by[0]                    = array('field' => 'id', 'type' => 'desc');
+            $groupBy[0]                     = 'enq_id,vendor_id';
+            if($userType == 'MA'){
+                $conditions                 = ['status' => (float)$enq_sub_status];
+            } elseif($userType == 'U'){
+                $conditions                 = ['status' => (float)$enq_sub_status];
+            } else {
+                $conditions                 = ['status' => (float)$enq_sub_status, 'company_id' => $company_id];
+            }
+            $data['rows']               = $this->data['model']->find_data('ecomm_sub_enquires', 'array', $conditions, '', '', $groupBy, $order_by);
+            echo $this->layout_after_login($title,$page_name,$data);
+        }
+    /* process enquiry requests */
 }
