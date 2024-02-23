@@ -130,6 +130,7 @@ class EnquiryRequestController extends BaseController {
                             'vendor_id'     => $vendors[$v],
                         ];
                         $this->common_model->save_data('ecomm_enquiry_vendor_shares', $fields, '', 'id');
+                        $this->common_model->save_data('ecomm_enquires', ['status' => 2], $enq_id, 'id');
                         /* mail functionality */
                             $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendors[$v]]);
                             $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
