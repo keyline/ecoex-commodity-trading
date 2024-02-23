@@ -271,6 +271,7 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 				// quotation
 				// assigned request
 					$routes->match(['post'], "vendor-process-request", "ApiController::vendorProcessRequest");
+					$routes->match(['post'], "vendor-process-request-details", "ApiController::vendorProcessRequestDetails");
 				// assigned request
 			/* vendor panel */
 		// after login

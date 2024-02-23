@@ -557,6 +557,7 @@ class EnquiryRequestController extends BaseController {
             $getCharacter   = $alphabet[$sub_sl_no];
             $sub_enquiry_no = $enquiry_no.'-'.$getCharacter;
         /* sl no*/
+        $getQuotation = $this->common_model->find_data("ecomm_enquiry_vendor_quotations", 'row', ['enq_id' => $enq_id, 'vendor_id' => $vendor_id, 'item_id' => $item_id]);
         $fields = [
             'enq_id'                    => $enq_id,
             'company_id'                => (($getEnquiry)?$getEnquiry->company_id:0),
@@ -566,6 +567,7 @@ class EnquiryRequestController extends BaseController {
             'item_id'                   => $item_id,
             'sub_sl_no'                 => $sub_sl_no,
             'sub_enquiry_no'            => $sub_enquiry_no,
+            'win_quote_price'           => (($getQuotation)?$getQuotation->quote_price:0),
             'status'                    => 3.3,
             'main_status'               => 3,
             'assigned_date'             => date('Y-m-d H:i:s'),
