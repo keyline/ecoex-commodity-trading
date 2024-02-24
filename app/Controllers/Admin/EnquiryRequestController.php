@@ -676,5 +676,50 @@ class EnquiryRequestController extends BaseController {
             $data['rows']               = $this->data['model']->find_data('ecomm_sub_enquires', 'array', $conditions, '', '', $groupBy, $order_by);
             echo $this->layout_after_login($title,$page_name,$data);
         }
+        public function viewProcessRequestDetail($sub_enquiry_no)
+        {
+            if(!$this->common_model->checkModuleFunctionAccess(23,109)){
+                $data['action']             = 'Access Forbidden';
+                $title                      = $data['action'].' '.$this->data['title'];
+                $page_name                  = 'access-forbidden';        
+                echo $this->layout_after_login($title,$page_name,$data);
+                exit;
+            }
+            $userType                   = $this->session->user_type;
+            $company_id                 = $this->session->company_id;
+            $data['moduleDetail']       = $this->data;
+            $sub_enquiry_no             = decoded($sub_enquiry_no);
+            $data['sub_enquiry_no']     = $sub_enquiry_no;
+            $conditions                 = ['sub_enquiry_no' => $sub_enquiry_no];
+            $data['items']              = $this->data['model']->find_data('ecomm_sub_enquires', 'array', $conditions);
+            $data['row']                = $this->data['model']->find_data('ecomm_sub_enquires', 'row', $conditions);
+            $enq_sub_status             = (($data['row'])?$data['row']->status:0);
+
+            if($enq_sub_status == 3.3){
+                $stepName = 'Vendor Assigned';
+            } elseif($enq_sub_status == 4.4){
+                $stepName = 'Pickup Scheduled';
+            } elseif($enq_sub_status == 5.5){
+                $stepName = 'Vehicle Placed';
+            } elseif($enq_sub_status == 6.6){
+                $stepName = 'Material Weighed';
+            } elseif($enq_sub_status == 8.8){
+                $stepName = 'Invoice to Vendor';
+            } elseif($enq_sub_status == 9.9){
+                $stepName = 'Payment received from Vendor';
+            } elseif($enq_sub_status == 10.10){
+                $stepName = 'Vehicle Dispatched';
+            } elseif($enq_sub_status == 12.12){
+                $stepName = 'Order Complete';
+            }
+
+            $enq_id                     = (($data['row'])?$data['row']->enq_id:0);
+            $data['enq_id']             = $enq_id;
+            $data['getEnquiry']         = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);            
+
+            $title                      = 'Manage '.$this->data['title'] . ' : '.$stepName;
+            $page_name                  = 'enquiry-request/process-request-details';
+            echo $this->layout_after_login($title,$page_name,$data);
+        }
     /* process enquiry requests */
 }

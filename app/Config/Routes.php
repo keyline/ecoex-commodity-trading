@@ -180,6 +180,7 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 			$routes->match(['get', 'post'], "enquiry-requests/vendor-allocation/(:any)/(:any)/(:any)", "EnquiryRequestController::vendorAllocation/$1/$2/$3");
 
 			$routes->match(['get'], "enquiry-requests/process-request-list/(:any)", "EnquiryRequestController::processRequestList/$1");
+			$routes->match(['get'], "enquiry-requests/view-process-request-detail/(:any)", "EnquiryRequestController::viewProcessRequestDetail/$1");
 		// enquiry requests
 		// notifications
 			$routes->match(['get'], "notifications/list", "NotificationController::list");

@@ -2,10 +2,13 @@
 $title              = $moduleDetail['title'];
 $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
+$getCompany         = $common_model->find_data('ecoex_companies', 'row', ['id' => $rows[0]->company_id], 'company_name');
+$getPlant           = $common_model->find_data('ecomm_users', 'row', ['id' => $rows[0]->plant_id], 'plant_name');
 ?>
-
 <div class="pagetitle">
     <h1><?=$page_header?></h1>
+    <h5><?=(($getCompany)?$getCompany->company_name:'')?> : <?=(($getPlant)?$getPlant->plant_name:'')?></h5>
+    <h5><?=$rows[0]->enquiry_no?></h5>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?=base_url('admin/dashboard')?>">Home</a></li>
@@ -36,9 +39,7 @@ $controller_route   = $moduleDetail['controller_route'];
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Enquiry No.</th>
                                 <th scope="col">Sub Enquiry No.</th>
-                                <th scope="col">Company<br>Plant</th>
                                 <th scope="col">Assigned Vendor</th>
                                 <th scope="col">Activity At</th>
                                 <th scope="col">Action</th>
@@ -48,21 +49,12 @@ $controller_route   = $moduleDetail['controller_route'];
                             <?php if($rows){ $sl=1; foreach($rows as $row){?>
                                 <tr>
                                     <th scope="row"><?=$sl++?></th>
-                                    <td><?=$row->enquiry_no?></td>
                                     <td>
                                         <?=$row->sub_enquiry_no?>
                                         <?php
                                         $getSubEnquiryItems = $common_model->find_data('ecomm_sub_enquires', 'count', ['sub_enquiry_no' => $row->sub_enquiry_no]);
                                         ?>
                                         <p><h6 class="badge bg-success"><?=$getSubEnquiryItems?> product(s)</h6></p>
-                                    </td>
-                                    <td>
-                                        <?php
-                                        $getCompany = $common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id], 'company_name');
-                                        $getPlant   = $common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
-                                        ?>
-                                        <h6><?=(($getCompany)?$getCompany->company_name:'')?></h6>
-                                        <h6><?=(($getPlant)?$getPlant->plant_name:'')?></h6>
                                     </td>
                                     <td>
                                         <?php
