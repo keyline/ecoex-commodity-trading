@@ -232,6 +232,33 @@
                                 <h5 class="fw-bold text-success">Device Model</h5>
                                 <h6><?=$getEnquiry->device_model?></h6>
                             </div>
+                            <div class="col-md-6">
+                                <h5 class="fw-bold text-success">Assigned Date</h5>
+                                <h6><?=date_format(date_create($row->assigned_date), "M d, Y h:i A")?></h6>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="fw-bold text-success">Pickup Scheduled Date</h5>
+                                <h6>
+                                    <?php
+                                    if($row->is_pickup_final){
+                                        echo date_format(date_create($row->pickup_scheduled_date), "M d, Y h:i A");
+                                    } else {
+                                    ?>
+                                        <h6 class="text-warning">Still Not Finalised</h6>
+                                        <p>
+                                            <?php if($row->pickup_schedule_edit_access){?>
+                                                <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($row->sub_enquiry_no))?>" class="btn btn-success btn-sm" title="Pickup Scheduled Edit Access Off" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-check"></i> Pickup Schedule Edit Access On</a>
+                                            <?php } else {?>
+                                                <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($row->sub_enquiry_no))?>" class="btn btn-danger btn-sm" title="Pickup Scheduled Edit Access On" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-times"></i> Pickup Schedule Edit Access Off</a>
+                                            <?php }?>
+                                            <?php if($row->pickup_scheduled_date != ''){?>
+                                                <a href="<?=base_url('admin/ecomm_enquires/final-pickup-scheduled/'.encoded($row->sub_enquiry_no))?>" class="btn btn-primary btn-sm" title="Final Pickup Scheduled <?=$title?>" onclick="return confirm('Do you want to finalize this date of pickup material from vendor end ?');"><i class="fa fa-eye"></i> Make Final</a>
+                                            <?php }?>
+                                        </p>
+                                    <?php }
+                                    ?>
+                                </h6>
+                            </div>
                         </div>
                     <?php }?>
                 </div>
@@ -275,16 +302,6 @@
                                                         }
                                                     }
                                                 }
-
-                                                // $items[]              = [
-                                                //     'item_id'           => $row1->item_id,
-                                                //     'item_name'         => (($getItem)?$getItem->item_name_ecoex:''),
-                                                //     'item_hsn'          => (($getItem)?$getItem->hsn:''),
-                                                //     'item_qty'          => (($getEnquiryItem)?$getEnquiryItem->qty:''),
-                                                //     'item_unit'         => (($getUnit)?$getUnit->name:''),
-                                                //     'item_quote_price'  => $row1->win_quote_price,
-                                                //     'item_images'       => $item_images,
-                                                // ];
                                         ?>
                                         <tr>
                                             <td><?=$sl++?></td>
@@ -301,6 +318,37 @@
                     </div>
                 </div>
             </div>
+
+            <div class="card">
+                <div class="card-header bg-success text-light">
+                    <h5>Pickup Scheduled</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Pickup Date/Time</th>
+                                        <th>Submitted Date/Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if($getPickupDates){ $sl=1; foreach($getPickupDates as $getPickupDate){?>
+                                        <tr>
+                                            <td><?=$sl++?></td>
+                                            <td><?=date_format(date_create($getPickupDate->pickup_date_time), "M d, Y h:i A")?></td>
+                                            <td><?=date_format(date_create($getPickupDate->created_at), "M d, Y h:i A")?></td>
+                                        </tr>
+                                    <?php } }?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>

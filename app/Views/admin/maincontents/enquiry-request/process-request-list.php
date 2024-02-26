@@ -41,6 +41,7 @@ $getPlant           = $common_model->find_data('ecomm_users', 'row', ['id' => $r
                                 <th scope="col">#</th>
                                 <th scope="col">Sub Enquiry No.</th>
                                 <th scope="col">Assigned Vendor</th>
+                                <th scope="col">Pickup Scheduled At</th>
                                 <th scope="col">Activity At</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -61,6 +62,24 @@ $getPlant           = $common_model->find_data('ecomm_users', 'row', ['id' => $r
                                         $getVendor = $common_model->find_data('ecomm_users', 'row', ['id' => $row->vendor_id], 'company_name');
                                         ?>
                                         <h6><?=(($getVendor)?$getVendor->company_name:'')?></h6>
+                                    </td>
+                                    <td>
+                                        <?php
+                                        if($row->is_pickup_final){
+                                            echo (($row->pickup_scheduled_date != '')?date_format(date_create($row->pickup_scheduled_date), "M d, Y h:i A"):'');
+                                        } else {
+                                        ?>
+                                            <p>
+                                                <?php if($row->pickup_schedule_edit_access){?>
+                                                    <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($row->sub_enquiry_no))?>" class="btn btn-success btn-sm" title="Pickup Scheduled Edit Access Off" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-check"></i> Pickup Schedule Edit Access On</a>
+                                                <?php } else {?>
+                                                    <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($row->sub_enquiry_no))?>" class="btn btn-danger btn-sm" title="Pickup Scheduled Edit Access On" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-times"></i> Pickup Schedule Edit Access Off</a>
+                                                <?php }?>
+                                                <?php if($row->pickup_scheduled_date != ''){?>
+                                                    <a href="<?=base_url('admin/' . $controller_route . '/final-pickup-scheduled/'.encoded($row->sub_enquiry_no))?>" class="btn btn-primary btn-sm" title="Final Pickup Scheduled <?=$title?>" onclick="return confirm('Do you want to finalize this date of pickup material from vendor end ?');"><i class="fa fa-eye"></i> Make Final</a>
+                                                <?php }?>
+                                            </p>
+                                        <?php } ?>
                                     </td>
                                     <td>
                                         <span>

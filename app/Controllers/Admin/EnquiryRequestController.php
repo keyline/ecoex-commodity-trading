@@ -715,7 +715,10 @@ class EnquiryRequestController extends BaseController {
 
             $enq_id                     = (($data['row'])?$data['row']->enq_id:0);
             $data['enq_id']             = $enq_id;
-            $data['getEnquiry']         = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);            
+            $data['getEnquiry']         = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
+
+            $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
+            $data['getPickupDates']     = $this->data['model']->find_data('ecomm_enquiry_vendor_pickup_schedule_logs', 'array', ['sub_enquiry_no' => $sub_enquiry_no], 'pickup_date_time,created_at', '', '', $orderBy);
 
             $title                      = 'Manage '.$this->data['title'] . ' : '.$stepName;
             $page_name                  = 'enquiry-request/process-request-details';
