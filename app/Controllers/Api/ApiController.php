@@ -4751,6 +4751,17 @@ class ApiController extends BaseController
                         if($getUser){
                             $rows               = $this->db->query("SELECT * FROM `ecomm_sub_enquires` WHERE `sub_enquiry_no` = '$sub_enquiry_no' order by id ASC")->getResult();
                             $items              = [];
+                            $pickup_date_logs   = [];
+                            $getPickupDates     = $this->common_model->find_data('ecomm_enquiry_vendor_pickup_schedule_logs', 'array', ['sub_enquiry_no' => $sub_enquiry_no], 'pickup_date_time,created_at');
+                            if($getPickupDates){
+                                foreach($getPickupDates as $getPickupDate){
+                                    $pickup_date_logs[]   = [
+                                        'pickup_date'       => date_format(date_create($getPickupDate->pickup_date_time), "M d, Y h:i A"),
+                                        'submitted_date'    => date_format(date_create($getPickupDate->created_at), "M d, Y h:i A"),
+                                    ];
+                                }
+                            }
+
                             if($rows){
                                 foreach($rows as $row){
                                     $getItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $row->item_id], 'item_name_ecoex,hsn');
@@ -4849,12 +4860,85 @@ class ApiController extends BaseController
                                     'vendor_payment_received_date'      => (($rows[0]->vendor_payment_received_date != '')?date_format(date_create($rows[0]->vendor_payment_received_date), "M d, Y h:i A"):''),
                                     'vehicle_dispatched_date'           => (($rows[0]->vehicle_dispatched_date != '')?date_format(date_create($rows[0]->vehicle_dispatched_date), "M d, Y h:i A"):''),
                                     'gps_image'                         => (($getEnquiry->gps_tracking_image != '')?getenv('app.uploadsURL').'enquiry/'.$getEnquiry->gps_tracking_image:''),
+                                    'pickup_schedule_edit_access'       => $rows[0]->pickup_schedule_edit_access,
+                                    'pickup_date_final'                 => $rows[0]->is_pickup_final,
+                                    'pickup_date_logs'                  => $pickup_date_logs,
                                     'items'                             => $items,
                                 ];
                             }
                             $apiStatus          = TRUE;
                             http_response_code(200);
                             $apiMessage         = 'Vendor Process Data Available !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'User Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
+            public function vendorProcessRequestPickupScheduled()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['sub_enquiry_no', 'pickup_scheduled_date'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $sub_enquiry_no             = $requestData['sub_enquiry_no'];
+                    $pickup_scheduled_date      = $requestData['pickup_scheduled_date'];
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            $getSubEnquiry = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+
+                            $fields1 = [
+                                'pickup_scheduled_date'         => date_format(date_create($pickup_scheduled_date), "Y-m-d H:i:s"),
+                                'pickup_schedule_edit_access'   => 0,
+                            ];
+                            $this->common_model->save_data('ecomm_sub_enquires', $fields1, $sub_enquiry_no, 'sub_enquiry_no');
+
+                            $fields2 = [
+                                'enq_id'                => (($getSubEnquiry)?$getSubEnquiry->enq_id:''),
+                                'enquiry_no'            => (($getSubEnquiry)?$getSubEnquiry->enquiry_no:''),
+                                'sub_enq_id'            => (($getSubEnquiry)?$getSubEnquiry->id:''),
+                                'sub_enquiry_no'        => (($getSubEnquiry)?$getSubEnquiry->sub_enquiry_no:''),
+                                'vendor_id'             => (($getSubEnquiry)?$getSubEnquiry->vendor_id:''),
+                                'pickup_date_time'      => date_format(date_create($pickup_scheduled_date), "Y-m-d H:i:s")
+                            ];
+                            $this->common_model->save_data('ecomm_enquiry_vendor_pickup_schedule_logs', $fields2, '', 'sub_enquiry_no');
+
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Pickup Schedule Date/Time Submittted Successfully !!!';
                             $apiExtraField      = 'response_code';
                             $apiExtraData       = http_response_code();
                         } else {
