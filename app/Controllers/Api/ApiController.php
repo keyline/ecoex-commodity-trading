@@ -4867,11 +4867,6 @@ class ApiController extends BaseController
                                 ];
                             }
 
-                            $fields1 = [
-                                'pickup_schedule_edit_access'   => 1,
-                            ];
-                            $this->common_model->save_data('ecomm_sub_enquires', $fields1, $sub_enquiry_no, 'sub_enquiry_no');
-
                             $apiStatus          = TRUE;
                             http_response_code(200);
                             $apiMessage         = 'Vendor Process Data Available !!!';

@@ -724,5 +724,139 @@ class EnquiryRequestController extends BaseController {
             $page_name                  = 'enquiry-request/process-request-details';
             echo $this->layout_after_login($title,$page_name,$data);
         }
+        public function change_status_pickup_edit_access($sub_enquiry_no, $redirectLink)
+        {
+            $sub_enquiry_no             = decoded($sub_enquiry_no);
+            $redirectLink               = decoded($redirectLink);
+            $getSubEnquiry              = $this->data['model']->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+            $vendor_id                  = (($getSubEnquiry)?$getSubEnquiry->vendor_id:0);
+            if($getSubEnquiry){
+                if($getSubEnquiry->pickup_schedule_edit_access){
+                    $pickup_schedule_edit_access    = 0;
+                    $msg                            = 'Access Closed';
+                } else {
+                    $pickup_schedule_edit_access    = 1;
+                    $msg                            = 'Access Opened';
+                }
+                $postData = array(
+                                    'pickup_schedule_edit_access' => $pickup_schedule_edit_access
+                                );
+                $updateData = $this->common_model->save_data('ecomm_sub_enquires', $postData, $sub_enquiry_no, 'sub_enquiry_no');
+
+                /* send push */
+                    $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
+                    if($getDeviceTokens){
+                        foreach($getDeviceTokens as $getDeviceToken){
+                            $fcm_token          = $getDeviceToken->fcm_token;
+                            $messageData = [
+                                'title'     => 'Pickup Schedule Date/Time Edit '.$msg,
+                                'body'      => 'Sub Enquiry Request ('.$sub_enquiry_no.') Pickup Schedule Date/Time Edit '.$msg.' By EcoEx',
+                                'badge'     => 1,
+                                'sound'     => 'Default',
+                                'data'      => [],
+                            ];
+                            $this->pushNotification($fcm_token, $messageData);
+                            $users[]    = $getSubEnquiry->plant_id;
+                            $pushData   = [
+                                'source'            => 'FROM APP',
+                                'title'             => 'Pickup Schedule Date/Time Edit '.$msg,
+                                'description'       => 'Sub Enquiry Request ('.$sub_enquiry_no.') Pickup Schedule Date/Time Edit '.$msg.' By EcoEx',
+                                'user_type'         => 'VENDOR',
+                                'users'             => json_encode($users),
+                                'is_send'           => 1,
+                                'send_timestamp'    => date('Y-m-d H:i:s'),
+                                'status'            => 1,
+                            ];
+                            $this->common_model->save_data('notifications', $pushData, '', 'id');
+                        }
+                    }
+                /* send push */
+                /* send mail */
+                    $fields = [
+                        'enq_id'                => $getSubEnquiry->enq_id,
+                        'company_id'            => $getSubEnquiry->company_id,
+                        'plant_id'              => $getSubEnquiry->plant_id,
+                        'vendor_id'             => $vendor_id,
+                        'sub_enquiry_no'        => $sub_enquiry_no,
+                        'msg'                   => $msg,
+                    ];
+                    $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendor_id]);
+                    $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                    $subject                    = $generalSetting->site_name.' :: Sub Enquiry Pickup Schedule Date/Time Edit Access ('.$sub_enquiry_no.') ';
+                    $message                    = view('email-templates/enquiry-request-for-pickup-scheduled-edit-access',$fields);
+                    $this->sendMail((($getVendor)?$getVendor->email:''), $subject, $message);
+                /* send mail */
+
+                $this->session->setFlashdata('success_message', 'Pickup Schedule Date/Time Edit '.$msg.' Successfully !!!');
+                return redirect()->to($redirectLink);
+            } else {
+                $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');
+                return redirect()->to($redirectLink);
+            }
+        }
+        public function final_pickup_scheduled($sub_enquiry_no, $redirectLink)
+        {
+            $sub_enquiry_no             = decoded($sub_enquiry_no);
+            $redirectLink               = decoded($redirectLink);
+            $getSubEnquiry              = $this->data['model']->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+            $vendor_id                  = (($getSubEnquiry)?$getSubEnquiry->vendor_id:0);
+            if($getSubEnquiry){
+                $postData = array(
+                                    'pickup_schedule_edit_access'   => 0,
+                                    'is_pickup_final'               => 1,
+                                    'status'                        => 4.4,
+                                );
+                $updateData = $this->common_model->save_data('ecomm_sub_enquires', $postData, $sub_enquiry_no, 'sub_enquiry_no');
+
+                /* send push */
+                    $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
+                    if($getDeviceTokens){
+                        foreach($getDeviceTokens as $getDeviceToken){
+                            $fcm_token          = $getDeviceToken->fcm_token;
+                            $messageData = [
+                                'title'     => 'Pickup Schedule Date/Time Finalised',
+                                'body'      => 'Sub Enquiry Request ('.$sub_enquiry_no.') Pickup Schedule Date/Time Edit Finalised By EcoEx',
+                                'badge'     => 1,
+                                'sound'     => 'Default',
+                                'data'      => [],
+                            ];
+                            $this->pushNotification($fcm_token, $messageData);
+                            $users[]    = $getSubEnquiry->plant_id;
+                            $pushData   = [
+                                'source'            => 'FROM APP',
+                                'title'             => 'Pickup Schedule Date/Time Finalised',
+                                'description'       => 'Sub Enquiry Request ('.$sub_enquiry_no.') Pickup Schedule Date/Time Edit Finalised By EcoEx',
+                                'user_type'         => 'VENDOR',
+                                'users'             => json_encode($users),
+                                'is_send'           => 1,
+                                'send_timestamp'    => date('Y-m-d H:i:s'),
+                                'status'            => 1,
+                            ];
+                            $this->common_model->save_data('notifications', $pushData, '', 'id');
+                        }
+                    }
+                /* send push */
+                /* send mail */
+                    $fields = [
+                        'enq_id'                => $getSubEnquiry->enq_id,
+                        'company_id'            => $getSubEnquiry->company_id,
+                        'plant_id'              => $getSubEnquiry->plant_id,
+                        'vendor_id'             => $vendor_id,
+                        'sub_enquiry_no'        => $sub_enquiry_no,
+                    ];
+                    $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendor_id]);
+                    $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                    $subject                    = $generalSetting->site_name.' :: Sub Enquiry Pickup Schedule Date/Time Edit Access ('.$sub_enquiry_no.') ';
+                    $message                    = view('email-templates/enquiry-request-for-pickup-scheduled-final',$fields);
+                    $this->sendMail((($getVendor)?$getVendor->email:''), $subject, $message);
+                /* send mail */
+
+                $this->session->setFlashdata('success_message', 'Pickup Schedule Date/Time Finalised Successfully !!!');
+                return redirect()->to($redirectLink);
+            } else {
+                $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');
+                return redirect()->to($redirectLink);
+            }
+        }
     /* process enquiry requests */
 }

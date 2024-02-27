@@ -322,7 +322,7 @@ $userType           = $session->user_type;
                 </div> -->
                 <div class="card-body pb-0">
                     <h5 class="card-title">Enquiry Requests <span>| All Time</span></h5>
-                    <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
+                    <div id="trafficChart" style="min-height: 800px;" class="echart"></div>
                     <script>
                         document.addEventListener("DOMContentLoaded", () => {
                           echarts.init(document.querySelector("#trafficChart")).setOption({
@@ -330,7 +330,7 @@ $userType           = $session->user_type;
                               trigger: 'item'
                             },
                             legend: {
-                              top: '5%',
+                              top: '10%',
                               left: 'center'
                             },
                             series: [{

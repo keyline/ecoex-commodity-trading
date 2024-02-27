@@ -247,12 +247,12 @@
                                         <h6 class="text-warning">Still Not Finalised</h6>
                                         <p>
                                             <?php if($row->pickup_schedule_edit_access){?>
-                                                <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($row->sub_enquiry_no))?>" class="btn btn-success btn-sm" title="Pickup Scheduled Edit Access Off" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-check"></i> Pickup Schedule Edit Access On</a>
+                                                <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($row->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-success btn-sm" title="Pickup Scheduled Edit Access Off" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-check"></i> Pickup Schedule Edit Access On</a>
                                             <?php } else {?>
-                                                <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($row->sub_enquiry_no))?>" class="btn btn-danger btn-sm" title="Pickup Scheduled Edit Access On" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-times"></i> Pickup Schedule Edit Access Off</a>
+                                                <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($row->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-danger btn-sm" title="Pickup Scheduled Edit Access On" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-times"></i> Pickup Schedule Edit Access Off</a>
                                             <?php }?>
                                             <?php if($row->pickup_scheduled_date != ''){?>
-                                                <a href="<?=base_url('admin/ecomm_enquires/final-pickup-scheduled/'.encoded($row->sub_enquiry_no))?>" class="btn btn-primary btn-sm" title="Final Pickup Scheduled <?=$title?>" onclick="return confirm('Do you want to finalize this date of pickup material from vendor end ?');"><i class="fa fa-eye"></i> Make Final</a>
+                                                <a href="<?=base_url('admin/' . $controller_route . '/final-pickup-scheduled/'.encoded($row->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-primary btn-sm" title="Final Pickup Scheduled <?=$title?>" onclick="return confirm('Do you want to finalize this date of pickup material from vendor end ?');"><i class="fa fa-eye"></i> Make Final</a>
                                             <?php }?>
                                         </p>
                                     <?php }
