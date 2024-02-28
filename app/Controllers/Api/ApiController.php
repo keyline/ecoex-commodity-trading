@@ -4847,6 +4847,20 @@ class ApiController extends BaseController
                                     $enquirySubStatus = 'Order Complete';
                                 }
 
+                                $vehicle_images = [];
+                                $vehicleImgs    = json_decode($rows[0]->vehicle_images);
+                                if(count($vehicleImgs)){
+                                    for($v=0;$v<count($vehicleImgs);$v++){
+                                        $vehImags = [];
+                                        if(count($vehicleImgs[$v])){
+                                            for($p=0;$p<count($vehicleImgs[$v]);$p++){
+                                                $vehImags[] = base_url('public/uploads/enquiry/'.$vehicleImgs[$v][$p]);
+                                            }
+                                        }
+                                        $vehicle_images[] = $vehImags;
+                                    }
+                                }
+
                                 $apiResponse = [
                                     'enq_id'                            => $rows[0]->enq_id,
                                     'enquiry_no'                        => $rows[0]->enquiry_no,
@@ -4865,6 +4879,9 @@ class ApiController extends BaseController
                                     'gps_image'                         => (($getEnquiry->gps_tracking_image != '')?getenv('app.uploadsURL').'enquiry/'.$getEnquiry->gps_tracking_image:''),
                                     'pickup_schedule_edit_access'       => $rows[0]->pickup_schedule_edit_access,
                                     'pickup_date_final'                 => $rows[0]->is_pickup_final,
+                                    'no_of_vehicle'                     => $rows[0]->no_of_vehicle,
+                                    'vehicle_registration_nos'          => json_decode($rows[0]->vehicle_registration_nos),
+                                    'vehicle_images'                    => $vehicle_images,
                                     'pickup_date_logs'                  => $pickup_date_logs,
                                     'items'                             => $items,
                                 ];
@@ -4943,6 +4960,102 @@ class ApiController extends BaseController
                             $apiStatus          = TRUE;
                             http_response_code(200);
                             $apiMessage         = 'Pickup Schedule Date/Time Submittted Successfully !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'User Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
+            public function vendorProcessRequestVehiclePlaced()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['sub_enq_no', 'vehicles'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $sub_enquiry_no             = $requestData['sub_enq_no'];
+                    $vehicles                   = $requestData['vehicles'];
+                    
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            $getSubEnquiry              = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+                            $vehicle_registration_nos   = [];
+                            $vehicle_images             = [];
+                            if(count($vehicles)){
+                                for($v=0;$v<count($vehicles);$v++){
+                                    $vehicle_registration_nos[]     = $vehicles[$v]['vehicle_no'];
+                                    /* vehicle image */
+                                        $vehicle_img                = $vehicles[$v]['vehicle_img'];
+                                        $vehicle_imags              = [];
+                                        if(!empty($vehicle_img)){
+                                            for($p=0;$p<count($vehicle_img);$p++){
+                                                $upload_type            = $vehicle_img[$p]['type'];
+                                                if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
+                                                    $apiStatus          = FALSE;
+                                                    http_response_code(404);
+                                                    $apiMessage         = 'Please Upload Vehicle Image !!!';
+                                                    $apiExtraField      = 'response_code';
+                                                    $apiExtraData       = http_response_code();
+                                                } else {
+                                                    $upload_base64      = $vehicle_img[$p]['base64'];
+                                                    $img                = $upload_base64;
+                                                    $data               = base64_decode($img);
+                                                    $fileName           = uniqid() . '.jpg';
+                                                    $file               = 'public/uploads/enquiry/' . $fileName;
+                                                    $success            = file_put_contents($file, $data);
+                                                    $vehicle_imags[]   = $fileName;
+                                                }
+                                            }
+                                        }
+                                    /* vehicle image */
+                                    $vehicle_images[]             = $vehicle_imags;
+                                }
+                            }
+                            $fields1 = [
+                                'vehicle_placed_date'           => date("Y-m-d H:i:s"),
+                                'no_of_vehicle'                 => count($vehicle_registration_nos),
+                                'vehicle_registration_nos'      => json_encode($vehicle_registration_nos),
+                                'vehicle_images'                => json_encode($vehicle_images),
+                                'status'                        => 5.5,
+                            ];
+                            // pr($fields1);die;
+                            $this->common_model->save_data('ecomm_sub_enquires', $fields1, $sub_enquiry_no, 'sub_enquiry_no');
+
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Vehicle Placed Info Submittted Successfully !!!';
                             $apiExtraField      = 'response_code';
                             $apiExtraData       = http_response_code();
                         } else {
