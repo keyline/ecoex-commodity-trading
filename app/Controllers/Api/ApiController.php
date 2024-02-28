@@ -4865,11 +4865,7 @@ class ApiController extends BaseController
                                             'vehicle_img'   => $vehImags,
                                         ];
                                     }
-                                }
-                                
-
-                                
-                                
+                                }                                
 
                                 $apiResponse = [
                                     'enq_id'                            => $rows[0]->enq_id,
