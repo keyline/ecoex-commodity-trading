@@ -4764,7 +4764,7 @@ class ApiController extends BaseController
                                     ];
                                 }
                             }
-
+                            $vehicles = [];
                             if($rows){
                                 foreach($rows as $row){
                                     $getItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $row->item_id], 'item_name_ecoex,hsn');
@@ -4847,19 +4847,29 @@ class ApiController extends BaseController
                                     $enquirySubStatus = 'Order Complete';
                                 }
 
-                                $vehicle_images = [];
-                                $vehicleImgs    = json_decode($rows[0]->vehicle_images);
-                                if(count($vehicleImgs)){
-                                    for($v=0;$v<count($vehicleImgs);$v++){
+                                $vehicle_registration_nos   = json_decode($rows[0]->vehicle_registration_nos);
+                                $no_of_vehicle              = $rows[0]->no_of_vehicle;
+                                $vehicle_images             = [];
+                                $vehicleImgs                = json_decode($rows[0]->vehicle_images);
+                                if($no_of_vehicle){
+                                    for($v=0;$v<$no_of_vehicle;$v++){
                                         $vehImags = [];
                                         if(count($vehicleImgs[$v])){
                                             for($p=0;$p<count($vehicleImgs[$v]);$p++){
                                                 $vehImags[] = base_url('public/uploads/enquiry/'.$vehicleImgs[$v][$p]);
                                             }
                                         }
-                                        $vehicle_images[] = $vehImags;
+
+                                        $vehicles[] = [
+                                            'vehicle_no'    => $vehicle_registration_nos[$v],
+                                            'vehicle_img'   => $vehImags,
+                                        ];
                                     }
                                 }
+                                
+
+                                
+                                
 
                                 $apiResponse = [
                                     'enq_id'                            => $rows[0]->enq_id,
@@ -4880,8 +4890,7 @@ class ApiController extends BaseController
                                     'pickup_schedule_edit_access'       => $rows[0]->pickup_schedule_edit_access,
                                     'pickup_date_final'                 => $rows[0]->is_pickup_final,
                                     'no_of_vehicle'                     => $rows[0]->no_of_vehicle,
-                                    'vehicle_registration_nos'          => json_decode($rows[0]->vehicle_registration_nos),
-                                    'vehicle_images'                    => $vehicle_images,
+                                    'vehicles'                          => $vehicles,
                                     'pickup_date_logs'                  => $pickup_date_logs,
                                     'items'                             => $items,
                                 ];
