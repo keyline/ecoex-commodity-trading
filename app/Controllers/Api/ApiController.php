@@ -5019,7 +5019,7 @@ class ApiController extends BaseController
                             $vehicle_images             = [];
                             if(count($vehicles)){
                                 for($v=0;$v<count($vehicles);$v++){
-                                    $vehicle_registration_nos[]     = $vehicles[$v]['vehicle_no'];
+                                    $vehicle_registration_nos[]     = strtoupper($vehicles[$v]['vehicle_no']);
                                     /* vehicle image */
                                         $vehicle_img                = $vehicles[$v]['vehicle_img'];
                                         $vehicle_imags              = [];
