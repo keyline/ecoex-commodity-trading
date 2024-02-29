@@ -2,13 +2,14 @@
 $title              = $moduleDetail['title'];
 $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
-$getCompany         = $common_model->find_data('ecoex_companies', 'row', ['id' => $rows[0]->company_id], 'company_name');
-$getPlant           = $common_model->find_data('ecomm_users', 'row', ['id' => $rows[0]->plant_id], 'plant_name');
+$getCompany         = $common_model->find_data('ecoex_companies', 'row', ['id' => (($getSubEnquiry)?$getSubEnquiry->company_id:'')], 'company_name');
+$getPlant           = $common_model->find_data('ecomm_users', 'row', ['id' => (($getSubEnquiry)?$getSubEnquiry->plant_id:'')], 'plant_name');
+$sub_enquiry_status = (($getSubEnquiry)?$getSubEnquiry->status:'');
 ?>
 <div class="pagetitle">
     <h1><?=$page_header?></h1>
     <h5><?=(($getCompany)?$getCompany->company_name:'')?> : <?=(($getPlant)?$getPlant->plant_name:'')?></h5>
-    <h5><?=$rows[0]->enquiry_no?></h5>
+    <h5><?=(($getSubEnquiry)?$getSubEnquiry->enquiry_no:'')?></h5>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?=base_url('admin/dashboard')?>">Home</a></li>
@@ -42,7 +43,21 @@ $getPlant           = $common_model->find_data('ecomm_users', 'row', ['id' => $r
                                 <th scope="col">Sub Enquiry No.</th>
                                 <th scope="col">Assigned Vendor</th>
                                 <th scope="col">Pickup Scheduled At</th>
-                                <th scope="col">Activity At</th>
+                                <?php if($sub_enquiry_status == 3.3){?>
+                                    <th scope="col">Assigned Activity At</th>
+                                <?php } elseif($sub_enquiry_status == 4.4){?>
+                                    <th scope="col">Pickup Scheduled Activity At</th>
+                                <?php } elseif($sub_enquiry_status == 5.5){?>
+                                    <th scope="col">Vehicle Placed Activity At</th>
+                                <?php } elseif($sub_enquiry_status == 6.6){?>
+                                    <th scope="col">Material Weighed Activity At</th>
+                                <?php } elseif($sub_enquiry_status == 8.8){?>
+                                    <th scope="col">Invoice to Vendor Activity At</th>
+                                <?php } elseif($sub_enquiry_status == 9.9){?>
+                                    <th scope="col">Payment received from Vendor Activity At</th>
+                                <?php } elseif($sub_enquiry_status == 10.10){?>
+                                    <th scope="col">Vehicle Dispatched Activity At</th>
+                                <?php }?>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -104,7 +119,7 @@ $getPlant           = $common_model->find_data('ecomm_users', 'row', ['id' => $r
                                     </td>
                                     <td>
                                         <?php if($common_model->checkModuleFunctionAccess(23,109)){?>
-                                            <a href="<?=base_url('admin/' . $controller_route . '/view-process-request-detail/'.encoded($row->sub_enquiry_no))?>" class="btn btn-outline-info btn-sm" title="View Details <?=$title?>"><i class="fa fa-eye"></i> Details</a>
+                                            <a target="_blank" href="<?=base_url('admin/' . $controller_route . '/view-process-request-detail/'.encoded($row->sub_enquiry_no))?>" class="btn btn-outline-info btn-sm" title="View Details <?=$title?>"><i class="fa fa-eye"></i> Details</a>
                                             <br><br>
                                         <?php }?>
                                     </td>

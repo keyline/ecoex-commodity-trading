@@ -4859,7 +4859,6 @@ class ApiController extends BaseController
                                                 $vehImags[] = base_url('public/uploads/enquiry/'.$vehicleImgs[$v][$p]);
                                             }
                                         }
-
                                         $vehicles[] = [
                                             'vehicle_no'    => $vehicle_registration_nos[$v],
                                             'vehicle_img'   => $vehImags,

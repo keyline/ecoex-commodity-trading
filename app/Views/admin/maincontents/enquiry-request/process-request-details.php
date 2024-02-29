@@ -349,6 +349,40 @@
                 </div>
             </div>
 
+            <div class="card">
+                <div class="card-header bg-success text-light">
+                    <h5>Vehicle Placed <span style="float: right;">2 vehicles placed</span></h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Vehicle Number</th>
+                                <th>Vehicle Images</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if($vehicles){ $sl=1; foreach($vehicles as $vehicle){?>
+                                <tr>
+                                    <td><?=$sl++?></td>
+                                    <td><?=$vehicle['vehicle_no']?></td>
+                                    <td>
+                                        <div class="row">
+                                            <?php if($vehicle['vehicle_img']){ for($v=0;$v<count($vehicle['vehicle_img']);$v++){?>
+                                                <div class="col-md-3">
+                                                    <a href="<?=$vehicle['vehicle_img'][$v]?>" download><img src="<?=$vehicle['vehicle_img'][$v]?>" class="img-thumbnail" style="height:200px;width: 100%;"></a>
+                                                </div>
+                                            <?php } }?>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php } }?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>

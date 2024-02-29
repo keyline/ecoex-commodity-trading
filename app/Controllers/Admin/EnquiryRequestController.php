@@ -673,7 +673,8 @@ class EnquiryRequestController extends BaseController {
             } else {
                 $conditions                 = ['status' => (float)$enq_sub_status, 'company_id' => $company_id];
             }
-            $data['rows']               = $this->data['model']->find_data('ecomm_sub_enquires', 'array', $conditions, '', '', $groupBy, $order_by);
+            $data['rows']                   = $this->data['model']->find_data('ecomm_sub_enquires', 'array', $conditions, '', '', $groupBy, $order_by);
+            $data['getSubEnquiry']          = $this->data['model']->find_data('ecomm_sub_enquires', 'row', $conditions);
             echo $this->layout_after_login($title,$page_name,$data);
         }
         public function viewProcessRequestDetail($sub_enquiry_no)
@@ -719,6 +720,26 @@ class EnquiryRequestController extends BaseController {
 
             $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
             $data['getPickupDates']     = $this->data['model']->find_data('ecomm_enquiry_vendor_pickup_schedule_logs', 'array', ['sub_enquiry_no' => $sub_enquiry_no], 'pickup_date_time,created_at', '', '', $orderBy);
+
+            $no_of_vehicle                      = (($data['row'])?$data['row']->no_of_vehicle:0);
+            $vehicle_registration_nos           = (($data['row'])?json_decode($data['row']->vehicle_registration_nos):[]);
+            $vehicle_images                     = (($data['row'])?json_decode($data['row']->vehicle_images):[]);
+            $vehicles                           = [];
+            if($no_of_vehicle > 0){
+                for($v=0;$v<$no_of_vehicle;$v++){
+                    $vehImags = [];
+                    if(count($vehicle_images[$v])){
+                        for($p=0;$p<count($vehicle_images[$v]);$p++){
+                            $vehImags[] = base_url('public/uploads/enquiry/'.$vehicle_images[$v][$p]);
+                        }
+                    }
+                    $vehicles[] = [
+                        'vehicle_no'    => $vehicle_registration_nos[$v],
+                        'vehicle_img'   => $vehImags,
+                    ];
+                }
+            }
+            $data['vehicles']           = $vehicles;
 
             $title                      = 'Manage '.$this->data['title'] . ' : '.$stepName;
             $page_name                  = 'enquiry-request/process-request-details';
