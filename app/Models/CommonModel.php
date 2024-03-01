@@ -118,6 +118,14 @@ class CommonModel extends Model
     	$builder->insertBatch($postdata);
     }
 
+    function update_batchdata($table,$postdata = array(),$conditions='')
+    {
+        $builder = $this->db->table($table);
+        $builder->where($conditions);
+        $builder->update($postdata);
+        return $this->db->affectedRows();
+    }
+
     // delete data
     function delete_data($table,$id,$field)
     {

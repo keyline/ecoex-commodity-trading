@@ -3689,7 +3689,7 @@ class ApiController extends BaseController
                             'total_request'     => 'Total',
                             'new_request'       => 'New Requests',
                             'quotation_request' => 'Quotation Requests',
-                            'process_request'   => 'Process Requests',
+                            'process_request'   => 'In Process Requests',
                             'rejected_request'  => 'Rejected Requests',
                             'completed_request' => 'Completed Requests',
                             'total_count'       => $total_count,
@@ -5056,7 +5056,7 @@ class ApiController extends BaseController
 
                             $apiStatus          = TRUE;
                             http_response_code(200);
-                            $apiMessage         = 'Vehicle Placed Info Submittted Successfully !!!';
+                            $apiMessage         = 'Vehicle Placed Info Submitted Successfully !!!';
                             $apiExtraField      = 'response_code';
                             $apiExtraData       = http_response_code();
                         } else {
@@ -5089,7 +5089,7 @@ class ApiController extends BaseController
                 $apiResponse        = [];
                 $this->isJSON(file_get_contents('php://input'));
                 $requestData        = $this->extract_json(file_get_contents('php://input'));        
-                $requiredFields     = ['sub_enq_no', 'vehicles'];
+                $requiredFields     = ['sub_enq_no', 'materials'];
                 $headerData         = $this->request->headers();
                 if (!$this->validateArray($requiredFields, $requestData)){              
                     $apiStatus          = FALSE;
@@ -5100,7 +5100,7 @@ class ApiController extends BaseController
                     $app_access_token           = $this->extractToken($Authorization);
                     $getTokenValue              = $this->tokenAuth($app_access_token);
                     $sub_enquiry_no             = $requestData['sub_enq_no'];
-                    $vehicles                   = $requestData['vehicles'];
+                    $materials                  = $requestData['materials'];
                     
                     if($getTokenValue['status']){
                         $uId        = $getTokenValue['data'][1];
@@ -5110,11 +5110,12 @@ class ApiController extends BaseController
                             $getSubEnquiry              = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
                             $vehicle_registration_nos   = [];
                             $vehicle_images             = [];
-                            if(count($vehicles)){
-                                for($v=0;$v<count($vehicles);$v++){
-                                    $vehicle_registration_nos[]     = strtoupper($vehicles[$v]['vehicle_no']);
+                            if(count($materials)){
+                                for($v=0;$v<count($materials);$v++){
+                                    $item_id            = $materials[$v]['item_id'];
+                                    $actual_weight      = $materials[$v]['actual_weight'];
                                     /* vehicle image */
-                                        $vehicle_img                = $vehicles[$v]['vehicle_img'];
+                                        $vehicle_img                = $materials[$v]['weighing_slip_img'];
                                         $vehicle_imags              = [];
                                         if(!empty($vehicle_img)){
                                             for($p=0;$p<count($vehicle_img);$p++){
@@ -5122,7 +5123,7 @@ class ApiController extends BaseController
                                                 if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
                                                     $apiStatus          = FALSE;
                                                     http_response_code(404);
-                                                    $apiMessage         = 'Please Upload Vehicle Image !!!';
+                                                    $apiMessage         = 'Please Upload Material Weighing Slip Image !!!';
                                                     $apiExtraField      = 'response_code';
                                                     $apiExtraData       = http_response_code();
                                                 } else {
@@ -5137,22 +5138,22 @@ class ApiController extends BaseController
                                             }
                                         }
                                     /* vehicle image */
-                                    $vehicle_images[]             = $vehicle_imags;
+                                    // $vehicle_images[]             = $vehicle_imags;
+                                    $getQuotation = $this->common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => (($getSubEnquiry)?$getSubEnquiry->enq_id:''), 'vendor_id' => $uId, 'item_id' => $item_id], 'unit_name');
+                                    $fields1 = [
+                                        'weighted_qty'                  => $actual_weight,
+                                        'weighted_unit'                 => (($getQuotation)?$getQuotation->unit_name:''),
+                                        'material_weighted_date'        => date("Y-m-d H:i:s"),
+                                        'material_weighing_slips'       => json_encode($vehicle_imags),
+                                        'is_plant_confirm'              => 1,
+                                        'status'                        => 6.6,
+                                    ];
+                                    $this->common_model->update_batchdata('ecomm_sub_enquires', $fields1, ['sub_enquiry_no' => $sub_enquiry_no, 'item_id' => $item_id]);
                                 }
                             }
-                            $fields1 = [
-                                'vehicle_placed_date'           => date("Y-m-d H:i:s"),
-                                'no_of_vehicle'                 => count($vehicle_registration_nos),
-                                'vehicle_registration_nos'      => json_encode($vehicle_registration_nos),
-                                'vehicle_images'                => json_encode($vehicle_images),
-                                'status'                        => 5.5,
-                            ];
-                            // pr($fields1);die;
-                            $this->common_model->save_data('ecomm_sub_enquires', $fields1, $sub_enquiry_no, 'sub_enquiry_no');
-
                             $apiStatus          = TRUE;
                             http_response_code(200);
-                            $apiMessage         = 'Vehicle Placed Info Submittted Successfully !!!';
+                            $apiMessage         = 'Material Weighted Info Submitted Successfully !!!';
                             $apiExtraField      = 'response_code';
                             $apiExtraData       = http_response_code();
                         } else {
