@@ -3666,20 +3666,16 @@ class ApiController extends BaseController
                     $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                     $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                     if($getUser){
-                        $memberType         = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
-
-                        $total_count        = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId]);
-
-                        $pending_count        = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId, 'status' => 0]);
-
-                        $accepted_enquiry        = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId, 'status' => 1]);
-
-                        $rejected_enquiry        = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId, 'status' => 3]);
-
+                        $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
+                        $total_count            = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId]);
+                        $new_count              = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId, 'status' => 0]);
+                        $quotation_request      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId, 'status' => 1]);
+                        $groupBy[0]             = 'sub_enquiry_no';
+                        $process_request        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['vendor_id' => $uId, 'status<=' => 10.10], '', '', $groupBy);
+                        $rejected_enquiry       = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId, 'status' => 3]);
                         $completed_count        = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId, 'status' => 2]);
-
-                        $apiResponse        = [
-                            'vendor_id'          => $getUser->id,
+                        $apiResponse            = [
+                            'vendor_id'         => $getUser->id,
                             'gst_no'            => $getUser->gst_no,
                             'company_name'      => $getUser->company_name,
                             'full_address'      => $getUser->full_address,
@@ -3690,22 +3686,23 @@ class ApiController extends BaseController
                             'pincode'           => $getUser->pincode,
                             'location'          => $getUser->location,
                             'email'             => $getUser->email,
-                            'total_enquiry'     => 'Total',
-                            'pending_enquiry'   => 'Pending Enquiry',
-                            'accepted_enquiry'  => 'Accepted Enquiry',
-                            'rejected_enquiry'  => 'Rejected Enquiry',
-                            'completed_enquiry' => 'Completed Enquiry',
+                            'total_request'     => 'Total',
+                            'new_request'       => 'New Requests',
+                            'quotation_request' => 'Quotation Requests',
+                            'process_request'   => 'Process Requests',
+                            'rejected_request'  => 'Rejected Requests',
+                            'completed_request' => 'Completed Requests',
                             'total_count'       => $total_count,
-                            'pending_count'     => $pending_count,
-                            'accepted_count'    => $accepted_enquiry,
+                            'new_count'         => $new_count,
+                            'quotation_count'   => $quotation_request,
+                            'process_count'     => $process_request,
                             'rejected_count'    => $rejected_enquiry,
                             'completed_count'   => $completed_count,
-                            'step1_percent'     => (($total_count > 0)?(($pending_count / $total_count) * 100):0),
-                            'step2_percent'     => (($total_count > 0)?(($accepted_enquiry / $total_count) * 100):0),
+                            'step1_percent'     => (($total_count > 0)?(($new_count / $total_count) * 100):0),
+                            'step2_percent'     => (($total_count > 0)?(($quotation_request / $total_count) * 100):0),
                             'step3_percent'     => (($total_count > 0)?(($rejected_enquiry / $total_count) * 100):0),
                             'step4_percent'     => (($total_count > 0)?(($completed_count / $total_count) * 100):0),
                         ];
-
                         $apiStatus          = TRUE;
                         http_response_code(200);
                         $apiMessage         = 'Data Available !!!';
@@ -4990,6 +4987,102 @@ class ApiController extends BaseController
                 $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
             }
             public function vendorProcessRequestVehiclePlaced()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['sub_enq_no', 'vehicles'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $sub_enquiry_no             = $requestData['sub_enq_no'];
+                    $vehicles                   = $requestData['vehicles'];
+                    
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            $getSubEnquiry              = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+                            $vehicle_registration_nos   = [];
+                            $vehicle_images             = [];
+                            if(count($vehicles)){
+                                for($v=0;$v<count($vehicles);$v++){
+                                    $vehicle_registration_nos[]     = strtoupper($vehicles[$v]['vehicle_no']);
+                                    /* vehicle image */
+                                        $vehicle_img                = $vehicles[$v]['vehicle_img'];
+                                        $vehicle_imags              = [];
+                                        if(!empty($vehicle_img)){
+                                            for($p=0;$p<count($vehicle_img);$p++){
+                                                $upload_type            = $vehicle_img[$p]['type'];
+                                                if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
+                                                    $apiStatus          = FALSE;
+                                                    http_response_code(404);
+                                                    $apiMessage         = 'Please Upload Vehicle Image !!!';
+                                                    $apiExtraField      = 'response_code';
+                                                    $apiExtraData       = http_response_code();
+                                                } else {
+                                                    $upload_base64      = $vehicle_img[$p]['base64'];
+                                                    $img                = $upload_base64;
+                                                    $data               = base64_decode($img);
+                                                    $fileName           = uniqid() . '.jpg';
+                                                    $file               = 'public/uploads/enquiry/' . $fileName;
+                                                    $success            = file_put_contents($file, $data);
+                                                    $vehicle_imags[]   = $fileName;
+                                                }
+                                            }
+                                        }
+                                    /* vehicle image */
+                                    $vehicle_images[]             = $vehicle_imags;
+                                }
+                            }
+                            $fields1 = [
+                                'vehicle_placed_date'           => date("Y-m-d H:i:s"),
+                                'no_of_vehicle'                 => count($vehicle_registration_nos),
+                                'vehicle_registration_nos'      => json_encode($vehicle_registration_nos),
+                                'vehicle_images'                => json_encode($vehicle_images),
+                                'status'                        => 5.5,
+                            ];
+                            // pr($fields1);die;
+                            $this->common_model->save_data('ecomm_sub_enquires', $fields1, $sub_enquiry_no, 'sub_enquiry_no');
+
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Vehicle Placed Info Submittted Successfully !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'User Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
+            public function vendorProcessRequestMaterialWeighted()
             {
                 $apiStatus          = TRUE;
                 $apiMessage         = '';
