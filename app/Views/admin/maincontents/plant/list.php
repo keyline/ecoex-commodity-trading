@@ -47,6 +47,7 @@ $company_id                 = $session->company_id;
                                 <th scope="col">Plant Address<br>Location</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Phone</th>
+                                <th scope="col">Created At<br>Updated At</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -66,6 +67,15 @@ $company_id                 = $session->company_id;
                                 <td><?=wordwrap($row->full_address,25,"<br>\n")?><br><?=$row->location?></td>
                                 <td><?=$row->email?></td>
                                 <td><?=$row->phone?></td>
+                                <td>
+                                    <h6>
+                                        <?=(($row->created_at != '')?date_format(date_create($row->created_at), "M d, Y h:i A"):'')?>
+                                        <hr>
+                                    </h6>
+                                    <h6>
+                                        <?=(($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):'')?>
+                                    </h6>
+                                </td>
                                 <td>
                                     <?php if($common_model->checkModuleFunctionAccess(15,79)){?>
                                         <a href="<?=base_url('admin/' . $controller_route . '/edit/'.encoded($row->$primary_key))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$title?>"><i class="fa fa-edit"></i></a>

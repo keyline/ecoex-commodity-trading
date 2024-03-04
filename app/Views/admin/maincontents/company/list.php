@@ -34,7 +34,7 @@ $company_id                 = $session->company_id;
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <?php if($common_model->checkModuleFunctionAccess(14,63)){?>
+                    <?php if($common_model->checkModuleFunctionAccess(14,113)){?>
                         <h5 class="card-title">
                             <a href="<?=base_url('admin/' . $controller_route . '/add/')?>" class="btn btn-outline-success btn-sm">Add <?=$title?></a>
                         </h5>
@@ -47,7 +47,8 @@ $company_id                 = $session->company_id;
                                 <th scope="col">GST No.<br>Company Name</th>
                                 <th scope="col">Company Address<br>Location</th>
                                 <th scope="col">Contact Person Name<br>Email<br>Phone</th>
-                                <th scope="col">Contact Start<br>End</th>
+                                <th scope="col">Contact Start<br>Contact End</th>
+                                <th scope="col">Created At<br>Updated At</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -62,6 +63,15 @@ $company_id                 = $session->company_id;
                                 <td>
                                     <?=(($row->contract_start != '')?date_format(date_create($row->contract_start), "M d, Y"):'')?><br>
                                     <?=(($row->contract_end != '')?date_format(date_create($row->contract_end), "M d, Y"):'')?>
+                                </td>
+                                <td>
+                                    <h6>
+                                        <?=(($row->created_at != '')?date_format(date_create($row->created_at), "M d, Y h:i A"):'')?>
+                                        <hr>
+                                    </h6>
+                                    <h6>
+                                        <?=(($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):'')?>
+                                    </h6>
                                 </td>
                                 <td>
                                     <?php if($common_model->checkModuleFunctionAccess(14,71)){?>
