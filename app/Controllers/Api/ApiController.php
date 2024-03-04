@@ -4781,11 +4781,13 @@ class ApiController extends BaseController
                                         }
                                     }
 
+                                    $getItemWeightedInfo = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no, 'item_id' => $row->item_id], 'weighted_qty');
+
                                     $items[]              = [
                                         'item_id'           => $row->item_id,
                                         'item_name'         => (($getItem)?$getItem->item_name_ecoex:''),
                                         'item_hsn'          => (($getItem)?$getItem->hsn:''),
-                                        'item_qty'          => (($getEnquiryItem)?$getEnquiryItem->qty:''),
+                                        'item_qty'          => (($getItemWeightedInfo)?$getItemWeightedInfo->weighted_qty:''),
                                         'item_unit'         => (($getUnit)?$getUnit->name:''),
                                         'item_quote_price'  => $row->win_quote_price,
                                         'item_images'       => $item_images,
@@ -4882,6 +4884,7 @@ class ApiController extends BaseController
                                     'pickup_schedule_edit_access'       => $rows[0]->pickup_schedule_edit_access,
                                     'pickup_date_final'                 => $rows[0]->is_pickup_final,
                                     'no_of_vehicle'                     => $rows[0]->no_of_vehicle,
+                                    'material_weighing_edit'            => $rows[0]->material_weighing_edit,
                                     'vehicles'                          => $vehicles,
                                     'pickup_date_logs'                  => $pickup_date_logs,
                                     'items'                             => $items,
@@ -5145,6 +5148,7 @@ class ApiController extends BaseController
                                         'weighted_unit'                 => (($getQuotation)?$getQuotation->unit_name:''),
                                         'material_weighted_date'        => date("Y-m-d H:i:s"),
                                         'material_weighing_slips'       => json_encode($vehicle_imags),
+                                        'material_weighing_edit'        => 0,
                                     ];
                                     $this->common_model->update_batchdata('ecomm_sub_enquires', $fields1, ['sub_enquiry_no' => $sub_enquiry_no, 'item_id' => $item_id]);
                                 }
