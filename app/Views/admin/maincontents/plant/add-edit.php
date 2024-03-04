@@ -165,7 +165,7 @@ $company_id                 = $session->company_id;
                         <div class="row mb-3">
                             <label for="pincode" class="col-md-2 col-lg-2 col-form-label">Pincode <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="pincode" class="form-control" id="pincode" onkeypress="return isNumber(event)" maxlength="6" minlength="6" value="<?=$location?>" required>
+                                <input type="text" name="pincode" class="form-control" id="pincode" onkeypress="return isNumber(event)" maxlength="6" minlength="6" value="<?=$pincode?>" required>
                             </div>
                         </div>
                         <div class="row mb-3">
