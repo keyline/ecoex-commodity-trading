@@ -4781,7 +4781,21 @@ class ApiController extends BaseController
                                         }
                                     }
 
-                                    $getItemWeightedInfo = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no, 'item_id' => $row->item_id], 'weighted_qty');
+                                    $getItemWeightedInfo = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no, 'item_id' => $row->item_id], 'weighted_qty,material_weighing_slips');
+
+                                    $materials                  = [];
+                                    $weighted_qty               = (($getItemWeightedInfo)?$getItemWeightedInfo->weighted_qty:'');
+                                    $material_weighing_slips    = (($getItemWeightedInfo)?json_decode($getItemWeightedInfo->material_weighing_slips):[]);
+                                    $matImags                   = [];
+                                    if(count($material_weighing_slips)){
+                                        for($p=0;$p<count($material_weighing_slips);$p++){
+                                            $matImags[] = base_url('public/uploads/enquiry/'.$material_weighing_slips[$p]);
+                                        }
+                                    }
+                                    $materials = [
+                                        'actual_weight'         => (($getItemWeightedInfo)?$getItemWeightedInfo->weighted_qty:''),
+                                        'weighing_slip_img'     => $matImags,
+                                    ];
 
                                     $items[]              = [
                                         'item_id'           => $row->item_id,
@@ -4791,6 +4805,7 @@ class ApiController extends BaseController
                                         'item_unit'         => (($getUnit)?$getUnit->name:''),
                                         'item_quote_price'  => $row->win_quote_price,
                                         'item_images'       => $item_images,
+                                        'materials'         => $materials,
                                     ];
                                 }
 
