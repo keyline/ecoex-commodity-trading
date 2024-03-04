@@ -4900,6 +4900,7 @@ class ApiController extends BaseController
                                     'pickup_date_final'                 => $rows[0]->is_pickup_final,
                                     'no_of_vehicle'                     => $rows[0]->no_of_vehicle,
                                     'material_weighing_edit'            => $rows[0]->material_weighing_edit,
+                                    'is_plant_ecoex_confirm'            => $rows[0]->is_plant_ecoex_confirm,
                                     'vehicles'                          => $vehicles,
                                     'pickup_date_logs'                  => $pickup_date_logs,
                                     'items'                             => $items,
