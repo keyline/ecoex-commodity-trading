@@ -5145,8 +5145,6 @@ class ApiController extends BaseController
                                         'weighted_unit'                 => (($getQuotation)?$getQuotation->unit_name:''),
                                         'material_weighted_date'        => date("Y-m-d H:i:s"),
                                         'material_weighing_slips'       => json_encode($vehicle_imags),
-                                        'is_plant_confirm'              => 1,
-                                        'status'                        => 6.6,
                                     ];
                                     $this->common_model->update_batchdata('ecomm_sub_enquires', $fields1, ['sub_enquiry_no' => $sub_enquiry_no, 'item_id' => $item_id]);
                                 }
