@@ -2403,7 +2403,7 @@ class ApiController extends BaseController
                 }
                 $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
             }
-            public function processRequestList()
+            public function pendingAcceptedRequestList()
             {
                 $apiStatus          = TRUE;
                 $apiMessage         = '';
