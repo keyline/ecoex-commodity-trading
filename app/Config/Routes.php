@@ -244,8 +244,8 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 					$routes->match(['get', 'post'], "process-request-delete", "ApiController::processRequestDelete");
 					$routes->match(['get', 'post'], "process-request-edit", "ApiController::processRequestEdit");
 					$routes->match(['get', 'post'], "process-request-update", "ApiController::processRequestUpdate");
-					$routes->match(['get', 'post'], "process-enquiry-list", "ApiController::processEnquiryList");
-					$routes->match(['get', 'post'], "process-enquiry-details", "ApiController::processEnquiryDetails");
+					$routes->match(['get', 'post'], "plant-process-enquiry-list", "ApiController::plantProcessEnquiryList");
+					$routes->match(['get', 'post'], "plant-process-enquiry-details", "ApiController::plantProcessEnquiryDetails");
 				// process request
 				// completed request
 					$routes->match(['get', 'post'], "completed-request-list", "ApiController::completedRequestList");
