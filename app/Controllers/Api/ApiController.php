@@ -3422,7 +3422,7 @@ class ApiController extends BaseController
                                     } elseif($row->status == 12.12){
                                         $enquirySubStatus = 'Order Complete';
                                     }
-                                    $product_count               = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['vendor_id' => $uId, 'enq_id' => $row->enq_id], 'item_id');
+                                    $product_count               = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['sub_enquiry_no' => $row->sub_enquiry_no, 'enq_id' => $row->enq_id], 'item_id');
                                     $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $row->vendor_id]);
                                     $apiResponse[] = [
                                         'enq_id'                            => $row->enq_id,
@@ -3443,6 +3443,217 @@ class ApiController extends BaseController
                                     ];
                                 }
                             }
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Vendor Process Data Available !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'User Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
+            public function plantProcessEnquiryDetails()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['sub_enquiry_no'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $sub_enquiry_no             = $requestData['sub_enquiry_no'];
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            $rows               = $this->db->query("SELECT * FROM `ecomm_sub_enquires` WHERE `sub_enquiry_no` = '$sub_enquiry_no' order by id ASC")->getResult();
+                            $items              = [];
+                            $pickup_date_logs   = [];
+                            $getPickupDates     = $this->common_model->find_data('ecomm_enquiry_vendor_pickup_schedule_logs', 'array', ['sub_enquiry_no' => $sub_enquiry_no], 'pickup_date_time,created_at');
+                            if($getPickupDates){
+                                foreach($getPickupDates as $getPickupDate){
+                                    $pickup_date_logs[]   = [
+                                        'pickup_date'       => date_format(date_create($getPickupDate->pickup_date_time), "M d, Y h:i A"),
+                                        'submitted_date'    => date_format(date_create($getPickupDate->created_at), "M d, Y h:i A"),
+                                    ];
+                                }
+                            }
+                            $vehicles = [];
+                            if($rows){
+                                foreach($rows as $row){
+                                    $getItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $row->item_id], 'item_name_ecoex,hsn');
+                                    $getEnquiryItem = $this->common_model->find_data('ecomm_enquiry_products', 'row', ['product_id' => $row->item_id, 'enq_id' => $row->enq_id], 'new_product_image,qty,unit');
+                                    $getUnit = $this->common_model->find_data('ecomm_units', 'row', ['id' => (($getEnquiryItem)?$getEnquiryItem->unit:0)], 'name');
+
+                                    $item_images     = [];
+                                    if($getEnquiryItem){
+                                        $new_product_image  = json_decode($getEnquiryItem->new_product_image);
+                                        if(!empty($new_product_image)){
+                                            for($pi=0;$pi<count($new_product_image);$pi++){
+                                                $item_images[]     = [
+                                                    'id'    => $pi,
+                                                    'link'  => (($new_product_image[$pi] != '')?getenv('app.uploadsURL').'enquiry/'.$new_product_image[$pi]:getenv('app.NO_IMAGE'))
+                                                ];
+                                            }
+                                        }
+                                    }
+
+                                    $getItemWeightedInfo = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no, 'item_id' => $row->item_id], 'weighted_qty,material_weighing_slips');
+
+                                    $materials                  = [];
+                                    $weighted_qty               = (($getItemWeightedInfo)?$getItemWeightedInfo->weighted_qty:'');
+                                    $material_weighing_slips    = (($getItemWeightedInfo)?json_decode($getItemWeightedInfo->material_weighing_slips):[]);
+                                    $matImags                   = [];
+                                    if(count($material_weighing_slips)){
+                                        for($p=0;$p<count($material_weighing_slips);$p++){
+                                            $matImags[] = base_url('public/uploads/enquiry/'.$material_weighing_slips[$p]);
+                                        }
+                                    }
+                                    $materials = [
+                                        'actual_weight'         => (($getItemWeightedInfo)?$getItemWeightedInfo->weighted_qty:''),
+                                        'weighing_slip_img'     => $matImags,
+                                    ];
+
+                                    $items[]              = [
+                                        'item_id'           => $row->item_id,
+                                        'item_name'         => (($getItem)?$getItem->item_name_ecoex:''),
+                                        'item_hsn'          => (($getItem)?$getItem->hsn:''),
+                                        'item_qty'          => (($getItemWeightedInfo)?$getItemWeightedInfo->weighted_qty:''),
+                                        'item_unit'         => (($getUnit)?$getUnit->name:''),
+                                        'item_quote_price'  => $row->win_quote_price,
+                                        'item_images'       => $item_images,
+                                        'materials'         => $materials,
+                                    ];
+                                }
+
+                                $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $rows[0]->enq_id]);
+                                if($getEnquiry){
+                                    if($getEnquiry->status == 0){
+                                        $enquiryMainStatus = 'Request Submitted';
+                                    } elseif($getEnquiry->status == 1){
+                                        $enquiryMainStatus = 'Accept Request';
+                                    } elseif($getEnquiry->status == 2){
+                                        $enquiryMainStatus = 'Vendor Allocated';
+                                    } elseif($getEnquiry->status == 3){
+                                        $enquiryMainStatus = 'Vendor Assigned';
+                                    } elseif($getEnquiry->status == 4){
+                                        $enquiryMainStatus = 'Pickup Scheduled';
+                                    } elseif($getEnquiry->status == 5){
+                                        $enquiryMainStatus = 'Vehicle Placed';
+                                    } elseif($getEnquiry->status == 6){
+                                        $enquiryMainStatus = 'Material Weighed';
+                                    } elseif($getEnquiry->status == 7){
+                                        $enquiryMainStatus = 'Invoice from HO';
+                                    } elseif($getEnquiry->status == 8){
+                                        $enquiryMainStatus = 'Invoice to Vendor';
+                                    } elseif($getEnquiry->status == 9){
+                                        $enquiryMainStatus = 'Payment received from Vendor';
+                                    } elseif($getEnquiry->status == 10){
+                                        $enquiryMainStatus = 'Vehicle Dispatched';
+                                    } elseif($getEnquiry->status == 11){
+                                        $enquiryMainStatus = 'Payment to HO';
+                                    } elseif($getEnquiry->status == 12){
+                                        $enquiryMainStatus = 'Order Complete';
+                                    } elseif($getEnquiry->status == 13){
+                                        $enquiryMainStatus = 'Reject Request';
+                                    }
+                                } else {
+                                    $enquiryMainStatus = '';
+                                }
+                                if($rows[0]->status == 3.3){
+                                    $enquirySubStatus = 'Vendor Assigned';
+                                } elseif($rows[0]->status == 4.4){
+                                    $enquirySubStatus = 'Pickup Scheduled';
+                                } elseif($rows[0]->status == 5.5){
+                                    $enquirySubStatus = 'Vehicle Placed';
+                                } elseif($rows[0]->status == 6.6){
+                                    $enquirySubStatus = 'Material Weighed';
+                                } elseif($rows[0]->status == 8.8){
+                                    $enquirySubStatus = 'Invoice to Vendor';
+                                } elseif($rows[0]->status == 9.9){
+                                    $enquirySubStatus = 'Payment received from Vendor';
+                                } elseif($rows[0]->status == 10.10){
+                                    $enquirySubStatus = 'Vehicle Dispatched';
+                                } elseif($rows[0]->status == 12.12){
+                                    $enquirySubStatus = 'Order Complete';
+                                }
+
+                                $vehicle_registration_nos   = json_decode($rows[0]->vehicle_registration_nos);
+                                $no_of_vehicle              = $rows[0]->no_of_vehicle;
+                                $vehicle_images             = [];
+                                $vehicleImgs                = json_decode($rows[0]->vehicle_images);
+                                if($no_of_vehicle){
+                                    for($v=0;$v<$no_of_vehicle;$v++){
+                                        $vehImags = [];
+                                        if(count($vehicleImgs[$v])){
+                                            for($p=0;$p<count($vehicleImgs[$v]);$p++){
+                                                $vehImags[] = base_url('public/uploads/enquiry/'.$vehicleImgs[$v][$p]);
+                                            }
+                                        }
+                                        $vehicles[] = [
+                                            'vehicle_no'    => $vehicle_registration_nos[$v],
+                                            'vehicle_img'   => $vehImags,
+                                        ];
+                                    }
+                                }                                
+                                $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $rows[0]->vendor_id]);
+                                $apiResponse = [
+                                    'enq_id'                            => $rows[0]->enq_id,
+                                    'enquiry_no'                        => $rows[0]->enquiry_no,
+                                    'enquiry_main_status'               => $enquiryMainStatus,
+                                    'sub_enq_id'                        => $rows[0]->id,
+                                    'sub_enquiry_no'                    => $rows[0]->sub_enquiry_no,
+                                    'enquiry_sub_status'                => $enquirySubStatus,
+                                    'enquiry_sub_status_id'             => $rows[0]->status,
+                                    'vendor_name'                       => (($getVendor)?$getVendor->company_name:''),
+                                    'assigned_date'                     => (($rows[0]->assigned_date != '')?date_format(date_create($rows[0]->assigned_date), "M d, Y h:i A"):''),
+                                    'pickup_scheduled_date'             => (($rows[0]->pickup_scheduled_date != '')?date_format(date_create($rows[0]->pickup_scheduled_date), "M d, Y h:i A"):''),
+                                    'vehicle_placed_date'               => (($rows[0]->vehicle_placed_date != '')?date_format(date_create($rows[0]->vehicle_placed_date), "M d, Y h:i A"):''),
+                                    'material_weighted_date'            => (($rows[0]->material_weighted_date != '')?date_format(date_create($rows[0]->material_weighted_date), "M d, Y h:i A"):''),
+                                    'invoice_to_vendor_date'            => (($rows[0]->invoice_to_vendor_date != '')?date_format(date_create($rows[0]->invoice_to_vendor_date), "M d, Y h:i A"):''),
+                                    'vendor_payment_received_date'      => (($rows[0]->vendor_payment_received_date != '')?date_format(date_create($rows[0]->vendor_payment_received_date), "M d, Y h:i A"):''),
+                                    'vehicle_dispatched_date'           => (($rows[0]->vehicle_dispatched_date != '')?date_format(date_create($rows[0]->vehicle_dispatched_date), "M d, Y h:i A"):''),
+                                    'gps_image'                         => (($getEnquiry->gps_tracking_image != '')?getenv('app.uploadsURL').'enquiry/'.$getEnquiry->gps_tracking_image:''),
+                                    'pickup_schedule_edit_access'       => $rows[0]->pickup_schedule_edit_access,
+                                    'pickup_date_final'                 => $rows[0]->is_pickup_final,
+                                    'no_of_vehicle'                     => $rows[0]->no_of_vehicle,
+                                    'material_weighing_edit_vendor'     => $rows[0]->material_weighing_edit_vendor,
+                                    'material_weighing_edit_plant'      => $rows[0]->material_weighing_edit_plant,
+                                    'is_plant_ecoex_confirm'            => $rows[0]->is_plant_ecoex_confirm,
+                                    'vehicles'                          => $vehicles,
+                                    'pickup_date_logs'                  => $pickup_date_logs,
+                                    'items'                             => $items,
+                                ];
+                            }
+
                             $apiStatus          = TRUE;
                             http_response_code(200);
                             $apiMessage         = 'Vendor Process Data Available !!!';

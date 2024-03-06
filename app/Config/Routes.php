@@ -237,13 +237,15 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 
 			/* plant panel */
 				$routes->match(['post'], "dashboard", "ApiController::dashboard");
-				// process request
+				// pending/accepted request
 					$routes->match(['get', 'post'], "get-units", "ApiController::getUnits");
 					$routes->match(['get', 'post'], "pending-accepted-request-list", "ApiController::pendingAcceptedRequestList");
 					$routes->match(['get', 'post'], "process-request-add", "ApiController::processRequestAdd");
 					$routes->match(['get', 'post'], "process-request-delete", "ApiController::processRequestDelete");
 					$routes->match(['get', 'post'], "process-request-edit", "ApiController::processRequestEdit");
 					$routes->match(['get', 'post'], "process-request-update", "ApiController::processRequestUpdate");
+				// pending/accepted request
+				// process request
 					$routes->match(['get', 'post'], "plant-process-enquiry-list", "ApiController::plantProcessEnquiryList");
 					$routes->match(['get', 'post'], "plant-process-enquiry-details", "ApiController::plantProcessEnquiryDetails");
 				// process request
