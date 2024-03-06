@@ -3649,6 +3649,7 @@ class ApiController extends BaseController
                                     'material_weighing_edit_vendor'     => $rows[0]->material_weighing_edit_vendor,
                                     'material_weighing_edit_plant'      => $rows[0]->material_weighing_edit_plant,
                                     'is_plant_ecoex_confirm'            => $rows[0]->is_plant_ecoex_confirm,
+                                    'plant_ecoex_confirm_date'          => (($rows[0]->plant_ecoex_confirm_date != '')?date_format(date_create($rows[0]->plant_ecoex_confirm_date), "M d, Y h:i A"):''),
                                     'vehicles'                          => $vehicles,
                                     'pickup_date_logs'                  => $pickup_date_logs,
                                     'items'                             => $items,
@@ -3806,9 +3807,10 @@ class ApiController extends BaseController
                         if($getUser){
                             $getSubEnquiry              = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
                             $fields                     = [
-                                'status'                    => 6.6,
-                                'is_plant_ecoex_confirm'    => 1,
-                                'plant_ecoex_confirm_date'  => date('Y-m-d H:i:s'),
+                                'status'                            => 6.6,
+                                'material_weighing_edit_plant'      => 0,
+                                'is_plant_ecoex_confirm'            => 1,
+                                'plant_ecoex_confirm_date'          => date('Y-m-d H:i:s'),
                             ];
                             $this->common_model->save_data('ecomm_sub_enquires', $fields, $sub_enquiry_no, 'sub_enquiry_no');
 
