@@ -3543,14 +3543,15 @@ class ApiController extends BaseController
                                     ];
 
                                     $items[]              = [
-                                        'item_id'           => $row->item_id,
-                                        'item_name'         => (($getItem)?$getItem->item_name_ecoex:''),
-                                        'item_hsn'          => (($getItem)?$getItem->hsn:''),
-                                        'item_qty'          => (($getItemWeightedInfo)?$getItemWeightedInfo->weighted_qty:''),
-                                        'item_unit'         => (($getUnit)?$getUnit->name:''),
-                                        'item_quote_price'  => $row->win_quote_price,
-                                        'item_images'       => $item_images,
-                                        'materials'         => $materials,
+                                        'item_id'                           => $row->item_id,
+                                        'item_name'                         => (($getItem)?$getItem->item_name_ecoex:''),
+                                        'item_hsn'                          => (($getItem)?$getItem->hsn:''),
+                                        'item_qty'                          => (($getItemWeightedInfo)?$getItemWeightedInfo->weighted_qty:''),
+                                        'item_unit'                         => (($getUnit)?$getUnit->name:''),
+                                        'item_quote_price'                  => $row->win_quote_price,
+                                        'item_images'                       => $item_images,
+                                        'materials'                         => $materials,
+                                        'is_plant_ecoex_confirm'            => $row->is_plant_ecoex_confirm,
                                     ];
                                 }
 
