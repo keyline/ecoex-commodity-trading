@@ -3682,6 +3682,163 @@ class ApiController extends BaseController
                 }
                 $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
             }
+            public function plantProcessRequestMaterialWeighted()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['sub_enq_no', 'materials'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $sub_enquiry_no             = $requestData['sub_enq_no'];
+                    $materials                  = $requestData['materials'];
+                    
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            $getSubEnquiry              = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+                            $vehicle_registration_nos   = [];
+                            $vehicle_images             = [];
+                            if(count($materials)){
+                                for($v=0;$v<count($materials);$v++){
+                                    $item_id            = $materials[$v]['item_id'];
+                                    $actual_weight      = $materials[$v]['actual_weight'];
+                                    /* vehicle image */
+                                        $vehicle_img                = $materials[$v]['weighing_slip_img'];
+                                        $vehicle_imags              = [];
+                                        if(!empty($vehicle_img)){
+                                            for($p=0;$p<count($vehicle_img);$p++){
+                                                $upload_type            = $vehicle_img[$p]['type'];
+                                                if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
+                                                    $apiStatus          = FALSE;
+                                                    http_response_code(404);
+                                                    $apiMessage         = 'Please Upload Material Weighing Slip Image !!!';
+                                                    $apiExtraField      = 'response_code';
+                                                    $apiExtraData       = http_response_code();
+                                                } else {
+                                                    $upload_base64      = $vehicle_img[$p]['base64'];
+                                                    $img                = $upload_base64;
+                                                    $data               = base64_decode($img);
+                                                    $fileName           = uniqid() . '.jpg';
+                                                    $file               = 'public/uploads/enquiry/' . $fileName;
+                                                    $success            = file_put_contents($file, $data);
+                                                    $vehicle_imags[]   = $fileName;
+                                                }
+                                            }
+                                        }
+                                    /* vehicle image */
+                                    // $vehicle_images[]             = $vehicle_imags;
+                                    $getQuotation = $this->common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => (($getSubEnquiry)?$getSubEnquiry->enq_id:''), 'vendor_id' => $uId, 'item_id' => $item_id], 'unit_name');
+                                    $fields1 = [
+                                        'weighted_qty'                  => $actual_weight,
+                                        'weighted_unit'                 => (($getQuotation)?$getQuotation->unit_name:''),
+                                        'material_weighted_date'        => date("Y-m-d H:i:s"),
+                                        'material_weight_plant_date'    => date("Y-m-d H:i:s"),
+                                        'material_weighing_slips'       => json_encode($vehicle_imags),
+                                        'material_weighing_edit_plant'  => 0,
+                                    ];
+                                    $this->common_model->update_batchdata('ecomm_sub_enquires', $fields1, ['sub_enquiry_no' => $sub_enquiry_no, 'item_id' => $item_id]);
+                                }
+                            }
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Material Weighted Info Submitted Successfully !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'User Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
+            public function plantProcessRequestMaterialWeightedApproved()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['sub_enq_no'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $sub_enquiry_no             = $requestData['sub_enq_no'];
+                    
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            $getSubEnquiry              = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+                            $fields                     = [
+                                'status'                    => 6.6,
+                                'is_plant_ecoex_confirm'    => 1,
+                                'plant_ecoex_confirm_date'  => date('Y-m-d H:i:s'),
+                            ];
+                            $this->common_model->save_data('ecomm_sub_enquires', $fields, $sub_enquiry_no, 'sub_enquiry_no');
+
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Material Weighted Info Approved Successfully !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'User Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
         /* process request */
         /* completed request */
             public function completedRequestList()
@@ -5538,8 +5695,9 @@ class ApiController extends BaseController
                                         'weighted_qty'                  => $actual_weight,
                                         'weighted_unit'                 => (($getQuotation)?$getQuotation->unit_name:''),
                                         'material_weighted_date'        => date("Y-m-d H:i:s"),
+                                        'material_weight_vendor_date'   => date("Y-m-d H:i:s"),
                                         'material_weighing_slips'       => json_encode($vehicle_imags),
-                                        'material_weighing_edit'        => 0,
+                                        'material_weighing_edit_vendor' => 0,
                                     ];
                                     $this->common_model->update_batchdata('ecomm_sub_enquires', $fields1, ['sub_enquiry_no' => $sub_enquiry_no, 'item_id' => $item_id]);
                                 }

@@ -248,6 +248,8 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 				// process request
 					$routes->match(['get', 'post'], "plant-process-enquiry-list", "ApiController::plantProcessEnquiryList");
 					$routes->match(['get', 'post'], "plant-process-enquiry-details", "ApiController::plantProcessEnquiryDetails");
+					$routes->match(['post'], "plant-process-request-material-weighted", "ApiController::plantProcessRequestMaterialWeighted");
+					$routes->match(['post'], "plant-process-request-material-weighted-approved", "ApiController::plantProcessRequestMaterialWeightedApproved");
 				// process request
 				// completed request
 					$routes->match(['get', 'post'], "completed-request-list", "ApiController::completedRequestList");
