@@ -2287,11 +2287,50 @@ class ApiController extends BaseController
                     if($getUser){
                         $memberType         = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
                         $step0_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId]);
-                        $step1_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 0]);
-                        $step2_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status>=' => 0, 'status<=' => 11]);
+                        $step1_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status>=' => 0, 'status<=' => 11]);
+                        $step2_count        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['plant_id' => $uId, 'status>=' => 3.3, 'status<=' => 10.10]);
                         $step3_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 13]);
                         $step4_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 12]);
                         $getCompany         = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $getUser->parent_id]);
+
+                        $buttons            = [
+                            [
+                                'id'            => 1,
+                                'label'         => 'Total',
+                                'value'         => $step0_count,
+                                'color_code'    => '#0b66bf'
+                            ],
+                            [
+                                'id'            => 2,
+                                'label'         => 'New Request',
+                                'value'         => '',
+                                'color_code'    => '#264CD4'
+                            ],
+                            [
+                                'id'            => 3,
+                                'label'         => 'Pending/Accepted Request',
+                                'value'         => $step1_count,
+                                'color_code'    => '#E79D0CE8'
+                            ],
+                            [
+                                'id'            => 4,
+                                'label'         => 'Process Request',
+                                'value'         => $step2_count,
+                                'color_code'    => '#eeef0f'
+                            ],
+                            [
+                                'id'            => 5,
+                                'label'         => 'Rejected Request',
+                                'value'         => $step3_count,
+                                'color_code'    => '#E70C0CC9'
+                            ],
+                            [
+                                'id'            => 6,
+                                'label'         => 'Completed Request',
+                                'value'         => $step4_count,
+                                'color_code'    => '#2DA952'
+                            ]
+                        ];
                         $apiResponse        = [
                             'plant_id'          => $getUser->id,
                             'plant_name'        => $getUser->plant_name,
@@ -2305,20 +2344,21 @@ class ApiController extends BaseController
                             'pincode'           => $getUser->pincode,
                             'location'          => $getUser->location,
                             'email'             => $getUser->email,
-                            'step0_label'       => 'Total',
-                            'step1_label'       => 'New Request',
-                            'step2_label'       => 'In Process Request',
-                            'step3_label'       => 'Rejected Request',
-                            'step4_label'       => 'Completed Request',
-                            'step0_count'       => $step0_count,
-                            'step1_count'       => $step1_count,
-                            'step2_count'       => $step2_count,
-                            'step3_count'       => $step3_count,
-                            'step4_count'       => $step4_count,
-                            'step1_percent'     => (($step0_count > 0)?(($step1_count / $step0_count) * 100):0),
-                            'step2_percent'     => (($step0_count > 0)?(($step2_count / $step0_count) * 100):0),
-                            'step3_percent'     => (($step0_count > 0)?(($step3_count / $step0_count) * 100):0),
-                            'step4_percent'     => (($step0_count > 0)?(($step4_count / $step0_count) * 100):0),
+                            'buttons'           => $buttons,
+                            // 'step0_label'       => 'Total',
+                            // 'step1_label'       => 'New Request',
+                            // 'step2_label'       => 'In Process Request',
+                            // 'step3_label'       => 'Rejected Request',
+                            // 'step4_label'       => 'Completed Request',
+                            // 'step0_count'       => $step0_count,
+                            // 'step1_count'       => $step1_count,
+                            // 'step2_count'       => $step2_count,
+                            // 'step3_count'       => $step3_count,
+                            // 'step4_count'       => $step4_count,
+                            // 'step1_percent'     => (($step0_count > 0)?(($step1_count / $step0_count) * 100):0),
+                            // 'step2_percent'     => (($step0_count > 0)?(($step2_count / $step0_count) * 100):0),
+                            // 'step3_percent'     => (($step0_count > 0)?(($step3_count / $step0_count) * 100):0),
+                            // 'step4_percent'     => (($step0_count > 0)?(($step4_count / $step0_count) * 100):0),
                         ];
 
                         $apiStatus          = TRUE;
