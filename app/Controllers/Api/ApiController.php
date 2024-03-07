@@ -3714,42 +3714,54 @@ class ApiController extends BaseController
                             $vehicle_images             = [];
                             if(count($materials)){
                                 for($v=0;$v<count($materials);$v++){
-                                    $item_id            = $materials[$v]['item_id'];
-                                    $actual_weight      = $materials[$v]['actual_weight'];
+                                    $item_id                = $materials[$v]['item_id'];
+                                    $actual_weight          = $materials[$v]['actual_weight'];
+                                    $getItemWiseSubEnquiry  = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no, 'item_id' => $item_id], 'material_weighing_slips');
                                     /* vehicle image */
                                         $vehicle_img                = $materials[$v]['weighing_slip_img'];
                                         $vehicle_imags              = [];
                                         if(!empty($vehicle_img)){
                                             for($p=0;$p<count($vehicle_img);$p++){
-                                                $upload_type            = $vehicle_img[$p]['type'];
-                                                if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
-                                                    $apiStatus          = FALSE;
-                                                    http_response_code(404);
-                                                    $apiMessage         = 'Please Upload Material Weighing Slip Image !!!';
-                                                    $apiExtraField      = 'response_code';
-                                                    $apiExtraData       = http_response_code();
-                                                } else {
-                                                    $upload_base64      = $vehicle_img[$p]['base64'];
-                                                    $img                = $upload_base64;
-                                                    $data               = base64_decode($img);
-                                                    $fileName           = uniqid() . '.jpg';
-                                                    $file               = 'public/uploads/enquiry/' . $fileName;
-                                                    $success            = file_put_contents($file, $data);
-                                                    $vehicle_imags[]   = $fileName;
+                                                $singleImage            = $vehicle_img[$p];
+                                                if(is_array($singleImage)){
+                                                    $upload_type            = $vehicle_img[$p]['type'];
+                                                    if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
+                                                        $apiStatus          = FALSE;
+                                                        http_response_code(404);
+                                                        $apiMessage         = 'Please Upload Material Weighing Slip Image !!!';
+                                                        $apiExtraField      = 'response_code';
+                                                        $apiExtraData       = http_response_code();
+                                                    } else {
+                                                        $upload_base64      = $vehicle_img[$p]['base64'];
+                                                        $img                = $upload_base64;
+                                                        $data               = base64_decode($img);
+                                                        $fileName           = uniqid() . '.jpg';
+                                                        $file               = 'public/uploads/enquiry/' . $fileName;
+                                                        $success            = file_put_contents($file, $data);
+                                                        $vehicle_imags[]   = $fileName;
+                                                    }
                                                 }
                                             }
                                         }
                                     /* vehicle image */
                                     // $vehicle_images[]             = $vehicle_imags;
+                                    $material_weighing_slips = (($getItemWiseSubEnquiry)?json_decode($getItemWiseSubEnquiry->material_weighing_slips):[]);
+                                    // pr($material_weighing_slips,0);
+                                    // pr($vehicle_imags,0);
+                                    $mergeWeightSlips = array_merge($material_weighing_slips,$vehicle_imags);
+                                    // pr($mergeWeightSlips,0);
+                                    // die;
+
                                     $getQuotation = $this->common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => (($getSubEnquiry)?$getSubEnquiry->enq_id:''), 'vendor_id' => $uId, 'item_id' => $item_id], 'unit_name');
                                     $fields1 = [
                                         'weighted_qty'                  => $actual_weight,
                                         'weighted_unit'                 => (($getQuotation)?$getQuotation->unit_name:''),
                                         'material_weighted_date'        => date("Y-m-d H:i:s"),
                                         'material_weight_plant_date'    => date("Y-m-d H:i:s"),
-                                        'material_weighing_slips'       => json_encode($vehicle_imags),
+                                        'material_weighing_slips'       => json_encode($mergeWeightSlips),
                                         'material_weighing_edit_plant'  => 0,
                                     ];
+                                    // pr($fields1);
                                     $this->common_model->update_batchdata('ecomm_sub_enquires', $fields1, ['sub_enquiry_no' => $sub_enquiry_no, 'item_id' => $item_id]);
                                 }
                             }
