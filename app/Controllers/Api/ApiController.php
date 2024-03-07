@@ -2316,7 +2316,7 @@ class ApiController extends BaseController
                                 'id'            => 3,
                                 'label'         => 'Process Request',
                                 'value'         => $step2_count,
-                                'color_code'    => '#eeef0f'
+                                'color_code'    => '#0dcaf0'
                             ],
                             [
                                 'id'            => 4,
