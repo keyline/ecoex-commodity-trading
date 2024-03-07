@@ -2294,12 +2294,12 @@ class ApiController extends BaseController
                         $getCompany         = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $getUser->parent_id]);
 
                         $buttons            = [
-                            [
-                                'id'            => 1,
-                                'label'         => 'Total',
-                                'value'         => $step0_count,
-                                'color_code'    => '#0b66bf'
-                            ],
+                            // [
+                            //     'id'            => 1,
+                            //     'label'         => 'Total',
+                            //     'value'         => $step0_count,
+                            //     'color_code'    => '#0b66bf'
+                            // ],
                             [
                                 'id'            => 2,
                                 'label'         => 'New Request',
