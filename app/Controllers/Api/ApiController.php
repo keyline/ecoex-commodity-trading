@@ -3822,6 +3822,7 @@ class ApiController extends BaseController
                                 'status'                            => 6.6,
                                 'material_weighing_edit_plant'      => 0,
                                 'is_plant_ecoex_confirm'            => 1,
+                                'material_weight_plant_date'        => date("Y-m-d H:i:s"),
                                 'plant_ecoex_confirm_date'          => date('Y-m-d H:i:s'),
                             ];
                             $this->common_model->save_data('ecomm_sub_enquires', $fields, $sub_enquiry_no, 'sub_enquiry_no');
