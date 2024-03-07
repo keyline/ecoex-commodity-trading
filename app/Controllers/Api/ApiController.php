@@ -2301,31 +2301,31 @@ class ApiController extends BaseController
                             //     'color_code'    => '#0b66bf'
                             // ],
                             [
-                                'id'            => 2,
+                                'id'            => 1,
                                 'label'         => 'New Request',
                                 'value'         => '',
                                 'color_code'    => '#264CD4'
                             ],
                             [
-                                'id'            => 3,
+                                'id'            => 2,
                                 'label'         => 'Pending/Accepted Request',
                                 'value'         => $step1_count,
                                 'color_code'    => '#E79D0CE8'
                             ],
                             [
-                                'id'            => 4,
+                                'id'            => 3,
                                 'label'         => 'Process Request',
                                 'value'         => $step2_count,
                                 'color_code'    => '#eeef0f'
                             ],
                             [
-                                'id'            => 5,
+                                'id'            => 4,
                                 'label'         => 'Rejected Request',
                                 'value'         => $step3_count,
                                 'color_code'    => '#E70C0CC9'
                             ],
                             [
-                                'id'            => 6,
+                                'id'            => 5,
                                 'label'         => 'Completed Request',
                                 'value'         => $step4_count,
                                 'color_code'    => '#2DA952'
