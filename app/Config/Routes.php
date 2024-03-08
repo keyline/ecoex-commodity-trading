@@ -183,6 +183,8 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 			$routes->match(['get'], "enquiry-requests/view-process-request-detail/(:any)", "EnquiryRequestController::viewProcessRequestDetail/$1");
 			$routes->match(['get', 'post'], "enquiry-requests/change-status-pickup-edit-access/(:any)/(:any)", "EnquiryRequestController::change_status_pickup_edit_access/$1/$2");
 			$routes->match(['get', 'post'], "enquiry-requests/final-pickup-scheduled/(:any)/(:any)", "EnquiryRequestController::final_pickup_scheduled/$1/$2");
+			$routes->match(['get', 'post'], "enquiry-requests/approve-material-weight/(:any)", "EnquiryRequestController::approveMaterialWeight/$1");
+			$routes->match(['get', 'post'], "enquiry-requests/modify-approve-material-weight", "EnquiryRequestController::modifyApproveMaterialWeight");
 		// enquiry requests
 		// notifications
 			$routes->match(['get'], "notifications/list", "NotificationController::list");

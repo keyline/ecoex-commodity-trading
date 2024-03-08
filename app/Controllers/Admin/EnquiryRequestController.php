@@ -741,6 +741,8 @@ class EnquiryRequestController extends BaseController {
             }
             $data['vehicles']           = $vehicles;
 
+            $data['materialWeights']    = $this->data['model']->find_data('ecomm_sub_enquires', 'array', ['sub_enquiry_no' => $sub_enquiry_no]);
+
             $title                      = 'Manage '.$this->data['title'] . ' : '.$stepName;
             $page_name                  = 'enquiry-request/process-request-details';
             echo $this->layout_after_login($title,$page_name,$data);
@@ -874,6 +876,231 @@ class EnquiryRequestController extends BaseController {
 
                 $this->session->setFlashdata('success_message', 'Pickup Schedule Date/Time Finalised Successfully !!!');
                 return redirect()->to($redirectLink);
+            } else {
+                $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');
+                return redirect()->to($redirectLink);
+            }
+        }
+        public function approveMaterialWeight($sub_enquiry_no){
+            $sub_enquiry_no             = decoded($sub_enquiry_no);
+            $getSubEnquiry              = $this->data['model']->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+            $vendor_id                  = (($getSubEnquiry)?$getSubEnquiry->vendor_id:0);
+            $plant_id                   = (($getSubEnquiry)?$getSubEnquiry->plant_id:0);
+            if($getSubEnquiry){
+                $fields                     = [
+                    'status'                    => 6.6,
+                    'is_plant_ecoex_confirm'    => 2,
+                    'plant_ecoex_confirm_date'  => date('Y-m-d H:i:s'),
+                ];
+                $this->data['model']->save_data('ecomm_sub_enquires', $fields, $sub_enquiry_no, 'sub_enquiry_no');
+
+                /* email sent */
+                    $fields = [
+                        'enq_id'                => $getSubEnquiry->enq_id,
+                        'company_id'            => $getSubEnquiry->company_id,
+                        'plant_id'              => $getSubEnquiry->plant_id,
+                        'vendor_id'             => $vendor_id,
+                        'sub_enquiry_no'        => $sub_enquiry_no,
+                    ];
+                    $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendor_id]);
+                    $getPlant                   = $this->common_model->find_data('ecomm_users', 'row', ['id' => $plant_id]);
+                    $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                    $subject                    = $generalSetting->site_name.' :: Sub Enquiry Material Weight ('.$sub_enquiry_no.') ';
+                    $message1                    = view('email-templates/enquiry-request-for-material-weight-vendor',$fields);
+                    $this->sendMail((($getVendor)?$getVendor->email:''), $subject, $message1);
+                    $message2                    = view('email-templates/enquiry-request-for-material-weight-plant',$fields);
+                    $this->sendMail((($getPlant)?$getPlant->email:''), $subject, $message2);
+
+                    /* email log save */
+                        $postData1 = [
+                            'name'                  => (($getVendor)?$getVendor->company_name:''),
+                            'email'                 => (($getVendor)?$getVendor->email:''),
+                            'subject'               => $subject,
+                            'message'               => $message1
+                        ];
+                        $this->common_model->save_data('email_logs', $postData1, '', 'id');
+                        $postData2 = [
+                            'name'                  => (($getPlant)?$getPlant->company_name:''),
+                            'email'                 => (($getPlant)?$getPlant->email:''),
+                            'subject'               => $subject,
+                            'message'               => $message1
+                        ];
+                        $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                    /* email log save */
+                /* email sent */
+                /* push notification sent */
+                    $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
+                    if($getDeviceTokens){
+                        foreach($getDeviceTokens as $getDeviceToken){
+                            $fcm_token          = $getDeviceToken->fcm_token;
+                            $messageData = [
+                                'title'     => 'Material Weight Approved',
+                                'body'      => 'Sub Enquiry Request ('.$sub_enquiry_no.') Material Weight Approved By EcoEx',
+                                'badge'     => 1,
+                                'sound'     => 'Default',
+                                'data'      => [],
+                            ];
+                            $this->pushNotification($fcm_token, $messageData);
+                            $users[]    = $getSubEnquiry->vendor_id;
+                            $pushData   = [
+                                'source'            => 'FROM APP',
+                                'title'             => 'Material Weight Approved',
+                                'description'       => 'Sub Enquiry Request ('.$sub_enquiry_no.') Material Weight Approved By EcoEx',
+                                'user_type'         => 'VENDOR',
+                                'users'             => json_encode($users),
+                                'is_send'           => 1,
+                                'send_timestamp'    => date('Y-m-d H:i:s'),
+                                'status'            => 1,
+                            ];
+                            $this->common_model->save_data('notifications', $pushData, '', 'id');
+                        }
+                    }
+
+                    $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $plant_id, 'fcm_token!=' => ''], 'fcm_token');
+                    if($getDeviceTokens){
+                        foreach($getDeviceTokens as $getDeviceToken){
+                            $fcm_token          = $getDeviceToken->fcm_token;
+                            $messageData = [
+                                'title'     => 'Material Weight Approved',
+                                'body'      => 'Sub Enquiry Request ('.$sub_enquiry_no.') Material Weight Approved By EcoEx',
+                                'badge'     => 1,
+                                'sound'     => 'Default',
+                                'data'      => [],
+                            ];
+                            $this->pushNotification($fcm_token, $messageData);
+                            $users[]    = $getSubEnquiry->plant_id;
+                            $pushData   = [
+                                'source'            => 'FROM APP',
+                                'title'             => 'Material Weight Approved',
+                                'description'       => 'Sub Enquiry Request ('.$sub_enquiry_no.') Material Weight Approved By EcoEx',
+                                'user_type'         => 'PLANT',
+                                'users'             => json_encode($users),
+                                'is_send'           => 1,
+                                'send_timestamp'    => date('Y-m-d H:i:s'),
+                                'status'            => 1,
+                            ];
+                            $this->common_model->save_data('notifications', $pushData, '', 'id');
+                        }
+                    }
+                /* push notification sent */
+                $this->session->setFlashdata('success_message', 'Material Weight Approved Successfully !!!');
+                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+            } else {
+                $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');
+                return redirect()->to($redirectLink);
+            }
+        }
+        public function modifyApproveMaterialWeight(){
+            $inputData                  = $this->request->getPost();
+            $sub_enquiry_no             = $inputData['sub_enquiry_no'];
+            $weighted_qty               = $inputData['weighted_qty'];
+            $getSubEnquiry              = $this->data['model']->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+            $vendor_id                  = (($getSubEnquiry)?$getSubEnquiry->vendor_id:0);
+            $plant_id                   = (($getSubEnquiry)?$getSubEnquiry->plant_id:0);
+            if($getSubEnquiry){
+                if(!empty($weighted_qty)){
+                    for($i=0;$i<count($weighted_qty);$i++){
+                        $fields                     = [
+                            'status'                    => 6.6,
+                            'weighted_qty'              => $weighted_qty[$i],
+                            'is_plant_ecoex_confirm'    => 2,
+                            'plant_ecoex_confirm_date'  => date('Y-m-d H:i:s'),
+                        ];
+                        $this->data['model']->save_data('ecomm_sub_enquires', $fields, $sub_enquiry_no, 'sub_enquiry_no');
+                    }
+                }
+
+                /* email sent */
+                    $fields = [
+                        'enq_id'                => $getSubEnquiry->enq_id,
+                        'company_id'            => $getSubEnquiry->company_id,
+                        'plant_id'              => $getSubEnquiry->plant_id,
+                        'vendor_id'             => $vendor_id,
+                        'sub_enquiry_no'        => $sub_enquiry_no,
+                    ];
+                    $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendor_id]);
+                    $getPlant                   = $this->common_model->find_data('ecomm_users', 'row', ['id' => $plant_id]);
+                    $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                    $subject                    = $generalSetting->site_name.' :: Sub Enquiry Material Weight ('.$sub_enquiry_no.') ';
+                    $message1                    = view('email-templates/enquiry-request-for-material-weight-vendor',$fields);
+                    $this->sendMail((($getVendor)?$getVendor->email:''), $subject, $message1);
+                    $message2                    = view('email-templates/enquiry-request-for-material-weight-plant',$fields);
+                    $this->sendMail((($getPlant)?$getPlant->email:''), $subject, $message2);
+
+                    /* email log save */
+                        $postData1 = [
+                            'name'                  => (($getVendor)?$getVendor->company_name:''),
+                            'email'                 => (($getVendor)?$getVendor->email:''),
+                            'subject'               => $subject,
+                            'message'               => $message1
+                        ];
+                        $this->common_model->save_data('email_logs', $postData1, '', 'id');
+                        $postData2 = [
+                            'name'                  => (($getPlant)?$getPlant->company_name:''),
+                            'email'                 => (($getPlant)?$getPlant->email:''),
+                            'subject'               => $subject,
+                            'message'               => $message1
+                        ];
+                        $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                    /* email log save */
+                /* email sent */
+                /* push notification sent */
+                    $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
+                    if($getDeviceTokens){
+                        foreach($getDeviceTokens as $getDeviceToken){
+                            $fcm_token          = $getDeviceToken->fcm_token;
+                            $messageData = [
+                                'title'     => 'Material Weight Approved',
+                                'body'      => 'Sub Enquiry Request ('.$sub_enquiry_no.') Material Weight Approved By EcoEx',
+                                'badge'     => 1,
+                                'sound'     => 'Default',
+                                'data'      => [],
+                            ];
+                            $this->pushNotification($fcm_token, $messageData);
+                            $users[]    = $getSubEnquiry->vendor_id;
+                            $pushData   = [
+                                'source'            => 'FROM APP',
+                                'title'             => 'Material Weight Approved',
+                                'description'       => 'Sub Enquiry Request ('.$sub_enquiry_no.') Material Weight Approved By EcoEx',
+                                'user_type'         => 'VENDOR',
+                                'users'             => json_encode($users),
+                                'is_send'           => 1,
+                                'send_timestamp'    => date('Y-m-d H:i:s'),
+                                'status'            => 1,
+                            ];
+                            $this->common_model->save_data('notifications', $pushData, '', 'id');
+                        }
+                    }
+
+                    $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $plant_id, 'fcm_token!=' => ''], 'fcm_token');
+                    if($getDeviceTokens){
+                        foreach($getDeviceTokens as $getDeviceToken){
+                            $fcm_token          = $getDeviceToken->fcm_token;
+                            $messageData = [
+                                'title'     => 'Material Weight Approved',
+                                'body'      => 'Sub Enquiry Request ('.$sub_enquiry_no.') Material Weight Approved By EcoEx',
+                                'badge'     => 1,
+                                'sound'     => 'Default',
+                                'data'      => [],
+                            ];
+                            $this->pushNotification($fcm_token, $messageData);
+                            $users[]    = $getSubEnquiry->plant_id;
+                            $pushData   = [
+                                'source'            => 'FROM APP',
+                                'title'             => 'Material Weight Approved',
+                                'description'       => 'Sub Enquiry Request ('.$sub_enquiry_no.') Material Weight Approved By EcoEx',
+                                'user_type'         => 'PLANT',
+                                'users'             => json_encode($users),
+                                'is_send'           => 1,
+                                'send_timestamp'    => date('Y-m-d H:i:s'),
+                                'status'            => 1,
+                            ];
+                            $this->common_model->save_data('notifications', $pushData, '', 'id');
+                        }
+                    }
+                /* push notification sent */
+                $this->session->setFlashdata('success_message', 'Material Weight Approved Successfully !!!');
+                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
             } else {
                 $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');
                 return redirect()->to($redirectLink);

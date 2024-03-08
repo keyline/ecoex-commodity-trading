@@ -3859,6 +3859,7 @@ class ApiController extends BaseController
                         $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                         if($getUser){
                             $getSubEnquiry              = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+                            $vendor_id                  = (($getSubEnquiry)?$getSubEnquiry->vendor_id:0);
                             $fields                     = [
                                 'status'                            => 6.6,
                                 'material_weighing_edit_plant'      => 0,
@@ -3867,6 +3868,59 @@ class ApiController extends BaseController
                                 'plant_ecoex_confirm_date'          => date('Y-m-d H:i:s'),
                             ];
                             $this->common_model->save_data('ecomm_sub_enquires', $fields, $sub_enquiry_no, 'sub_enquiry_no');
+
+                            /* email sent */
+                                $fields = [
+                                    'enq_id'                => $getSubEnquiry->enq_id,
+                                    'company_id'            => $getSubEnquiry->company_id,
+                                    'plant_id'              => $getSubEnquiry->plant_id,
+                                    'vendor_id'             => $vendor_id,
+                                    'sub_enquiry_no'        => $sub_enquiry_no,
+                                ];
+                                $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendor_id]);
+                                $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                                $subject                    = $generalSetting->site_name.' :: Sub Enquiry Material Weight ('.$sub_enquiry_no.') ';
+                                $message1                    = view('email-templates/enquiry-request-for-material-weight-vendor',$fields);
+                                $this->sendMail((($getVendor)?$getVendor->email:''), $subject, $message1);
+
+                                /* email log save */
+                                    $postData1 = [
+                                        'name'                  => (($getVendor)?$getVendor->company_name:''),
+                                        'email'                 => (($getVendor)?$getVendor->email:''),
+                                        'subject'               => $subject,
+                                        'message'               => $message1
+                                    ];
+                                    $this->common_model->save_data('email_logs', $postData1, '', 'id');
+                                /* email log save */
+                            /* email sent */
+                            /* push notification sent */
+                                $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
+                                if($getDeviceTokens){
+                                    foreach($getDeviceTokens as $getDeviceToken){
+                                        $fcm_token          = $getDeviceToken->fcm_token;
+                                        $messageData = [
+                                            'title'     => 'Material Weight Approved',
+                                            'body'      => 'Sub Enquiry Request ('.$sub_enquiry_no.') Material Weight Approved By Plant',
+                                            'badge'     => 1,
+                                            'sound'     => 'Default',
+                                            'data'      => [],
+                                        ];
+                                        $this->pushNotification($fcm_token, $messageData);
+                                        $users[]    = $getSubEnquiry->vendor_id;
+                                        $pushData   = [
+                                            'source'            => 'FROM APP',
+                                            'title'             => 'Material Weight Approved',
+                                            'description'       => 'Sub Enquiry Request ('.$sub_enquiry_no.') Material Weight Approved By Plant',
+                                            'user_type'         => 'VENDOR',
+                                            'users'             => json_encode($users),
+                                            'is_send'           => 1,
+                                            'send_timestamp'    => date('Y-m-d H:i:s'),
+                                            'status'            => 1,
+                                        ];
+                                        $this->common_model->save_data('notifications', $pushData, '', 'id');
+                                    }
+                                }
+                            /* push notification sent */
 
                             $apiStatus          = TRUE;
                             http_response_code(200);
