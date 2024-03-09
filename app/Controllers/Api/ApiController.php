@@ -5267,8 +5267,8 @@ class ApiController extends BaseController
                                 }
                                 $conditions .= ')';
                             }
-                            $rows               = $this->db->query("SELECT * FROM `ecomm_sub_enquires` WHERE `vendor_id` = '$uId' and $conditions group by vendor_id order by $fieldName $typeName limit $offset,$limit")->getResult();
-                            echo $this->db->getLastQuery();die;
+                            $rows               = $this->db->query("SELECT * FROM `ecomm_sub_enquires` WHERE `vendor_id` = '$uId' and $conditions group by sub_enquiry_no order by $fieldName $typeName limit $offset,$limit")->getResult();
+                            // echo $this->db->getLastQuery();die;
                             if($rows){
                                 foreach($rows as $row){
                                     $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $row->enq_id]);
