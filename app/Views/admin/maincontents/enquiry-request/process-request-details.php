@@ -371,7 +371,7 @@
                                         <div class="row">
                                             <?php if($vehicle['vehicle_img']){ for($v=0;$v<count($vehicle['vehicle_img']);$v++){?>
                                                 <div class="col-md-3">
-                                                    <a href="<?=getenv('app.uploadsURL').'enquiry/'.$vehicle['vehicle_img'][$v]?>" download><img src="<?=$vehicle['vehicle_img'][$v]?>" class="img-thumbnail" style="height:100px;width: 100%;"></a>
+                                                    <a href="<?=$vehicle['vehicle_img'][$v]?>" download><img src="<?=$vehicle['vehicle_img'][$v]?>" class="img-thumbnail" style="height:100px;width: 100%;"></a>
                                                 </div>
                                             <?php } }?>
                                         </div>
@@ -423,7 +423,7 @@
                                                 ?>
                                                 <?php if($material_weighing_slips){ for($v=0;$v<count($material_weighing_slips);$v++){?>
                                                     <div class="col-md-3">
-                                                        <a href="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" download><img src="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" class="img-thumbnail" style="height:100px;width: 100%;"></a>
+                                                        <a href="<?=$material_weighing_slips[$v]?>" download><img src="<?=$material_weighing_slips[$v]?>" class="img-thumbnail" style="height:250px;width: 250px;"></a>
                                                     </div>
                                                 <?php } }?>
                                             </div>
