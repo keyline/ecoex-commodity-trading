@@ -371,7 +371,7 @@
                                         <div class="row">
                                             <?php if($vehicle['vehicle_img']){ for($v=0;$v<count($vehicle['vehicle_img']);$v++){?>
                                                 <div class="col-md-3">
-                                                    <a href="<?=getenv('app.uploadsURL').'enquiry/'.$vehicle['vehicle_img'][$v]?>" download><img src="<?=getenv('app.uploadsURL').'enquiry/'.$vehicle['vehicle_img'][$v]?>" class="img-thumbnail" style="height:100px;width: 100%;"></a>
+                                                    <a href="<?=getenv('app.uploadsURL').'enquiry/'.$vehicle['vehicle_img'][$v]?>" download><img src="<?=$vehicle['vehicle_img'][$v]?>" class="img-thumbnail" style="height:100px;width: 100%;"></a>
                                                 </div>
                                             <?php } }?>
                                         </div>
