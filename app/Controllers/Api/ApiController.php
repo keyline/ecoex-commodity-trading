@@ -5322,7 +5322,8 @@ class ApiController extends BaseController
                                     } elseif($row->status == 12.12){
                                         $enquirySubStatus = 'Order Complete';
                                     }
-                                    $product_count               = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['vendor_id' => $uId, 'enq_id' => $row->enq_id], 'item_id');
+                                    $product_count                  = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['vendor_id' => $uId, 'enq_id' => $row->enq_id], 'item_id');
+                                    $plant                          = $this->common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id]);
                                     $apiResponse[] = [
                                         'enq_id'                            => $row->enq_id,
                                         'enquiry_no'                        => $row->enquiry_no,
@@ -5330,6 +5331,7 @@ class ApiController extends BaseController
                                         'sub_enq_id'                        => $row->id,
                                         'sub_enquiry_no'                    => $row->sub_enquiry_no,
                                         'enquiry_sub_status'                => $enquirySubStatus,
+                                        'plant_name'                        => (($plant)?$plant->plant_name:''),
                                         'product_count'                     => count($product_count),
                                         'assigned_date'                     => (($row->assigned_date != '')?date_format(date_create($row->assigned_date), "M d, Y h:i A"):''),
                                         'pickup_scheduled_date'             => (($row->pickup_scheduled_date != '')?date_format(date_create($row->pickup_scheduled_date), "M d, Y h:i A"):''),
@@ -5522,7 +5524,7 @@ class ApiController extends BaseController
                                         ];
                                     }
                                 }                                
-
+                                $plant                          = $this->common_model->find_data('ecomm_users', 'row', ['id' => $rows[0]->plant_id]);
                                 $apiResponse = [
                                     'enq_id'                            => $rows[0]->enq_id,
                                     'enquiry_no'                        => $rows[0]->enquiry_no,
@@ -5531,6 +5533,7 @@ class ApiController extends BaseController
                                     'sub_enquiry_no'                    => $rows[0]->sub_enquiry_no,
                                     'enquiry_sub_status'                => $enquirySubStatus,
                                     'enquiry_sub_status_id'             => $rows[0]->status,
+                                    'plant_name'                        => (($plant)?$plant->plant_name:''),
                                     'assigned_date'                     => (($rows[0]->assigned_date != '')?date_format(date_create($rows[0]->assigned_date), "M d, Y h:i A"):''),
                                     'pickup_scheduled_date'             => (($rows[0]->pickup_scheduled_date != '')?date_format(date_create($rows[0]->pickup_scheduled_date), "M d, Y h:i A"):''),
                                     'vehicle_placed_date'               => (($rows[0]->vehicle_placed_date != '')?date_format(date_create($rows[0]->vehicle_placed_date), "M d, Y h:i A"):''),
