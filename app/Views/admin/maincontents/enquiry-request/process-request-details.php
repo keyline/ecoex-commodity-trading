@@ -423,7 +423,7 @@
                                                 ?>
                                                 <?php if($material_weighing_slips){ for($v=0;$v<count($material_weighing_slips);$v++){?>
                                                     <div class="col-md-3">
-                                                        <a href="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" download><img src="<?=$material_weighing_slips[$v]?>" class="img-thumbnail" style="height:250;width: 250;"></a>
+                                                        <a href="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" download><img src="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" class="img-thumbnail" style="height:250px;width: 250px;"></a>
                                                     </div>
                                                 <?php } }?>
                                             </div>
