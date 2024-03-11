@@ -3860,6 +3860,7 @@ class ApiController extends BaseController
                         if($getUser){
                             $getSubEnquiry              = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
                             $vendor_id                  = (($getSubEnquiry)?$getSubEnquiry->vendor_id:0);
+                            $enq_id                     = (($getSubEnquiry)?$getSubEnquiry->enq_id:0);
                             $fields                     = [
                                 'status'                            => 6.6,
                                 'material_weighing_edit_plant'      => 0,
@@ -3868,6 +3869,7 @@ class ApiController extends BaseController
                                 'plant_ecoex_confirm_date'          => date('Y-m-d H:i:s'),
                             ];
                             $this->common_model->save_data('ecomm_sub_enquires', $fields, $sub_enquiry_no, 'sub_enquiry_no');
+                            $this->common_model->save_data('ecomm_enquires', ['status' => 6], $enq_id, 'id');
 
                             /* email sent */
                                 $fields = [
@@ -5719,6 +5721,8 @@ class ApiController extends BaseController
                             ];
                             // pr($fields1);die;
                             $this->common_model->save_data('ecomm_sub_enquires', $fields1, $sub_enquiry_no, 'sub_enquiry_no');
+                            $enq_id                     = (($getSubEnquiry)?$getSubEnquiry->enq_id:0);
+                            $this->common_model->save_data('ecomm_enquires', ['status' => 5], $enq_id, 'id');
 
                             $apiStatus          = TRUE;
                             http_response_code(200);

@@ -283,8 +283,8 @@ if($userType == 'MA'){
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 7))?'active':'')?>" href="javascript:void(0);">
-                        <i class="fa fa-arrow-right"></i><span>Invoice from HO (<?=$step7_count?>)</span>
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 7.7))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(7.7))?>">
+                        <i class="fa fa-arrow-right"></i><span>Invoice From HO (<?=$step7_count?>)</span>
                     </a>
                 </li>
                 <li>

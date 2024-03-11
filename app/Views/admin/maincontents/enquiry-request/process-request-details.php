@@ -156,6 +156,8 @@
                             $enquiryStatus = 'Vehicle Placed';
                         } elseif($row->status == 6.6){
                             $enquiryStatus = 'Material Weighed';
+                        } elseif($row->status == 7.7){
+                            $enquiryStatus = 'Invoice from HO';
                         } elseif($row->status == 8.8){
                             $enquiryStatus = 'Invoice to Vendor';
                         } elseif($row->status == 9.9){
@@ -382,77 +384,123 @@
                     </table>
                 </div>
             </div>
+            <?php if($row->status >= 5.5){?>
+                <div class="card">
+                    <div class="card-header bg-success text-light">
+                        <h5>Material Weighted</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="<?=base_url('admin/enquiry-requests/modify-approve-material-weight')?>">
+                            <input type="hidden" name="sub_enquiry_no" value="<?=$sub_enquiry_no?>">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Item Name</th>
+                                        <th>Weighted Qty</th>
+                                        <th>Vendor Submitted Material Weight</th>
+                                        <th>Plant Submitted Material Weight</th>
+                                        <th>Weight Slips</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if($materialWeights){ $sl=1; foreach($materialWeights as $materialWeight){?>
+                                        <?php
+                                        $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $row1->item_id], 'item_name_ecoex,hsn');
+                                        ?>
+                                        <tr>
+                                            <td><?=$sl++?></td>
+                                            <td><?=(($getItem)?$getItem->item_name_ecoex:'')?></td>
+                                            <td>
+                                                <span class="weight-label"><?=$materialWeight->weighted_qty?></span>
+                                                <input type="text" name="weighted_qty[]" class="form-control weight-value" value="<?=$materialWeight->weighted_qty?>" style="display: none;">
+                                                <?=$materialWeight->weighted_unit?>
+                                            </td>
+                                            <td><?=(($materialWeight->material_weight_vendor_date != '')?date_format(date_create($materialWeight->material_weight_vendor_date), "M d, Y h:i A"):'')?></td>
+                                            <td><?=(($materialWeight->material_weight_plant_date != '')?date_format(date_create($materialWeight->material_weight_plant_date), "M d, Y h:i A"):'')?></td>
+                                            <td>
+                                                <div class="row">
+                                                    <?php
+                                                    $material_weighing_slips = json_decode($materialWeight->material_weighing_slips);
+                                                    ?>
+                                                    <?php if($material_weighing_slips){ for($v=0;$v<count($material_weighing_slips);$v++){?>
+                                                        <div class="col-md-6">
+                                                            <a href="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" download><img src="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" class="img-thumbnail" style="height:100px;width: 100px;"></a>
+                                                        </div>
+                                                    <?php } }?>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php } }?>
+                                    <?php if($row->is_plant_ecoex_confirm <= 0){?>
+                                        <tr>
+                                            <td colspan="3" style="text-align:center;">
+                                                <a href="<?=base_url('admin/enquiry-requests/approve-material-weight/'.encoded($sub_enquiry_no))?>" class="btn btn-success" onclick="return confirm('Do you want to approve this request ?');"><i class="fa fa-check-circle"></i> APPROVE</a>
+                                            </td>
+                                            <td colspan="3" style="text-align:center;">
+                                                <a href="javascript:void(0);" class="btn btn-primary" id="modify-btn" onclick="openMaterialWeightUpdate();"><i class="fa fa-edit"></i> MODIFY</a>
+                                                <button type="submit" class="btn btn-primary" id="update-btn" style="display:none;"><i class="fa fa-edit"></i> UPDATE</button>
+                                                <a href="javascript:void(0);" class="btn btn-danger" id="cancel-btn" onclick="closeMaterialWeightUpdate();" style="display:none;"><i class="fa fa-times"></i> CANCEL</a>
+                                            </td>
+                                        </tr>
+                                    <?php } else {?>
+                                        <tr>
+                                            <td colspan="6" style="text-align:center;">
+                                                <h6 class="badge bg-success">Material Weight Approved</h6>
+                                            </td>
+                                        </tr>
+                                    <?php }?>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+            <?php }?>
+            <?php
+            $userType           = $session->user_type;
+            ?>
+            <?php if($row->status >= 6.6){?>
+                <div class="card">
+                    <div class="card-header bg-success text-light">
+                        <h5>Invoice From HO</h5>
+                    </div>
+                    <div class="card-body">
+                        <?php if($getEnquiry){?>
+                            <div class="row mt-3">
+                                <div class="col-md-6 text-center">
+                                    <?php if($getEnquiry->is_invoice_from_ho == 0){?>
+                                        <a href="<?=base_url('admin/enquiry-requests/request-invoice-to-HO-from-ecoex/'.encoded($getEnquiry->id).'/'.encoded($sub_enquiry_no))?>" class="btn btn-warning btn-sm" onclick="return confirm('Do you want to sent request for invoice to HO ?');"><i class="fa-solid fa-code-pull-request"></i> Request For Invoice To HO</a>
+                                    <?php } elseif($getEnquiry->is_invoice_from_ho >= 1){?>
+                                        <h4 class="text-success fw-bold">Invoice Request Sent To HO Succesfully</h4>
+                                        <h5><?=date_format(date_create($getEnquiry->invoice_from_ho_request_date), "M d, Y h:i A")?></h5>
+                                    <?php }?>
+                                </div>
+                                <div class="col-md-6 text-center">
+                                    <?php if($getEnquiry->is_invoice_from_ho == 1){?>
+                                        <h4 class="text-warning fw-bold">HO Still Not Uploaded Invoice</h4>
+                                        <?php if($userType == 'COMPANY'){?>
+                                            <form method="POST" action="<?=base_url('admin/enquiry-requests/upload-invoice-by-HO')?>" enctype="multipart/form-data">
+                                                <input type="hidden" name="enq_id" value="<?=encoded($getEnquiry->id)?>">
+                                                <input type="hidden" name="sub_enquiry_no" value="<?=encoded($sub_enquiry_no)?>">
+                                                <div class="form-group">
+                                                    <input type="file" class="form-control" name="invoice_file_from_ho" accept="application/pdf" required>
+                                                    <small class="text-primary">Only PDF file allowed</small>
+                                                </div>
+                                                <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-file-invoice"></i> Upload Invoice</button>
+                                            </form>
+                                        <?php }?>
+                                    <?php } elseif($getEnquiry->is_invoice_from_ho == 2){?>
+                                        <h4 class="text-success fw-bold">Invoice Uploaded By HO Succesfully</h4>
+                                        <a download href="<?=getenv('app.uploadsURL').'enquiry/'.$getEnquiry->invoice_file_from_ho?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');"><i class="fas fa-download"></i> Download Invoice From HO</a>
+                                        <h5><?=date_format(date_create($getEnquiry->invoice_from_ho_date), "M d, Y h:i A")?></h5>
+                                    <?php }?>
+                                </div>
+                            </div>
+                        <?php }?>
 
-            <div class="card">
-                <div class="card-header bg-success text-light">
-                    <h5>Material Weighted</h5>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form method="POST" action="<?=base_url('admin/enquiry-requests/modify-approve-material-weight')?>">
-                        <input type="hidden" name="sub_enquiry_no" value="<?=$sub_enquiry_no?>">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Item Name</th>
-                                    <th>Weighted Qty</th>
-                                    <th>Vendor Submitted Material Weight</th>
-                                    <th>Plant Submitted Material Weight</th>
-                                    <th>Weight Slips</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if($materialWeights){ $sl=1; foreach($materialWeights as $materialWeight){?>
-                                    <?php
-                                    $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $row1->item_id], 'item_name_ecoex,hsn');
-                                    ?>
-                                    <tr>
-                                        <td><?=$sl++?></td>
-                                        <td><?=(($getItem)?$getItem->item_name_ecoex:'')?></td>
-                                        <td>
-                                            <span class="weight-label"><?=$materialWeight->weighted_qty?></span>
-                                            <input type="text" name="weighted_qty[]" class="form-control weight-value" value="<?=$materialWeight->weighted_qty?>" style="display: none;">
-                                            <?=$materialWeight->weighted_unit?>
-                                        </td>
-                                        <td><?=(($materialWeight->material_weight_vendor_date != '')?date_format(date_create($materialWeight->material_weight_vendor_date), "M d, Y h:i A"):'')?></td>
-                                        <td><?=(($materialWeight->material_weight_plant_date != '')?date_format(date_create($materialWeight->material_weight_plant_date), "M d, Y h:i A"):'')?></td>
-                                        <td>
-                                            <div class="row">
-                                                <?php
-                                                $material_weighing_slips = json_decode($materialWeight->material_weighing_slips);
-                                                ?>
-                                                <?php if($material_weighing_slips){ for($v=0;$v<count($material_weighing_slips);$v++){?>
-                                                    <div class="col-md-6">
-                                                        <a href="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" download><img src="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" class="img-thumbnail" style="height:100px;width: 100px;"></a>
-                                                    </div>
-                                                <?php } }?>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php } }?>
-                                <?php if($row->is_plant_ecoex_confirm <= 0){?>
-                                    <tr>
-                                        <td colspan="3" style="text-align:center;">
-                                            <a href="<?=base_url('admin/enquiry-requests/approve-material-weight/'.encoded($sub_enquiry_no))?>" class="btn btn-success" onclick="return confirm('Do you want to approve this request ?');"><i class="fa fa-check-circle"></i> APPROVE</a>
-                                        </td>
-                                        <td colspan="3" style="text-align:center;">
-                                            <a href="javascript:void(0);" class="btn btn-primary" id="modify-btn" onclick="openMaterialWeightUpdate();"><i class="fa fa-edit"></i> MODIFY</a>
-                                            <button type="submit" class="btn btn-primary" id="update-btn" style="display:none;"><i class="fa fa-edit"></i> UPDATE</button>
-                                            <a href="javascript:void(0);" class="btn btn-danger" id="cancel-btn" onclick="closeMaterialWeightUpdate();" style="display:none;"><i class="fa fa-times"></i> CANCEL</a>
-                                        </td>
-                                    </tr>
-                                <?php } else {?>
-                                    <tr>
-                                        <td colspan="6" style="text-align:center;">
-                                            <h6 class="badge bg-success">Material Weight Approved</h6>
-                                        </td>
-                                    </tr>
-                                <?php }?>
-                            </tbody>
-                        </table>
-                    </form>
-                </div>
-            </div>
+            <?php }?>
 
         </div>
     </div>
@@ -472,6 +520,7 @@
           'Pickup Scheduled',
           'Vehicle Placed',
           'Material Weighed',
+          'Invoice from HO',
           'Invoice to Vendor',
           'Payment received from Vendor',
           'Vehicle Dispatched',

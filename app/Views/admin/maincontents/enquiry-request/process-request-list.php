@@ -42,7 +42,9 @@ $sub_enquiry_status = (($getSubEnquiry)?$getSubEnquiry->status:'');
                                 <th scope="col">#</th>
                                 <th scope="col">Sub Enquiry No.</th>
                                 <th scope="col">Assigned Vendor</th>
-                                <th scope="col">Pickup Scheduled At</th>
+                                <?php if($sub_enquiry_status == 3.3){?>
+                                    <th scope="col">Pickup Scheduled At</th>
+                                <?php }?>
                                 <?php if($sub_enquiry_status == 3.3){?>
                                     <th scope="col">Assigned Activity At</th>
                                 <?php } elseif($sub_enquiry_status == 4.4){?>
@@ -51,6 +53,8 @@ $sub_enquiry_status = (($getSubEnquiry)?$getSubEnquiry->status:'');
                                     <th scope="col">Vehicle Placed Activity At</th>
                                 <?php } elseif($sub_enquiry_status == 6.6){?>
                                     <th scope="col">Material Weighed Activity At</th>
+                                <?php } elseif($sub_enquiry_status == 7.7){?>
+                                    <th scope="col">Invoice from HO Activity At</th>
                                 <?php } elseif($sub_enquiry_status == 8.8){?>
                                     <th scope="col">Invoice to Vendor Activity At</th>
                                 <?php } elseif($sub_enquiry_status == 9.9){?>
@@ -78,6 +82,7 @@ $sub_enquiry_status = (($getSubEnquiry)?$getSubEnquiry->status:'');
                                         ?>
                                         <h6><?=(($getVendor)?$getVendor->company_name:'')?></h6>
                                     </td>
+                                    <?php if($sub_enquiry_status == 3.3){?>
                                     <td>
                                         <?php
                                         if($row->is_pickup_final){
@@ -96,6 +101,7 @@ $sub_enquiry_status = (($getSubEnquiry)?$getSubEnquiry->status:'');
                                             </p>
                                         <?php } ?>
                                     </td>
+                                    <?php } ?>
                                     <td>
                                         <span>
                                         <?php
@@ -107,6 +113,8 @@ $sub_enquiry_status = (($getSubEnquiry)?$getSubEnquiry->status:'');
                                             echo (($row->vehicle_placed_date != '')?date_format(date_create($row->vehicle_placed_date), "M d, Y h:i A"):'');
                                         } elseif($row->status == 6.6){
                                             echo (($row->material_weighted_date != '')?date_format(date_create($row->material_weighted_date), "M d, Y h:i A"):'');
+                                        } elseif($row->status == 7.7){
+                                            echo (($row->invoice_from_ho_date != '')?date_format(date_create($row->invoice_from_ho_date), "M d, Y h:i A"):'');
                                         } elseif($row->status == 8.8){
                                             echo (($row->invoice_to_vendor_date != '')?date_format(date_create($row->invoice_to_vendor_date), "M d, Y h:i A"):'');
                                         } elseif($row->status == 9.9){
