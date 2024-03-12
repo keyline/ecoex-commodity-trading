@@ -5851,6 +5851,132 @@ class ApiController extends BaseController
                 }
                 $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
             }
+            public function vendorProcessRequestInvoicePayment()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['sub_enq_no', 'payment_amount', 'payment_mode', 'payment_date'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $sub_enquiry_no             = $requestData['sub_enq_no'];
+                    $payment_amount             = $requestData['payment_amount'];
+                    $payment_mode               = $requestData['payment_mode'];
+                    $payment_date               = $requestData['payment_date'];
+                    $txn_no                     = $requestData['txn_no'];
+                    $txn_screenshot             = $requestData['txn_screenshot'];
+                    
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            $getSubEnquiry              = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+                            if($getSubEnquiry){
+                                /* transaction screenshot */
+                                    $gps_tracking_image_payload = $requestData['txn_screenshot'];
+                                    if(!empty($gps_tracking_image_payload)){
+                                        $gps_tracking_image     = $gps_tracking_image_payload;
+                                        $upload_type            = $gps_tracking_image['type'];
+                                        if($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png'){
+                                            $apiStatus          = FALSE;
+                                            http_response_code(404);
+                                            $apiMessage         = 'Please Upload Transaction Screenshot !!!';
+                                            $apiExtraField      = 'response_code';
+                                            $apiExtraData       = http_response_code();
+                                        } else {
+                                            $upload_base64      = $gps_tracking_image['base64'];
+                                            $img                = $upload_base64;
+                                            $data               = base64_decode($img);
+                                            $fileName           = uniqid() . '.jpg';
+                                            $file               = 'public/uploads/enquiry/' . $fileName;
+                                            $success            = file_put_contents($file, $data);
+                                            $txn_screenshot     = $fileName;
+                                        }
+                                    } else {
+                                        $txn_screenshot         = '';
+                                    }
+                                /* transaction screenshot */
+                                $fields1 = [
+                                    'payment_amount'            => $payment_amount,
+                                    'payment_mode'              => $payment_mode,
+                                    'payment_date'              => date_format(date_create($payment_date), "Y-m-d H:i:s"),
+                                    'txn_no'                    => $txn_no,
+                                    'txn_screenshot'            => $txn_screenshot
+                                ];
+                                // pr($fields1);die;
+                                $this->common_model->save_data('ecomm_sub_enquires', $fields1, $sub_enquiry_no, 'sub_enquiry_no');
+                                
+                                /* email sent */
+                                    $fields = [
+                                        'enq_id'                => $getSubEnquiry->enq_id,
+                                        'company_id'            => $getSubEnquiry->company_id,
+                                        'plant_id'              => $getSubEnquiry->plant_id,
+                                        'vendor_id'             => $getSubEnquiry->vendor_id,
+                                        'enquiry_no'            => $getSubEnquiry->enquiry_no,
+                                        'sub_enquiry_no'        => $getSubEnquiry->sub_enquiry_no,
+                                    ];
+                                    $getCompany                     = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $getSubEnquiry->company_id]);
+                                    $generalSetting                 = $this->common_model->find_data('general_settings', 'row');
+                                    $subject                        = $generalSetting->site_name.' :: Sub Enquiry ('.$getSubEnquiry->sub_enquiry_no.') Vendor Payment Info Uploaded';
+                                    $message1                       = view('email-templates/subenquiry-payment-info-upload-to-ecoex',$fields);
+                                    $this->sendMail((($generalSetting)?$generalSetting->system_email:''), $subject, $message1);
+
+                                    /* email log save */
+                                        $postData2 = [
+                                            'name'                  => (($generalSetting)?$generalSetting->site_name:''),
+                                            'email'                 => (($generalSetting)?$generalSetting->system_email:''),
+                                            'subject'               => $subject,
+                                            'message'               => $message1
+                                        ];
+                                        $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                                    /* email log save */
+                                /* email sent */
+
+                                $apiStatus          = TRUE;
+                                http_response_code(200);
+                                $apiMessage         = 'Payment Info Uploaded Successfully !!!';
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            } else {
+                                $apiStatus          = FALSE;
+                                http_response_code(404);
+                                $apiMessage         = 'Sub Enquiry Not Found !!!';
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            }
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'User Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
         /* process request */
     /* vendor panel */
 
