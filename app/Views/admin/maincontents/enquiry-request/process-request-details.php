@@ -546,7 +546,46 @@
                         </div>
                     </div>
                 <?php }?>
-            <?php }?> 
+            <?php }?>
+
+            <?php if($row->status >= 8.8){?>
+                <?php if($userType == 'MA'){?>
+                    <div class="card">
+                        <div class="card-header bg-success text-light">
+                            <h5>Payment Received From Vendor</h5>
+                        </div>
+                        <div class="card-body">
+                            <?php if($row){?>
+                                <div class="row mt-3">
+                                    <div class="col-md-6 text-center">
+                                        <?php if($row->payment_amount <= 0){?>
+                                            <h4 class="text-warning fw-bold">Payment Info Still Not Uploaded By Vendor</h4>
+                                        <?php } else {?>
+                                            <h4 class="text-success fw-bold">Payment Info Uploaded By Vendor Succesfully</h4>
+                                            <h5>Payment Amount : <?=$row->payment_amount?></h5>
+                                            <h6>Payment Date/Time : <?=date_format(date_create($row->payment_date), "M d, Y h:i A")?></h6>
+                                            <h6>Payment Mode : <?=$row->payment_mode?></h6>
+                                            <?php if($row->payment_mode != 'CASH'){?>
+                                                <h6>Transaction No. : <?=$row->txn_no?></h6>
+                                                <h6>Transaction Screenshot : <img src="<?=getenv('app.uploadsURL').'enquiry/'.$row->txn_screenshot?>" style="width: 200px; height: 200px;"></h6>
+                                            <?php }?>
+                                        <?php }?>
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <?php if($row->is_approve_vendor_payment == 0){?>
+                                            <a href="<?=base_url('admin/enquiry-requests/vendor-payment-approve/'.encoded($sub_enquiry_no))?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to approve vendor payment ?');"><i class="fas fa-check"></i> Approve Vendor Payment</a>
+                                        <?php } else {?>
+                                            <h4 class="text-success fw-bold">Vendor Payment Approved Successfully By Ecoex</h4>
+                                            <h5><i class="fa fa-inr"></i> <?=$row->payment_amount?></h5>
+                                            <h6><?=date_format(date_create($row->vendor_payment_received_date), "M d, Y h:i A")?></h6>
+                                        <?php }?>
+                                    </div>
+                                </div>
+                            <?php }?>
+                        </div>
+                    </div>
+                <?php }?>
+            <?php }?>
 
         </div>
     </div>

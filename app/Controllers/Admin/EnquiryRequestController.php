@@ -1315,5 +1315,79 @@ class EnquiryRequestController extends BaseController {
                 return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
             }
         }
+        public function vendorPaymentApprove($sub_enquiry_no){
+            $sub_enquiry_no             = decoded($sub_enquiry_no);
+
+            $getSubEnquiry                 = $this->data['model']->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+            if($getSubEnquiry){
+                $fields                     = [
+                    'status'                            => 9.9,
+                    'is_approve_vendor_payment'         => 1,
+                    'vendor_payment_received_date'      => date('Y-m-d H:i:s'),
+                ];
+                $this->common_model->save_data('ecomm_sub_enquires', $fields, $sub_enquiry_no, 'sub_enquiry_no');
+                $this->common_model->save_data('ecomm_enquires', ['status' => 9], $getSubEnquiry->enq_id, 'id');
+                $vendor_id = $getSubEnquiry->vendor_id;
+                /* push notification sent */
+                    $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
+                    if($getDeviceTokens){
+                        foreach($getDeviceTokens as $getDeviceToken){
+                            $fcm_token          = $getDeviceToken->fcm_token;
+                            $messageData = [
+                                'title'     => 'Invoice Payment Approved By Ecoex',
+                                'body'      => 'Sub Enquiry Request ('.$sub_enquiry_no.') Invoice Payment Approved By Ecoex',
+                                'badge'     => 1,
+                                'sound'     => 'Default',
+                                'data'      => [],
+                            ];
+                            $this->pushNotification($fcm_token, $messageData);
+                            $users[]    = $getSubEnquiry->vendor_id;
+                            $pushData   = [
+                                'source'            => 'FROM APP',
+                                'title'             => 'Invoice Payment Approved By Ecoex',
+                                'description'       => 'Sub Enquiry Request ('.$sub_enquiry_no.') Invoice Payment Approved By Ecoex',
+                                'user_type'         => 'VENDOR',
+                                'users'             => json_encode($users),
+                                'is_send'           => 1,
+                                'send_timestamp'    => date('Y-m-d H:i:s'),
+                                'status'            => 1,
+                            ];
+                            $this->common_model->save_data('notifications', $pushData, '', 'id');
+                        }
+                    }
+                /* push notification sent */
+
+                /* email sent */
+                    $fields = [
+                        'enq_id'                => $getSubEnquiry->enq_id,
+                        'company_id'            => $getSubEnquiry->company_id,
+                        'plant_id'              => $getSubEnquiry->plant_id,
+                        'vendor_id'             => $vendor_id,
+                        'sub_enquiry_no'        => $sub_enquiry_no,
+                    ];
+                    $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendor_id]);
+                    $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                    $subject                    = $generalSetting->site_name.' :: Sub Enquiry Invoice Payment Approved By Ecoex ('.$sub_enquiry_no.') ';
+                    $message1                    = view('email-templates/enquiry-request-for-invoice-payment-approve-for-vendor',$fields);
+                    $this->sendMail((($getVendor)?$getVendor->email:''), $subject, $message1);
+
+                    /* email log save */
+                        $postData1 = [
+                            'name'                  => (($getVendor)?$getVendor->company_name:''),
+                            'email'                 => (($getVendor)?$getVendor->email:''),
+                            'subject'               => $subject,
+                            'message'               => $message1
+                        ];
+                        $this->common_model->save_data('email_logs', $postData1, '', 'id');
+                    /* email log save */
+                /* email sent */
+
+                $this->session->setFlashdata('success_message', 'Vendor Payment Approved Successfully !!!');
+                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+            } else {
+                $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');
+                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+            }
+        }
     /* process enquiry requests */
 }

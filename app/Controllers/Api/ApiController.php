@@ -5527,6 +5527,17 @@ class ApiController extends BaseController
                                     }
                                 }                                
                                 $plant                          = $this->common_model->find_data('ecomm_users', 'row', ['id' => $rows[0]->plant_id]);
+                                $payment                        = [];
+                                if($rows[0]->payment_amount > 0){
+                                    $payment = [
+                                        'payment_amount'                => $rows[0]->payment_amount,
+                                        'payment_mode'                  => $rows[0]->payment_mode,
+                                        'payment_date'                  => date_format(date_create($rows[0]->payment_date), "M d, Y h:i A"),
+                                        'txn_no'                        => $rows[0]->txn_no,
+                                        'txn_screenshot'                => (($rows[0]->txn_screenshot != '')?getenv('app.uploadsURL').'enquiry/'.$rows[0]->txn_screenshot:''),
+                                        'is_approve_vendor_payment'     => $rows[0]->is_approve_vendor_payment,
+                                    ];
+                                }
                                 $apiResponse = [
                                     'enq_id'                            => $rows[0]->enq_id,
                                     'enquiry_no'                        => $rows[0]->enquiry_no,
@@ -5552,6 +5563,8 @@ class ApiController extends BaseController
                                     'is_plant_ecoex_confirm'            => $rows[0]->is_plant_ecoex_confirm,
                                     'vendor_invoice_amount'             => $rows[0]->vendor_invoice_amount,
                                     'vendor_invoice_file'               => (($rows[0]->vendor_invoice_file != '')?getenv('app.uploadsURL').'enquiry/'.$rows[0]->vendor_invoice_file:''),
+                                    'is_payment_submit'                 => (($rows[0]->payment_amount > 0)?1:0),
+                                    'payment'                           => $payment,
                                     'vehicles'                          => $vehicles,
                                     'pickup_date_logs'                  => $pickup_date_logs,
                                     'items'                             => $items,

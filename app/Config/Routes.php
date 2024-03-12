@@ -188,6 +188,7 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 			$routes->match(['get', 'post'], "enquiry-requests/request-invoice-to-HO-from-ecoex/(:any)/(:any)", "EnquiryRequestController::requestInvoiceToHOFromEcoex/$1/$2");
 			$routes->match(['get', 'post'], "enquiry-requests/upload-invoice-by-HO", "EnquiryRequestController::uploadInvoiceByHO");
 			$routes->match(['get', 'post'], "enquiry-requests/upload-invoice-by-ecoex-for-vendor", "EnquiryRequestController::uploadInvoiceByEcoexForVendor");
+			$routes->match(['get', 'post'], "enquiry-requests/vendor-payment-approve/(:any)", "EnquiryRequestController::vendorPaymentApprove/$1");
 		// enquiry requests
 		// notifications
 			$routes->match(['get'], "notifications/list", "NotificationController::list");
