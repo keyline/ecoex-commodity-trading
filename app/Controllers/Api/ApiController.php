@@ -5550,6 +5550,8 @@ class ApiController extends BaseController
                                     'material_weighing_edit_vendor'     => $rows[0]->material_weighing_edit_vendor,
                                     'material_weighing_edit_plant'      => $rows[0]->material_weighing_edit_plant,
                                     'is_plant_ecoex_confirm'            => $rows[0]->is_plant_ecoex_confirm,
+                                    'vendor_invoice_amount'             => $rows[0]->vendor_invoice_amount,
+                                    'vendor_invoice_file'               => (($rows[0]->vendor_invoice_file != '')?getenv('app.uploadsURL').'enquiry/'.$rows[0]->vendor_invoice_file:''),
                                     'vehicles'                          => $vehicles,
                                     'pickup_date_logs'                  => $pickup_date_logs,
                                     'items'                             => $items,
