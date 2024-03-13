@@ -303,7 +303,7 @@ if($userType == 'MA'){
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 11))?'active':'')?>" href="javascript:void(0);">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 11.11))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(11.11))?>">
                         <i class="fa fa-arrow-right"></i><span>Payment to HO (<?=$step11_count?>)</span>
                     </a>
                 </li>

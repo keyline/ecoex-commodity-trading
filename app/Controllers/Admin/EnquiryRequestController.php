@@ -659,6 +659,8 @@ class EnquiryRequestController extends BaseController {
                 $stepName = 'Payment received from Vendor';
             } elseif($enq_sub_status == 10.10){
                 $stepName = 'Vehicle Dispatched';
+            } elseif($enq_sub_status == 11.11){
+                $stepName = 'Payment To HO';
             } elseif($enq_sub_status == 12.12){
                 $stepName = 'Order Complete';
             }
@@ -714,6 +716,8 @@ class EnquiryRequestController extends BaseController {
                 $stepName = 'Payment received from Vendor';
             } elseif($enq_sub_status == 10.10){
                 $stepName = 'Vehicle Dispatched';
+            } elseif($enq_sub_status == 11.11){
+                $stepName = 'Payment To HO';
             } elseif($enq_sub_status == 12.12){
                 $stepName = 'Order Complete';
             }
@@ -1185,6 +1189,7 @@ class EnquiryRequestController extends BaseController {
                 $fields                     = [
                     'status'                            => 7,
                     'is_invoice_from_ho'                => 2,
+                    'ho_payable_amount'                 => $this->request->getPost('ho_payable_amount'),
                     'invoice_file_from_ho'              => $invoice_file_from_ho,
                     'invoice_from_ho_date'              => date('Y-m-d H:i:s'),
                 ];
@@ -1383,6 +1388,121 @@ class EnquiryRequestController extends BaseController {
                 /* email sent */
 
                 $this->session->setFlashdata('success_message', 'Vendor Payment Approved Successfully !!!');
+                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+            } else {
+                $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');
+                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+            }
+        }
+        public function uploadPaymentByEcoexForHo(){
+            $enq_id                     = decoded($this->request->getPost('enq_id'));
+            $sub_enquiry_no             = decoded($this->request->getPost('sub_enquiry_no'));
+
+            $getSubEnquiry              = $this->data['model']->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+            $getEnquiry                 = $this->data['model']->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+            if($getEnquiry){
+                /* vendor invoice */
+                    $file = $this->request->getFile('ecoex_txn_screenshot');
+                    $originalName = $file->getClientName();
+                    $fieldName = 'ecoex_txn_screenshot';
+                    if($file!='') {
+                        $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'enquiry','image');
+                        if($upload_array['status']) {
+                            $ecoex_txn_screenshot = $upload_array['newFilename'];
+                        } else {
+                            $this->session->setFlashdata('error_message', $upload_array['message']);
+                            return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                        }
+                    } else {
+                        $this->session->setFlashdata('error_message', 'Please Upload Invoice !!!');
+                        return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                    }
+                /* vendor invoice */
+                $ecoex_due_amount = ($getEnquiry->ho_payable_amount - $this->request->getPost('ecoex_payment_amount'));
+                $fields                     = [
+                    'status'                            => 11,
+                    'ecoex_payment_amount'              => $this->request->getPost('ecoex_payment_amount'),
+                    'ecoex_payment_mode'                => $this->request->getPost('ecoex_payment_mode'),
+                    'ecoex_payment_date'                => date_format(date_create($this->request->getPost('ecoex_payment_date')), "Y-m-d H:i:s"),
+                    'ecoex_txn_no'                      => $this->request->getPost('ecoex_txn_no'),
+                    'ecoex_txn_screenshot'              => $ecoex_txn_screenshot,
+                    'ecoex_submitted_date'              => date('Y-m-d H:i:s'),
+                    'ecoex_due_amount'                  => $ecoex_due_amount,
+                ];
+                $this->common_model->save_data('ecomm_enquires', $fields, $enq_id, 'id');
+                // $this->common_model->save_data('ecomm_enquires', ['status' => 8], $enq_id, 'id');
+
+                // ho email sent
+                    $getCompany                     = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $getEnquiry->company_id]);
+                    $generalSetting                 = $this->common_model->find_data('general_settings', 'row');
+                    $fields = [
+                        'enq_id'                => $getEnquiry->id,
+                        'company_id'            => $getEnquiry->company_id,
+                        'plant_id'              => $getEnquiry->plant_id,
+                        'enquiry_no'            => $getEnquiry->enquiry_no,
+                        'entity_name'           => (($getCompany)?$getCompany->company_name:''),
+                    ];
+                    $subject                        = $generalSetting->site_name.' :: Enquiry ('.$getEnquiry->enquiry_no.') Payment Info Uploaded By Ecoex';
+                    $message1                       = view('email-templates/ecoex-payment-upload',$fields);
+                    $this->sendMail((($getCompany)?$getCompany->email:''), $subject, $message1);
+
+                    /* email log save */
+                        $postData2 = [
+                            'name'                  => (($getCompany)?$getCompany->company_name:''),
+                            'email'                 => (($getCompany)?$getCompany->email:''),
+                            'subject'               => $subject,
+                            'message'               => $message1
+                        ];
+                        $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                    /* email log save */
+                // ho email sent
+
+                $this->session->setFlashdata('success_message', 'Payment Info Uploaded By Ecoex Successfully !!!');
+                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+            } else {
+                $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');
+                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+            }
+        }
+        public function approveEcoexPaymentByHo($enq_id, $sub_enquiry_no){
+            $enq_id                     = decoded($enq_id);
+            $sub_enquiry_no             = decoded($sub_enquiry_no);
+            $getEnquiry                 = $this->data['model']->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+            if($getEnquiry){
+                $fields                     = [
+                    'status'                            => 11,
+                    'is_ho_approve_ecoex_payment'       => 1,
+                    'ho_approve_date'                   => date('Y-m-d H:i:s')
+                ];
+                $this->common_model->save_data('ecomm_enquires', $fields, $enq_id, 'id');
+                $this->common_model->save_data('ecomm_sub_enquires', ['status' => 11.11, 'ecoex_payment_date' => date('Y-m-d H:i:s')], $enq_id, 'enq_id');
+
+                // ho email sent
+                    $getCompany                     = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $getEnquiry->company_id]);
+                    $generalSetting                 = $this->common_model->find_data('general_settings', 'row');
+                    $fields = [
+                        'enq_id'                => $getEnquiry->id,
+                        'company_id'            => $getEnquiry->company_id,
+                        'plant_id'              => $getEnquiry->plant_id,
+                        'enquiry_no'            => $getEnquiry->enquiry_no,
+                        'entity_name'           => $generalSetting->site_name,
+                    ];
+                    $subject                        = $generalSetting->site_name.' :: Enquiry ('.$getEnquiry->enquiry_no.') Ecoex Payment Approved By HO';
+                    $message1                       = view('email-templates/ecoex-payment-approved-by-ho',$fields);
+                    $this->sendMail((($generalSetting)?$generalSetting->system_email:''), $subject, $message1);
+
+                    /* email log save */
+                        $postData2 = [
+                            'name'                  => (($generalSetting)?$generalSetting->site_name:''),
+                            'email'                 => (($generalSetting)?$generalSetting->system_email:''),
+                            'subject'               => $subject,
+                            'message'               => $message1
+                        ];
+                        $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                    /* email log save */
+                // ho email sent
+
+                $this->session->setFlashdata('success_message', 'Ecoex Payment Approved By HO Successfully !!!');
                 return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
             } else {
                 $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');

@@ -5990,6 +5990,188 @@ class ApiController extends BaseController
                 }
                 $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
             }
+            public function vendorProcessRequestVehicleDespatch()
+            {
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['sub_enq_no'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $sub_enquiry_no             = $requestData['sub_enq_no'];
+                    
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            $getSubEnquiry              = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+                            if($getSubEnquiry){
+                                $fields1 = [
+                                    'vehicle_dispatched_date'               => date("Y-m-d H:i:s"),
+                                    'status'                                => 10.10,
+                                ];
+                                $this->common_model->save_data('ecomm_sub_enquires', $fields1, $sub_enquiry_no, 'sub_enquiry_no');
+
+                                $fields1 = [
+                                    'status'                                => 10,
+                                ];
+                                $this->common_model->save_data('ecomm_enquires', $fields1, $getSubEnquiry->enq_id, 'id');
+                                
+                                /* email sent */
+                                    // ecoex
+                                        $getCompany                     = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $getSubEnquiry->company_id]);
+                                        $generalSetting                 = $this->common_model->find_data('general_settings', 'row');
+                                        $fields = [
+                                            'enq_id'                => $getSubEnquiry->enq_id,
+                                            'company_id'            => $getSubEnquiry->company_id,
+                                            'plant_id'              => $getSubEnquiry->plant_id,
+                                            'vendor_id'             => $getSubEnquiry->vendor_id,
+                                            'enquiry_no'            => $getSubEnquiry->enquiry_no,
+                                            'sub_enquiry_no'        => $getSubEnquiry->sub_enquiry_no,
+                                            'entity_name'           => (($generalSetting)?$generalSetting->site_name:''),
+                                        ];
+                                        $subject                        = $generalSetting->site_name.' :: Sub Enquiry ('.$getSubEnquiry->sub_enquiry_no.') Vendor Vehicle Despatch';
+                                        $message1                       = view('email-templates/vendor-vehicle-despatch',$fields);
+                                        $this->sendMail((($generalSetting)?$generalSetting->system_email:''), $subject, $message1);
+
+                                        /* email log save */
+                                            $postData2 = [
+                                                'name'                  => (($generalSetting)?$generalSetting->site_name:''),
+                                                'email'                 => (($generalSetting)?$generalSetting->system_email:''),
+                                                'subject'               => $subject,
+                                                'message'               => $message1
+                                            ];
+                                            $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                                        /* email log save */
+                                    // ecoex
+                                    // ho
+                                        $getCompany                     = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $getSubEnquiry->company_id]);
+                                        $generalSetting                 = $this->common_model->find_data('general_settings', 'row');
+                                        $fields = [
+                                            'enq_id'                => $getSubEnquiry->enq_id,
+                                            'company_id'            => $getSubEnquiry->company_id,
+                                            'plant_id'              => $getSubEnquiry->plant_id,
+                                            'vendor_id'             => $getSubEnquiry->vendor_id,
+                                            'enquiry_no'            => $getSubEnquiry->enquiry_no,
+                                            'sub_enquiry_no'        => $getSubEnquiry->sub_enquiry_no,
+                                            'entity_name'           => (($getCompany)?$getCompany->company_name:''),
+                                        ];
+                                        $subject                        = $generalSetting->site_name.' :: Sub Enquiry ('.$getSubEnquiry->sub_enquiry_no.') Vendor Vehicle Despatch';
+                                        $message1                       = view('email-templates/vendor-vehicle-despatch',$fields);
+                                        $this->sendMail((($getCompany)?$getCompany->email:''), $subject, $message1);
+
+                                        /* email log save */
+                                            $postData2 = [
+                                                'name'                  => (($getCompany)?$getCompany->company_name:''),
+                                                'email'                 => (($getCompany)?$getCompany->email:''),
+                                                'subject'               => $subject,
+                                                'message'               => $message1
+                                            ];
+                                            $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                                        /* email log save */
+                                    // ho
+                                    // plant
+                                        $getPlant                       = $this->common_model->find_data('ecomm_users', 'row', ['id' => $getSubEnquiry->plant_id]);
+                                        $generalSetting                 = $this->common_model->find_data('general_settings', 'row');
+                                        $fields = [
+                                            'enq_id'                => $getSubEnquiry->enq_id,
+                                            'company_id'            => $getSubEnquiry->company_id,
+                                            'plant_id'              => $getSubEnquiry->plant_id,
+                                            'vendor_id'             => $getSubEnquiry->vendor_id,
+                                            'enquiry_no'            => $getSubEnquiry->enquiry_no,
+                                            'sub_enquiry_no'        => $getSubEnquiry->sub_enquiry_no,
+                                            'entity_name'           => (($getPlant)?$getPlant->plant_name:''),
+                                        ];
+                                        $subject                        = $generalSetting->site_name.' :: Sub Enquiry ('.$getSubEnquiry->sub_enquiry_no.') Vendor Vehicle Despatch';
+                                        $message1                       = view('email-templates/vendor-vehicle-despatch',$fields);
+                                        $this->sendMail((($getPlant)?$getPlant->email:''), $subject, $message1);
+
+                                        /* email log save */
+                                            $postData2 = [
+                                                'name'                  => (($getPlant)?$getPlant->plant_name:''),
+                                                'email'                 => (($getPlant)?$getPlant->email:''),
+                                                'subject'               => $subject,
+                                                'message'               => $message1
+                                            ];
+                                            $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                                        /* email log save */
+                                    // plant
+                                /* email sent */
+                                /* push notification sent */
+                                    $plant_id = $getSubEnquiry->plant_id;
+                                    $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $plant_id, 'fcm_token!=' => ''], 'fcm_token');
+                                    if($getDeviceTokens){
+                                        foreach($getDeviceTokens as $getDeviceToken){
+                                            $fcm_token          = $getDeviceToken->fcm_token;
+                                            $messageData = [
+                                                'title'     => 'Vehicle Despatch By Vendor',
+                                                'body'      => 'Sub Enquiry Request ('.$sub_enquiry_no.') Vehicle Despatch By Vendor',
+                                                'badge'     => 1,
+                                                'sound'     => 'Default',
+                                                'data'      => [],
+                                            ];
+                                            $this->pushNotification($fcm_token, $messageData);
+                                            $users[]    = $getSubEnquiry->plant_id;
+                                            $pushData   = [
+                                                'source'            => 'FROM APP',
+                                                'title'             => 'Vehicle Despatch By Vendor',
+                                                'description'       => 'Sub Enquiry Request ('.$sub_enquiry_no.') Vehicle Despatch By Vendor',
+                                                'user_type'         => 'VENDOR',
+                                                'users'             => json_encode($users),
+                                                'is_send'           => 1,
+                                                'send_timestamp'    => date('Y-m-d H:i:s'),
+                                                'status'            => 1,
+                                            ];
+                                            $this->common_model->save_data('notifications', $pushData, '', 'id');
+                                        }
+                                    }
+                                /* push notification sent */
+
+                                $apiStatus          = TRUE;
+                                http_response_code(200);
+                                $apiMessage         = 'Vehicle Despatch By Vendor Successfully !!!';
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            } else {
+                                $apiStatus          = FALSE;
+                                http_response_code(404);
+                                $apiMessage         = 'Sub Enquiry Not Found !!!';
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            }
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'User Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
         /* process request */
     /* vendor panel */
 

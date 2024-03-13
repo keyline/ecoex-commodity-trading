@@ -164,6 +164,8 @@
                             $enquiryStatus = 'Payment received from Vendor';
                         } elseif($row->status == 10.10){
                             $enquiryStatus = 'Vehicle Dispatched';
+                        } elseif($row->status == 11.11){
+                            $enquiryStatus = 'Payment To HO';
                         } elseif($row->status == 12.12){
                             $enquiryStatus = 'Order Complete';
                         }
@@ -483,7 +485,12 @@
                                                 <input type="hidden" name="enq_id" value="<?=encoded($getEnquiry->id)?>">
                                                 <input type="hidden" name="sub_enquiry_no" value="<?=encoded($sub_enquiry_no)?>">
                                                 <div class="form-group">
-                                                    <input type="file" class="form-control" name="invoice_file_from_ho" accept="application/pdf" required>
+                                                    <label for="ho_payable_amount">Invoice Amount</label>
+                                                    <input type="text" class="form-control" name="ho_payable_amount" id="ho_payable_amount" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="invoice_file_from_ho">Vendor Invoice File</label>
+                                                    <input type="file" class="form-control" name="invoice_file_from_ho" id="invoice_file_from_ho" accept="application/pdf" required>
                                                     <small class="text-primary">Only PDF file allowed</small>
                                                 </div>
                                                 <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-file-invoice"></i> Upload Invoice</button>
@@ -492,6 +499,7 @@
                                     <?php } elseif($getEnquiry->is_invoice_from_ho == 2){?>
                                         <h4 class="text-success fw-bold">Invoice Uploaded By HO Succesfully</h4>
                                         <a download href="<?=getenv('app.uploadsURL').'enquiry/'.$getEnquiry->invoice_file_from_ho?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');"><i class="fas fa-download"></i> Download Invoice From HO</a>
+                                        <h5><i class="fa fa-inr"></i> <?=$getEnquiry->ho_payable_amount?></h5>
                                         <h5><?=date_format(date_create($getEnquiry->invoice_from_ho_date), "M d, Y h:i A")?></h5>
                                     <?php }?>
                                 </div>
@@ -587,6 +595,105 @@
                 <?php }?>
             <?php }?>
 
+            <?php if($row->status >= 10.10){?>
+                <?php //if($userType == 'MA'){?>
+                    <div class="card">
+                        <div class="card-header bg-success text-light">
+                            <h5>Vehicle Despatch By Vendor</h5>
+                        </div>
+                        <div class="card-body">
+                            <?php if($row){?>
+                                <div class="row mt-3">
+                                    <div class="col-md-6 text-center">
+                                        <?php if($row->vehicle_dispatched_date != ''){?>
+                                            <h4 class="text-success fw-bold">Vehicle Despatched By Vendor</h4>
+                                        <?php }?>
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <?php if($row->vehicle_dispatched_date != ''){?>
+                                            <h6><?=date_format(date_create($row->vehicle_dispatched_date), "M d, Y h:i A")?></h6>
+                                        <?php }?>
+                                    </div>
+                                </div>
+                            <?php }?>
+                        </div>
+                    </div>
+                <?php //}?>
+
+                
+                    <div class="card">
+                        <div class="card-header bg-success text-light">
+                            <h5>Payment To HO</h5>
+                        </div>
+                        <div class="card-body">
+                            <?php if($getEnquiry){?>
+                                <div class="row mt-3">
+                                    <div class="col-md-6 text-center">
+                                        <?php if($getEnquiry->ecoex_submitted_date == ''){?>
+                                            <h4 class="text-warning fw-bold">Ecoex Still Not Payment To HO</h4>
+                                            <?php if($userType == 'MA'){?>
+                                                <form method="POST" action="<?=base_url('admin/enquiry-requests/upload-payment-by-ecoex-for-ho')?>" enctype="multipart/form-data" style="border: 1px solid #0080006e;border-radius: 10px;padding: 10px;">
+                                                    <input type="hidden" name="enq_id" value="<?=encoded($getEnquiry->id)?>">
+                                                    <input type="hidden" name="sub_enquiry_no" value="<?=encoded($sub_enquiry_no)?>">
+                                                    <div class="form-group">
+                                                        <label for="ecoex_payment_amount" style="float: left; font-weight:bold;">Payment Amount</label>
+                                                        <input type="text" class="form-control" name="ecoex_payment_amount" id="ecoex_payment_amount" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="ecoex_payment_date" style="float: left; font-weight:bold;">Payment Date/Time</label>
+                                                        <input type="datetime-local" class="form-control" name="ecoex_payment_date" id="ecoex_payment_date" required>
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <label for="ecoex_payment_mode" style="float: left; font-weight:bold;">Payment Mode</label>
+                                                        <select class="form-control" name="ecoex_payment_mode" id="ecoex_payment_mode" required onchange="getPaymentMode(this.value);">
+                                                            <option value="" selected>Select Payment Mode</option>
+                                                            <option value="CASH">CASH</option>
+                                                            <option value="CHEQUE">CHEQUE</option>
+                                                            <option value="NETBANKING">NETBANKING</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group online-payment" style="display:none;">
+                                                        <label for="ecoex_txn_no" style="float: left; font-weight:bold;">Payment Txn No.</label>
+                                                        <input type="text" class="form-control" name="ecoex_txn_no" id="ecoex_txn_no">
+                                                    </div>
+                                                    <div class="form-group mb-3 online-payment" style="display:none;">
+                                                        <label for="ecoex_txn_screenshot" style="float: left; font-weight:bold;">Payment Screenshot</label>
+                                                        <input type="file" class="form-control" name="ecoex_txn_screenshot" id="ecoex_txn_screenshot" accept="image/*">
+                                                        <small class="text-primary" style="float: left;">Only image file allowed</small>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-inr"></i> Upload Payment Info</button>
+                                                </form>
+                                            <?php }?>
+                                        <?php } else {?>
+                                            <h4 class="text-success fw-bold">Payment Info Uploaded By Ecoex Succesfully</h4>
+                                            <h5>Payment Amount : <span class="text-success"><?=number_format($getEnquiry->ecoex_payment_amount,2)?></span></h5>
+                                            <h5>Due Amount : <span class="text-danger"><?=number_format($getEnquiry->ecoex_due_amount,2)?></span></h5>
+                                            <h6>Payment Date/Time : <?=date_format(date_create($getEnquiry->ecoex_payment_date), "M d, Y h:i A")?></h6>
+                                            <h6>Payment Mode : <?=$getEnquiry->ecoex_payment_mode?></h6>
+                                            <?php if($getEnquiry->ecoex_payment_mode != 'CASH'){?>
+                                                <h6>Transaction No. : <?=$getEnquiry->ecoex_txn_no?></h6>
+                                                <h6>Transaction Screenshot : <img src="<?=getenv('app.uploadsURL').'enquiry/'.$getEnquiry->ecoex_txn_screenshot?>" style="width: 200px; height: 200px;" class="img-thumbnail"></h6>
+                                            <?php }?>
+                                        <?php }?>
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <?php if(!$getEnquiry->is_ho_approve_ecoex_payment){?>
+                                            <h4 class="text-warning fw-bold">Ecoex Payment Still Not Approved By HO</h4>
+                                            <?php if($userType == 'COMPANY'){?>
+                                                <a href="<?=base_url('admin/enquiry-requests/approve-ecoex-payment-by-ho/'.encoded($getEnquiry->id).'/'.encoded($sub_enquiry_no))?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to approve ecoex payment ?');"><i class="fas fa-check"></i> Approve Ecoex Payment</a>
+                                            <?php }?>
+                                        <?php } else {?>
+                                            <h4 class="text-success fw-bold">Ecoex Payment Approved By HO</h4>
+                                            <h6><?=date_format(date_create($getEnquiry->ho_approve_date), "M d, Y h:i A")?></h6>
+                                        <?php }?>
+                                    </div>
+                                </div>
+                            <?php }?>
+                        </div>
+                    </div>
+                
+            <?php }?>
+
         </div>
     </div>
 </section>
@@ -609,6 +716,7 @@
           'Invoice to Vendor',
           'Payment received from Vendor',
           'Vehicle Dispatched',
+          'Payment To HO',
           'Order Complete'
       ],
       '<?=$enquiryStatus?>',
@@ -630,5 +738,16 @@
         $('#modify-btn').show();
         $('#update-btn').hide();
         $('#cancel-btn').hide();
+    }
+    function getPaymentMode(paymentMode){
+        if(paymentMode == 'CASH'){
+            $('.online-payment').hide();
+            $('#ecoex_txn_no').attr('required', false);
+            $('#ecoex_txn_screenshot').attr('required', false);
+        } else {
+            $('.online-payment').show();
+            $('#ecoex_txn_no').attr('required', true);
+            $('#ecoex_txn_screenshot').attr('required', true);
+        }
     }
 </script>

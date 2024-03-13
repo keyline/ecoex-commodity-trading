@@ -189,6 +189,8 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 			$routes->match(['get', 'post'], "enquiry-requests/upload-invoice-by-HO", "EnquiryRequestController::uploadInvoiceByHO");
 			$routes->match(['get', 'post'], "enquiry-requests/upload-invoice-by-ecoex-for-vendor", "EnquiryRequestController::uploadInvoiceByEcoexForVendor");
 			$routes->match(['get', 'post'], "enquiry-requests/vendor-payment-approve/(:any)", "EnquiryRequestController::vendorPaymentApprove/$1");
+			$routes->match(['get', 'post'], "enquiry-requests/upload-payment-by-ecoex-for-ho", "EnquiryRequestController::uploadPaymentByEcoexForHo");
+			$routes->match(['get', 'post'], "enquiry-requests/approve-ecoex-payment-by-ho/(:any)/(:any)", "EnquiryRequestController::approveEcoexPaymentByHo/$1/$2");
 		// enquiry requests
 		// notifications
 			$routes->match(['get'], "notifications/list", "NotificationController::list");
@@ -291,6 +293,7 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 					$routes->match(['post'], "vendor-process-request-vehicle-placed", "ApiController::vendorProcessRequestVehiclePlaced");
 					$routes->match(['post'], "vendor-process-request-material-weighted", "ApiController::vendorProcessRequestMaterialWeighted");
 					$routes->match(['post'], "vendor-process-request-invoice-payment", "ApiController::vendorProcessRequestInvoicePayment");
+					$routes->match(['post'], "vendor-process-request-vehicle-despatch", "ApiController::vendorProcessRequestVehicleDespatch");
 				// assigned request
 			/* vendor panel */
 		// after login
