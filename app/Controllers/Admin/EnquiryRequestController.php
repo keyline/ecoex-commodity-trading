@@ -411,7 +411,7 @@ class EnquiryRequestController extends BaseController {
             $updateData = $this->common_model->save_data('ecomm_rejected_requests',$postData2,'',$this->data['primary_key']);
 
             $this->session->setFlashdata('success_message', $this->data['title'].' Rejected Successfully & Transfer To Rejected List !!!');
-            return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(9));
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(13));
         } else {
             $this->session->setFlashdata('error_message', $this->data['title'].' Not Found !!!');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(0));
@@ -678,7 +678,8 @@ class EnquiryRequestController extends BaseController {
                 $conditions                 = ['status' => (float)$enq_sub_status, 'company_id' => $company_id];
             }
             $data['rows']                   = $this->data['model']->find_data('ecomm_sub_enquires', 'array', $conditions, '', '', $groupBy, $order_by);
-            $data['getSubEnquiry']          = $this->data['model']->find_data('ecomm_sub_enquires', 'row', $conditions);
+            $data['getSubEnquiry']          = $this->data['model']->find_data('ecomm_sub_enquires', 'row', $conditions);            
+
             echo $this->layout_after_login($title,$page_name,$data);
         }
         public function viewProcessRequestDetail($sub_enquiry_no)
@@ -1510,4 +1511,128 @@ class EnquiryRequestController extends BaseController {
             }
         }
     /* process enquiry requests */
+
+    public function orderComplete($enq_id){
+        if(!$this->common_model->checkModuleFunctionAccess(23,109)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
+        $enq_id                     = decoded($enq_id);
+        $data['enq_id']             = $enq_id;
+        $getEnquiry                 = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
+        if($getEnquiry){
+            $fields1            = ['status' => 12, 'order_complete_date' => date('Y-m-d H:i:s')];
+            $this->common_model->save_data('ecomm_enquires', $fields1, $enq_id, 'id');
+            $fields2            = ['status' => 12.12, 'order_complete_date' => date('Y-m-d H:i:s')];
+            $this->common_model->save_data('ecomm_sub_enquires', $fields2, $enq_id, 'enq_id');
+            $company_id         = $getEnquiry->company_id;
+            $plant_id           = $getEnquiry->plant_id;
+            $enquiry_no         = $getEnquiry->enquiry_no;
+
+            $vendorids          = [];
+            $groupBy[0]         = 'vendor_id';
+            $getSubEnquiries    = $this->data['model']->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enq_id], 'vendor_id', '', $groupBy);
+            if($getSubEnquiries){
+                foreach($getSubEnquiries as $getSubEnquiry){
+                    $vendorids[]      = $getSubEnquiry->vendor_id;
+                }
+            }
+            /* push notification */
+                // plant
+                    $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $plant_id, 'fcm_token!=' => ''], 'fcm_token');
+                    if($getDeviceTokens){
+                        foreach($getDeviceTokens as $getDeviceToken){
+                            $fcm_token          = $getDeviceToken->fcm_token;
+                            $messageData = [
+                                'title'     => 'Enquiry Request Completed',
+                                'body'      => 'Enquiry Request ('.$enquiry_no.') Completed By EcoEx',
+                                'badge'     => 1,
+                                'sound'     => 'Default',
+                                'data'      => [],
+                            ];
+                            $this->pushNotification($fcm_token, $messageData);
+                            $users[]    = $plant_id;
+                            $pushData   = [
+                                'source'            => 'FROM APP',
+                                'title'             => 'Enquiry Request Completed',
+                                'description'       => 'Enquiry Request ('.$enquiry_no.') Completed By EcoEx',
+                                'user_type'         => 'PLANT',
+                                'users'             => json_encode($users),
+                                'is_send'           => 1,
+                                'send_timestamp'    => date('Y-m-d H:i:s'),
+                                'status'            => 1,
+                            ];
+                            $this->common_model->save_data('notifications', $pushData, '', 'id');
+                        }
+                    }
+                // plant
+                // vendor
+                    if(!empty($vendorids)){ for($v=0;$v<count($vendorids);$v++){
+                        $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendorids[$v], 'fcm_token!=' => ''], 'fcm_token');
+                        if($getDeviceTokens){
+                            foreach($getDeviceTokens as $getDeviceToken){
+                                $fcm_token          = $getDeviceToken->fcm_token;
+                                $messageData = [
+                                    'title'     => 'Enquiry Request Completed',
+                                    'body'      => 'Enquiry Request ('.$enquiry_no.') Completed By EcoEx',
+                                    'badge'     => 1,
+                                    'sound'     => 'Default',
+                                    'data'      => [],
+                                ];
+                                $this->pushNotification($fcm_token, $messageData);
+                                $users[]    = $vendorids[$v];
+                                $pushData   = [
+                                    'source'            => 'FROM APP',
+                                    'title'             => 'Enquiry Request Completed',
+                                    'description'       => 'Enquiry Request ('.$enquiry_no.') Completed By EcoEx',
+                                    'user_type'         => 'VENDOR',
+                                    'users'             => json_encode($users),
+                                    'is_send'           => 1,
+                                    'send_timestamp'    => date('Y-m-d H:i:s'),
+                                    'status'            => 1,
+                                ];
+                                $this->common_model->save_data('notifications', $pushData, '', 'id');
+                            }
+                        }
+                    } }
+                // vendor
+            /* push notification */
+            /* email sent */
+                // ho
+                    $getCompany                     = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $company_id]);
+                    $generalSetting                 = $this->common_model->find_data('general_settings', 'row');
+                    $fields = [
+                        'enq_id'                => $getEnquiry->id,
+                        'company_id'            => $getEnquiry->company_id,
+                        'plant_id'              => $getEnquiry->plant_id,
+                        'enquiry_no'            => $enquiry_no,
+                        'entity_name'           => (($getCompany)?$getCompany->company_name:''),
+                    ];
+                    $subject                        = $generalSetting->site_name.' :: Enquiry ('.$enquiry_no.') Completed By Ecoex';
+                    $message1                       = view('email-templates/ecoex-order-complete',$fields);
+                    $this->sendMail((($getCompany)?$getCompany->email:''), $subject, $message1);
+
+                    /* email log save */
+                        $postData2 = [
+                            'name'                  => (($getCompany)?$getCompany->company_name:''),
+                            'email'                 => (($getCompany)?$getCompany->email:''),
+                            'subject'               => $subject,
+                            'message'               => $message1
+                        ];
+                        $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                    /* email log save */
+                // ho
+            /* email sent */
+
+            $this->session->setFlashdata('success_message', $this->data['title'].' Completed Successfully & Transfer To Order Complete List !!!');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(12));
+        } else {
+            $this->session->setFlashdata('error_message', $this->data['title'].' Not Found !!!');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(11));
+        }
+        
+    }
 }

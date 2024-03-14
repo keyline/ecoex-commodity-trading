@@ -8,8 +8,8 @@ $sub_enquiry_status = (($getSubEnquiry)?$getSubEnquiry->status:'');
 ?>
 <div class="pagetitle">
     <h1><?=$page_header?></h1>
-    <h5><?=(($getCompany)?$getCompany->company_name:'')?> : <?=(($getPlant)?$getPlant->plant_name:'')?></h5>
-    <h5><?=(($getSubEnquiry)?$getSubEnquiry->enquiry_no:'')?></h5>
+    <!-- <h5><?=(($getCompany)?$getCompany->company_name:'')?> : <?=(($getPlant)?$getPlant->plant_name:'')?></h5> -->
+    <!-- <h5><?=(($getSubEnquiry)?$getSubEnquiry->enquiry_no:'')?></h5> -->
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?=base_url('admin/dashboard')?>">Home</a></li>

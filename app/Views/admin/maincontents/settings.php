@@ -71,7 +71,7 @@ $user_type = session('user_type');
             <li class="nav-item">
               <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab5">SMS</button>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab6">Footer</button>
             </li>
             <li class="nav-item">
@@ -82,7 +82,7 @@ $user_type = session('user_type');
             </li>
             <li class="nav-item">
               <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab10">Bank Account</button>
-            </li>
+            </li> -->
             <?php }?>
           </ul>
           <div class="tab-content pt-2">
