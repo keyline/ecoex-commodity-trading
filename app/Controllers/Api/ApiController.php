@@ -4050,15 +4050,19 @@ class ApiController extends BaseController
                                     $items = implode(", ", $itemArray);
 
                                     $apiResponse[] = [
-                                        'enq_id'            => $row->id,
-                                        'enquiry_no'        => $row->enquiry_no,
-                                        'status'            => $row->status,
-                                        'status_name'       => $enquiryStatus,
-                                        'product_count'     => $productCount,
-                                        'created_at'        => date_format(date_create($row->created_at), "M d, Y h:i A"),
-                                        'updated_at'        => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
-                                        'collection_date'   => date_format(date_create($row->tentative_collection_date), "M d, Y"),
-                                        'items'             => $items
+                                        'enq_id'                        => $row->id,
+                                        'enquiry_no'                    => $row->enquiry_no,
+                                        'status'                        => $row->status,
+                                        'status_name'                   => $enquiryStatus,
+                                        'product_count'                 => $productCount,
+                                        'created_at'                    => date_format(date_create($row->created_at), "M d, Y h:i A"),
+                                        'updated_at'                    => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                        'collection_date'               => date_format(date_create($row->tentative_collection_date), "M d, Y"),
+                                        'ecoex_submitted_date'          => (($row->ecoex_submitted_date != '')?date_format(date_create($row->ecoex_submitted_date), "M d, Y h:i A"):''),
+                                        'is_ho_approve_ecoex_payment'   => $row->is_ho_approve_ecoex_payment,
+                                        'ho_approve_date'               => (($row->ho_approve_date != '')?date_format(date_create($row->ho_approve_date), "M d, Y h:i A"):''),
+                                        'order_complete_date'           => (($row->order_complete_date != '')?date_format(date_create($row->order_complete_date), "M d, Y h:i A"):''),
+                                        'items'                         => $items
                                     ];
                                 }
                             }
@@ -4964,15 +4968,19 @@ class ApiController extends BaseController
                                     $items = implode(", ", $itemArray);
 
                                     $apiResponse[] = [
-                                        'enq_id'        => $row->id,
-                                        'enquiry_no'    => $row->enquiry_no,
-                                        'company_name'  => (($getCompany)?$getCompany->company_name:''),
-                                        'plant_name'    => (($getPlant)?$getPlant->plant_name:''),
-                                        'status'        => 2,
-                                        'product_count' => $itemCount,
-                                        'created_at'    => date_format(date_create($row->created_at), "M d, Y h:i A"),
-                                        'updated_at'    => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
-                                        'items'        => $items,
+                                        'enq_id'                        => $row->id,
+                                        'enquiry_no'                    => $row->enquiry_no,
+                                        'company_name'                  => (($getCompany)?$getCompany->company_name:''),
+                                        'plant_name'                    => (($getPlant)?$getPlant->plant_name:''),
+                                        'status'                        => 2,
+                                        'product_count'                 => $itemCount,
+                                        'created_at'                    => date_format(date_create($row->created_at), "M d, Y h:i A"),
+                                        'updated_at'                    => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                        'ecoex_submitted_date'          => (($row->ecoex_submitted_date != '')?date_format(date_create($row->ecoex_submitted_date), "M d, Y h:i A"):''),
+                                        'is_ho_approve_ecoex_payment'   => $row->is_ho_approve_ecoex_payment,
+                                        'ho_approve_date'               => (($row->ho_approve_date != '')?date_format(date_create($row->ho_approve_date), "M d, Y h:i A"):''),
+                                        'order_complete_date'           => (($row->order_complete_date != '')?date_format(date_create($row->order_complete_date), "M d, Y h:i A"):''),
+                                        'items'                         => $items,
                                     ];
                                 }
                             }
