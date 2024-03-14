@@ -5554,6 +5554,8 @@ class ApiController extends BaseController
                                     'invoice_to_vendor_date'            => (($rows[0]->invoice_to_vendor_date != '')?date_format(date_create($rows[0]->invoice_to_vendor_date), "M d, Y h:i A"):''),
                                     'vendor_payment_received_date'      => (($rows[0]->vendor_payment_received_date != '')?date_format(date_create($rows[0]->vendor_payment_received_date), "M d, Y h:i A"):''),
                                     'vehicle_dispatched_date'           => (($rows[0]->vehicle_dispatched_date != '')?date_format(date_create($rows[0]->vehicle_dispatched_date), "M d, Y h:i A"):''),
+                                    'ecoex_payment_date'                => (($rows[0]->ecoex_payment_date != '')?date_format(date_create($rows[0]->ecoex_payment_date), "M d, Y h:i A"):''),
+                                    'order_complete_date'               => (($rows[0]->order_complete_date != '')?date_format(date_create($rows[0]->order_complete_date), "M d, Y h:i A"):''),
                                     'gps_image'                         => (($getEnquiry->gps_tracking_image != '')?getenv('app.uploadsURL').'enquiry/'.$getEnquiry->gps_tracking_image:''),
                                     'pickup_schedule_edit_access'       => $rows[0]->pickup_schedule_edit_access,
                                     'pickup_date_final'                 => $rows[0]->is_pickup_final,
