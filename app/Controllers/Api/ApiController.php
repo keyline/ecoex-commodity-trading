@@ -3485,11 +3485,11 @@ class ApiController extends BaseController
                                         'invoice_to_vendor_date'            => (($row->invoice_to_vendor_date != '')?date_format(date_create($row->invoice_to_vendor_date), "M d, Y h:i A"):''),
                                         'vendor_payment_received_date'      => (($row->vendor_payment_received_date != '')?date_format(date_create($row->vendor_payment_received_date), "M d, Y h:i A"):''),
                                         'vehicle_dispatched_date'           => (($row->vehicle_dispatched_date != '')?date_format(date_create($row->vehicle_dispatched_date), "M d, Y h:i A"):''),
-                                        'ecoex_submitted_date'              => (($row->ecoex_submitted_date != '')?date_format(date_create($row->ecoex_submitted_date), "M d, Y h:i A"):''),
-                                        'is_ho_approve_ecoex_payment'       => $row->is_ho_approve_ecoex_payment,
-                                        'ho_approve_date'                   => (($row->ho_approve_date != '')?date_format(date_create($row->ho_approve_date), "M d, Y h:i A"):''),
-                                        'order_complete_date'               => (($row->order_complete_date != '')?date_format(date_create($row->order_complete_date), "M d, Y h:i A"):''),
-                                        'created_at'                        => date_format(date_create($row->created_at), "M d, Y h:i A"),
+                                        'ecoex_submitted_date'              => (($getEnquiry->ecoex_submitted_date != '')?date_format(date_create($getEnquiry->ecoex_submitted_date), "M d, Y h:i A"):''),
+                                        'is_ho_approve_ecoex_payment'       => $getEnquiry->is_ho_approve_ecoex_payment,
+                                        'ho_approve_date'                   => (($getEnquiry->ho_approve_date != '')?date_format(date_create($getEnquiry->ho_approve_date), "M d, Y h:i A"):''),
+                                        'order_complete_date'               => (($getEnquiry->order_complete_date != '')?date_format(date_create($getEnquiry->order_complete_date), "M d, Y h:i A"):''),
+                                        'created_at'                        => date_format(date_create($getEnquiry->created_at), "M d, Y h:i A"),
                                     ];
                                 }
                             }
