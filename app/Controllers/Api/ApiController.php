@@ -3454,12 +3454,16 @@ class ApiController extends BaseController
                                         $enquirySubStatus = 'Vehicle Placed';
                                     } elseif($row->status == 6.6){
                                         $enquirySubStatus = 'Material Weighed';
+                                    } elseif($row->status == 7.7){
+                                        $enquirySubStatus = 'Invoice From HO';
                                     } elseif($row->status == 8.8){
                                         $enquirySubStatus = 'Invoice to Vendor';
                                     } elseif($row->status == 9.9){
                                         $enquirySubStatus = 'Payment received from Vendor';
                                     } elseif($row->status == 10.10){
                                         $enquirySubStatus = 'Vehicle Dispatched';
+                                    } elseif($row->status == 11.11){
+                                        $enquirySubStatus = 'Payment To HO';
                                     } elseif($row->status == 12.12){
                                         $enquirySubStatus = 'Order Complete';
                                     }
@@ -3481,12 +3485,17 @@ class ApiController extends BaseController
                                         'invoice_to_vendor_date'            => (($row->invoice_to_vendor_date != '')?date_format(date_create($row->invoice_to_vendor_date), "M d, Y h:i A"):''),
                                         'vendor_payment_received_date'      => (($row->vendor_payment_received_date != '')?date_format(date_create($row->vendor_payment_received_date), "M d, Y h:i A"):''),
                                         'vehicle_dispatched_date'           => (($row->vehicle_dispatched_date != '')?date_format(date_create($row->vehicle_dispatched_date), "M d, Y h:i A"):''),
+                                        'ecoex_submitted_date'              => (($row->ecoex_submitted_date != '')?date_format(date_create($row->ecoex_submitted_date), "M d, Y h:i A"):''),
+                                        'is_ho_approve_ecoex_payment'       => $row->is_ho_approve_ecoex_payment,
+                                        'ho_approve_date'                   => (($row->ho_approve_date != '')?date_format(date_create($row->ho_approve_date), "M d, Y h:i A"):''),
+                                        'order_complete_date'               => (($row->order_complete_date != '')?date_format(date_create($row->order_complete_date), "M d, Y h:i A"):''),
+                                        'created_at'                        => date_format(date_create($row->created_at), "M d, Y h:i A"),
                                     ];
                                 }
                             }
                             $apiStatus          = TRUE;
                             http_response_code(200);
-                            $apiMessage         = 'Vendor Process Data Available !!!';
+                            $apiMessage         = 'Plant Process Data Available !!!';
                             $apiExtraField      = 'response_code';
                             $apiExtraData       = http_response_code();
                         } else {
