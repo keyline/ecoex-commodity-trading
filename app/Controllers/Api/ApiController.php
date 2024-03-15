@@ -3998,7 +3998,10 @@ class ApiController extends BaseController
                             } else {
                                 $offset = (($limit * $page_no) - $limit); // ((15 * 3) - 15)
                             }
-                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['plant_id' => $uId, 'status' => 12], '', '', '', $orderBy, $limit, $offset);
+                            // $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['plant_id' => $uId, 'status' => 12], '', '', '', $orderBy, $limit, $offset);
+                            $select             = 'ecomm_enquires.*';
+                            $join[0]            = ['table' => 'ecomm_enquiry_vendor_shares', 'field' => 'enq_id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'id', 'type' => 'INNER'];
+                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_sub_enquires.plant_id' => $uId, 'ecomm_sub_enquires.status' => 12.12, 'ecomm_enquires.status' => 12], $select, $join, '', $orderBy, $limit, $offset);
                             // $this->db = \Config\Database::connect();
                             // echo $this->db->getLastQuery();die;
                             if($rows){
@@ -5355,6 +5358,7 @@ class ApiController extends BaseController
                                         'invoice_to_vendor_date'            => (($row->invoice_to_vendor_date != '')?date_format(date_create($row->invoice_to_vendor_date), "M d, Y h:i A"):''),
                                         'vendor_payment_received_date'      => (($row->vendor_payment_received_date != '')?date_format(date_create($row->vendor_payment_received_date), "M d, Y h:i A"):''),
                                         'vehicle_dispatched_date'           => (($row->vehicle_dispatched_date != '')?date_format(date_create($row->vehicle_dispatched_date), "M d, Y h:i A"):''),
+                                        'order_complete_date'               => (($row->order_complete_date != '')?date_format(date_create($row->order_complete_date), "M d, Y h:i A"):''),
                                     ];
                                 }
                             }
