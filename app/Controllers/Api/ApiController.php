@@ -3647,12 +3647,16 @@ class ApiController extends BaseController
                                     $enquirySubStatus = 'Vehicle Placed';
                                 } elseif($rows[0]->status == 6.6){
                                     $enquirySubStatus = 'Material Weighed';
+                                } elseif($rows[0]->status == 7.7){
+                                    $enquirySubStatus = 'Invoice From HO';
                                 } elseif($rows[0]->status == 8.8){
                                     $enquirySubStatus = 'Invoice to Vendor';
                                 } elseif($rows[0]->status == 9.9){
                                     $enquirySubStatus = 'Payment received from Vendor';
                                 } elseif($rows[0]->status == 10.10){
                                     $enquirySubStatus = 'Vehicle Dispatched';
+                                } elseif($rows[0]->status == 11.11){
+                                    $enquirySubStatus = 'Payment To HO';
                                 } elseif($rows[0]->status == 12.12){
                                     $enquirySubStatus = 'Order Complete';
                                 }
@@ -3700,6 +3704,11 @@ class ApiController extends BaseController
                                     'material_weighing_edit_plant'      => $rows[0]->material_weighing_edit_plant,
                                     'is_plant_ecoex_confirm'            => $rows[0]->is_plant_ecoex_confirm,
                                     'plant_ecoex_confirm_date'          => (($rows[0]->plant_ecoex_confirm_date != '')?date_format(date_create($rows[0]->plant_ecoex_confirm_date), "M d, Y h:i A"):''),
+                                    'ecoex_submitted_date'              => (($getEnquiry->ecoex_submitted_date != '')?date_format(date_create($getEnquiry->ecoex_submitted_date), "M d, Y h:i A"):''),
+                                        'is_ho_approve_ecoex_payment'       => $getEnquiry->is_ho_approve_ecoex_payment,
+                                        'ho_approve_date'                   => (($getEnquiry->ho_approve_date != '')?date_format(date_create($getEnquiry->ho_approve_date), "M d, Y h:i A"):''),
+                                        'order_complete_date'               => (($getEnquiry->order_complete_date != '')?date_format(date_create($getEnquiry->order_complete_date), "M d, Y h:i A"):''),
+                                        'created_at'                        => date_format(date_create($getEnquiry->created_at), "M d, Y h:i A"),
                                     'vehicles'                          => $vehicles,
                                     'pickup_date_logs'                  => $pickup_date_logs,
                                     'items'                             => $items,
