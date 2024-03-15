@@ -5399,7 +5399,7 @@ class ApiController extends BaseController
                     $app_access_token           = $this->extractToken($Authorization);
                     $getTokenValue              = $this->tokenAuth($app_access_token);
                     $sub_enquiry_no             = $requestData['sub_enquiry_no'];
-                    
+
                     if($getTokenValue['status']){
                         $uId        = $getTokenValue['data'][1];
                         $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
@@ -5513,6 +5513,8 @@ class ApiController extends BaseController
                                     $enquirySubStatus = 'Payment received from Vendor';
                                 } elseif($rows[0]->status == 10.10){
                                     $enquirySubStatus = 'Vehicle Dispatched';
+                                } elseif($rows[0]->status == 11.11){
+                                    $enquirySubStatus = 'Payment To HO';
                                 } elseif($rows[0]->status == 12.12){
                                     $enquirySubStatus = 'Order Complete';
                                 }
