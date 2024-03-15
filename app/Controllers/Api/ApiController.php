@@ -5323,12 +5323,16 @@ class ApiController extends BaseController
                                         $enquirySubStatus = 'Vehicle Placed';
                                     } elseif($row->status == 6.6){
                                         $enquirySubStatus = 'Material Weighed';
+                                    } elseif($row->status == 7.7){
+                                        $enquirySubStatus = 'Invoice To HO';
                                     } elseif($row->status == 8.8){
                                         $enquirySubStatus = 'Invoice to Vendor';
                                     } elseif($row->status == 9.9){
                                         $enquirySubStatus = 'Payment received from Vendor';
                                     } elseif($row->status == 10.10){
                                         $enquirySubStatus = 'Vehicle Dispatched';
+                                    } elseif($row->status == 11.11){
+                                        $enquirySubStatus = 'Payment To HO';
                                     } elseif($row->status == 12.12){
                                         $enquirySubStatus = 'Order Complete';
                                     }
@@ -5507,6 +5511,8 @@ class ApiController extends BaseController
                                     $enquirySubStatus = 'Vehicle Placed';
                                 } elseif($rows[0]->status == 6.6){
                                     $enquirySubStatus = 'Material Weighed';
+                                } elseif($rows[0]->status == 7.7){
+                                    $enquirySubStatus = 'Invoice From HO';
                                 } elseif($rows[0]->status == 8.8){
                                     $enquirySubStatus = 'Invoice to Vendor';
                                 } elseif($rows[0]->status == 9.9){
