@@ -1140,28 +1140,42 @@ class ApiController extends BaseController
                 if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
                     $type                       = $requestData['type'];
                     $phone                      = $requestData['phone'];
-                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['type' => $type, 'phone' => $phone, 'status>=' => 1]);
+                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['type' => $type, 'phone' => $phone]);
                     if($checkUser){
-                        $mobile_otp = rand(100000,999999);
-                        $postData = [
-                            'mobile_otp'        => $mobile_otp
-                        ];
-                        $this->common_model->save_data('ecomm_users', ['mobile_otp' => $mobile_otp], $checkUser->id, 'id');
-                        /* send sms */
-                            $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $checkUser->member_type], 'name');
-                            $message = "Dear ".(($memberType)?$memberType->name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
-                            $mobileNo = (($checkUser)?$checkUser->phone:'');
-                            $this->sendSMS($mobileNo,$message);
-                        /* send sms */
-                        $mailData                   = [
-                            'id'    => $checkUser->id,
-                            'email' => $checkUser->email,
-                            'phone' => $checkUser->phone,
-                            'otp'   => $mobile_otp,
-                        ];
-                        $apiResponse                        = $mailData;
-                        $apiStatus                          = TRUE;
-                        $apiMessage                         = 'Please Enter OTP !!!';
+                        if($checkUser->status >= 1){
+                            $mobile_otp = rand(100000,999999);
+                            $postData = [
+                                'mobile_otp'        => $mobile_otp
+                            ];
+                            $this->common_model->save_data('ecomm_users', ['mobile_otp' => $mobile_otp], $checkUser->id, 'id');
+                            /* send sms */
+                                $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $checkUser->member_type], 'name');
+                                $message = "Dear ".(($memberType)?$memberType->name:'ECOEX').", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
+                                $mobileNo = (($checkUser)?$checkUser->phone:'');
+                                $this->sendSMS($mobileNo,$message);
+                            /* send sms */
+                            $mailData                   = [
+                                'id'    => $checkUser->id,
+                                'email' => $checkUser->email,
+                                'phone' => $checkUser->phone,
+                                'otp'   => $mobile_otp,
+                            ];
+                            $apiResponse                        = $mailData;
+                            $apiStatus                          = TRUE;
+                            $apiMessage                         = 'Please Enter OTP !!!';
+                        } else {
+                            $userActivityData = [
+                                'user_email'        => $checkUser->email,
+                                'user_name'         => $checkUser->company_name,
+                                'user_type'         => 'USER',
+                                'ip_address'        => $this->request->getIPAddress(),
+                                'activity_type'     => 0,
+                                'activity_details'  => 'Admin Not Verified Yet',
+                            ];
+                            $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
+                            $apiStatus                              = FALSE;
+                            $apiMessage                             = 'You Account Is Not Verified Yet !!!';
+                        }
                     } else {
                         $userActivityData = [
                             'user_email'        => '',
