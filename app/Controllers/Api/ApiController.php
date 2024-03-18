@@ -441,21 +441,21 @@ class ApiController extends BaseController
                                 
                             } else {
                                 $apiStatus          = FALSE;
-                                http_response_code(404);
+                                http_response_code(200);
                                 $apiMessage         = 'Password & Confirm Password Does Not Matched !!!';
                                 $apiExtraField      = 'response_code';
                                 $apiExtraData       = http_response_code();
                             }
                         } else {
                             $apiStatus          = FALSE;
-                            http_response_code(404);
+                            http_response_code(200);
                             $apiMessage         = 'Phone Already Registered !!!';
                             $apiExtraField      = 'response_code';
                             $apiExtraData       = http_response_code();
                         }
                     } else {
                         $apiStatus          = FALSE;
-                        http_response_code(404);
+                        http_response_code(200);
                         $apiMessage         = 'Email Already Registered !!!';
                         $apiExtraField      = 'response_code';
                         $apiExtraData       = http_response_code();
