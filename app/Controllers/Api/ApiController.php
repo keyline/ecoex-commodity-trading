@@ -4341,7 +4341,12 @@ class ApiController extends BaseController
                         $memberType             = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
                         $total_count            = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId]);
                         $new_count              = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId, 'status' => 0]);
-                        $quotation_request      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId, 'status' => 1]);
+
+                        $join[0]            = ['table' => 'ecomm_enquiry_vendor_shares', 'field' => 'enq_id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'id', 'type' => 'INNER'];
+                        $quotation_request               = $this->common_model->find_data('ecomm_enquires', 'count', ['ecomm_enquiry_vendor_shares.vendor_id' => $uId, 'ecomm_enquiry_vendor_shares.status' => 1, 'ecomm_enquires.status<=' => 2], '', $join);
+
+                        // $quotation_request      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId, 'status' => 1]);
+
                         $groupBy[0]             = 'sub_enquiry_no';
                         $process_request        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['vendor_id' => $uId, 'status<=' => 10.10], '', '', $groupBy);
                         $rejected_enquiry       = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId, 'status' => 3]);
