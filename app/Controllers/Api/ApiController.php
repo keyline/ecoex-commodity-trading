@@ -4838,7 +4838,7 @@ class ApiController extends BaseController
 
                             $select             = 'ecomm_enquires.*';
                             $join[0]            = ['table' => 'ecomm_enquiry_vendor_shares', 'field' => 'enq_id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'id', 'type' => 'INNER'];
-                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquiry_vendor_shares.vendor_id' => $uId, 'ecomm_enquiry_vendor_shares.status' => 1, 'ecomm_enquires.status!=' => 14], $select, $join, '', $orderBy, $limit, $offset);
+                            $rows               = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquiry_vendor_shares.vendor_id' => $uId, 'ecomm_enquiry_vendor_shares.status' => 1, 'ecomm_enquires.status<=' => 2], $select, $join, '', $orderBy, $limit, $offset);
                             // $this->db = \Config\Database::connect();
                             // echo $this->db->getLastQuery();die;
                             if($rows){
