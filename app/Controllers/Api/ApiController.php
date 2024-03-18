@@ -946,112 +946,125 @@ class ApiController extends BaseController
                     $device_token               = $requestData['device_token'];
                     $fcm_token                  = $requestData['fcm_token'];
                     $device_type                = trim($headerData['Source'], "Source: ");
-                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['email' => $email, 'type' => $type, 'status>=' => 1]);
+                    $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['email' => $email, 'type' => $type]);
                     if($checkUser){
-                        
                         if($checkUser->status != 3){
-                            if(md5($password) == $checkUser->password){
-                                if($checkUser->type == 'VENDOR'){
-                                    $getCompany         = [];
-
-                                    $objOfJwt           = new CreatorJwt();
-                                    $app_access_token   = $objOfJwt->GenerateToken($checkUser->id, $checkUser->email, $checkUser->phone);
-                                    $user_id                        = $checkUser->id;
-                                    $fields     = [
-                                        'user_id'               => $user_id,
-                                        'device_type'           => $device_type,
-                                        'device_token'          => $device_token,
-                                        'fcm_token'             => $fcm_token,
-                                        'app_access_token'      => $app_access_token,
-                                    ];
-                                    $checkUserTokenExist                  = $this->common_model->find_data('ecomm_user_devices', 'row', ['app_access_token' => $app_access_token]);
-                                    if(!$checkUserTokenExist){
-                                        $this->common_model->save_data('ecomm_user_devices', $fields, '', 'id');
-                                    } else {
-                                        $this->common_model->save_data('ecomm_user_devices', $fields, $checkUserTokenExist->id, 'id');
-                                    }
-
-                                    $userActivityData = [
-                                        'user_email'        => $checkUser->email,
-                                        'user_name'         => $checkUser->company_name,
-                                        'activity_type'     => 1,
-                                        'user_type'         => 'USER',
-                                        'ip_address'        => $this->request->getIPAddress(),
-                                        'activity_details'  => $checkUser->type.' Sign In Success',
-                                    ];
-                                    // pr($userActivityData);
-                                    $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
+                            if($checkUser->status >= 1){
+                                if(md5($password) == $checkUser->password){
                                     if($checkUser->type == 'VENDOR'){
-                                        $company_name = $checkUser->company_name;
-                                    } else {
-                                        $company_name = $checkUser->plant_name;
-                                    }
-                                    $apiResponse = [
-                                        'user_id'               => $user_id,
-                                        'company_name'          => $company_name,
-                                        'email'                 => $checkUser->email,
-                                        'phone'                 => $checkUser->phone,
-                                        'type'                  => $checkUser->type,
-                                        'device_type'           => $device_type,
-                                        'device_token'          => $device_token,
-                                        'fcm_token'             => $fcm_token,
-                                        'app_access_token'      => $app_access_token,
-                                    ];
-                                    $apiStatus                          = TRUE;
-                                    $apiMessage                         = 'SignIn Successfully !!!';
-                                } else {
-                                    $getCompany         = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $checkUser->parent_id, 'status>=' => 1]);
-                                    if($getCompany){
-                                        $contract_end   = $getCompany->contract_end;
-                                        $currentDate    = date('Y-m-d');
-                                        if($currentDate <= $contract_end){
-                                            $objOfJwt           = new CreatorJwt();
-                                            $app_access_token   = $objOfJwt->GenerateToken($checkUser->id, $checkUser->email, $checkUser->phone);
-                                            $user_id                        = $checkUser->id;
-                                            $fields     = [
-                                                'user_id'               => $user_id,
-                                                'device_type'           => $device_type,
-                                                'device_token'          => $device_token,
-                                                'fcm_token'             => $fcm_token,
-                                                'app_access_token'      => $app_access_token,
-                                            ];
-                                            $checkUserTokenExist                  = $this->common_model->find_data('ecomm_user_devices', 'row', ['app_access_token' => $app_access_token]);
-                                            if(!$checkUserTokenExist){
-                                                $this->common_model->save_data('ecomm_user_devices', $fields, '', 'id');
-                                            } else {
-                                                $this->common_model->save_data('ecomm_user_devices', $fields, $checkUserTokenExist->id, 'id');
-                                            }
+                                        $getCompany         = [];
 
-                                            $userActivityData = [
-                                                'user_email'        => $checkUser->email,
-                                                'user_name'         => $checkUser->company_name,
-                                                'activity_type'     => 1,
-                                                'user_type'         => 'USER',
-                                                'ip_address'        => $this->request->getIPAddress(),
-                                                'activity_details'  => $checkUser->type.' Sign In Success',
-                                            ];
-                                            // pr($userActivityData);
-                                            $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
-                                            if($checkUser->type == 'VENDOR'){
-                                                $company_name = $checkUser->company_name;
+                                        $objOfJwt           = new CreatorJwt();
+                                        $app_access_token   = $objOfJwt->GenerateToken($checkUser->id, $checkUser->email, $checkUser->phone);
+                                        $user_id                        = $checkUser->id;
+                                        $fields     = [
+                                            'user_id'               => $user_id,
+                                            'device_type'           => $device_type,
+                                            'device_token'          => $device_token,
+                                            'fcm_token'             => $fcm_token,
+                                            'app_access_token'      => $app_access_token,
+                                        ];
+                                        $checkUserTokenExist                  = $this->common_model->find_data('ecomm_user_devices', 'row', ['app_access_token' => $app_access_token]);
+                                        if(!$checkUserTokenExist){
+                                            $this->common_model->save_data('ecomm_user_devices', $fields, '', 'id');
+                                        } else {
+                                            $this->common_model->save_data('ecomm_user_devices', $fields, $checkUserTokenExist->id, 'id');
+                                        }
+
+                                        $userActivityData = [
+                                            'user_email'        => $checkUser->email,
+                                            'user_name'         => $checkUser->company_name,
+                                            'activity_type'     => 1,
+                                            'user_type'         => 'USER',
+                                            'ip_address'        => $this->request->getIPAddress(),
+                                            'activity_details'  => $checkUser->type.' Sign In Success',
+                                        ];
+                                        // pr($userActivityData);
+                                        $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
+                                        if($checkUser->type == 'VENDOR'){
+                                            $company_name = $checkUser->company_name;
+                                        } else {
+                                            $company_name = $checkUser->plant_name;
+                                        }
+                                        $apiResponse = [
+                                            'user_id'               => $user_id,
+                                            'company_name'          => $company_name,
+                                            'email'                 => $checkUser->email,
+                                            'phone'                 => $checkUser->phone,
+                                            'type'                  => $checkUser->type,
+                                            'device_type'           => $device_type,
+                                            'device_token'          => $device_token,
+                                            'fcm_token'             => $fcm_token,
+                                            'app_access_token'      => $app_access_token,
+                                        ];
+                                        $apiStatus                          = TRUE;
+                                        $apiMessage                         = 'SignIn Successfully !!!';
+                                    } else {
+                                        $getCompany         = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $checkUser->parent_id, 'status>=' => 1]);
+                                        if($getCompany){
+                                            $contract_end   = $getCompany->contract_end;
+                                            $currentDate    = date('Y-m-d');
+                                            if($currentDate <= $contract_end){
+                                                $objOfJwt           = new CreatorJwt();
+                                                $app_access_token   = $objOfJwt->GenerateToken($checkUser->id, $checkUser->email, $checkUser->phone);
+                                                $user_id                        = $checkUser->id;
+                                                $fields     = [
+                                                    'user_id'               => $user_id,
+                                                    'device_type'           => $device_type,
+                                                    'device_token'          => $device_token,
+                                                    'fcm_token'             => $fcm_token,
+                                                    'app_access_token'      => $app_access_token,
+                                                ];
+                                                $checkUserTokenExist                  = $this->common_model->find_data('ecomm_user_devices', 'row', ['app_access_token' => $app_access_token]);
+                                                if(!$checkUserTokenExist){
+                                                    $this->common_model->save_data('ecomm_user_devices', $fields, '', 'id');
+                                                } else {
+                                                    $this->common_model->save_data('ecomm_user_devices', $fields, $checkUserTokenExist->id, 'id');
+                                                }
+
+                                                $userActivityData = [
+                                                    'user_email'        => $checkUser->email,
+                                                    'user_name'         => $checkUser->company_name,
+                                                    'activity_type'     => 1,
+                                                    'user_type'         => 'USER',
+                                                    'ip_address'        => $this->request->getIPAddress(),
+                                                    'activity_details'  => $checkUser->type.' Sign In Success',
+                                                ];
+                                                // pr($userActivityData);
+                                                $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
+                                                if($checkUser->type == 'VENDOR'){
+                                                    $company_name = $checkUser->company_name;
+                                                } else {
+                                                    $company_name = $checkUser->plant_name;
+                                                }
+                                                $apiResponse = [
+                                                    'user_id'               => $user_id,
+                                                    'company_name'          => $company_name,
+                                                    'email'                 => $checkUser->email,
+                                                    'phone'                 => $checkUser->phone,
+                                                    'type'                  => $checkUser->type,
+                                                    'contract_start'        => date_format(date_create($getCompany->contract_start), "M d, Y"),
+                                                    'contract_end'          => date_format(date_create($getCompany->contract_end), "M d, Y"),
+                                                    'device_type'           => $device_type,
+                                                    'device_token'          => $device_token,
+                                                    'fcm_token'             => $fcm_token,
+                                                    'app_access_token'      => $app_access_token,
+                                                ];
+                                                $apiStatus                          = TRUE;
+                                                $apiMessage                         = 'SignIn Successfully !!!';
                                             } else {
-                                                $company_name = $checkUser->plant_name;
+                                                $userActivityData = [
+                                                    'user_email'        => $email,
+                                                    'user_name'         => $checkUser->company_name,
+                                                    'user_type'         => 'USER',
+                                                    'ip_address'        => $this->request->getIPAddress(),
+                                                    'activity_type'     => 0,
+                                                    'activity_details'  => 'Company Contract Is Ended. Please Contact To HO',
+                                                ];
+                                                $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
+                                                $apiStatus                          = FALSE;
+                                                $apiMessage                         = 'Company Contract Is Ended. Please Contact To HO !!!';
                                             }
-                                            $apiResponse = [
-                                                'user_id'               => $user_id,
-                                                'company_name'          => $company_name,
-                                                'email'                 => $checkUser->email,
-                                                'phone'                 => $checkUser->phone,
-                                                'type'                  => $checkUser->type,
-                                                'contract_start'        => date_format(date_create($getCompany->contract_start), "M d, Y"),
-                                                'contract_end'          => date_format(date_create($getCompany->contract_end), "M d, Y"),
-                                                'device_type'           => $device_type,
-                                                'device_token'          => $device_token,
-                                                'fcm_token'             => $fcm_token,
-                                                'app_access_token'      => $app_access_token,
-                                            ];
-                                            $apiStatus                          = TRUE;
-                                            $apiMessage                         = 'SignIn Successfully !!!';
                                         } else {
                                             $userActivityData = [
                                                 'user_email'        => $email,
@@ -1059,38 +1072,38 @@ class ApiController extends BaseController
                                                 'user_type'         => 'USER',
                                                 'ip_address'        => $this->request->getIPAddress(),
                                                 'activity_type'     => 0,
-                                                'activity_details'  => 'Company Contract Is Ended. Please Contact To HO',
+                                                'activity_details'  => 'Company Not Approved',
                                             ];
                                             $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
                                             $apiStatus                          = FALSE;
-                                            $apiMessage                         = 'Company Contract Is Ended. Please Contact To HO !!!';
+                                            $apiMessage                         = 'Company Not Approved !!!';
                                         }
-                                    } else {
-                                        $userActivityData = [
-                                            'user_email'        => $email,
-                                            'user_name'         => $checkUser->company_name,
-                                            'user_type'         => 'USER',
-                                            'ip_address'        => $this->request->getIPAddress(),
-                                            'activity_type'     => 0,
-                                            'activity_details'  => 'Company Not Approved',
-                                        ];
-                                        $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
-                                        $apiStatus                          = FALSE;
-                                        $apiMessage                         = 'Company Not Approved !!!';
                                     }
+                                } else {
+                                    $userActivityData = [
+                                        'user_email'        => $email,
+                                        'user_name'         => $checkUser->company_name,
+                                        'user_type'         => 'USER',
+                                        'ip_address'        => $this->request->getIPAddress(),
+                                        'activity_type'     => 0,
+                                        'activity_details'  => 'Invalid Password',
+                                    ];
+                                    $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
+                                    $apiStatus                          = FALSE;
+                                    $apiMessage                         = 'Invalid Password !!!';
                                 }
                             } else {
                                 $userActivityData = [
-                                    'user_email'        => $email,
+                                    'user_email'        => $checkUser->email,
                                     'user_name'         => $checkUser->company_name,
                                     'user_type'         => 'USER',
                                     'ip_address'        => $this->request->getIPAddress(),
                                     'activity_type'     => 0,
-                                    'activity_details'  => 'Invalid Password',
+                                    'activity_details'  => 'Admin Not Verified Yet',
                                 ];
                                 $this->common_model->save_data('user_activities', $userActivityData, '','activity_id');
-                                $apiStatus                          = FALSE;
-                                $apiMessage                         = 'Invalid Password !!!';
+                                $apiStatus                              = FALSE;
+                                $apiMessage                             = 'You Account Is Not Verified Yet !!!';
                             }
                         } else {
                             $userActivityData = [
