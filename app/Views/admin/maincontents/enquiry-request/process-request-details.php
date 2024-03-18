@@ -580,12 +580,14 @@
                                         <?php }?>
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <?php if($row->is_approve_vendor_payment == 0){?>
-                                            <a href="<?=base_url('admin/enquiry-requests/vendor-payment-approve/'.encoded($sub_enquiry_no))?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to approve vendor payment ?');"><i class="fas fa-check"></i> Approve Vendor Payment</a>
-                                        <?php } else {?>
-                                            <h4 class="text-success fw-bold">Vendor Payment Approved Successfully By Ecoex</h4>
-                                            <h5><i class="fa fa-inr"></i> <?=$row->payment_amount?></h5>
-                                            <h6><?=date_format(date_create($row->vendor_payment_received_date), "M d, Y h:i A")?></h6>
+                                        <?php if($row->payment_amount > 0){?>
+                                            <?php if($row->is_approve_vendor_payment == 0){?>
+                                                <a href="<?=base_url('admin/enquiry-requests/vendor-payment-approve/'.encoded($sub_enquiry_no))?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to approve vendor payment ?');"><i class="fas fa-check"></i> Approve Vendor Payment</a>
+                                            <?php } else {?>
+                                                <h4 class="text-success fw-bold">Vendor Payment Approved Successfully By Ecoex</h4>
+                                                <h5><i class="fa fa-inr"></i> <?=$row->payment_amount?></h5>
+                                                <h6><?=date_format(date_create($row->vendor_payment_received_date), "M d, Y h:i A")?></h6>
+                                            <?php }?>
                                         <?php }?>
                                     </div>
                                 </div>

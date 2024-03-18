@@ -1633,6 +1633,5 @@ class EnquiryRequestController extends BaseController {
             $this->session->setFlashdata('error_message', $this->data['title'].' Not Found !!!');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(11));
         }
-        
     }
 }

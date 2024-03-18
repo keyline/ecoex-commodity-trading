@@ -2540,17 +2540,20 @@ class ApiController extends BaseController
                                     }
                                     $items = implode(", ", $itemArray);
 
-                                    $apiResponse[] = [
-                                        'enq_id'            => $row->id,
-                                        'enquiry_no'        => $row->enquiry_no,
-                                        'status'            => $row->status,
-                                        'status_name'       => $enquiryStatus,
-                                        'product_count'     => $productCount,
-                                        'created_at'        => date_format(date_create($row->created_at), "M d, Y h:i A"),
-                                        'updated_at'        => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
-                                        'collection_date'   => date_format(date_create($row->tentative_collection_date), "M d, Y"),
-                                        'items'             => $items
-                                    ];
+                                    $checkSubEnquiryWiseBreakUp = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['enq_id' => $row->id]);
+                                    if($checkSubEnquiryWiseBreakUp <= 0){
+                                        $apiResponse[] = [
+                                            'enq_id'            => $row->id,
+                                            'enquiry_no'        => $row->enquiry_no,
+                                            'status'            => $row->status,
+                                            'status_name'       => $enquiryStatus,
+                                            'product_count'     => $productCount,
+                                            'created_at'        => date_format(date_create($row->created_at), "M d, Y h:i A"),
+                                            'updated_at'        => (($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):''),
+                                            'collection_date'   => date_format(date_create($row->tentative_collection_date), "M d, Y"),
+                                            'items'             => $items
+                                        ];
+                                    }
                                 }
                             }
                             $apiStatus          = TRUE;
