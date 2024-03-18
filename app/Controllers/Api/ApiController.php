@@ -2287,11 +2287,11 @@ class ApiController extends BaseController
                     if($getUser){
                         $memberType         = $this->common_model->find_data('ecomm_member_types', 'row', ['id' => $getUser->member_type], 'name');
                         $step0_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId]);
-                        $step1_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status>=' => 0, 'status<=' => 11]);
+                        $step1_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status>=' => 0, 'status<=' => 2]);
                         $groupBy[0]         = 'sub_enquiry_no';
                         $step2_count        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['plant_id' => $uId, 'status>=' => 3.3, 'status<=' => 10.10], '', '', $groupBy);
                         $step3_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 13]);
-                        $step4_count        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['plant_id' => $uId, 'status' => 12]);
+                        $step4_count        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['plant_id' => $uId, 'status' => 12.12]);
                         $getCompany         = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $getUser->parent_id]);
 
                         $buttons            = [
