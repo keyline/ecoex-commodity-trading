@@ -112,6 +112,19 @@
     position:sticky;
     left:0px;
     }
+    .material_accordion_section button.accordion-button {
+    color: #fff;
+    font-size: 18px;
+}
+    .material_accordion_section .accordion-button::after{
+         font-family: "Font Awesome 5 Free"; 
+    font-weight: 900; 
+    content: "\f078";";
+    position: absolute;
+    right: 5px;
+    color: #fff;
+    background-image: none;
+    } 
 </style>
 <?php
     $title              = $moduleDetail['title'];
@@ -267,70 +280,68 @@
                     <?php }?>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-header bg-success text-light">
-                    <h5>Enquiry Request Items</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row mt-3">
-                        <div class="col-md-12">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Item</th>
-                                            <th>HSN</th>
-                                            <th>Qty</th>
-                                            <th>Unit Price</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        if($items){
-                                            $sl=1;
-                                            foreach($items as $row1){
-                                                $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $row1->item_id], 'item_name_ecoex,hsn');
-                                                $getEnquiryItem = $common_model->find_data('ecomm_enquiry_products', 'row', ['product_id' => $row1->item_id, 'enq_id' => $row1->enq_id], 'new_product_image,qty,unit');
-                                                $getUnit = $common_model->find_data('ecomm_units', 'row', ['id' => (($getEnquiryItem)?$getEnquiryItem->unit:0)], 'name');
+            <div class="material_accordion_section">
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"> Enquiry Request Items </button>
+                      </h2>
+                      <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                          <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Item</th>
+                                                <th>HSN</th>
+                                                <th>Qty</th>
+                                                <th>Unit Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            if($items){
+                                                $sl=1;
+                                                foreach($items as $row1){
+                                                    $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $row1->item_id], 'item_name_ecoex,hsn');
+                                                    $getEnquiryItem = $common_model->find_data('ecomm_enquiry_products', 'row', ['product_id' => $row1->item_id, 'enq_id' => $row1->enq_id], 'new_product_image,qty,unit');
+                                                    $getUnit = $common_model->find_data('ecomm_units', 'row', ['id' => (($getEnquiryItem)?$getEnquiryItem->unit:0)], 'name');
 
-                                                $item_images     = [];
-                                                if($getEnquiryItem){
-                                                    $new_product_image  = json_decode($getEnquiryItem->new_product_image);
-                                                    if(!empty($new_product_image)){
-                                                        for($pi=0;$pi<count($new_product_image);$pi++){
-                                                            $item_images[]     = [
-                                                                'id'    => $pi,
-                                                                'link'  => (($new_product_image[$pi] != '')?getenv('app.uploadsURL').'enquiry/'.$new_product_image[$pi]:getenv('app.NO_IMAGE'))
-                                                            ];
+                                                    $item_images     = [];
+                                                    if($getEnquiryItem){
+                                                        $new_product_image  = json_decode($getEnquiryItem->new_product_image);
+                                                        if(!empty($new_product_image)){
+                                                            for($pi=0;$pi<count($new_product_image);$pi++){
+                                                                $item_images[]     = [
+                                                                    'id'    => $pi,
+                                                                    'link'  => (($new_product_image[$pi] != '')?getenv('app.uploadsURL').'enquiry/'.$new_product_image[$pi]:getenv('app.NO_IMAGE'))
+                                                                ];
+                                                            }
                                                         }
                                                     }
-                                                }
-                                        ?>
-                                        <tr>
-                                            <td><?=$sl++?></td>
-                                            <td><?=(($getItem)?$getItem->item_name_ecoex:'')?></td>
-                                            <td><?=(($getItem)?$getItem->hsn:'')?></td>
-                                            <td><?=(($getEnquiryItem)?$getEnquiryItem->qty:'')?></td>
-                                            <td><?=$row1->win_quote_price?></td>
-                                        </tr>
-                                    <?php } }?>
-                                    </tbody>
-                                </table>
-                            </div>
+                                            ?>
+                                            <tr>
+                                                <td><?=$sl++?></td>
+                                                <td><?=(($getItem)?$getItem->item_name_ecoex:'')?></td>
+                                                <td><?=(($getItem)?$getItem->hsn:'')?></td>
+                                                <td><?=(($getEnquiryItem)?$getEnquiryItem->qty:'')?></td>
+                                                <td><?=$row1->win_quote_price?></td>
+                                            </tr>
+                                        <?php } }?>
+                                        </tbody>
+                                    </table>
+                                </div>
                         </div>
+                      </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header bg-success text-light">
-                    <h5>Pickup Scheduled</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row mt-3">
-                        <div class="col-md-12">
-                            <table class="table">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"> Pickup Scheduled </button>
+                      </h2>
+                      <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                          <table class="table">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -349,352 +360,366 @@
                                 </tbody>
                             </table>
                         </div>
+                      </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header bg-success text-light">
-                    <h5>Vehicle Placed <span style="float: right;"><?=count($vehicles)?> vehicles placed</span></h5>
-                </div>
-                <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Vehicle Number</th>
-                                <th>Vehicle Images</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if($vehicles){ $sl=1; foreach($vehicles as $vehicle){?>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree"> Vehicle Placed &nbsp;&nbsp; <span style="float: left; font-size: 14px">(1 vehicles placed)</span> </button>
+                      </h2>
+                      <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                          <table class="table">
+                            <thead>
                                 <tr>
-                                    <td><?=$sl++?></td>
-                                    <td><?=$vehicle['vehicle_no']?></td>
-                                    <td>
-                                        <div class="row">
-                                            <?php if($vehicle['vehicle_img']){ for($v=0;$v<count($vehicle['vehicle_img']);$v++){?>
-                                                <div class="col-md-3">
-                                                    <a href="<?=$vehicle['vehicle_img'][$v]?>" download><img src="<?=$vehicle['vehicle_img'][$v]?>" class="img-thumbnail" style="height:100px;width: 100%;"></a>
-                                                </div>
-                                            <?php } }?>
-                                        </div>
-                                    </td>
+                                    <th>#</th>
+                                    <th>Vehicle Number</th>
+                                    <th>Vehicle Images</th>
                                 </tr>
-                            <?php } }?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <?php if($row->status >= 5.5){?>
-                <div class="card">
-                    <div class="card-header bg-success text-light">
-                        <h5>Material Weighted</h5>
-                    </div>
-                    <div class="card-body">
-                        <form method="POST" action="<?=base_url('admin/enquiry-requests/modify-approve-material-weight')?>">
-                            <input type="hidden" name="sub_enquiry_no" value="<?=$sub_enquiry_no?>">
-                            <table class="table">
-                                <thead>
+                            </thead>
+                            <tbody>
+                                <?php if($vehicles){ $sl=1; foreach($vehicles as $vehicle){?>
                                     <tr>
-                                        <th>#</th>
-                                        <th>Item Name</th>
-                                        <th>Weighted Qty</th>
-                                        <th>Vendor Submitted Material Weight</th>
-                                        <th>Plant Submitted Material Weight</th>
-                                        <th>Weight Slips</th>
+                                        <td><?=$sl++?></td>
+                                        <td><?=$vehicle['vehicle_no']?></td>
+                                        <td>
+                                            <div class="row">
+                                                <?php if($vehicle['vehicle_img']){ for($v=0;$v<count($vehicle['vehicle_img']);$v++){?>
+                                                    <div class="col-md-3">
+                                                        <a href="<?=$vehicle['vehicle_img'][$v]?>" download><img src="<?=$vehicle['vehicle_img'][$v]?>" class="img-thumbnail" style="height:100px;width: 100%;"></a>
+                                                    </div>
+                                                <?php } }?>
+                                            </div>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if($materialWeights){ $sl=1; foreach($materialWeights as $materialWeight){?>
-                                        <?php
-                                        $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $row1->item_id], 'item_name_ecoex,hsn');
-                                        ?>
-                                        <tr>
-                                            <td><?=$sl++?></td>
-                                            <td><?=(($getItem)?$getItem->item_name_ecoex:'')?></td>
-                                            <td>
-                                                <span class="weight-label"><?=$materialWeight->weighted_qty?></span>
-                                                <input type="text" name="weighted_qty[]" class="form-control weight-value" value="<?=$materialWeight->weighted_qty?>" style="display: none;">
-                                                <?=$materialWeight->weighted_unit?>
-                                            </td>
-                                            <td><?=(($materialWeight->material_weight_vendor_date != '')?date_format(date_create($materialWeight->material_weight_vendor_date), "M d, Y h:i A"):'')?></td>
-                                            <td><?=(($materialWeight->material_weight_plant_date != '')?date_format(date_create($materialWeight->material_weight_plant_date), "M d, Y h:i A"):'')?></td>
-                                            <td>
-                                                <div class="row">
-                                                    <?php
-                                                    $material_weighing_slips = json_decode($materialWeight->material_weighing_slips);
-                                                    ?>
-                                                    <?php if($material_weighing_slips){ for($v=0;$v<count($material_weighing_slips);$v++){?>
-                                                        <div class="col-md-6">
-                                                            <a href="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" download><img src="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" class="img-thumbnail" style="height:100px;width: 100px;"></a>
-                                                        </div>
-                                                    <?php } }?>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php } }?>
-                                    <?php if($row->is_plant_ecoex_confirm <= 0){?>
-                                        <tr>
-                                            <td colspan="3" style="text-align:center;">
-                                                <a href="<?=base_url('admin/enquiry-requests/approve-material-weight/'.encoded($sub_enquiry_no))?>" class="btn btn-success" onclick="return confirm('Do you want to approve this request ?');"><i class="fa fa-check-circle"></i> APPROVE</a>
-                                            </td>
-                                            <td colspan="3" style="text-align:center;">
-                                                <a href="javascript:void(0);" class="btn btn-primary" id="modify-btn" onclick="openMaterialWeightUpdate();"><i class="fa fa-edit"></i> MODIFY</a>
-                                                <button type="submit" class="btn btn-primary" id="update-btn" style="display:none;"><i class="fa fa-edit"></i> UPDATE</button>
-                                                <a href="javascript:void(0);" class="btn btn-danger" id="cancel-btn" onclick="closeMaterialWeightUpdate();" style="display:none;"><i class="fa fa-times"></i> CANCEL</a>
-                                            </td>
-                                        </tr>
-                                    <?php } else {?>
-                                        <tr>
-                                            <td colspan="6" style="text-align:center;">
-                                                <h6 class="badge bg-success">Material Weight Approved</h6>
-                                            </td>
-                                        </tr>
-                                    <?php }?>
-                                </tbody>
-                            </table>
-                        </form>
+                                <?php } }?>
+                            </tbody>
+                        </table>
+                        </div>
+                      </div>
                     </div>
-                </div>
-            <?php }?>
-            <?php
-            $userType           = $session->user_type;
-            ?>
-            <?php if($row->status >= 6.6){?>
-                <div class="card">
-                    <div class="card-header bg-success text-light">
-                        <h5>Invoice From HO</h5>
-                    </div>
-                    <div class="card-body">
-                        <?php if($getEnquiry){?>
-                            <div class="row mt-3">
-                                <div class="col-md-6 text-center">
-                                    <?php if($getEnquiry->is_invoice_from_ho == 0){?>
-                                        <a href="<?=base_url('admin/enquiry-requests/request-invoice-to-HO-from-ecoex/'.encoded($getEnquiry->id).'/'.encoded($sub_enquiry_no))?>" class="btn btn-warning btn-sm" onclick="return confirm('Do you want to sent request for invoice to HO ?');"><i class="fa-solid fa-code-pull-request"></i> Request For Invoice To HO</a>
-                                    <?php } elseif($getEnquiry->is_invoice_from_ho >= 1){?>
-                                        <h4 class="text-success fw-bold">Invoice Request Sent To HO Succesfully</h4>
-                                        <h5><?=date_format(date_create($getEnquiry->invoice_from_ho_request_date), "M d, Y h:i A")?></h5>
-                                    <?php }?>
-                                </div>
-                                <div class="col-md-6 text-center">
-                                    <?php if($getEnquiry->is_invoice_from_ho == 1){?>
-                                        <h4 class="text-warning fw-bold">HO Still Not Uploaded Invoice</h4>
-                                        <?php if($userType == 'COMPANY'){?>
-                                            <form method="POST" action="<?=base_url('admin/enquiry-requests/upload-invoice-by-HO')?>" enctype="multipart/form-data">
-                                                <input type="hidden" name="enq_id" value="<?=encoded($getEnquiry->id)?>">
-                                                <input type="hidden" name="sub_enquiry_no" value="<?=encoded($sub_enquiry_no)?>">
-                                                <div class="form-group">
-                                                    <label for="ho_payable_amount">Invoice Amount</label>
-                                                    <input type="text" class="form-control" name="ho_payable_amount" id="ho_payable_amount" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="invoice_file_from_ho">Vendor Invoice File</label>
-                                                    <input type="file" class="form-control" name="invoice_file_from_ho" id="invoice_file_from_ho" accept="application/pdf" required>
-                                                    <small class="text-primary">Only PDF file allowed</small>
-                                                </div>
-                                                <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-file-invoice"></i> Upload Invoice</button>
+                    <?php if($row->status >= 5.5){?>
+                        <div class="accordion-item">
+                          <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour"> Material Weighted </button>
+                          </h2>
+                          <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                
+                                <form method="POST" action="<?=base_url('admin/enquiry-requests/modify-approve-material-weight')?>">
+                                                <input type="hidden" name="sub_enquiry_no" value="<?=$sub_enquiry_no?>">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Item Name</th>
+                                                            <th>Weighted Qty</th>
+                                                            <th>Vendor Submitted Material Weight</th>
+                                                            <th>Plant Submitted Material Weight</th>
+                                                            <th>Weight Slips</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php if($materialWeights){ $sl=1; foreach($materialWeights as $materialWeight){?>
+                                                            <?php
+                                                            $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $row1->item_id], 'item_name_ecoex,hsn');
+                                                            ?>
+                                                            <tr>
+                                                                <td><?=$sl++?></td>
+                                                                <td><?=(($getItem)?$getItem->item_name_ecoex:'')?></td>
+                                                                <td>
+                                                                    <span class="weight-label"><?=$materialWeight->weighted_qty?></span>
+                                                                    <input type="text" name="weighted_qty[]" class="form-control weight-value" value="<?=$materialWeight->weighted_qty?>" style="display: none;">
+                                                                    <?=$materialWeight->weighted_unit?>
+                                                                </td>
+                                                                <td><?=(($materialWeight->material_weight_vendor_date != '')?date_format(date_create($materialWeight->material_weight_vendor_date), "M d, Y h:i A"):'')?></td>
+                                                                <td><?=(($materialWeight->material_weight_plant_date != '')?date_format(date_create($materialWeight->material_weight_plant_date), "M d, Y h:i A"):'')?></td>
+                                                                <td>
+                                                                    <div class="row">
+                                                                        <?php
+                                                                        $material_weighing_slips = json_decode($materialWeight->material_weighing_slips);
+                                                                        ?>
+                                                                        <?php if($material_weighing_slips){ for($v=0;$v<count($material_weighing_slips);$v++){?>
+                                                                            <div class="col-md-6">
+                                                                                <a href="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" download><img src="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" class="img-thumbnail" style="height:100px;width: 100px;"></a>
+                                                                            </div>
+                                                                        <?php } }?>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        <?php } }?>
+                                                        <?php if($row->is_plant_ecoex_confirm <= 0){?>
+                                                            <tr>
+                                                                <td colspan="3" style="text-align:center;">
+                                                                    <a href="<?=base_url('admin/enquiry-requests/approve-material-weight/'.encoded($sub_enquiry_no))?>" class="btn btn-success" onclick="return confirm('Do you want to approve this request ?');"><i class="fa fa-check-circle"></i> APPROVE</a>
+                                                                </td>
+                                                                <td colspan="3" style="text-align:center;">
+                                                                    <a href="javascript:void(0);" class="btn btn-primary" id="modify-btn" onclick="openMaterialWeightUpdate();"><i class="fa fa-edit"></i> MODIFY</a>
+                                                                    <button type="submit" class="btn btn-primary" id="update-btn" style="display:none;"><i class="fa fa-edit"></i> UPDATE</button>
+                                                                    <a href="javascript:void(0);" class="btn btn-danger" id="cancel-btn" onclick="closeMaterialWeightUpdate();" style="display:none;"><i class="fa fa-times"></i> CANCEL</a>
+                                                                </td>
+                                                            </tr>
+                                                        <?php } else {?>
+                                                            <tr>
+                                                                <td colspan="6" style="text-align:center;">
+                                                                    <h6 class="badge bg-success">Material Weight Approved</h6>
+                                                                </td>
+                                                            </tr>
+                                                        <?php }?>
+                                                    </tbody>
+                                                </table>
                                             </form>
+                                
+                            </div>
+                          </div>
+                        </div>
+                    <?php }?>
+
+                    <?php if($row->status >= 6.6){?>
+                        <div class="accordion-item">
+                          <h2 class="accordion-header" id="headingFive">
+                            <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive"> Invoice From HO </button>
+                          </h2>
+                          <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <?php
+                                $userType           = $session->user_type;
+                                ?>
+                                <?php if($getEnquiry){?>
+                                    <div class="row mt-3">
+                                        <div class="col-md-6 text-center">
+                                            <?php if($getEnquiry->is_invoice_from_ho == 0){?>
+                                                <a href="<?=base_url('admin/enquiry-requests/request-invoice-to-HO-from-ecoex/'.encoded($getEnquiry->id).'/'.encoded($sub_enquiry_no))?>" class="btn btn-warning btn-sm" onclick="return confirm('Do you want to sent request for invoice to HO ?');"><i class="fa-solid fa-code-pull-request"></i> Request For Invoice To HO</a>
+                                            <?php } elseif($getEnquiry->is_invoice_from_ho >= 1){?>
+                                                <h4 class="text-success fw-bold">Invoice Request Sent To HO Succesfully</h4>
+                                                <h5><?=date_format(date_create($getEnquiry->invoice_from_ho_request_date), "M d, Y h:i A")?></h5>
+                                            <?php }?>
+                                        </div>
+                                        <div class="col-md-6 text-center">
+                                            <?php if($getEnquiry->is_invoice_from_ho == 1){?>
+                                                <h4 class="text-warning fw-bold">HO Still Not Uploaded Invoice</h4>
+                                                <?php if($userType == 'COMPANY'){?>
+                                                    <form method="POST" action="<?=base_url('admin/enquiry-requests/upload-invoice-by-HO')?>" enctype="multipart/form-data">
+                                                        <input type="hidden" name="enq_id" value="<?=encoded($getEnquiry->id)?>">
+                                                        <input type="hidden" name="sub_enquiry_no" value="<?=encoded($sub_enquiry_no)?>">
+                                                        <div class="form-group">
+                                                            <label for="ho_payable_amount">Invoice Amount</label>
+                                                            <input type="text" class="form-control" name="ho_payable_amount" id="ho_payable_amount" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="invoice_file_from_ho">Vendor Invoice File</label>
+                                                            <input type="file" class="form-control" name="invoice_file_from_ho" id="invoice_file_from_ho" accept="application/pdf" required>
+                                                            <small class="text-primary">Only PDF file allowed</small>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-file-invoice"></i> Upload Invoice</button>
+                                                    </form>
+                                                <?php }?>
+                                            <?php } elseif($getEnquiry->is_invoice_from_ho == 2){?>
+                                                <h4 class="text-success fw-bold">Invoice Uploaded By HO Succesfully</h4>
+                                                <a download href="<?=getenv('app.uploadsURL').'enquiry/'.$getEnquiry->invoice_file_from_ho?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');"><i class="fas fa-download"></i> Download Invoice From HO</a>
+                                                <h5><i class="fa fa-inr"></i> <?=$getEnquiry->ho_payable_amount?></h5>
+                                                <h5><?=date_format(date_create($getEnquiry->invoice_from_ho_date), "M d, Y h:i A")?></h5>
+                                            <?php }?>
+                                        </div>
+                                    </div>
+                                <?php }?>
+                            </div>
+                          </div>
+                        </div>
+                    <?php }?>
+
+                    <?php if($row->status >= 7.7){?>
+                        <?php if($userType == 'MA'){?>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingSix">
+                                    <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix"> Invoice To Vendor </button>
+                                </h2>
+                                <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <?php if($row){?>
+                                            <div class="row mt-3">
+                                                <div class="col-md-6 text-center">
+                                                    <?php if($row->vendor_invoice_file == ''){?>
+                                                        
+                                                            <form method="POST" action="<?=base_url('admin/enquiry-requests/upload-invoice-by-ecoex-for-vendor')?>" enctype="multipart/form-data" style="border: 1px solid #0080006e;border-radius: 10px;padding: 10px;">
+                                                                <input type="hidden" name="enq_id" value="<?=encoded($row->enq_id)?>">
+                                                                <input type="hidden" name="sub_enquiry_no" value="<?=encoded($sub_enquiry_no)?>">
+                                                                <div class="form-group">
+                                                                    <label for="vendor_invoice_amount">Vendor Invoice Amount</label>
+                                                                    <input type="text" class="form-control" name="vendor_invoice_amount" id="vendor_invoice_amount" required>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="vendor_invoice_file">Vendor Invoice File</label>
+                                                                    <input type="file" class="form-control" name="vendor_invoice_file" id="vendor_invoice_file" accept="application/pdf" required>
+                                                                    <small class="text-primary">Only PDF file allowed</small>
+                                                                </div>
+                                                                <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-file-invoice"></i> Upload Invoice</button>
+                                                            </form>
+                                                        
+                                                    <?php } else {?>
+                                                        <h4 class="text-success fw-bold">Invoice Uploaded For Vendor Succesfully</h4>
+                                                        <h6><?=date_format(date_create($row->invoice_to_vendor_date), "M d, Y h:i A")?></h6>
+                                                    <?php }?>
+                                                </div>
+                                                <div class="col-md-6 text-center">
+                                                    <?php if($row->vendor_invoice_file != ''){?>
+                                                        <h4 class="text-success fw-bold">Invoice Uploaded By Ecoex Succesfully</h4>
+                                                        <a download href="<?=getenv('app.uploadsURL').'enquiry/'.$row->vendor_invoice_file?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');"><i class="fas fa-download"></i> Download Invoice From Vendor</a>
+                                                        <h5><i class="fa fa-inr"></i> <?=$row->vendor_invoice_amount?></h5>
+                                                        <h6><?=date_format(date_create($row->invoice_to_vendor_date), "M d, Y h:i A")?></h6>
+                                                    <?php }?>
+                                                </div>
+                                            </div>
                                         <?php }?>
-                                    <?php } elseif($getEnquiry->is_invoice_from_ho == 2){?>
-                                        <h4 class="text-success fw-bold">Invoice Uploaded By HO Succesfully</h4>
-                                        <a download href="<?=getenv('app.uploadsURL').'enquiry/'.$getEnquiry->invoice_file_from_ho?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');"><i class="fas fa-download"></i> Download Invoice From HO</a>
-                                        <h5><i class="fa fa-inr"></i> <?=$getEnquiry->ho_payable_amount?></h5>
-                                        <h5><?=date_format(date_create($getEnquiry->invoice_from_ho_date), "M d, Y h:i A")?></h5>
-                                    <?php }?>
+                                    </div>
                                 </div>
                             </div>
                         <?php }?>
-                    </div>
+                    <?php }?>
+
+                    <?php if($row->status >= 8.8){?>
+                        <?php if($userType == 'MA'){?>
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingSeven">
+                                <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">Payment Received From Vendor </button>
+                              </h2>
+                              <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <?php if($row){?>
+                                        <div class="row mt-3">
+                                            <div class="col-md-6 text-center">
+                                                <?php if($row->payment_amount <= 0){?>
+                                                    <h4 class="text-warning fw-bold">Payment Info Still Not Uploaded By Vendor</h4>
+                                                <?php } else {?>
+                                                    <h4 class="text-success fw-bold">Payment Info Uploaded By Vendor Succesfully</h4>
+                                                    <h5>Payment Amount : <?=$row->payment_amount?></h5>
+                                                    <h6>Payment Date/Time : <?=date_format(date_create($row->payment_date), "M d, Y h:i A")?></h6>
+                                                    <h6>Payment Mode : <?=$row->payment_mode?></h6>
+                                                    <?php if($row->payment_mode != 'CASH'){?>
+                                                        <h6>Transaction No. : <?=$row->txn_no?></h6>
+                                                        <h6>Transaction Screenshot : <img src="<?=getenv('app.uploadsURL').'enquiry/'.$row->txn_screenshot?>" style="width: 200px; height: 200px;"></h6>
+                                                    <?php }?>
+                                                <?php }?>
+                                            </div>
+                                            <div class="col-md-6 text-center">
+                                                <?php if($row->payment_amount > 0){?>
+                                                    <?php if($row->is_approve_vendor_payment == 0){?>
+                                                        <a href="<?=base_url('admin/enquiry-requests/vendor-payment-approve/'.encoded($sub_enquiry_no))?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to approve vendor payment ?');"><i class="fas fa-check"></i> Approve Vendor Payment</a>
+                                                    <?php } else {?>
+                                                        <h4 class="text-success fw-bold">Vendor Payment Approved Successfully By Ecoex</h4>
+                                                        <h5><i class="fa fa-inr"></i> <?=$row->payment_amount?></h5>
+                                                        <h6><?=date_format(date_create($row->vendor_payment_received_date), "M d, Y h:i A")?></h6>
+                                                    <?php }?>
+                                                <?php }?>
+                                            </div>
+                                        </div>
+                                    <?php }?>
+                                </div>
+                              </div>
+                            </div>
+                        <?php }?>
+                    <?php }?>
+
+                    <?php if($row->status >= 10.10){?>
+                        <?php //if($userType == 'MA'){?>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingEight">
+                                <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">Vehicle Despatch By Vendor</button>
+                            </h2>
+                            <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <?php if($row){?>
+                                        <div class="row mt-3">
+                                            <div class="col-md-6 text-center">
+                                                <?php if($row->vehicle_dispatched_date != ''){?>
+                                                    <h4 class="text-success fw-bold">Vehicle Despatched By Vendor</h4>
+                                                <?php }?>
+                                            </div>
+                                            <div class="col-md-6 text-center">
+                                                <?php if($row->vehicle_dispatched_date != ''){?>
+                                                    <h6><?=date_format(date_create($row->vehicle_dispatched_date), "M d, Y h:i A")?></h6>
+                                                <?php }?>
+                                            </div>
+                                        </div>
+                                    <?php }?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php //}?>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingNine">
+                                <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">Payment To HO </button>
+                            </h2>
+                            <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <?php if($getEnquiry){?>
+                                        <div class="row mt-3">
+                                            <div class="col-md-6 text-center">
+                                                <?php if($getEnquiry->ecoex_submitted_date == ''){?>
+                                                    <h4 class="text-warning fw-bold">Ecoex Still Not Payment To HO</h4>
+                                                    <?php if($userType == 'MA'){?>
+                                                        <form method="POST" action="<?=base_url('admin/enquiry-requests/upload-payment-by-ecoex-for-ho')?>" enctype="multipart/form-data" style="border: 1px solid #0080006e;border-radius: 10px;padding: 10px;">
+                                                            <input type="hidden" name="enq_id" value="<?=encoded($getEnquiry->id)?>">
+                                                            <input type="hidden" name="sub_enquiry_no" value="<?=encoded($sub_enquiry_no)?>">
+                                                            <div class="form-group">
+                                                                <label for="ecoex_payment_amount" style="float: left; font-weight:bold;">Payment Amount</label>
+                                                                <input type="text" class="form-control" name="ecoex_payment_amount" id="ecoex_payment_amount" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="ecoex_payment_date" style="float: left; font-weight:bold;">Payment Date/Time</label>
+                                                                <input type="datetime-local" class="form-control" name="ecoex_payment_date" id="ecoex_payment_date" required>
+                                                            </div>
+                                                            <div class="form-group mb-3">
+                                                                <label for="ecoex_payment_mode" style="float: left; font-weight:bold;">Payment Mode</label>
+                                                                <select class="form-control" name="ecoex_payment_mode" id="ecoex_payment_mode" required onchange="getPaymentMode(this.value);">
+                                                                    <option value="" selected>Select Payment Mode</option>
+                                                                    <option value="CASH">CASH</option>
+                                                                    <option value="CHEQUE">CHEQUE</option>
+                                                                    <option value="NETBANKING">NETBANKING</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group online-payment" style="display:none;">
+                                                                <label for="ecoex_txn_no" style="float: left; font-weight:bold;">Payment Txn No.</label>
+                                                                <input type="text" class="form-control" name="ecoex_txn_no" id="ecoex_txn_no">
+                                                            </div>
+                                                            <div class="form-group mb-3 online-payment" style="display:none;">
+                                                                <label for="ecoex_txn_screenshot" style="float: left; font-weight:bold;">Payment Screenshot</label>
+                                                                <input type="file" class="form-control" name="ecoex_txn_screenshot" id="ecoex_txn_screenshot" accept="image/*">
+                                                                <small class="text-primary" style="float: left;">Only image file allowed</small>
+                                                            </div>
+                                                            <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-inr"></i> Upload Payment Info</button>
+                                                        </form>
+                                                    <?php }?>
+                                                <?php } else {?>
+                                                    <h4 class="text-success fw-bold">Payment Info Uploaded By Ecoex Succesfully</h4>
+                                                    <h5>Payment Amount : <span class="text-success"><?=number_format($getEnquiry->ecoex_payment_amount,2)?></span></h5>
+                                                    <h5>Due Amount : <span class="text-danger"><?=number_format($getEnquiry->ecoex_due_amount,2)?></span></h5>
+                                                    <h6>Payment Date/Time : <?=date_format(date_create($getEnquiry->ecoex_payment_date), "M d, Y h:i A")?></h6>
+                                                    <h6>Payment Mode : <?=$getEnquiry->ecoex_payment_mode?></h6>
+                                                    <?php if($getEnquiry->ecoex_payment_mode != 'CASH'){?>
+                                                        <h6>Transaction No. : <?=$getEnquiry->ecoex_txn_no?></h6>
+                                                        <h6>Transaction Screenshot : <img src="<?=getenv('app.uploadsURL').'enquiry/'.$getEnquiry->ecoex_txn_screenshot?>" style="width: 200px; height: 200px;" class="img-thumbnail"></h6>
+                                                    <?php }?>
+                                                <?php }?>
+                                            </div>
+                                            <div class="col-md-6 text-center">
+                                                <?php if(!$getEnquiry->is_ho_approve_ecoex_payment){?>
+                                                    <h4 class="text-warning fw-bold">Ecoex Payment Still Not Approved By HO</h4>
+                                                    <?php if($userType == 'COMPANY'){?>
+                                                        <a href="<?=base_url('admin/enquiry-requests/approve-ecoex-payment-by-ho/'.encoded($getEnquiry->id).'/'.encoded($sub_enquiry_no))?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to approve ecoex payment ?');"><i class="fas fa-check"></i> Approve Ecoex Payment</a>
+                                                    <?php }?>
+                                                <?php } else {?>
+                                                    <h4 class="text-success fw-bold">Ecoex Payment Approved By HO</h4>
+                                                    <h6><?=date_format(date_create($getEnquiry->ho_approve_date), "M d, Y h:i A")?></h6>
+                                                <?php }?>
+                                            </div>
+                                        </div>
+                                    <?php }?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php }?>
                 </div>
-            <?php }?>
-
-            <?php if($row->status >= 7.7){?>
-                <?php if($userType == 'MA'){?>
-                    <div class="card">
-                        <div class="card-header bg-success text-light">
-                            <h5>Invoice To Vendor</h5>
-                        </div>
-                        <div class="card-body">
-                            <?php if($row){?>
-                                <div class="row mt-3">
-                                    <div class="col-md-6 text-center">
-                                        <?php if($row->vendor_invoice_file == ''){?>
-                                            
-                                                <form method="POST" action="<?=base_url('admin/enquiry-requests/upload-invoice-by-ecoex-for-vendor')?>" enctype="multipart/form-data" style="border: 1px solid #0080006e;border-radius: 10px;padding: 10px;">
-                                                    <input type="hidden" name="enq_id" value="<?=encoded($row->enq_id)?>">
-                                                    <input type="hidden" name="sub_enquiry_no" value="<?=encoded($sub_enquiry_no)?>">
-                                                    <div class="form-group">
-                                                        <label for="vendor_invoice_amount">Vendor Invoice Amount</label>
-                                                        <input type="text" class="form-control" name="vendor_invoice_amount" id="vendor_invoice_amount" required>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="vendor_invoice_file">Vendor Invoice File</label>
-                                                        <input type="file" class="form-control" name="vendor_invoice_file" id="vendor_invoice_file" accept="application/pdf" required>
-                                                        <small class="text-primary">Only PDF file allowed</small>
-                                                    </div>
-                                                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-file-invoice"></i> Upload Invoice</button>
-                                                </form>
-                                            
-                                        <?php } else {?>
-                                            <h4 class="text-success fw-bold">Invoice Uploaded For Vendor Succesfully</h4>
-                                            <h6><?=date_format(date_create($row->invoice_to_vendor_date), "M d, Y h:i A")?></h6>
-                                        <?php }?>
-                                    </div>
-                                    <div class="col-md-6 text-center">
-                                        <?php if($row->vendor_invoice_file != ''){?>
-                                            <h4 class="text-success fw-bold">Invoice Uploaded By Ecoex Succesfully</h4>
-                                            <a download href="<?=getenv('app.uploadsURL').'enquiry/'.$row->vendor_invoice_file?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');"><i class="fas fa-download"></i> Download Invoice From Vendor</a>
-                                            <h5><i class="fa fa-inr"></i> <?=$row->vendor_invoice_amount?></h5>
-                                            <h6><?=date_format(date_create($row->invoice_to_vendor_date), "M d, Y h:i A")?></h6>
-                                        <?php }?>
-                                    </div>
-                                </div>
-                            <?php }?>
-                        </div>
-                    </div>
-                <?php }?>
-            <?php }?>
-
-            <?php if($row->status >= 8.8){?>
-                <?php if($userType == 'MA'){?>
-                    <div class="card">
-                        <div class="card-header bg-success text-light">
-                            <h5>Payment Received From Vendor</h5>
-                        </div>
-                        <div class="card-body">
-                            <?php if($row){?>
-                                <div class="row mt-3">
-                                    <div class="col-md-6 text-center">
-                                        <?php if($row->payment_amount <= 0){?>
-                                            <h4 class="text-warning fw-bold">Payment Info Still Not Uploaded By Vendor</h4>
-                                        <?php } else {?>
-                                            <h4 class="text-success fw-bold">Payment Info Uploaded By Vendor Succesfully</h4>
-                                            <h5>Payment Amount : <?=$row->payment_amount?></h5>
-                                            <h6>Payment Date/Time : <?=date_format(date_create($row->payment_date), "M d, Y h:i A")?></h6>
-                                            <h6>Payment Mode : <?=$row->payment_mode?></h6>
-                                            <?php if($row->payment_mode != 'CASH'){?>
-                                                <h6>Transaction No. : <?=$row->txn_no?></h6>
-                                                <h6>Transaction Screenshot : <img src="<?=getenv('app.uploadsURL').'enquiry/'.$row->txn_screenshot?>" style="width: 200px; height: 200px;"></h6>
-                                            <?php }?>
-                                        <?php }?>
-                                    </div>
-                                    <div class="col-md-6 text-center">
-                                        <?php if($row->payment_amount > 0){?>
-                                            <?php if($row->is_approve_vendor_payment == 0){?>
-                                                <a href="<?=base_url('admin/enquiry-requests/vendor-payment-approve/'.encoded($sub_enquiry_no))?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to approve vendor payment ?');"><i class="fas fa-check"></i> Approve Vendor Payment</a>
-                                            <?php } else {?>
-                                                <h4 class="text-success fw-bold">Vendor Payment Approved Successfully By Ecoex</h4>
-                                                <h5><i class="fa fa-inr"></i> <?=$row->payment_amount?></h5>
-                                                <h6><?=date_format(date_create($row->vendor_payment_received_date), "M d, Y h:i A")?></h6>
-                                            <?php }?>
-                                        <?php }?>
-                                    </div>
-                                </div>
-                            <?php }?>
-                        </div>
-                    </div>
-                <?php }?>
-            <?php }?>
-
-            <?php if($row->status >= 10.10){?>
-                <?php //if($userType == 'MA'){?>
-                    <div class="card">
-                        <div class="card-header bg-success text-light">
-                            <h5>Vehicle Despatch By Vendor</h5>
-                        </div>
-                        <div class="card-body">
-                            <?php if($row){?>
-                                <div class="row mt-3">
-                                    <div class="col-md-6 text-center">
-                                        <?php if($row->vehicle_dispatched_date != ''){?>
-                                            <h4 class="text-success fw-bold">Vehicle Despatched By Vendor</h4>
-                                        <?php }?>
-                                    </div>
-                                    <div class="col-md-6 text-center">
-                                        <?php if($row->vehicle_dispatched_date != ''){?>
-                                            <h6><?=date_format(date_create($row->vehicle_dispatched_date), "M d, Y h:i A")?></h6>
-                                        <?php }?>
-                                    </div>
-                                </div>
-                            <?php }?>
-                        </div>
-                    </div>
-                <?php //}?>
-
-                
-                    <div class="card">
-                        <div class="card-header bg-success text-light">
-                            <h5>Payment To HO</h5>
-                        </div>
-                        <div class="card-body">
-                            <?php if($getEnquiry){?>
-                                <div class="row mt-3">
-                                    <div class="col-md-6 text-center">
-                                        <?php if($getEnquiry->ecoex_submitted_date == ''){?>
-                                            <h4 class="text-warning fw-bold">Ecoex Still Not Payment To HO</h4>
-                                            <?php if($userType == 'MA'){?>
-                                                <form method="POST" action="<?=base_url('admin/enquiry-requests/upload-payment-by-ecoex-for-ho')?>" enctype="multipart/form-data" style="border: 1px solid #0080006e;border-radius: 10px;padding: 10px;">
-                                                    <input type="hidden" name="enq_id" value="<?=encoded($getEnquiry->id)?>">
-                                                    <input type="hidden" name="sub_enquiry_no" value="<?=encoded($sub_enquiry_no)?>">
-                                                    <div class="form-group">
-                                                        <label for="ecoex_payment_amount" style="float: left; font-weight:bold;">Payment Amount</label>
-                                                        <input type="text" class="form-control" name="ecoex_payment_amount" id="ecoex_payment_amount" required>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="ecoex_payment_date" style="float: left; font-weight:bold;">Payment Date/Time</label>
-                                                        <input type="datetime-local" class="form-control" name="ecoex_payment_date" id="ecoex_payment_date" required>
-                                                    </div>
-                                                    <div class="form-group mb-3">
-                                                        <label for="ecoex_payment_mode" style="float: left; font-weight:bold;">Payment Mode</label>
-                                                        <select class="form-control" name="ecoex_payment_mode" id="ecoex_payment_mode" required onchange="getPaymentMode(this.value);">
-                                                            <option value="" selected>Select Payment Mode</option>
-                                                            <option value="CASH">CASH</option>
-                                                            <option value="CHEQUE">CHEQUE</option>
-                                                            <option value="NETBANKING">NETBANKING</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group online-payment" style="display:none;">
-                                                        <label for="ecoex_txn_no" style="float: left; font-weight:bold;">Payment Txn No.</label>
-                                                        <input type="text" class="form-control" name="ecoex_txn_no" id="ecoex_txn_no">
-                                                    </div>
-                                                    <div class="form-group mb-3 online-payment" style="display:none;">
-                                                        <label for="ecoex_txn_screenshot" style="float: left; font-weight:bold;">Payment Screenshot</label>
-                                                        <input type="file" class="form-control" name="ecoex_txn_screenshot" id="ecoex_txn_screenshot" accept="image/*">
-                                                        <small class="text-primary" style="float: left;">Only image file allowed</small>
-                                                    </div>
-                                                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-inr"></i> Upload Payment Info</button>
-                                                </form>
-                                            <?php }?>
-                                        <?php } else {?>
-                                            <h4 class="text-success fw-bold">Payment Info Uploaded By Ecoex Succesfully</h4>
-                                            <h5>Payment Amount : <span class="text-success"><?=number_format($getEnquiry->ecoex_payment_amount,2)?></span></h5>
-                                            <h5>Due Amount : <span class="text-danger"><?=number_format($getEnquiry->ecoex_due_amount,2)?></span></h5>
-                                            <h6>Payment Date/Time : <?=date_format(date_create($getEnquiry->ecoex_payment_date), "M d, Y h:i A")?></h6>
-                                            <h6>Payment Mode : <?=$getEnquiry->ecoex_payment_mode?></h6>
-                                            <?php if($getEnquiry->ecoex_payment_mode != 'CASH'){?>
-                                                <h6>Transaction No. : <?=$getEnquiry->ecoex_txn_no?></h6>
-                                                <h6>Transaction Screenshot : <img src="<?=getenv('app.uploadsURL').'enquiry/'.$getEnquiry->ecoex_txn_screenshot?>" style="width: 200px; height: 200px;" class="img-thumbnail"></h6>
-                                            <?php }?>
-                                        <?php }?>
-                                    </div>
-                                    <div class="col-md-6 text-center">
-                                        <?php if(!$getEnquiry->is_ho_approve_ecoex_payment){?>
-                                            <h4 class="text-warning fw-bold">Ecoex Payment Still Not Approved By HO</h4>
-                                            <?php if($userType == 'COMPANY'){?>
-                                                <a href="<?=base_url('admin/enquiry-requests/approve-ecoex-payment-by-ho/'.encoded($getEnquiry->id).'/'.encoded($sub_enquiry_no))?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to approve ecoex payment ?');"><i class="fas fa-check"></i> Approve Ecoex Payment</a>
-                                            <?php }?>
-                                        <?php } else {?>
-                                            <h4 class="text-success fw-bold">Ecoex Payment Approved By HO</h4>
-                                            <h6><?=date_format(date_create($getEnquiry->ho_approve_date), "M d, Y h:i A")?></h6>
-                                        <?php }?>
-                                    </div>
-                                </div>
-                            <?php }?>
-                        </div>
-                    </div>
-                
-            <?php }?>
+            </div>            
 
         </div>
     </div>
