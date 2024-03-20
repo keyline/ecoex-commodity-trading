@@ -538,11 +538,11 @@
                                                     <?php } else {?>
                                                         <?php if($checkVendorAllocation->vendor_id == $sharedVendor->vendor_id){?>
                                                             <!-- win -->
-                                                            <h6 class="text-success fw-bold">ASSIGNED</h6>
+                                                            <h6 class="text-success fw-bold"><small>ASSIGNED</small></h6>
                                                             <small class="fw-bold"><?=$checkVendorAllocation->sub_enquiry_no?></small>
                                                         <?php } else {?>
                                                             <!-- lost -->
-                                                            <h6 class="text-danger fw-bold">NOT ASSIGNED</h6>
+                                                            <h6 class="text-danger fw-bold"><small>NOT ASSIGNED</small></h6>
                                                         <?php }?>
                                                     <?php }?>
                                                 </td>
