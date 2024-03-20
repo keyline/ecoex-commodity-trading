@@ -202,7 +202,7 @@
                                 <h6><?=$row->sub_enquiry_no?></h6>
                             </div>
                             <div class="col-md-6">
-                                <h5 class="fw-bold text-success">Company<br>Plant</h5>
+                                <h5 class="fw-bold text-success">Company / Plant</h5>
                                 <h6>
                                     <?php
                                     $getCompany = $common_model->find_data('ecoex_companies', 'row', ['id' => $getEnquiry->company_id], 'company_name');
