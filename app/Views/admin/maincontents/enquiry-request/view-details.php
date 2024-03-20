@@ -529,7 +529,7 @@
                                                     if(empty($checkVendorAllocation)){
                                                     ?>
                                                         <?php
-                                                        $getQuotePrice  = $common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => $enq_id, 'vendor_id' => $sharedVendor->vendor_id, 'item_id' => $enquiryProduct->product_id, 'status' => 1], 'quote_price,qty,unit_name');
+                                                        echo $getQuotePrice  = $common_model->find_data('ecomm_enquiry_vendor_quotations', 'count', ['enq_id' => $enq_id, 'vendor_id' => $sharedVendor->vendor_id, 'item_id' => $enquiryProduct->product_id, 'status' => 1, 'quote_price>' => 0]);
                                                         // pr($getQuotePrice,0);
                                                         //if($getQuotePrice->quote_price > 0){
                                                         ?>
