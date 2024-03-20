@@ -202,20 +202,25 @@
                                 <h6><?=$row->sub_enquiry_no?></h6>
                             </div>
                             <div class="col-md-6">
-                                <h5 class="fw-bold text-success">Company Name</h5>
+                                <h5 class="fw-bold text-success">Company<br>Plant</h5>
                                 <h6>
                                     <?php
                                     $getCompany = $common_model->find_data('ecoex_companies', 'row', ['id' => $getEnquiry->company_id], 'company_name');
                                     echo (($getCompany)?$getCompany->company_name:'');
                                     ?>
-                                </h6>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 class="fw-bold text-success">Plant Name</h5>
-                                <h6>
+                                    <br>
                                     <?php
                                     $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $getEnquiry->plant_id], 'plant_name');
                                     echo (($getPlant)?$getPlant->plant_name:'');
+                                    ?>
+                                </h6>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="fw-bold text-success">Vendor</h5>
+                                <h6>
+                                    <?php
+                                    $getVendor = $common_model->find_data('ecomm_users', 'row', ['id' => $row->vendor_id], 'company_name');
+                                    echo (($getVendor)?$getVendor->company_name:'');
                                     ?>
                                 </h6>
                             </div>
