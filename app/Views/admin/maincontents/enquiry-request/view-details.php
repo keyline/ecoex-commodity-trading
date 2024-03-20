@@ -529,6 +529,8 @@
                                                     if(empty($checkVendorAllocation)){
                                                     ?>
                                                         <?php
+                                                        $getQuotePrice  = $common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => $enq_id, 'vendor_id' => $sharedVendor->vendor_id, 'item_id' => $enquiryProduct->product_id, 'status' => 1], 'quote_price,qty,unit_name');
+                                                        echo $getQuotePrice->quote_price;
                                                         if($getQuotePrice){ if($getQuotePrice->quote_price > 0){
                                                         ?>
                                                             <a href="<?=base_url('admin/enquiry-requests/vendor-allocation/'.encoded($enq_id).'/'.encoded($sharedVendor->vendor_id).'/'.encoded($enquiryProduct->product_id))?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to allocate <?=$vendor_name?> for <?=$item_name?> ?');"><i class="fa fa-trophy"></i> Mark As Assigned</a>
