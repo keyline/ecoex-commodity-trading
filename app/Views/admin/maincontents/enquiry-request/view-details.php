@@ -498,9 +498,13 @@
                                             ?>
                                                 <td style="text-align:center;" colspan="2">
                                                     <?php if($getQuotePrice){?>
-                                                        <span><i class="fa fa-inr"></i> <?=$getQuotePrice->quote_price?> / <?=$getQuotePrice->unit_name?></span>
+                                                        <?php if($getQuotePrice > 0){?>
+                                                            <span><i class="fa fa-inr"></i> <?=$getQuotePrice->quote_price?> / <?=$getQuotePrice->unit_name?></span>
+                                                        <?php } else {?>
+                                                            <span>NA</span>
+                                                        <?php }?>
                                                     <?php } else {?>
-                                                        <span class="text-danger">Not Quote Yet</span>
+                                                        <small class="text-danger">Not Quote</small>
                                                     <?php }?>
                                                 </td>
                                                 <!-- <td style="text-align:center;">
