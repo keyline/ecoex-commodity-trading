@@ -5394,7 +5394,8 @@ class ApiController extends BaseController
                                         $enquirySubStatus = 'Order Complete';
                                     }
                                     $product_count                  = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['vendor_id' => $uId, 'enq_id' => $row->enq_id], 'item_id');
-                                    $plant                          = $this->common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id]);
+                                    $company                        = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id], 'company_name');
+                                    $plant                          = $this->common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
                                     $apiResponse[] = [
                                         'enq_id'                            => $row->enq_id,
                                         'enquiry_no'                        => $row->enquiry_no,
@@ -5402,6 +5403,7 @@ class ApiController extends BaseController
                                         'sub_enq_id'                        => $row->id,
                                         'sub_enquiry_no'                    => $row->sub_enquiry_no,
                                         'enquiry_sub_status'                => $enquirySubStatus,
+                                        'company_name'                      => (($company)?$company->company_name:''),
                                         'plant_name'                        => (($plant)?$plant->plant_name:''),
                                         'product_count'                     => count($product_count),
                                         'assigned_date'                     => (($row->assigned_date != '')?date_format(date_create($row->assigned_date), "M d, Y h:i A"):''),
