@@ -498,7 +498,7 @@
                                             ?>
                                                 <td style="text-align:center;" colspan="2">
                                                     <?php if($getQuotePrice){?>
-                                                        <?php if($getQuotePrice > 0){?>
+                                                        <?php if($getQuotePrice->quote_price > 0){?>
                                                             <span><i class="fa fa-inr"></i> <?=$getQuotePrice->quote_price?> / <?=$getQuotePrice->unit_name?></span>
                                                         <?php } else {?>
                                                             <span>NA</span>
