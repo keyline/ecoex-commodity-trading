@@ -1634,4 +1634,23 @@ class EnquiryRequestController extends BaseController {
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(11));
         }
     }
+
+    public function enquiryDetails($enq_id)
+    {
+        if(!$this->common_model->checkModuleFunctionAccess(23,109)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
+        $enq_id                     = decoded($enq_id);
+        $data['enq_id']             = $enq_id;
+        $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
+        $data['moduleDetail']       = $this->data;
+
+        $title                      = 'View Details Of '.$data['row']->enquiry_no;
+        $page_name                  = 'enquiry-request/enquiry-details';
+        echo $this->layout_after_login($title,$page_name,$data);
+    }
 }
