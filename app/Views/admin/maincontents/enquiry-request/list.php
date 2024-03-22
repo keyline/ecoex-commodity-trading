@@ -88,7 +88,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <?php if($row->status >= 11 && $row->status <= 12){?>
                                         <td>
                                             <?php
-                                            echo $userType           = $session->user_type;
+                                            $userType           = $session->user_type;
                                             ?>
                                             <h6><?=(($row->ecoex_submitted_date != '')?date_format(date_create($row->ecoex_submitted_date), "M d, Y h:i A"):'')?></h6>
                                             <?php if($row->is_ho_approve_ecoex_payment){?>
@@ -96,7 +96,9 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 <h6><?=(($row->ho_approve_date != '')?date_format(date_create($row->ho_approve_date), "M d, Y h:i A"):'')?></h6>
 
                                                 <?php if($row->order_complete_date == ''){?>
-                                                    <a href="<?=base_url('admin/' . $controller_route . '/order-complete/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Complete <?=$title?>" onclick="return confirm('Do You Want To Complete This <?=$title?>');"><i class="fa-solid fa-flag-checkered"></i> Click To Complete</a>
+                                                    <?php if($userType == 'MA'){?>
+                                                        <a href="<?=base_url('admin/' . $controller_route . '/order-complete/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Complete <?=$title?>" onclick="return confirm('Do You Want To Complete This <?=$title?>');"><i class="fa-solid fa-flag-checkered"></i> Click To Complete</a>
+                                                    <?php }?>
                                                 <?php } else {?>
                                                     <h6 class="badge bg-success">COMPLETED</h6>
                                                     <h6><?=(($row->order_complete_date != '')?date_format(date_create($row->order_complete_date), "M d, Y h:i A"):'')?></h6>
