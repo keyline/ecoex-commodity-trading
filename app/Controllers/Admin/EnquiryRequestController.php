@@ -1425,7 +1425,7 @@ class EnquiryRequestController extends BaseController {
                 /* vendor invoice */
                 $ecoex_due_amount = ($getEnquiry->ho_payable_amount - $this->request->getPost('ecoex_payment_amount'));
                 $fields                     = [
-                    'status'                            => 11,
+                    'status'                            => 10,
                     'ecoex_payment_amount'              => $this->request->getPost('ecoex_payment_amount'),
                     'ecoex_payment_mode'                => $this->request->getPost('ecoex_payment_mode'),
                     'ecoex_payment_date'                => date_format(date_create($this->request->getPost('ecoex_payment_date')), "Y-m-d H:i:s"),
