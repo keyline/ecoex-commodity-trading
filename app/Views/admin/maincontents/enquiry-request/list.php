@@ -86,7 +86,10 @@ $controller_route   = $moduleDetail['controller_route'];
                                         </h6>
                                     </td>
                                     <?php if($row->status >= 11 && $row->status <= 12){?>
-                                        <td><?=$userType?>
+                                        <td>
+                                            <?php
+                                            echo $userType                   = $this->session->user_type;
+                                            ?>
                                             <h6><?=(($row->ecoex_submitted_date != '')?date_format(date_create($row->ecoex_submitted_date), "M d, Y h:i A"):'')?></h6>
                                             <?php if($row->is_ho_approve_ecoex_payment){?>
                                                 <h6 class="badge bg-success">APPROVED</h6>
