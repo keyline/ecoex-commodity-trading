@@ -774,12 +774,12 @@
     function getPaymentMode(paymentMode){
         if(paymentMode == 'CASH'){
             $('.online-payment').hide();
-            $('#ecoex_txn_no').attr('required', false);
-            $('#ecoex_txn_screenshot').attr('required', false);
+            $('#ecoex_txn_no').prop('required', false);
+            $('#ecoex_txn_screenshot').prop('required', false);
         } else {
             $('.online-payment').show();
-            $('#ecoex_txn_no').attr('required', true);
-            $('#ecoex_txn_screenshot').attr('required', true);
+            $('#ecoex_txn_no').prop('required', true);
+            $('#ecoex_txn_screenshot').prop('required', true);
         }
     }
 </script>

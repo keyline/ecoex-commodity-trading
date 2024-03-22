@@ -1415,8 +1415,12 @@ class EnquiryRequestController extends BaseController {
                             return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
                         }
                     } else {
-                        $this->session->setFlashdata('error_message', 'Please Upload Invoice !!!');
-                        return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                        if($this->request->getPost('ecoex_payment_mode') != 'CASH'){
+                            $this->session->setFlashdata('error_message', 'Please Upload Invoice !!!');
+                            return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                        } else {
+                            $ecoex_txn_screenshot = '';
+                        }
                     }
                 /* vendor invoice */
                 $ecoex_due_amount = ($getEnquiry->ho_payable_amount - $this->request->getPost('ecoex_payment_amount'));
