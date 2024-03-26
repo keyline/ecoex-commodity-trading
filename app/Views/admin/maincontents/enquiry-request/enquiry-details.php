@@ -628,52 +628,52 @@
                                 <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2"> Pickup Scheduled </button>
                                 </h2>
                                 <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2" data-bs-parent="#accordionExample" style="">
-                                <div class="accordion-body">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Pickup Date/Time</th>
-                                                <th>Submitted Date/Time</th>
-                                                <th>Pickup Scheduled Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
-                                            $getPickupDates             = $common_model->find_data('ecomm_enquiry_vendor_pickup_schedule_logs', 'array', ['sub_enquiry_no' => $sub_enquiry_no], 'pickup_date_time,created_at', '', '', $orderBy);
-                                            ?>
-                                            <?php if($getPickupDates){ $sl=1; foreach($getPickupDates as $getPickupDate){?>
+                                    <div class="accordion-body">
+                                        <table class="table">
+                                            <thead>
                                                 <tr>
-                                                    <td><?=$sl?></td>
-                                                    <td><?=date_format(date_create($getPickupDate->pickup_date_time), "M d, Y h:i A")?></td>
-                                                    <td><?=date_format(date_create($getPickupDate->created_at), "M d, Y h:i A")?></td>
-                                                    <td>
-                                                        <?php if($sl == 1){?>
-                                                            <?php
-                                                            if($subenquiry->is_pickup_final){
-                                                                echo date_format(date_create($subenquiry->pickup_scheduled_date), "M d, Y h:i A");
-                                                            } else {
-                                                            ?>
-                                                                <h6 class="text-warning">Still Not Finalised</h6>
-                                                                <p>
-                                                                    <?php if($subenquiry->pickup_schedule_edit_access){?>
-                                                                        <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($subenquiry->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-success btn-sm" title="Pickup Scheduled Edit Access Off" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-check"></i> Pickup Schedule Edit Access On</a>
-                                                                    <?php } else {?>
-                                                                        <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($subenquiry->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-danger btn-sm" title="Pickup Scheduled Edit Access On" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-times"></i> Pickup Schedule Edit Access Off</a>
-                                                                    <?php }?>
-                                                                    <?php if($subenquiry->pickup_scheduled_date != ''){?>
-                                                                        <a href="<?=base_url('admin/' . $controller_route . '/final-pickup-scheduled/'.encoded($subenquiry->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-primary btn-sm" title="Final Pickup Scheduled <?=$title?>" onclick="return confirm('Do you want to finalize this date of pickup material from vendor end ?');"><i class="fa fa-eye"></i> Make Final</a>
-                                                                    <?php }?>
-                                                                </p>
-                                                            <?php } ?>
-                                                        <?php } ?>
-                                                    </td>
+                                                    <th>#</th>
+                                                    <th>Pickup Date/Time</th>
+                                                    <th>Submitted Date/Time</th>
+                                                    <th>Pickup Scheduled Action</th>
                                                 </tr>
-                                            <?php $sl++; } }?>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
+                                                $getPickupDates             = $common_model->find_data('ecomm_enquiry_vendor_pickup_schedule_logs', 'array', ['sub_enquiry_no' => $sub_enquiry_no], 'pickup_date_time,created_at', '', '', $orderBy);
+                                                ?>
+                                                <?php if($getPickupDates){ $sl=1; foreach($getPickupDates as $getPickupDate){?>
+                                                    <tr>
+                                                        <td><?=$sl?></td>
+                                                        <td><?=date_format(date_create($getPickupDate->pickup_date_time), "M d, Y h:i A")?></td>
+                                                        <td><?=date_format(date_create($getPickupDate->created_at), "M d, Y h:i A")?></td>
+                                                        <td>
+                                                            <?php if($sl == 1){?>
+                                                                <?php
+                                                                if($subenquiry->is_pickup_final){
+                                                                    echo date_format(date_create($subenquiry->pickup_scheduled_date), "M d, Y h:i A");
+                                                                } else {
+                                                                ?>
+                                                                    <h6 class="text-warning">Still Not Finalised</h6>
+                                                                    <p>
+                                                                        <?php if($subenquiry->pickup_schedule_edit_access){?>
+                                                                            <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($subenquiry->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-success btn-sm" title="Pickup Scheduled Edit Access Off" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-check"></i> Pickup Schedule Edit Access On</a>
+                                                                        <?php } else {?>
+                                                                            <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($subenquiry->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-danger btn-sm" title="Pickup Scheduled Edit Access On" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-times"></i> Pickup Schedule Edit Access Off</a>
+                                                                        <?php }?>
+                                                                        <?php if($subenquiry->pickup_scheduled_date != ''){?>
+                                                                            <a href="<?=base_url('admin/' . $controller_route . '/final-pickup-scheduled/'.encoded($subenquiry->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-primary btn-sm" title="Final Pickup Scheduled <?=$title?>" onclick="return confirm('Do you want to finalize this date of pickup material from vendor end ?');"><i class="fa fa-eye"></i> Make Final</a>
+                                                                        <?php }?>
+                                                                    </p>
+                                                                <?php } ?>
+                                                            <?php } ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php $sl++; } }?>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                             <div class="accordion-item">
@@ -681,27 +681,55 @@
                                 <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree"> Vehicle Placed &nbsp;&nbsp; <span style="float: left; font-size: 14px">(1 vehicles placed)</span> </button>
                                 </h2>
                                 <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample" style="">
-                                <div class="accordion-body">
-                                    <table class="table">
-                                    <thead>
-                                        <tr>
-                                        <th>#</th>
-                                        <th>Vehicle Number</th>
-                                        <th>Vehicle Images</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                        <td>1</td>
-                                        <td>WB02AA2574</td>
-                                        <td><div class="row">
-                                            <div class="col-md-3"> <a href="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec0523dfcd6.jpg" download=""><img src="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec0523dfcd6.jpg" class="img-thumbnail" style="height:100px;width: 100%;"></a> </div>
-                                            <div class="col-md-3"> <a href="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec0523e15a9.jpg" download=""><img src="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec0523e15a9.jpg" class="img-thumbnail" style="height:100px;width: 100%;"></a> </div>
-                                            </div></td>
-                                        </tr>
-                                    </tbody>
-                                    </table>
-                                </div>
+                                    <div class="accordion-body">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                <th>#</th>
+                                                <th>Vehicle Number</th>
+                                                <th>Vehicle Images</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $no_of_vehicle                      = (($subenquiry)?$subenquiry->no_of_vehicle:0);
+                                                $vehicle_registration_nos           = (($subenquiry)?json_decode($subenquiry->vehicle_registration_nos):[]);
+                                                $vehicle_images                     = (($subenquiry)?json_decode($subenquiry->vehicle_images):[]);
+                                                $vehicles                           = [];
+                                                if($no_of_vehicle > 0){
+                                                    for($v=0;$v<$no_of_vehicle;$v++){
+                                                        $vehImags = [];
+                                                        if(count($vehicle_images[$v])){
+                                                            for($p=0;$p<count($vehicle_images[$v]);$p++){
+                                                                $vehImags[] = base_url('public/uploads/enquiry/'.$vehicle_images[$v][$p]);
+                                                            }
+                                                        }
+                                                        $vehicles[] = [
+                                                            'vehicle_no'    => $vehicle_registration_nos[$v],
+                                                            'vehicle_img'   => $vehImags,
+                                                        ];
+                                                    }
+                                                }
+                                                $vehicles           = $vehicles;
+                                                ?>
+                                                <?php if($vehicles){ $sl=1; foreach($vehicles as $vehicle){?>
+                                                    <tr>
+                                                        <td><?=$sl++?></td>
+                                                        <td><?=$vehicle['vehicle_no']?></td>
+                                                        <td>
+                                                            <div class="row">
+                                                                <?php if($vehicle['vehicle_img']){ for($v=0;$v<count($vehicle['vehicle_img']);$v++){?>
+                                                                    <div class="col-md-3">
+                                                                        <a href="<?=$vehicle['vehicle_img'][$v]?>" download><img src="<?=$vehicle['vehicle_img'][$v]?>" class="img-thumbnail" style="height:100px;width: 100%;"></a>
+                                                                    </div>
+                                                                <?php } }?>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                <?php } }?>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                             <div class="accordion-item">
