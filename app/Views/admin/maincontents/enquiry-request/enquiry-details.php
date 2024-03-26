@@ -569,7 +569,7 @@
             </div>
         </div>
 
-      <div class="material_accordion_section">
+      <div class="material_accordion_section mt-3">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">ECOMM-0000066-1</button>
