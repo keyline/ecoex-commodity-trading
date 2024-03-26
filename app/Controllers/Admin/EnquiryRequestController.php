@@ -1115,10 +1115,10 @@ class EnquiryRequestController extends BaseController {
                     }
                 /* push notification sent */
                 $this->session->setFlashdata('success_message', 'Material Weight Approved Successfully !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
             } else {
                 $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
             }
         }
         public function requestInvoiceToHOFromEcoex($enq_id, $sub_enquiry_no){
@@ -1158,10 +1158,10 @@ class EnquiryRequestController extends BaseController {
                 /* email sent */
 
                 $this->session->setFlashdata('success_message', 'Request For Invoice To HO Sent Successfully !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
             } else {
                 $this->session->setFlashdata('success_message', 'Enquiry Not Found !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
             }
         }
         public function uploadInvoiceByHO(){
@@ -1180,11 +1180,11 @@ class EnquiryRequestController extends BaseController {
                             $invoice_file_from_ho = $upload_array['newFilename'];
                         } else {
                             $this->session->setFlashdata('error_message', $upload_array['message']);
-                            return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                            return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($sub_enquiry_no)));
                         }
                     } else {
                         $this->session->setFlashdata('error_message', 'Please Upload Invoice !!!');
-                        return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                        return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($sub_enquiry_no)));
                     }
                 /* ho invoice */
                 $fields                     = [
@@ -1222,10 +1222,10 @@ class EnquiryRequestController extends BaseController {
                 /* email sent */
 
                 $this->session->setFlashdata('success_message', 'Invoice From HO Uploaded Successfully !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
             } else {
                 $this->session->setFlashdata('success_message', 'Enquiry Not Found !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
             }
         }
         public function uploadInvoiceByEcoexForVendor(){
@@ -1244,11 +1244,11 @@ class EnquiryRequestController extends BaseController {
                             $vendor_invoice_file = $upload_array['newFilename'];
                         } else {
                             $this->session->setFlashdata('error_message', $upload_array['message']);
-                            return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                            return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($sub_enquiry_no)));
                         }
                     } else {
                         $this->session->setFlashdata('error_message', 'Please Upload Invoice !!!');
-                        return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                        return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($sub_enquiry_no)));
                     }
                 /* vendor invoice */
                 $fields                     = [
@@ -1315,10 +1315,10 @@ class EnquiryRequestController extends BaseController {
                 /* email sent */
 
                 $this->session->setFlashdata('success_message', 'Invoice Uploaded From Ecoex Successfully !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
             } else {
                 $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
             }
         }
         public function vendorPaymentApprove($sub_enquiry_no){
@@ -1389,10 +1389,10 @@ class EnquiryRequestController extends BaseController {
                 /* email sent */
 
                 $this->session->setFlashdata('success_message', 'Vendor Payment Approved Successfully !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
             } else {
                 $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
             }
         }
         public function uploadPaymentByEcoexForHo(){
@@ -1412,12 +1412,12 @@ class EnquiryRequestController extends BaseController {
                             $ecoex_txn_screenshot = $upload_array['newFilename'];
                         } else {
                             $this->session->setFlashdata('error_message', $upload_array['message']);
-                            return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                            return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($sub_enquiry_no)));
                         }
                     } else {
                         if($this->request->getPost('ecoex_payment_mode') != 'CASH'){
                             $this->session->setFlashdata('error_message', 'Please Upload Invoice !!!');
-                            return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                            return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($sub_enquiry_no)));
                         } else {
                             $ecoex_txn_screenshot = '';
                         }
@@ -1463,10 +1463,10 @@ class EnquiryRequestController extends BaseController {
                 // ho email sent
 
                 $this->session->setFlashdata('success_message', 'Payment Info Uploaded By Ecoex Successfully !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
             } else {
                 $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
             }
         }
         public function approveEcoexPaymentByHo($enq_id, $sub_enquiry_no){
@@ -1508,10 +1508,10 @@ class EnquiryRequestController extends BaseController {
                 // ho email sent
 
                 $this->session->setFlashdata('success_message', 'Ecoex Payment Approved By HO Successfully !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
             } else {
                 $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
             }
         }
     /* process enquiry requests */
