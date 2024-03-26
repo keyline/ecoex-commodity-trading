@@ -627,6 +627,7 @@
                                                 <th>#</th>
                                                 <th>Pickup Date/Time</th>
                                                 <th>Submitted Date/Time</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -639,6 +640,26 @@
                                                     <td><?=$sl++?></td>
                                                     <td><?=date_format(date_create($getPickupDate->pickup_date_time), "M d, Y h:i A")?></td>
                                                     <td><?=date_format(date_create($getPickupDate->created_at), "M d, Y h:i A")?></td>
+                                                    <td>
+                                                        <?php
+                                                        if($subenquiry->is_pickup_final){
+                                                            echo date_format(date_create($subenquiry->pickup_scheduled_date), "M d, Y h:i A");
+                                                        } else {
+                                                        ?>
+                                                            <h6 class="text-warning">Still Not Finalised</h6>
+                                                            <p>
+                                                                <?php if($subenquiry->pickup_schedule_edit_access){?>
+                                                                    <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($subenquiry->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-success btn-sm" title="Pickup Scheduled Edit Access Off" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-check"></i> Pickup Schedule Edit Access On</a>
+                                                                <?php } else {?>
+                                                                    <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($subenquiry->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-danger btn-sm" title="Pickup Scheduled Edit Access On" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-times"></i> Pickup Schedule Edit Access Off</a>
+                                                                <?php }?>
+                                                                <?php if($subenquiry->pickup_scheduled_date != ''){?>
+                                                                    <a href="<?=base_url('admin/' . $controller_route . '/final-pickup-scheduled/'.encoded($subenquiry->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-primary btn-sm" title="Final Pickup Scheduled <?=$title?>" onclick="return confirm('Do you want to finalize this date of pickup material from vendor end ?');"><i class="fa fa-eye"></i> Make Final</a>
+                                                                <?php }?>
+                                                            </p>
+                                                        <?php }
+                                                        ?>
+                                                    </td>
                                                 </tr>
                                             <?php } }?>
                                         </tbody>
