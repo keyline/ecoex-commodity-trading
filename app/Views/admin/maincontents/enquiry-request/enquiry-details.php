@@ -208,14 +208,7 @@
         <div class="card-body">
           <div class="row mt-3">
             
-            <div class="col-md-12 mb-3">
-                <?php if($row->status == 0){?>
-                    <a href="<?=base_url('admin/' . $controller_route . '/accept-request/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Accept <?=$title?>" onclick="return confirm('Do You Want To Accept This <?=$title?>');"><i class="fa fa-check"></i> Click To Accept</a>
-                    <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Reject <?=$title?>" onclick="getRejectModal(<?=$row->$primary_key?>);"><i class="fa fa-times"></i> Click To Reject</a>
-                <?php } else {?>
-                    
-                <?php }?>
-            </div>
+            
 
             <div class="col-md-6">
                 <h5 class="fw-bold text-success">Company Name</h5>

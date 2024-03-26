@@ -1656,7 +1656,7 @@ class EnquiryRequestController extends BaseController {
         $data['enquiryProducts']    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id]);
         $data['enquiryPendingProducts']    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id, 'status' => 0]);
 
-        $title                      = 'View Details Of '.$data['row']->enquiry_no;
+        $title                      = 'View Enquiry Details Of '.$data['row']->enquiry_no;
         $page_name                  = 'enquiry-request/enquiry-details';
         echo $this->layout_after_login($title,$page_name,$data);
     }
