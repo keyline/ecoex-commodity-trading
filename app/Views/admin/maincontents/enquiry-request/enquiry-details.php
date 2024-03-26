@@ -349,20 +349,7 @@
                                 <?php
                                 if($subenquires[0]->is_pickup_final){
                                     echo date_format(date_create($subenquires[0]->pickup_scheduled_date), "M d, Y h:i A");
-                                } else {
-                                ?>
-                                    <h6 class="text-warning">Still Not Finalised</h6>
-                                    <p>
-                                        <?php if($subenquires[0]->pickup_schedule_edit_access){?>
-                                            <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($subenquires[0]->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-success btn-sm" title="Pickup Scheduled Edit Access Off" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-check"></i> Pickup Schedule Edit Access On</a>
-                                        <?php } else {?>
-                                            <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($subenquires[0]->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-danger btn-sm" title="Pickup Scheduled Edit Access On" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-times"></i> Pickup Schedule Edit Access Off</a>
-                                        <?php }?>
-                                        <?php if($subenquires[0]->pickup_scheduled_date != ''){?>
-                                            <a href="<?=base_url('admin/' . $controller_route . '/final-pickup-scheduled/'.encoded($subenquires[0]->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-primary btn-sm" title="Final Pickup Scheduled <?=$title?>" onclick="return confirm('Do you want to finalize this date of pickup material from vendor end ?');"><i class="fa fa-eye"></i> Make Final</a>
-                                        <?php }?>
-                                    </p>
-                                <?php }
+                                }
                                 ?>
                             </h6>
                         </div>
@@ -634,20 +621,26 @@
                                 <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="heading2" data-bs-parent="#accordionExample" style="">
                                 <div class="accordion-body">
                                     <table class="table">
-                                    <thead>
-                                        <tr>
-                                        <th>#</th>
-                                        <th>Pickup Date/Time</th>
-                                        <th>Submitted Date/Time</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                        <td>1</td>
-                                        <td>Mar 20, 2024 12:00 PM</td>
-                                        <td>Mar 09, 2024 12:05 PM</td>
-                                        </tr>
-                                    </tbody>
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Pickup Date/Time</th>
+                                                <th>Submitted Date/Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
+                                            $getPickupDates             = $common_model->find_data('ecomm_enquiry_vendor_pickup_schedule_logs', 'array', ['sub_enquiry_no' => $sub_enquiry_no], 'pickup_date_time,created_at', '', '', $orderBy);
+                                            ?>
+                                            <?php if($getPickupDates){ $sl=1; foreach($getPickupDates as $getPickupDate){?>
+                                                <tr>
+                                                    <td><?=$sl++?></td>
+                                                    <td><?=date_format(date_create($getPickupDate->pickup_date_time), "M d, Y h:i A")?></td>
+                                                    <td><?=date_format(date_create($getPickupDate->created_at), "M d, Y h:i A")?></td>
+                                                </tr>
+                                            <?php } }?>
+                                        </tbody>
                                     </table>
                                 </div>
                                 </div>
