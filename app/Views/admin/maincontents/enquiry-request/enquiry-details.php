@@ -569,188 +569,179 @@
             </div>
         </div>
 
-      <div class="material_accordion_section mt-3">
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">ECOMM-0000066-1</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">ECOMM-0000066-2</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">ECOMM-0000066-3</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">ECOMM-0000066-3</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">ECOMM-0000066-3</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">ECOMM-0000066-3</button>
-            </li>
-        </ul>
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-            <div class="row">
-
-            <div class="col-md-6">
-              <h5 class="fw-bold text-success">Enquiry No.</h5>
-              <h6>ECOMM-0000059-B</h6>
-            </div>
-            <div class="col-md-6">
-              <h5 class="fw-bold text-success">Company / Plant</h5>
-              <h6> KEYLINE DIGITECH PRIVATE LIMITED <br>
-                KEYLINE DIGITECH PRIVATE LIMITED PLANT </h6>
-            </div>
-            </div>
-            
-                <div class="accordion" id="accordionExample">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne"> Enquiry Request Items </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse show collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
-                        <div class="accordion-body">
-                            <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Item</th>
-                                    <th>HSN</th>
-                                    <th>Qty</th>
-                                    <th>Unit Price</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Digital Marketing</td>
-                                    <td>111111</td>
-                                    <td>25.00</td>
-                                    <td>55.00</td>
-                                </tr>
-                                </tbody>
-                            </table>
+        <div class="material_accordion_section mt-3">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <?php if($subenquires){ $i=1; foreach($subenquires as $subenquiry){?>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link <?=(($i == 1)?'active':'')?>" id="subenquiry-tab" data-bs-toggle="tab" data-bs-target="#subenquiry-<?=$subenquiry->id?>" type="button" role="tab" aria-controls="subenquiry" aria-selected="true"><?=$subenquiry->sub_enquiry_no?></button>
+                    </li>
+                <?php $i++; } }?>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <?php if($subenquires){ $i=1; foreach($subenquires as $subenquiry){?>
+                    <?php
+                    $getCompany = $common_model->find_data('ecoex_companies', 'row', ['id' => $subenquiry->company_id], 'company_name');
+                    $getVendor  = $common_model->find_data('ecomm_users', 'row', ['id' => $subenquiry->vendor_id], 'company_name');
+                    ?>
+                    <div class="tab-pane fade <?=(($i == 1)?'show active':'')?>" id="subenquiry-<?=$subenquiry->id?>" role="tabpanel" aria-labelledby="subenquiry-tab">
+                        <div class="row">
+                            <div class="col-md-6">
+                              <h5 class="fw-bold text-success">Enquiry No.</h5>
+                              <h6><?=$subenquiry->sub_enquiry_no?></h6>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="fw-bold text-success">Company / Plant</h5>
+                                <h6>
+                                    <?=(($getCompany)?$getCompany->company_name:'')?><br>
+                                    <?=(($getVendor)?$getVendor->company_name:'')?>
+                                </h6>
                             </div>
                         </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"> Pickup Scheduled </button>
-                        </h2>
-                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" style="">
-                        <div class="accordion-body">
-                            <table class="table">
-                            <thead>
-                                <tr>
-                                <th>#</th>
-                                <th>Pickup Date/Time</th>
-                                <th>Submitted Date/Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                <td>1</td>
-                                <td>Mar 20, 2024 12:00 PM</td>
-                                <td>Mar 09, 2024 12:05 PM</td>
-                                </tr>
-                            </tbody>
-                            </table>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingThree">
-                        <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree"> Vehicle Placed &nbsp;&nbsp; <span style="float: left; font-size: 14px">(1 vehicles placed)</span> </button>
-                        </h2>
-                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample" style="">
-                        <div class="accordion-body">
-                            <table class="table">
-                            <thead>
-                                <tr>
-                                <th>#</th>
-                                <th>Vehicle Number</th>
-                                <th>Vehicle Images</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                <td>1</td>
-                                <td>WB02AA2574</td>
-                                <td><div class="row">
-                                    <div class="col-md-3"> <a href="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec0523dfcd6.jpg" download=""><img src="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec0523dfcd6.jpg" class="img-thumbnail" style="height:100px;width: 100%;"></a> </div>
-                                    <div class="col-md-3"> <a href="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec0523e15a9.jpg" download=""><img src="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec0523e15a9.jpg" class="img-thumbnail" style="height:100px;width: 100%;"></a> </div>
-                                    </div></td>
-                                </tr>
-                            </tbody>
-                            </table>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingFour">
-                        <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour"> Material Weighted </button>
-                        </h2>
-                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            <form method="POST" action="http://localhost/ecoex-commodity-trading/admin/enquiry-requests/modify-approve-material-weight">
-                            <input type="hidden" name="sub_enquiry_no" value="ECOMM-0000059-B">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Item Name</th>
-                                    <th>Weighted Qty</th>
-                                    <th>Vendor Submitted Material Weight</th>
-                                    <th>Plant Submitted Material Weight</th>
-                                    <th>Weight Slips</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Digital Marketing</td>
-                                    <td><span class="weight-label">75.00</span>
-                                    <input type="text" name="weighted_qty[]" class="form-control weight-value" value="75.00" style="display: none;"></td>
-                                    <td>Mar 09, 2024 12:18 PM</td>
-                                    <td>Mar 09, 2024 12:32 PM</td>
-                                    <td><div class="row">
-                                        <div class="col-md-6"> <a href="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec063e972d1.jpg" download=""><img src="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec063e972d1.jpg" class="img-thumbnail" style="height:100px;width: 100px;"></a> </div>
-                                        <div class="col-md-6"> <a href="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec098b430ee.jpg" download=""><img src="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec098b430ee.jpg" class="img-thumbnail" style="height:100px;width: 100px;"></a> </div>
-                                    </div></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="6" style="text-align:center;"><h6 class="badge bg-success">Material Weight Approved</h6></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            </form>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingFive">
-                        <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive"> Invoice From HO </button>
-                        </h2>
-                        <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            <div class="row mt-3">
-                            <div class="col-md-6 text-center"> <a href="http://localhost/ecoex-commodity-trading/admin/enquiry-requests/request-invoice-to-HO-from-ecoex/NTk=/RUNPTU0tMDAwMDA1OS1C" class="btn btn-warning btn-sm" onclick="return confirm('Do you want to sent request for invoice to HO ?');"><i class="fa-solid fa-code-pull-request"></i> Request For Invoice To HO</a> </div>
-                            <div class="col-md-6 text-center"> </div>
+                        <div class="accordion" id="accordionExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne"> Enquiry Request Items </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse show collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                                <div class="accordion-body">
+                                    <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Item</th>
+                                            <th>HSN</th>
+                                            <th>Qty</th>
+                                            <th>Unit Price</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Digital Marketing</td>
+                                            <td>111111</td>
+                                            <td>25.00</td>
+                                            <td>55.00</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"> Pickup Scheduled </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" style="">
+                                <div class="accordion-body">
+                                    <table class="table">
+                                    <thead>
+                                        <tr>
+                                        <th>#</th>
+                                        <th>Pickup Date/Time</th>
+                                        <th>Submitted Date/Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                        <td>1</td>
+                                        <td>Mar 20, 2024 12:00 PM</td>
+                                        <td>Mar 09, 2024 12:05 PM</td>
+                                        </tr>
+                                    </tbody>
+                                    </table>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree"> Vehicle Placed &nbsp;&nbsp; <span style="float: left; font-size: 14px">(1 vehicles placed)</span> </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample" style="">
+                                <div class="accordion-body">
+                                    <table class="table">
+                                    <thead>
+                                        <tr>
+                                        <th>#</th>
+                                        <th>Vehicle Number</th>
+                                        <th>Vehicle Images</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                        <td>1</td>
+                                        <td>WB02AA2574</td>
+                                        <td><div class="row">
+                                            <div class="col-md-3"> <a href="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec0523dfcd6.jpg" download=""><img src="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec0523dfcd6.jpg" class="img-thumbnail" style="height:100px;width: 100%;"></a> </div>
+                                            <div class="col-md-3"> <a href="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec0523e15a9.jpg" download=""><img src="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec0523e15a9.jpg" class="img-thumbnail" style="height:100px;width: 100%;"></a> </div>
+                                            </div></td>
+                                        </tr>
+                                    </tbody>
+                                    </table>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingFour">
+                                <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour"> Material Weighted </button>
+                                </h2>
+                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <form method="POST" action="http://localhost/ecoex-commodity-trading/admin/enquiry-requests/modify-approve-material-weight">
+                                    <input type="hidden" name="sub_enquiry_no" value="ECOMM-0000059-B">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Item Name</th>
+                                            <th>Weighted Qty</th>
+                                            <th>Vendor Submitted Material Weight</th>
+                                            <th>Plant Submitted Material Weight</th>
+                                            <th>Weight Slips</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Digital Marketing</td>
+                                            <td><span class="weight-label">75.00</span>
+                                            <input type="text" name="weighted_qty[]" class="form-control weight-value" value="75.00" style="display: none;"></td>
+                                            <td>Mar 09, 2024 12:18 PM</td>
+                                            <td>Mar 09, 2024 12:32 PM</td>
+                                            <td><div class="row">
+                                                <div class="col-md-6"> <a href="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec063e972d1.jpg" download=""><img src="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec063e972d1.jpg" class="img-thumbnail" style="height:100px;width: 100px;"></a> </div>
+                                                <div class="col-md-6"> <a href="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec098b430ee.jpg" download=""><img src="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec098b430ee.jpg" class="img-thumbnail" style="height:100px;width: 100px;"></a> </div>
+                                            </div></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" style="text-align:center;"><h6 class="badge bg-success">Material Weight Approved</h6></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    </form>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingFive">
+                                <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive"> Invoice From HO </button>
+                                </h2>
+                                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="row mt-3">
+                                    <div class="col-md-6 text-center"> <a href="http://localhost/ecoex-commodity-trading/admin/enquiry-requests/request-invoice-to-HO-from-ecoex/NTk=/RUNPTU0tMDAwMDA1OS1C" class="btn btn-warning btn-sm" onclick="return confirm('Do you want to sent request for invoice to HO ?');"><i class="fa-solid fa-code-pull-request"></i> Request For Invoice To HO</a> </div>
+                                    <div class="col-md-6 text-center"> </div>
+                                    </div>
+                                </div>
+                                </div>
                             </div>
                         </div>
-                        </div>
                     </div>
-                    </div>
+                <?php $i++; } }?>
             </div>
-            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
-        </div>
         
-      </div>
+        </div>
     </div>
   </div>
 </section>

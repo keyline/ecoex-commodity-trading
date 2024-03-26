@@ -1744,7 +1744,6 @@ class EnquiryRequestController extends BaseController {
         }
 
         $data['subenquires']        = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enq_id]);
-        pr($data['subenquires']);
 
         $title                      = 'View Enquiry Details Of '.$data['row']->enquiry_no;
         $page_name                  = 'enquiry-request/enquiry-details';
