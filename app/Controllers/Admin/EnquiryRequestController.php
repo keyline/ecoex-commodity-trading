@@ -1389,10 +1389,10 @@ class EnquiryRequestController extends BaseController {
                 /* email sent */
 
                 $this->session->setFlashdata('success_message', 'Vendor Payment Approved Successfully !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($getSubEnquiry->enq_id)));
             } else {
                 $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($getSubEnquiry->enq_id)));
             }
         }
         public function uploadPaymentByEcoexForHo(){
