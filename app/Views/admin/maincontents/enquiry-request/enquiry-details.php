@@ -338,6 +338,33 @@
                         <h5 class="fw-bold text-success">Device Model</h5>
                         <h6><?=$row->device_model?></h6>
                     </div>
+                    <div class="col-md-6">
+                        <h5 class="fw-bold text-success">Assigned Date</h5>
+                        <h6><?=date_format(date_create($row->assigned_date), "M d, Y h:i A")?></h6>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="fw-bold text-success">Pickup Scheduled Date</h5>
+                        <h6>
+                            <?php
+                            if($row->is_pickup_final){
+                                echo date_format(date_create($row->pickup_scheduled_date), "M d, Y h:i A");
+                            } else {
+                            ?>
+                                <h6 class="text-warning">Still Not Finalised</h6>
+                                <p>
+                                    <?php if($row->pickup_schedule_edit_access){?>
+                                        <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($row->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-success btn-sm" title="Pickup Scheduled Edit Access Off" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-check"></i> Pickup Schedule Edit Access On</a>
+                                    <?php } else {?>
+                                        <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($row->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-danger btn-sm" title="Pickup Scheduled Edit Access On" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-times"></i> Pickup Schedule Edit Access Off</a>
+                                    <?php }?>
+                                    <?php if($row->pickup_scheduled_date != ''){?>
+                                        <a href="<?=base_url('admin/' . $controller_route . '/final-pickup-scheduled/'.encoded($row->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-primary btn-sm" title="Final Pickup Scheduled <?=$title?>" onclick="return confirm('Do you want to finalize this date of pickup material from vendor end ?');"><i class="fa fa-eye"></i> Make Final</a>
+                                    <?php }?>
+                                </p>
+                            <?php }
+                            ?>
+                        </h6>
+                    </div>
                 </div>
             </div>
         </div>
@@ -599,10 +626,10 @@
                         </div>
                         <div class="accordion" id="accordionExample">
                             <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingTwo">
+                                <h2 class="accordion-header" id="heading2">
                                 <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"> Pickup Scheduled </button>
                                 </h2>
-                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" style="">
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="heading2" data-bs-parent="#accordionExample" style="">
                                 <div class="accordion-body">
                                     <table class="table">
                                     <thead>
