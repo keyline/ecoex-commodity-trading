@@ -210,136 +210,135 @@
     <div class="col-lg-12 mb-3">
       <div class="card">
         <div class="card-body">
-          <div class="row mt-3">
-            
-            <div class="col-md-12 mb-3">
-                <?php if($row->status == 0){?>
-                    <a href="<?=base_url('admin/' . $controller_route . '/accept-request/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Accept <?=$title?>" onclick="return confirm('Do You Want To Accept This <?=$title?>');"><i class="fa fa-check"></i> Click To Accept</a>
-                    <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Reject <?=$title?>" onclick="getRejectModal(<?=$row->$primary_key?>);"><i class="fa fa-times"></i> Click To Reject</a>
-                <?php } else {?>
-                    <?php if($row->status == 1){?>
-                        <h6 class="badge bg-success"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
-                        <p><?=(($row->accepted_date != '')?date_format(date_create($row->accepted_date), "M d, Y h:i A"):'')?></p>
-                        <!-- share to vendors panel -->
-                            <p>
-                                <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#shareModal"><i class="fa fa-share-alt"></i> Quotation Invitation To Vendors</button>
-                                <a data-bs-toggle="collapse" href="#sharedVendor" role="button" aria-expanded="false" aria-controls="sharedVendor" class="btn btn-primary btn-sm"><i class="fa fa-list-alt"></i> Click To View The Quotation Request Invited Vendors</a>
-                                <?php $sharedLink = base_url('enquiry-request/'.encoded($row->id));?>
-                            </p>
-                            <div class="collapse" id="sharedVendor">
-                                <div class="card">
-                                    <div class="card-header bg-success text-light">
-                                        <h5>Enquiry Quotation Request Invited Vendors</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <table class="table table-striped table-hovered">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Name</th>
-                                                    <th>Email</th>
-                                                    <th>Phone</th>
-                                                    <th>GST No.</th>
-                                                    <th>Location</th>
-                                                    <th>Request Status</th>
-                                                    <th>Action Date/Time</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                    $invitedVendors = $common_model->find_data('ecomm_enquiry_vendor_shares', 'array', ['enq_id' => $row->id]);
-                                                    if($invitedVendors){ $sl=1; foreach($invitedVendors as $invitedVendor){
-                                                        $getVendor = $common_model->find_data('ecomm_users', 'row', ['id' => $invitedVendor->vendor_id, 'type' => 'VENDOR'], 'gst_no,company_name,full_address,email,phone');
-                                                    ?>
-                                                <tr>
-                                                    <td><?=$sl++?></td>
-                                                    <td><?=(($getVendor)?$getVendor->company_name:'')?></td>
-                                                    <td><?=(($getVendor)?$getVendor->email:'')?></td>
-                                                    <td><?=(($getVendor)?$getVendor->phone:'')?></td>
-                                                    <td><?=(($getVendor)?$getVendor->gst_no:'')?></td>
-                                                    <td><?=(($getVendor)?$getVendor->full_address:'')?></td>
-                                                    <td>
-                                                        <?php if($invitedVendor->status == 0){?>
-                                                        <span class="badge bg-warning"><i class="fa-solid fa-clock"></i> PENDING</span>
-                                                        <?php } elseif($invitedVendor->status == 1){?>
-                                                        <span class="badge bg-success"><i class="fa-solid fa-check-circle"></i> ACCEPTED</span>
-                                                        <?php } elseif($invitedVendor->status == 3){?>
-                                                        <span class="badge bg-danger"><i class="fa-solid fa-times-circle"></i> REJECTED</span>
-                                                        <?php }?>
-                                                    </td>
-                                                    <td>
-                                                        <?php if($invitedVendor->status == 0){?>
-                                                        <span class="text-warning fw-bold">Yet Not Action</span>
-                                                        <?php } elseif($invitedVendor->status == 1){?>
-                                                        <span class="text-success fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y")?></span>
-                                                        <?php } elseif($invitedVendor->status == 3){?>
-                                                        <span class="text-danger fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y")?></span>
-                                                        <?php }?>
-                                                    </td>
-                                                </tr>
-                                                <?php } }?>
-                                            </tbody>
-                                        </table>
+            <div class="row mt-3">
+                <div class="col-md-12 mb-3">
+                    <?php if($row->status == 0){?>
+                        <a href="<?=base_url('admin/' . $controller_route . '/accept-request/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Accept <?=$title?>" onclick="return confirm('Do You Want To Accept This <?=$title?>');"><i class="fa fa-check"></i> Click To Accept</a>
+                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Reject <?=$title?>" onclick="getRejectModal(<?=$row->$primary_key?>);"><i class="fa fa-times"></i> Click To Reject</a>
+                    <?php } else {?>
+                        <?php if($row->status == 1){?>
+                            <h6 class="badge bg-success"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
+                            <p><?=(($row->accepted_date != '')?date_format(date_create($row->accepted_date), "M d, Y h:i A"):'')?></p>
+                            <!-- share to vendors panel -->
+                                <p>
+                                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#shareModal"><i class="fa fa-share-alt"></i> Quotation Invitation To Vendors</button>
+                                    <a data-bs-toggle="collapse" href="#sharedVendor" role="button" aria-expanded="false" aria-controls="sharedVendor" class="btn btn-primary btn-sm"><i class="fa fa-list-alt"></i> Click To View The Quotation Request Invited Vendors</a>
+                                    <?php $sharedLink = base_url('enquiry-request/'.encoded($row->id));?>
+                                </p>
+                                <div class="collapse" id="sharedVendor">
+                                    <div class="card">
+                                        <div class="card-header bg-success text-light">
+                                            <h5>Enquiry Quotation Request Invited Vendors</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <table class="table table-striped table-hovered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Name</th>
+                                                        <th>Email</th>
+                                                        <th>Phone</th>
+                                                        <th>GST No.</th>
+                                                        <th>Location</th>
+                                                        <th>Request Status</th>
+                                                        <th>Action Date/Time</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                        $invitedVendors = $common_model->find_data('ecomm_enquiry_vendor_shares', 'array', ['enq_id' => $row->id]);
+                                                        if($invitedVendors){ $sl=1; foreach($invitedVendors as $invitedVendor){
+                                                            $getVendor = $common_model->find_data('ecomm_users', 'row', ['id' => $invitedVendor->vendor_id, 'type' => 'VENDOR'], 'gst_no,company_name,full_address,email,phone');
+                                                        ?>
+                                                    <tr>
+                                                        <td><?=$sl++?></td>
+                                                        <td><?=(($getVendor)?$getVendor->company_name:'')?></td>
+                                                        <td><?=(($getVendor)?$getVendor->email:'')?></td>
+                                                        <td><?=(($getVendor)?$getVendor->phone:'')?></td>
+                                                        <td><?=(($getVendor)?$getVendor->gst_no:'')?></td>
+                                                        <td><?=(($getVendor)?$getVendor->full_address:'')?></td>
+                                                        <td>
+                                                            <?php if($invitedVendor->status == 0){?>
+                                                            <span class="badge bg-warning"><i class="fa-solid fa-clock"></i> PENDING</span>
+                                                            <?php } elseif($invitedVendor->status == 1){?>
+                                                            <span class="badge bg-success"><i class="fa-solid fa-check-circle"></i> ACCEPTED</span>
+                                                            <?php } elseif($invitedVendor->status == 3){?>
+                                                            <span class="badge bg-danger"><i class="fa-solid fa-times-circle"></i> REJECTED</span>
+                                                            <?php }?>
+                                                        </td>
+                                                        <td>
+                                                            <?php if($invitedVendor->status == 0){?>
+                                                            <span class="text-warning fw-bold">Yet Not Action</span>
+                                                            <?php } elseif($invitedVendor->status == 1){?>
+                                                            <span class="text-success fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y")?></span>
+                                                            <?php } elseif($invitedVendor->status == 3){?>
+                                                            <span class="text-danger fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y")?></span>
+                                                            <?php }?>
+                                                        </td>
+                                                    </tr>
+                                                    <?php } }?>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        <!-- share to vendors panel -->
-                    <?php } elseif($row->status == 9){?>
-                        <h6 class="badge bg-danger"><i class="fa fa-times-circle"></i> REJECTED</h6>
-                        <p><?=(($row->accepted_date != '')?date_format(date_create($row->accepted_date), "M d, Y h:i A"):'')?></p>
+                            <!-- share to vendors panel -->
+                        <?php } elseif($row->status == 9){?>
+                            <h6 class="badge bg-danger"><i class="fa fa-times-circle"></i> REJECTED</h6>
+                            <p><?=(($row->accepted_date != '')?date_format(date_create($row->accepted_date), "M d, Y h:i A"):'')?></p>
+                        <?php }?>
                     <?php }?>
-                <?php }?>
-            </div>
+                </div>
 
-            <div class="col-md-6">
-                <h5 class="fw-bold text-success">Company Name</h5>
-                <h6>
-                    <?php
-                    $getCompany = $common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id], 'company_name');
-                    echo (($getCompany)?$getCompany->company_name:'');
-                    ?>
-                </h6>
+                <div class="col-md-6">
+                    <h5 class="fw-bold text-success">Company Name</h5>
+                    <h6>
+                        <?php
+                        $getCompany = $common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id], 'company_name');
+                        echo (($getCompany)?$getCompany->company_name:'');
+                        ?>
+                    </h6>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="fw-bold text-success">Plant Name</h5>
+                    <h6>
+                        <?php
+                        $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
+                        echo (($getPlant)?$getPlant->plant_name:'');
+                        ?>
+                    </h6>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="fw-bold text-success">GPS Tracking Image</h5>
+                    <h6>
+                        <?php if($row->gps_tracking_image != ''){?>
+                        <a href="<?=getenv('app.uploadsURL').'enquiry/'.$row->gps_tracking_image?>" target="_blank"><img src="<?=getenv('app.uploadsURL').'enquiry/'.$row->gps_tracking_image?>" alt="<?=$row->enquiry_no?>" class="img-thumbnail" style="width: 250px; height: 250px; margin-top: 10px;"></a>
+                        <?php } else {?>
+                        <img src="<?=getenv('app.NO_IMAGE')?>" alt="<?=$row->enquiry_no?>" class="img-thumbnail" style="width: 250px; height: 250px; margin-top: 10px;">
+                        <?php }?>
+                    </h6>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="fw-bold text-success">Tentative Collection Date</h5>
+                    <h6><?=date_format(date_create($row->tentative_collection_date), "M d, Y")?></h6>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="fw-bold text-success">Latitude</h5>
+                    <h6><?=$row->latitude?></h6>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="fw-bold text-success">Device Brand</h5>
+                    <h6><?=$row->device_brand?></h6>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="fw-bold text-success">Longitude</h5>
+                    <h6><?=$row->longitude?></h6>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="fw-bold text-success">Device Model</h5>
+                    <h6><?=$row->device_model?></h6>
+                </div>
             </div>
-            <div class="col-md-6">
-                <h5 class="fw-bold text-success">Plant Name</h5>
-                <h6>
-                    <?php
-                    $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
-                    echo (($getPlant)?$getPlant->plant_name:'');
-                    ?>
-                </h6>
-            </div>
-            <div class="col-md-6">
-                <h5 class="fw-bold text-success">GPS Tracking Image</h5>
-                <h6>
-                    <?php if($row->gps_tracking_image != ''){?>
-                    <a href="<?=getenv('app.uploadsURL').'enquiry/'.$row->gps_tracking_image?>" target="_blank"><img src="<?=getenv('app.uploadsURL').'enquiry/'.$row->gps_tracking_image?>" alt="<?=$row->enquiry_no?>" class="img-thumbnail" style="width: 250px; height: 250px; margin-top: 10px;"></a>
-                    <?php } else {?>
-                    <img src="<?=getenv('app.NO_IMAGE')?>" alt="<?=$row->enquiry_no?>" class="img-thumbnail" style="width: 250px; height: 250px; margin-top: 10px;">
-                    <?php }?>
-                </h6>
-            </div>
-            <div class="col-md-6">
-                <h5 class="fw-bold text-success">Tentative Collection Date</h5>
-                <h6><?=date_format(date_create($row->tentative_collection_date), "M d, Y")?></h6>
-            </div>
-            <div class="col-md-6">
-                <h5 class="fw-bold text-success">Latitude</h5>
-                <h6><?=$row->latitude?></h6>
-            </div>
-            <div class="col-md-6">
-                <h5 class="fw-bold text-success">Device Brand</h5>
-                <h6><?=$row->device_brand?></h6>
-            </div>
-            <div class="col-md-6">
-                <h5 class="fw-bold text-success">Longitude</h5>
-                <h6><?=$row->longitude?></h6>
-            </div>
-            <div class="col-md-6">
-                <h5 class="fw-bold text-success">Device Model</h5>
-                <h6><?=$row->device_model?></h6>
-            </div>
-          </div>
         </div>
       </div>
       <div class="material_accordion_section">
@@ -528,6 +527,157 @@
     </div>
   </div>
 </section>
+
+<!-- share to vendor modal -->
+    <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form method="POST">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><strong>Share Details To Vendors : <?=$row->enquiry_no?></strong></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="mode" value="share_vendor">
+                        <input type="hidden" name="enq_id" value="<?=$row->id?>">
+                        <input type="hidden" name="company_id" value="<?=$row->company_id?>">
+                        <input type="hidden" name="plant_id" value="<?=$row->plant_id?>">
+                        <div class="form-group">
+                            <label for="choices-multiple-remove-button">Vendors</label>
+                            <select name="vendors[]" id="choices-multiple-remove-button" multiple>
+                                <?php if($avlVendors){ foreach($avlVendors as $avlvendor){?>
+                                <?php
+                                    $checkVendorShare = $common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['enq_id' => $row->id, 'vendor_id' => $avlvendor->id]);
+                                    if($checkVendorShare <= 0){
+                                    ?>
+                                <option value="<?=$avlvendor->id?>"><?=$avlvendor->company_name?></option>
+                                <?php }?>
+                                <?php } }?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Share</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+<!-- share to vendor modal -->
+<!-- item approve modal-->
+    <?php if($enquiryPendingProducts){ $slNo=1; foreach($enquiryPendingProducts as $enquiryPendingProduct){?>
+    <?php
+        $getItem = $common_model->find_data('ecomm_company_items', 'row', ['enq_product_id' => $enquiryPendingProduct->id]);
+        ?>
+    <div class="modal fade" id="verticalycentered<?=$enquiryPendingProduct->id?>" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <form method="POST" action="<?=base_url('admin/companies/approve-item')?>">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Enquiry Item Approve</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" value="<?=(($getItem)?encoded($getItem->id):'')?>">
+                        <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3">
+                                <select class="form-control" name="item_category[]" required>
+                                    <option value="" selected>Select Category</option>
+                                    <?php if($cats){ foreach($cats as $cat){?>
+                                    <option value="<?=$cat->category_id?>"><?=$cat->category_alias?></option>
+                                    <?php } }?>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex" value="<?=$getItem->item_name_ecoex?>" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name" value="<?=$getItem->alias_name?>" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name" value="<?=$getItem->billing_name?>" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <input type="text" name="hsn[]" class="form-control" placeholder="HSN" value="<?=$getItem->hsn?>" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <select class="form-control" name="gst[]" required>
+                                    <option value="" selected>Select GST</option>
+                                    <option value="0">0 %</option>
+                                    <option value="5">5 %</option>
+                                    <option value="12">12 %</option>
+                                    <option value="18">18 %</option>
+                                    <option value="28">28 %</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <input type="text" name="rate[]" class="form-control" placeholder="Rate" value="<?=$getItem->rate?>" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <select class="form-control" name="unit[]" required>
+                                    <option value="" selected>Select Unit</option>
+                                    <?php if($units){ foreach($units as $unit){?>
+                                    <option value="<?=$unit->id?>" <?=(($unit->id == $enquiryPendingProduct->unit)?'selected':'')?>><?=$unit->name?></option>
+                                    <?php } }?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">APPROVE</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <?php } }?>
+<!-- item approve modal-->
+<!-- reject request modal -->
+    <div class="modal fade" id="rejectRequest" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header" id="rejectRequestTitle">
+                </div>
+                <div class="modal-body" id="rejectRequestBody">
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- reject request modal -->
+<!-- image modal -->
+    <?php if($enquiryProducts){ $slNo=1; foreach($enquiryProducts as $enquiryProduct){?>
+    <?php
+        $enquiryImages      = [];
+        $new_product_images = json_decode($enquiryProduct->new_product_image);
+        if(!empty($new_product_images)){
+            for($i=0;$i<count($new_product_images);$i++){
+                $enquiryImages[]      = getenv('app.uploadsURL').'enquiry/'.$new_product_images[$i];
+            }
+        } 
+        ?>
+    <div class="modal fade" id="enquiryImageModal<?=$enquiryProduct->id?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header" id="enquiryImageTitle">
+                    Enquiry Item Images : <?=$row->enquiry_no?>
+                </div>
+                <div class="modal-body" id="enquiryImageBody">
+                    <div id="" class="owl-carousel owl-theme owl-loaded home-successstories owl-drag">
+                        <?php if(!empty($enquiryImages)){ for($enqImg=0;$enqImg<count($enquiryImages);$enqImg++){?>
+                        <div class="item">
+                            <div class="sucess_boximg">
+                                <img src="<?=$enquiryImages[$enqImg]?>" class="img-fluid" alt="image">
+                            </div>
+                        </div>
+                        <?php } }?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php } }?>
+<!-- image modal -->
 <script src="<?=getenv('app.adminAssetsURL');?>assets/js/progress-bar.js"></script>
 <!-- progress bar -->
 <?php if($row->status != 9){?>
