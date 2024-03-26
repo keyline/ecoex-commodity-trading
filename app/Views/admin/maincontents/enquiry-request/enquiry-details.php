@@ -128,7 +128,7 @@
         color: #000;
     }
     .material_accordion_section .nav-tabs .nav-item .nav-link.active {
-        background: #198754;
+        background: #FF9800;
         color: #fff;
     }
 </style>
@@ -598,37 +598,6 @@
                             </div>
                         </div>
                         <div class="accordion" id="accordionExample">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingOne">
-                                <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne"> Enquiry Request Items </button>
-                                </h2>
-                                <div id="collapseOne" class="accordion-collapse show collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
-                                <div class="accordion-body">
-                                    <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Item</th>
-                                            <th>HSN</th>
-                                            <th>Qty</th>
-                                            <th>Unit Price</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Digital Marketing</td>
-                                            <td>111111</td>
-                                            <td>25.00</td>
-                                            <td>55.00</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingTwo">
                                 <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"> Pickup Scheduled </button>
