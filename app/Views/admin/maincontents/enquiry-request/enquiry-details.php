@@ -635,7 +635,7 @@
                                                 <th>#</th>
                                                 <th>Pickup Date/Time</th>
                                                 <th>Submitted Date/Time</th>
-                                                <th>Action</th>
+                                                <th>Pickup Scheduled Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
