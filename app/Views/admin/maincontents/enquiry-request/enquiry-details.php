@@ -1,130 +1,136 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
 <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
 <style type="text/css">
-.progress-bar-wrapper ul.progress-bar {
-	width: 100%;
-	margin: 0;
-	padding: 0;
-	font-size: 0;
-	list-style: none;
-	background-color: #FFF;
-	display: inline-block !important;
-}
-.progress-bar-wrapper li.section {
-	display: inline-block !important;
-	padding-top: 45px;
-	font-size: 10px;
-	font-weight: bold;
-	line-height: 16px;
-	color: gray;
-	vertical-align: top;
-	position: relative;
-	text-align: center;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	word-wrap: break-word;
-}
-.progress-bar-wrapper li.section:before {
-	content: 'x';
-	position: absolute;
-	top: 3px;
-	left: calc(50% - 15px);
-	z-index: 1;
-	width: 30px;
-	height: 30px;
-	color: white;
-	border: 2px solid white;
-	border-radius: 17px;
-	line-height: 26px;
-	background: gray;
-}
-.progress-bar-wrapper .status-bar {
-	height: 2px;
-	background: gray;
-	position: relative;
-	top: 20px;
-	margin: 0 auto;
-}
-.progress-bar-wrapper .current-status {
-	height: 3px;
-	width: 0;
-	border-radius: 1px;
-	background: #26a541;
-}
- @keyframes changeBackground {
- from {
-background: gray
-}
- to {
-background: #26a541
-}
-}
-.progress-bar-wrapper li.section.visited:before {
-	content: '\2714';
-	animation: changeBackground 3s linear;
-	animation-fill-mode: forwards;
-}
-.progress-bar-wrapper li.section.visited.current:before {
-	box-shadow: 0 0 0 2px #26a541;
-}
-.home-successstories .owl-nav {
-	position: absolute;
-	top: 50%;
-	transform: translate(0, -50%);
-	width: 100%;
-	display: block;
-}
-.home-successstories .owl-nav button {
-	width: 50px;
-	height: 50px;
-	border: 2px solid #fff !important;
-	color: #fff !important;
-	font-size: 22px !important;
-	border-radius: 50px;
-}
-.home-successstories .owl-nav button.owl-next {
-	right: 0;
-	position: absolute;
-}
-.sucess_boximg {
-	height: 500px;
-	object-fit: cover;
-	overflow: hidden;
-}
-.sucess_boximg img {
-	object-fit: cover;
-	height: 100%;
-	width: 100%;
-}
-.material_accordion_section button.accordion-button {
-	color: #fff;
-	font-size: 18px;
-}
-.material_accordion_section .accordion-button::after {
-	font-family: "Font Awesome 5 Free";
-	font-weight: 900;
-	content: "\f078";
-";
-	position: absolute;
-	right: 5px;
-	color: #fff;
-	background-image: none;
-}
-.material_accordion_section .tab-content {
-    padding: 30px;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-top: none;
-}
-.material_accordion_section .nav-tabs .nav-item .nav-link {
-    background: #f2f2f2;
-    margin-right: 8px;
-    color: #000;
-}
-.material_accordion_section .nav-tabs .nav-item .nav-link.active {
-    background: #198754;
-    color: #fff;
-}
+    .choices__list--multiple .choices__item {
+    background-color: #48974e;
+    border: 1px solid #48974e;
+    }
+</style>
+<style type="text/css">
+    .progress-bar-wrapper ul.progress-bar {
+    	width: 100%;
+    	margin: 0;
+    	padding: 0;
+    	font-size: 0;
+    	list-style: none;
+    	background-color: #FFF;
+    	display: inline-block !important;
+    }
+    .progress-bar-wrapper li.section {
+    	display: inline-block !important;
+    	padding-top: 45px;
+    	font-size: 10px;
+    	font-weight: bold;
+    	line-height: 16px;
+    	color: gray;
+    	vertical-align: top;
+    	position: relative;
+    	text-align: center;
+    	overflow: hidden;
+    	text-overflow: ellipsis;
+    	word-wrap: break-word;
+    }
+    .progress-bar-wrapper li.section:before {
+    	content: 'x';
+    	position: absolute;
+    	top: 3px;
+    	left: calc(50% - 15px);
+    	z-index: 1;
+    	width: 30px;
+    	height: 30px;
+    	color: white;
+    	border: 2px solid white;
+    	border-radius: 17px;
+    	line-height: 26px;
+    	background: gray;
+    }
+    .progress-bar-wrapper .status-bar {
+    	height: 2px;
+    	background: gray;
+    	position: relative;
+    	top: 20px;
+    	margin: 0 auto;
+    }
+    .progress-bar-wrapper .current-status {
+    	height: 3px;
+    	width: 0;
+    	border-radius: 1px;
+    	background: #26a541;
+    }
+     @keyframes changeBackground {
+     from {
+    background: gray
+    }
+     to {
+    background: #26a541
+    }
+    }
+    .progress-bar-wrapper li.section.visited:before {
+    	content: '\2714';
+    	animation: changeBackground 3s linear;
+    	animation-fill-mode: forwards;
+    }
+    .progress-bar-wrapper li.section.visited.current:before {
+    	box-shadow: 0 0 0 2px #26a541;
+    }
+    .home-successstories .owl-nav {
+    	position: absolute;
+    	top: 50%;
+    	transform: translate(0, -50%);
+    	width: 100%;
+    	display: block;
+    }
+    .home-successstories .owl-nav button {
+    	width: 50px;
+    	height: 50px;
+    	border: 2px solid #fff !important;
+    	color: #fff !important;
+    	font-size: 22px !important;
+    	border-radius: 50px;
+    }
+    .home-successstories .owl-nav button.owl-next {
+    	right: 0;
+    	position: absolute;
+    }
+    .sucess_boximg {
+    	height: 500px;
+    	object-fit: cover;
+    	overflow: hidden;
+    }
+    .sucess_boximg img {
+    	object-fit: cover;
+    	height: 100%;
+    	width: 100%;
+    }
+    .material_accordion_section button.accordion-button {
+    	color: #fff;
+    	font-size: 18px;
+    }
+    .material_accordion_section .accordion-button::after {
+    	font-family: "Font Awesome 5 Free";
+    	font-weight: 900;
+    	content: "\f078";
+    ";
+    	position: absolute;
+    	right: 5px;
+    	color: #fff;
+    	background-image: none;
+    }
+    .material_accordion_section .tab-content {
+        padding: 30px;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-top: none;
+    }
+    .material_accordion_section .nav-tabs .nav-item .nav-link {
+        background: #f2f2f2;
+        margin-right: 8px;
+        color: #000;
+    }
+    .material_accordion_section .nav-tabs .nav-item .nav-link.active {
+        background: #198754;
+        color: #fff;
+    }
 </style>
 
 <div class="pagetitle">
@@ -157,28 +163,46 @@ background: #26a541
       <?php }?>
     </div>
     <div class="col-lg-12 mb-3">
-      <div class="card">
-        <div class="card-body">
-          <div class="progress-bar-wrapper" style="margin-bottom: 10px;">
-            <div class="status-bar" style="width: 90%;">
-              <div class="current-status" style="width: 33.3333%; transition: width 2100ms linear 0s;"></div>
+        <div class="card">
+            <div class="card-body">
+                <!-- inquiry flow tracking -->
+                <?php
+                    if($row->status == 0){
+                        $enquiryStatus = 'Request Submitted';
+                    } elseif($row->status == 1){
+                        $enquiryStatus = 'Accept Request';
+                    } elseif($row->status == 2){
+                        $enquiryStatus = 'Vendor Allocated';
+                    } elseif($row->status == 3){
+                        $enquiryStatus = 'Vendor Assigned';
+                    } elseif($row->status == 4){
+                        $enquiryStatus = 'Pickup Scheduled';
+                    } elseif($row->status == 5){
+                        $enquiryStatus = 'Vehicle Placed';
+                    } elseif($row->status == 6){
+                        $enquiryStatus = 'Material Weighed';
+                    } elseif($row->status == 7){
+                        $enquiryStatus = 'Invoice from HO';
+                    } elseif($row->status == 8){
+                        $enquiryStatus = 'Invoice to Vendor';
+                    } elseif($row->status == 9){
+                        $enquiryStatus = 'Payment received from Vendor';
+                    } elseif($row->status == 10){
+                        $enquiryStatus = 'Vehicle Dispatched';
+                    } elseif($row->status == 11){
+                        $enquiryStatus = 'Payment to HO';
+                    } elseif($row->status == 12){
+                        $enquiryStatus = 'Order Complete';
+                    } elseif($row->status == 13){
+                        $enquiryStatus = 'Reject Request';
+                    }
+                    ?>
+                <div class="progress-bar-wrapper" style="margin-bottom: 10px;"></div>
+                <!-- inquiry flow tracking -->
             </div>
-            <ul class="progress-bar">
-              <li class="section visited" style="width: 10%;">Vendor Assigned</li>
-              <li class="section visited" style="width: 10%;">Pickup Scheduled</li>
-              <li class="section visited" style="width: 10%;">Vehicle Placed</li>
-              <li class="section visited current" style="width: 10%;">Material Weighed</li>
-              <li class="section" style="width: 10%;">Invoice from HO</li>
-              <li class="section" style="width: 10%;">Invoice to Vendor</li>
-              <li class="section" style="width: 10%;">Payment received from Vendor</li>
-              <li class="section" style="width: 10%;">Vehicle Dispatched</li>
-              <li class="section" style="width: 10%;">Payment To HO</li>
-              <li class="section" style="width: 10%;">Order Complete</li>
-            </ul>
-          </div>
         </div>
-      </div>
     </div>
+
     <div class="col-lg-12 mb-3">
       <div class="card">
         <div class="card-body">
@@ -418,3 +442,75 @@ background: #26a541
     </div>
   </div>
 </section>
+<script src="<?=getenv('app.adminAssetsURL');?>assets/js/progress-bar.js"></script>
+<!-- progress bar -->
+<?php if($row->status != 9){?>
+<script type="text/javascript">
+    //we can set animation delay as following in ms (default 1000)
+    ProgressBar.singleStepAnimation = 700;
+    ProgressBar.init(
+      [   'Request Submitted',
+          'Accept Request',
+          'Vendor Allocated',
+          'Vendor Assigned',
+          'Pickup Scheduled',
+          'Vehicle Placed',
+          'Material Weighed',
+          'Invoice from HO',
+          'Invoice to Vendor',
+          'Payment received from Vendor',
+          'Vehicle Dispatched',
+          'Payment to HO',
+          'Order Complete',
+          'Reject Request'
+      ],
+      '<?=$enquiryStatus?>',
+      'progress-bar-wrapper' // created this optional parameter for container name (otherwise default container created)
+    );
+</script>
+<?php } else {?>
+<script type="text/javascript">
+    //we can set animation delay as following in ms (default 1000)
+    ProgressBar.singleStepAnimation = 700;
+    ProgressBar.init(
+      [   'Request Submitted',
+          'Reject Request'
+      ],
+      '<?=$enquiryStatus?>',
+      'progress-bar-wrapper' // created this optional parameter for container name (otherwise default container created)
+    );
+</script>
+<?php }?>
+<script type="text/javascript">
+    function getRejectModal(enq_id){
+        let baseUrl = '<?=base_url()?>';
+        $.ajax({
+          type: "POST",
+          data: { enq_id: enq_id },
+          url: baseUrl+"/admin/get-reject-modal",
+          dataType: "JSON",
+          success: function(res){
+            if(res.success){
+              $('#rejectRequest').modal('show');
+              $('#rejectRequestTitle').html(res.data.title);
+              $('#rejectRequestBody').html(res.data.body);
+            } else {
+              $('#rejectRequest').modal('hide');
+              $('#rejectRequestTitle').html('');
+              $('#rejectRequestBody').html('');
+            }
+          }
+        });
+    }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){    
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+            maxItemCount:30,
+            searchResultLimit:30,
+            renderChoiceLimit:30
+        });     
+    });
+</script>

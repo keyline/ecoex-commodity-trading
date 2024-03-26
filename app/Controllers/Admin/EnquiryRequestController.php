@@ -1652,6 +1652,9 @@ class EnquiryRequestController extends BaseController {
         $data['enq_id']             = $enq_id;
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
         $data['moduleDetail']       = $this->data;
+        $data['enquiryStatus']      = (($data['row'])?$data['row']->status:1);
+        $data['enquiryProducts']    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id]);
+        $data['enquiryPendingProducts']    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id, 'status' => 0]);
 
         $title                      = 'View Details Of '.$data['row']->enquiry_no;
         $page_name                  = 'enquiry-request/enquiry-details';
