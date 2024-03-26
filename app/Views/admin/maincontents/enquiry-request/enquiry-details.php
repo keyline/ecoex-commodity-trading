@@ -1220,7 +1220,7 @@
 <!-- image modal -->
 <script src="<?=getenv('app.adminAssetsURL');?>assets/js/progress-bar.js"></script>
 <!-- progress bar -->
-<?php if($row->status != 9){?>
+<?php if($row->status != 13){?>
 <script type="text/javascript">
     //we can set animation delay as following in ms (default 1000)
     ProgressBar.singleStepAnimation = 700;
