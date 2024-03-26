@@ -597,19 +597,27 @@
                 <?php if($subenquires){ $i=1; foreach($subenquires as $subenquiry){?>
                     <?php
                     $getCompany     = $common_model->find_data('ecoex_companies', 'row', ['id' => $subenquiry->company_id], 'company_name');
+                    $getPlant       = $common_model->find_data('ecomm_users', 'row', ['id' => $subenquiry->plant_id], 'plant_name');
                     $getVendor      = $common_model->find_data('ecomm_users', 'row', ['id' => $subenquiry->vendor_id], 'company_name');
                     $sub_enquiry_no = $subenquiry->sub_enquiry_no;
                     ?>
                     <div class="tab-pane fade <?=(($i == 1)?'show active':'')?>" id="subenquiry-<?=$subenquiry->id?>" role="tabpanel" aria-labelledby="subenquiry-tab">
                         <div class="row">
-                            <div class="col-md-6">
-                              <h5 class="fw-bold text-success">Enquiry No.</h5>
-                              <h6><?=$subenquiry->sub_enquiry_no?></h6>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 class="fw-bold text-success">Company / Plant</h5>
+                            <div class="col-md-4">
+                                <h5 class="fw-bold text-success">Company</h5>
                                 <h6>
-                                    <?=(($getCompany)?$getCompany->company_name:'')?><br>
+                                    <?=(($getCompany)?$getCompany->company_name:'')?>
+                                </h6>
+                            </div>
+                            <div class="col-md-4">
+                                <h5 class="fw-bold text-success">Plant</h5>
+                                <h6>
+                                    <?=(($getPlant)?$getPlant->plant_name:'')?>
+                                </h6>
+                            </div>
+                            <div class="col-md-4">
+                                <h5 class="fw-bold text-success">Vendor</h5>
+                                <h6>
                                     <?=(($getVendor)?$getVendor->company_name:'')?>
                                 </h6>
                             </div>
