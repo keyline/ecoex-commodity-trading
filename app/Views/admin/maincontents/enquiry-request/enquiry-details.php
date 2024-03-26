@@ -213,77 +213,7 @@
                     <a href="<?=base_url('admin/' . $controller_route . '/accept-request/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Accept <?=$title?>" onclick="return confirm('Do You Want To Accept This <?=$title?>');"><i class="fa fa-check"></i> Click To Accept</a>
                     <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Reject <?=$title?>" onclick="getRejectModal(<?=$row->$primary_key?>);"><i class="fa fa-times"></i> Click To Reject</a>
                 <?php } else {?>
-                    <?php if($row->status == 1){?>
-                        <h6 class="badge bg-success"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
-                        <p><?=(($row->accepted_date != '')?date_format(date_create($row->accepted_date), "M d, Y h:i A"):'')?></p>
-                        <!-- share to vendors panel -->
-                            <p>
-                                <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#shareModal"><i class="fa fa-share-alt"></i> Quotation Invitation To Vendors</button>
-                                <a data-bs-toggle="collapse" href="#sharedVendor" role="button" aria-expanded="false" aria-controls="sharedVendor" class="btn btn-primary btn-sm"><i class="fa fa-list-alt"></i> Click To View The Quotation Request Invited Vendors</a>
-                                <?php $sharedLink = base_url('enquiry-request/'.encoded($row->id));?>
-                            </p>
-                            <div class="collapse" id="sharedVendor">
-                                <div class="card">
-                                    <div class="card-header bg-success text-light">
-                                        <h5>Enquiry Quotation Request Invited Vendors</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <table class="table table-striped table-hovered">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Name</th>
-                                                    <th>Email</th>
-                                                    <th>Phone</th>
-                                                    <th>GST No.</th>
-                                                    <th>Location</th>
-                                                    <th>Request Status</th>
-                                                    <th>Action Date/Time</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                    $invitedVendors = $common_model->find_data('ecomm_enquiry_vendor_shares', 'array', ['enq_id' => $row->id]);
-                                                    if($invitedVendors){ $sl=1; foreach($invitedVendors as $invitedVendor){
-                                                        $getVendor = $common_model->find_data('ecomm_users', 'row', ['id' => $invitedVendor->vendor_id, 'type' => 'VENDOR'], 'gst_no,company_name,full_address,email,phone');
-                                                    ?>
-                                                <tr>
-                                                    <td><?=$sl++?></td>
-                                                    <td><?=(($getVendor)?$getVendor->company_name:'')?></td>
-                                                    <td><?=(($getVendor)?$getVendor->email:'')?></td>
-                                                    <td><?=(($getVendor)?$getVendor->phone:'')?></td>
-                                                    <td><?=(($getVendor)?$getVendor->gst_no:'')?></td>
-                                                    <td><?=(($getVendor)?$getVendor->full_address:'')?></td>
-                                                    <td>
-                                                        <?php if($invitedVendor->status == 0){?>
-                                                        <span class="badge bg-warning"><i class="fa-solid fa-clock"></i> PENDING</span>
-                                                        <?php } elseif($invitedVendor->status == 1){?>
-                                                        <span class="badge bg-success"><i class="fa-solid fa-check-circle"></i> ACCEPTED</span>
-                                                        <?php } elseif($invitedVendor->status == 3){?>
-                                                        <span class="badge bg-danger"><i class="fa-solid fa-times-circle"></i> REJECTED</span>
-                                                        <?php }?>
-                                                    </td>
-                                                    <td>
-                                                        <?php if($invitedVendor->status == 0){?>
-                                                        <span class="text-warning fw-bold">Yet Not Action</span>
-                                                        <?php } elseif($invitedVendor->status == 1){?>
-                                                        <span class="text-success fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y")?></span>
-                                                        <?php } elseif($invitedVendor->status == 3){?>
-                                                        <span class="text-danger fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y")?></span>
-                                                        <?php }?>
-                                                    </td>
-                                                </tr>
-                                                <?php } }?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        <!-- share to vendors panel -->
-                    <?php } elseif($row->status == 9){?>
-                        <h6 class="badge bg-danger"><i class="fa fa-times-circle"></i> REJECTED</h6>
-                        <p><?=(($row->accepted_date != '')?date_format(date_create($row->accepted_date), "M d, Y h:i A"):'')?></p>
-                    <?php }?>
+                    
                 <?php }?>
             </div>
 
