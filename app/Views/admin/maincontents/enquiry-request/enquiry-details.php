@@ -623,7 +623,7 @@
                             </div>
                         </div>
                         <div class="accordion" id="accordionExample">
-                            
+
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="heading2">
                                 <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2"> Pickup Scheduled </button>
@@ -680,7 +680,7 @@
 
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingThree">
-                                <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree"> Vehicle Placed &nbsp;&nbsp; <span style="float: left; font-size: 14px">(1 vehicles placed)</span> </button>
+                                <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree"> Vehicle Placed &nbsp;&nbsp; <span style="float: left; font-size: 14px">(<?=(($subenquiry)?$subenquiry->no_of_vehicle:0)?> vehicles placed)</span> </button>
                                 </h2>
                                 <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample" style="">
                                     <div class="accordion-body">
@@ -813,19 +813,59 @@
                                 </div>
                             <?php }?>
 
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingFive">
-                                <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive"> Invoice From HO </button>
-                                </h2>
-                                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <div class="row mt-3">
-                                    <div class="col-md-6 text-center"> <a href="http://localhost/ecoex-commodity-trading/admin/enquiry-requests/request-invoice-to-HO-from-ecoex/NTk=/RUNPTU0tMDAwMDA1OS1C" class="btn btn-warning btn-sm" onclick="return confirm('Do you want to sent request for invoice to HO ?');"><i class="fa-solid fa-code-pull-request"></i> Request For Invoice To HO</a> </div>
-                                    <div class="col-md-6 text-center"> </div>
+                            <?php if($row->status >= 6){?>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingFive">
+                                    <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive"> Invoice From HO </button>
+                                    </h2>
+                                    <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <?php
+                                            $userType           = $session->user_type;
+                                            ?>
+                                            <?php if($getEnquiry){?>
+                                                <div class="row mt-3">
+                                                    <div class="col-md-6 text-center">
+                                                        <?php if($getEnquiry->is_invoice_from_ho == 0){?>
+                                                            <a href="<?=base_url('admin/enquiry-requests/request-invoice-to-HO-from-ecoex/'.encoded($getEnquiry->id).'/'.encoded($sub_enquiry_no))?>" class="btn btn-warning btn-sm" onclick="return confirm('Do you want to sent request for invoice to HO ?');"><i class="fa-solid fa-code-pull-request"></i> Request For Invoice To HO</a>
+                                                        <?php } elseif($getEnquiry->is_invoice_from_ho >= 1){?>
+                                                            <h4 class="text-success fw-bold">Invoice Request Sent To HO Succesfully</h4>
+                                                            <h5><?=date_format(date_create($getEnquiry->invoice_from_ho_request_date), "M d, Y h:i A")?></h5>
+                                                        <?php }?>
+                                                    </div>
+                                                    <div class="col-md-6 text-center">
+                                                        <?php if($getEnquiry->is_invoice_from_ho == 1){?>
+                                                            <h4 class="text-warning fw-bold">HO Still Not Uploaded Invoice</h4>
+                                                            <?php if($userType == 'COMPANY'){?>
+                                                                <form method="POST" action="<?=base_url('admin/enquiry-requests/upload-invoice-by-HO')?>" enctype="multipart/form-data">
+                                                                    <input type="hidden" name="enq_id" value="<?=encoded($getEnquiry->id)?>">
+                                                                    <input type="hidden" name="sub_enquiry_no" value="<?=encoded($sub_enquiry_no)?>">
+                                                                    <div class="form-group">
+                                                                        <label for="ho_payable_amount">Invoice Amount</label>
+                                                                        <input type="text" class="form-control" name="ho_payable_amount" id="ho_payable_amount" required>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="invoice_file_from_ho">Vendor Invoice File</label>
+                                                                        <input type="file" class="form-control" name="invoice_file_from_ho" id="invoice_file_from_ho" accept="application/pdf" required>
+                                                                        <small class="text-primary">Only PDF file allowed</small>
+                                                                    </div>
+                                                                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-file-invoice"></i> Upload Invoice</button>
+                                                                </form>
+                                                            <?php }?>
+                                                        <?php } elseif($getEnquiry->is_invoice_from_ho == 2){?>
+                                                            <h4 class="text-success fw-bold">Invoice Uploaded By HO Succesfully</h4>
+                                                            <a download href="<?=getenv('app.uploadsURL').'enquiry/'.$getEnquiry->invoice_file_from_ho?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');"><i class="fas fa-download"></i> Download Invoice From HO</a>
+                                                            <h5><i class="fa fa-inr"></i> <?=$getEnquiry->ho_payable_amount?></h5>
+                                                            <h5><?=date_format(date_create($getEnquiry->invoice_from_ho_date), "M d, Y h:i A")?></h5>
+                                                        <?php }?>
+                                                    </div>
+                                                </div>
+                                            <?php }?>
+                                        </div>
                                     </div>
                                 </div>
-                                </div>
-                            </div>
+                            <?php }?>
+
                         </div>
                     </div>
                 <?php $i++; } }?>

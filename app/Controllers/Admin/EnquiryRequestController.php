@@ -998,7 +998,7 @@ class EnquiryRequestController extends BaseController {
                     }
                 /* push notification sent */
                 $this->session->setFlashdata('success_message', 'Material Weight Approved Successfully !!!');
-                return redirect()->to(base_url('admin/enquiry-requests/view-process-request-detail/'.encoded($sub_enquiry_no)));
+                return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
             } else {
                 $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');
                 return redirect()->to($redirectLink);
@@ -1671,6 +1671,8 @@ class EnquiryRequestController extends BaseController {
         $data['avlVendors']         = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1], 'id,company_name', '', '', $order_by);
 
         $data['sharedVendors']      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'array', ['enq_id' => $enq_id]);
+
+        $data['getEnquiry']         = $this->common_model->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
 
         if($this->request->getMethod() == 'post') {
             if($this->request->getPost('mode') == 'share_vendor'){
