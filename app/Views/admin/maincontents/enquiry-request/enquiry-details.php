@@ -596,8 +596,9 @@
             <div class="tab-content" id="myTabContent">
                 <?php if($subenquires){ $i=1; foreach($subenquires as $subenquiry){?>
                     <?php
-                    $getCompany = $common_model->find_data('ecoex_companies', 'row', ['id' => $subenquiry->company_id], 'company_name');
-                    $getVendor  = $common_model->find_data('ecomm_users', 'row', ['id' => $subenquiry->vendor_id], 'company_name');
+                    $getCompany     = $common_model->find_data('ecoex_companies', 'row', ['id' => $subenquiry->company_id], 'company_name');
+                    $getVendor      = $common_model->find_data('ecomm_users', 'row', ['id' => $subenquiry->vendor_id], 'company_name');
+                    $sub_enquiry_no = $subenquiry->sub_enquiry_no;
                     ?>
                     <div class="tab-pane fade <?=(($i == 1)?'show active':'')?>" id="subenquiry-<?=$subenquiry->id?>" role="tabpanel" aria-labelledby="subenquiry-tab">
                         <div class="row">
