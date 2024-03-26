@@ -737,40 +737,74 @@
                                 <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour"> Material Weighted </button>
                                 </h2>
                                 <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <form method="POST" action="http://localhost/ecoex-commodity-trading/admin/enquiry-requests/modify-approve-material-weight">
-                                    <input type="hidden" name="sub_enquiry_no" value="ECOMM-0000059-B">
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Item Name</th>
-                                            <th>Weighted Qty</th>
-                                            <th>Vendor Submitted Material Weight</th>
-                                            <th>Plant Submitted Material Weight</th>
-                                            <th>Weight Slips</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Digital Marketing</td>
-                                            <td><span class="weight-label">75.00</span>
-                                            <input type="text" name="weighted_qty[]" class="form-control weight-value" value="75.00" style="display: none;"></td>
-                                            <td>Mar 09, 2024 12:18 PM</td>
-                                            <td>Mar 09, 2024 12:32 PM</td>
-                                            <td><div class="row">
-                                                <div class="col-md-6"> <a href="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec063e972d1.jpg" download=""><img src="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec063e972d1.jpg" class="img-thumbnail" style="height:100px;width: 100px;"></a> </div>
-                                                <div class="col-md-6"> <a href="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec098b430ee.jpg" download=""><img src="http://localhost/ecoex-commodity-trading/public/uploads/enquiry/65ec098b430ee.jpg" class="img-thumbnail" style="height:100px;width: 100px;"></a> </div>
-                                            </div></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="6" style="text-align:center;"><h6 class="badge bg-success">Material Weight Approved</h6></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    </form>
-                                </div>
+                                    <div class="accordion-body">
+                                        <form method="POST" action="<?=base_url('admin/enquiry-requests/modify-approve-material-weight')?>">
+                                            <input type="hidden" name="sub_enquiry_no" value="<?=$sub_enquiry_no?>">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Item Name</th>
+                                                    <th>Weighted Qty</th>
+                                                    <th>Vendor Submitted Material Weight</th>
+                                                    <th>Plant Submitted Material Weight</th>
+                                                    <th>Weight Slips</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                    $materialWeights    = $common_model->find_data('ecomm_sub_enquires', 'array', ['sub_enquiry_no' => $sub_enquiry_no]);
+                                                    ?>
+                                                    <?php if($materialWeights){ $sl=1; foreach($materialWeights as $materialWeight){?>
+                                                        <?php
+                                                        $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $subenquiry->item_id], 'item_name_ecoex,hsn');
+                                                        ?>
+                                                        <tr>
+                                                            <td><?=$sl++?></td>
+                                                            <td><?=(($getItem)?$getItem->item_name_ecoex:'')?></td>
+                                                            <td>
+                                                                <span class="weight-label"><?=$materialWeight->weighted_qty?></span>
+                                                                <input type="text" name="weighted_qty[]" class="form-control weight-value" value="<?=$materialWeight->weighted_qty?>" style="display: none;">
+                                                                <?=$materialWeight->weighted_unit?>
+                                                            </td>
+                                                            <td><?=(($materialWeight->material_weight_vendor_date != '')?date_format(date_create($materialWeight->material_weight_vendor_date), "M d, Y h:i A"):'')?></td>
+                                                            <td><?=(($materialWeight->material_weight_plant_date != '')?date_format(date_create($materialWeight->material_weight_plant_date), "M d, Y h:i A"):'')?></td>
+                                                            <td>
+                                                                <div class="row">
+                                                                    <?php
+                                                                    $material_weighing_slips = json_decode($materialWeight->material_weighing_slips);
+                                                                    ?>
+                                                                    <?php if($material_weighing_slips){ for($v=0;$v<count($material_weighing_slips);$v++){?>
+                                                                        <div class="col-md-6">
+                                                                            <a href="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" download><img src="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" class="img-thumbnail" style="height:100px;width: 100px;"></a>
+                                                                        </div>
+                                                                    <?php } }?>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    <?php } }?>
+                                                    <?php if($row->is_plant_ecoex_confirm <= 0){?>
+                                                        <tr>
+                                                            <td colspan="3" style="text-align:center;">
+                                                                <a href="<?=base_url('admin/enquiry-requests/approve-material-weight/'.encoded($sub_enquiry_no))?>" class="btn btn-success" onclick="return confirm('Do you want to approve this request ?');"><i class="fa fa-check-circle"></i> APPROVE</a>
+                                                            </td>
+                                                            <td colspan="3" style="text-align:center;">
+                                                                <a href="javascript:void(0);" class="btn btn-primary" id="modify-btn" onclick="openMaterialWeightUpdate();"><i class="fa fa-edit"></i> MODIFY</a>
+                                                                <button type="submit" class="btn btn-primary" id="update-btn" style="display:none;"><i class="fa fa-edit"></i> UPDATE</button>
+                                                                <a href="javascript:void(0);" class="btn btn-danger" id="cancel-btn" onclick="closeMaterialWeightUpdate();" style="display:none;"><i class="fa fa-times"></i> CANCEL</a>
+                                                            </td>
+                                                        </tr>
+                                                    <?php } else {?>
+                                                        <tr>
+                                                            <td colspan="6" style="text-align:center;">
+                                                                <h6 class="badge bg-success">Material Weight Approved</h6>
+                                                            </td>
+                                                        </tr>
+                                                    <?php }?>
+                                                </tbody>
+                                            </table>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                             <div class="accordion-item">
@@ -1017,4 +1051,31 @@
             renderChoiceLimit:30
         });     
     });
+</script>
+<script type="text/javascript">
+    function openMaterialWeightUpdate(){
+        $('.weight-label').hide();
+        $('.weight-value').show();
+        $('#modify-btn').hide();
+        $('#update-btn').show();
+        $('#cancel-btn').show();
+    }
+    function closeMaterialWeightUpdate(){
+        $('.weight-label').show();
+        $('.weight-value').hide();
+        $('#modify-btn').show();
+        $('#update-btn').hide();
+        $('#cancel-btn').hide();
+    }
+    function getPaymentMode(paymentMode){
+        if(paymentMode == 'CASH'){
+            $('.online-payment').hide();
+            $('#ecoex_txn_no').prop('required', false);
+            $('#ecoex_txn_screenshot').prop('required', false);
+        } else {
+            $('.online-payment').show();
+            $('#ecoex_txn_no').prop('required', true);
+            $('#ecoex_txn_screenshot').prop('required', true);
+        }
+    }
 </script>
