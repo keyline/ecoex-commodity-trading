@@ -783,7 +783,7 @@
                                                             </td>
                                                         </tr>
                                                     <?php } }?>
-                                                    <?php if($row->is_plant_ecoex_confirm <= 0){?>
+                                                    <?php if($subenquiry->is_plant_ecoex_confirm <= 0){?>
                                                         <tr>
                                                             <td colspan="3" style="text-align:center;">
                                                                 <a href="<?=base_url('admin/enquiry-requests/approve-material-weight/'.encoded($sub_enquiry_no))?>" class="btn btn-success" onclick="return confirm('Do you want to approve this request ?');"><i class="fa fa-check-circle"></i> APPROVE</a>
