@@ -1270,8 +1270,7 @@
           'Payment received from Vendor',
           'Vehicle Dispatched',
           'Payment to HO',
-          'Order Complete',
-          'Reject Request'
+          'Order Complete'
       ],
       '<?=$enquiryStatus?>',
       'progress-bar-wrapper' // created this optional parameter for container name (otherwise default container created)
