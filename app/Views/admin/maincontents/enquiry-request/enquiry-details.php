@@ -1060,6 +1060,37 @@
                                 </div>
                             <?php }?>
 
+                            <?php if($row->status >= 11){?>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingEleven">
+                                        <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">Order Complete By Ecoex</button>
+                                    </h2>
+                                    <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEleven" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <?php if($row){?>
+                                                <div class="row mt-3">
+                                                    <div class="col-md-6 text-center">
+                                                        <?php if($row->order_complete_date != ''){?>
+                                                            <h4 class="text-success fw-bold">Order Completed By Ecoex</h4>
+                                                        <?php } else {?>
+                                                            <h4 class="text-warning fw-bold">Order Yet Not Completed By Ecoex</h4>
+                                                            <?php if($userType == 'MA'){?>
+                                                                <a href="<?=base_url('admin/' . $controller_route . '/order-complete/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Complete <?=$title?>" onclick="return confirm('Do You Want To Complete This <?=$title?>');"><i class="fa-solid fa-flag-checkered"></i> Click To Complete</a>
+                                                            <?php }?>
+                                                        <?php }?>
+                                                    </div>
+                                                    <div class="col-md-6 text-center">
+                                                        <?php if($row->order_complete_date != ''){?>
+                                                            <h6><?=date_format(date_create($row->order_complete_date), "M d, Y h:i A")?></h6>
+                                                        <?php }?>
+                                                    </div>
+                                                </div>
+                                            <?php }?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php }?>   
+
                         </div>
                     </div>
                 <?php $i++; } }?>
@@ -1225,7 +1256,7 @@
 <?php if($row->status != 13){?>
 <script type="text/javascript">
     //we can set animation delay as following in ms (default 1000)
-    ProgressBar.singleStepAnimation = 700;
+    ProgressBar.singleStepAnimation = 300;
     ProgressBar.init(
       [   'Request Submitted',
           'Accept Request',
@@ -1249,7 +1280,7 @@
 <?php } else {?>
 <script type="text/javascript">
     //we can set animation delay as following in ms (default 1000)
-    ProgressBar.singleStepAnimation = 700;
+    ProgressBar.singleStepAnimation = 300;
     ProgressBar.init(
       [   'Request Submitted',
           'Reject Request'
