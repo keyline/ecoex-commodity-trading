@@ -216,7 +216,7 @@
                             <a href="<?=base_url('admin/' . $controller_route . '/accept-request/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Accept <?=$title?>" onclick="return confirm('Do You Want To Accept This <?=$title?>');"><i class="fa fa-check"></i> Click To Accept</a>
                             <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Reject <?=$title?>" onclick="getRejectModal(<?=$row->$primary_key?>);"><i class="fa fa-times"></i> Click To Reject</a>
                         <?php } else {?>
-                            <?php if($row->status == 1){?>
+                            <?php if($row->status >= 1 && $row->status < 13){?>
                                 <h6 class="badge bg-success"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
                                 <p><?=(($row->accepted_date != '')?date_format(date_create($row->accepted_date), "M d, Y h:i A"):'')?></p>
                                 <!-- share to vendors panel -->
