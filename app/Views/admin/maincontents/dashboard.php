@@ -232,7 +232,7 @@ $userType           = $session->user_type;
                                         $getPlant                   = $common_model->find_data('ecomm_users', 'row', ['id' => $recent_enquiry->plant_id], 'plant_name');
                                     ?>
                                         <tr>
-                                            <th scope="row"><a href="<?=base_url('admin/enquiry-requests/view-detail/'.encoded($recent_enquiry->id))?>">#<?=$recent_enquiry->enquiry_no?></a></th>
+                                            <th scope="row"><a href="<?=base_url('admin/enquiry-requests/enquiry-details/'.encoded($recent_enquiry->id))?>">#<?=$recent_enquiry->enquiry_no?></a></th>
                                             <td><?=(($getCompany)?$getCompany->company_name:'')?></td>
                                             <td><?=(($getPlant)?$getPlant->plant_name:'')?></td>
                                             <td>
