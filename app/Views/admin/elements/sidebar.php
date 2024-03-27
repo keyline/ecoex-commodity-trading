@@ -24,14 +24,14 @@ if($userType == 'MA'){
     $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
     $step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2]);
 
-    $step3_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 3.3], '', '', $groupBy);
-    $step4_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 4.4], '', '', $groupBy);
-    $step5_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 5.5], '', '', $groupBy);
-    $step6_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 6.6], '', '', $groupBy);
-    $step7_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 7.7], '', '', $groupBy);
-    $step8_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 8.8], '', '', $groupBy);
-    $step9_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 9.9], '', '', $groupBy);
-    $step10_count       = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 10.10], '', '', $groupBy);
+    $step3_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 3], '', '', $groupBy);
+    $step4_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 4], '', '', $groupBy);
+    $step5_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 5], '', '', $groupBy);
+    $step6_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 6], '', '', $groupBy);
+    $step7_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 7], '', '', $groupBy);
+    $step8_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 8], '', '', $groupBy);
+    $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 9], '', '', $groupBy);
+    $step10_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 10], '', '', $groupBy);
     $step11_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 11]);
     $step12_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 12]);
 
@@ -41,14 +41,14 @@ if($userType == 'MA'){
     $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
     $step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2]);
 
-    $step3_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 3.3], '', '', $groupBy);
-    $step4_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 4.4], '', '', $groupBy);
-    $step5_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 5.5], '', '', $groupBy);
-    $step6_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 6.6], '', '', $groupBy);
-    $step7_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 7.7], '', '', $groupBy);
-    $step8_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 8.8], '', '', $groupBy);
-    $step9_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 9.9], '', '', $groupBy);
-    $step10_count       = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 10.10], '', '', $groupBy);
+    $step3_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 3], '', '', $groupBy);
+    $step4_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 4], '', '', $groupBy);
+    $step5_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 5], '', '', $groupBy);
+    $step6_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 6], '', '', $groupBy);
+    $step7_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 7], '', '', $groupBy);
+    $step8_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 8], '', '', $groupBy);
+    $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 9], '', '', $groupBy);
+    $step10_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 10], '', '', $groupBy);
     $step11_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 11]);
     $step12_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 12]);
 
@@ -58,14 +58,14 @@ if($userType == 'MA'){
     $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1, 'company_id' => $company_id]);
     $step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2, 'company_id' => $company_id]);
 
-    $step3_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 3.3, 'company_id' => $company_id], '', '', $groupBy);
-    $step4_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 4.4, 'company_id' => $company_id], '', '', $groupBy);
-    $step5_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 5.5, 'company_id' => $company_id], '', '', $groupBy);
-    $step6_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 6.6, 'company_id' => $company_id], '', '', $groupBy);
-    $step7_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 7.7, 'company_id' => $company_id], '', '', $groupBy);
-    $step8_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 8.8, 'company_id' => $company_id], '', '', $groupBy);
-    $step9_count        = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 9.9, 'company_id' => $company_id], '', '', $groupBy);
-    $step10_count       = $common_model->find_data('ecomm_sub_enquires', 'count', ['status' => 10.10, 'company_id' => $company_id], '', '', $groupBy);
+    $step3_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 3, 'company_id' => $company_id], '', '', $groupBy);
+    $step4_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 4, 'company_id' => $company_id], '', '', $groupBy);
+    $step5_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 5, 'company_id' => $company_id], '', '', $groupBy);
+    $step6_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 6, 'company_id' => $company_id], '', '', $groupBy);
+    $step7_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 7, 'company_id' => $company_id], '', '', $groupBy);
+    $step8_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 8, 'company_id' => $company_id], '', '', $groupBy);
+    $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 9, 'company_id' => $company_id], '', '', $groupBy);
+    $step10_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 10, 'company_id' => $company_id], '', '', $groupBy);
     $step11_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 11, 'company_id' => $company_id]);
     $step12_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 12, 'company_id' => $company_id]);
 
