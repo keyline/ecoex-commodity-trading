@@ -1632,10 +1632,10 @@ class EnquiryRequestController extends BaseController {
             /* email sent */
 
             $this->session->setFlashdata('success_message', $this->data['title'].' Completed Successfully & Transfer To Order Complete List !!!');
-            return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(12));
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/enquiry-details/'.encoded(12));
         } else {
             $this->session->setFlashdata('error_message', $this->data['title'].' Not Found !!!');
-            return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded(11));
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/enquiry-details/'.encoded(11));
         }
     }
 
