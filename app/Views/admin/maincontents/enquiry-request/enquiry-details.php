@@ -1063,9 +1063,9 @@
                             <?php if($row->status >= 11){?>
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="headingEleven">
-                                        <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">Order Complete By Ecoex</button>
+                                        <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">Order Complete By Ecoex</button>
                                     </h2>
-                                    <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEleven" data-bs-parent="#accordionExample">
+                                    <div id="collapseEleven" class="accordion-collapse collapse" aria-labelledby="headingEleven" data-bs-parent="#accordionExample">
                                         <div class="accordion-body">
                                             <?php if($row){?>
                                                 <div class="row mt-3">
