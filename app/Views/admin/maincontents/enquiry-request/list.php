@@ -110,7 +110,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <?php }?>
                                     <td>
                                         <?php if($common_model->checkModuleFunctionAccess(23,109)){?>
-                                            <a href="<?=base_url('admin/' . $controller_route . '/view-detail/'.encoded($row->$primary_key))?>" class="btn btn-outline-info btn-sm" title="Edit <?=$title?>"><i class="fa fa-eye"></i> View Details</a>
+                                            <a href="<?=base_url('admin/' . $controller_route . '/enquiry-details/'.encoded($row->$primary_key))?>" class="btn btn-outline-info btn-sm" title="Edit <?=$title?>"><i class="fa fa-eye"></i> View Details</a>
                                             <br><br>
                                         <?php }?>
                                         <?php if($common_model->checkModuleFunctionAccess(23,107)){?>
