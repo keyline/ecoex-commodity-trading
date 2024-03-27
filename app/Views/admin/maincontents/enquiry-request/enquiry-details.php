@@ -529,7 +529,7 @@
                                                             <?php if($getQuotePrice->quote_price > 0){?>
                                                                 <span><i class="fa fa-inr"></i> <?=$getQuotePrice->quote_price?> / <?=$getQuotePrice->unit_name?></span>
                                                             <?php } else {?>
-                                                                <span>NA</span>
+                                                                <span class="text-danger">NA</span>
                                                             <?php }?>
                                                         <?php } else {?>
                                                             <small class="text-danger">Not Quote</small>
