@@ -290,10 +290,10 @@ class EnquiryRequestController extends BaseController {
             /* send mail */
 
             $this->session->setFlashdata('success_message', 'Vendor Quotation Edit '.$msg.' Successfully !!!');
-            return redirect()->to('/admin/'.$this->data['controller_route'].'/view-detail/'.encoded($enq_id));
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/enquiry-details/'.encoded($enq_id));
         } else {
             $this->session->setFlashdata('success_message', 'Enquiry Vendor Not Found !!!');
-            return redirect()->to('/admin/'.$this->data['controller_route'].'/view-detail/'.encoded($enq_id));
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/enquiry-details/'.encoded($enq_id));
         }
     }
     public function accept_request($id)
@@ -624,7 +624,7 @@ class EnquiryRequestController extends BaseController {
         }
 
         $this->session->setFlashdata('success_message', 'Vendor '.(($getVendor)?$getVendor->company_name:"").' Successfully Assigned With '.(($getProduct)?$getProduct->item_name_ecoex:"").' Against '.$enquiry_no.' !!!');
-        return redirect()->to(base_url('admin/enquiry-requests/view-detail/'.encoded($enq_id)));
+        return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
     }
 
     /* process enquiry requests */
