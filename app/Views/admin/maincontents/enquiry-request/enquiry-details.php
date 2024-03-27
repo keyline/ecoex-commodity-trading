@@ -283,7 +283,7 @@
                                         </div>
                                     </div>
                                 <!-- share to vendors panel -->
-                            <?php } elseif($row->status == 9){?>
+                            <?php } elseif($row->status == 13){?>
                                 <h6 class="badge bg-danger"><i class="fa fa-times-circle"></i> REJECTED</h6>
                                 <p><?=(($row->accepted_date != '')?date_format(date_create($row->accepted_date), "M d, Y h:i A"):'')?></p>
                             <?php }?>
