@@ -263,42 +263,42 @@ if($userType == 'MA'){
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 3.3))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(3.3))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 3))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(3))?>">
                         <i class="fa fa-arrow-right"></i><span>Vendor Assigned (<?=$step3_count?>)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 4.4))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(4.4))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 4))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(4))?>">
                         <i class="fa fa-arrow-right"></i><span>Pickup Scheduled (<?=$step4_count?>)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 5.5))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(5.5))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 5))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(5))?>">
                         <i class="fa fa-arrow-right"></i><span>Vehicle Placed (<?=$step5_count?>)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 6.6))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(6.6))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 6))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(6))?>">
                         <i class="fa fa-arrow-right"></i><span>Material Weighed (<?=$step6_count?>)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 7.7))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(7.7))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 7))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(7))?>">
                         <i class="fa fa-arrow-right"></i><span>Invoice From HO (<?=$step7_count?>)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 8.8))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(8.8))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 8))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(8))?>">
                         <i class="fa fa-arrow-right"></i><span>Invoice to Vendor (<?=$step8_count?>)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 9.9))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(9.9))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 9))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(9))?>">
                         <i class="fa fa-arrow-right"></i><span>Payment received from Vendor (<?=$step9_count?>)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 10.10))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/process-request-list/'.encoded(10.10))?>">
+                    <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 10))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(10))?>">
                         <i class="fa fa-arrow-right"></i><span>Vehicle Dispatched (<?=$step10_count?>)</span>
                     </a>
                 </li>
