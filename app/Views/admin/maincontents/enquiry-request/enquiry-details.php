@@ -978,31 +978,31 @@
                             <?php }?>
 
                             <?php if($row->status >= 10){?>
-                                <?php //if($userType == 'MA'){?>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingEight">
-                                        <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">Vehicle Despatch By Vendor</button>
-                                    </h2>
-                                    <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#accordionExample">
-                                        <div class="accordion-body">
-                                            <?php if($subenquiry){?>
-                                                <div class="row mt-3">
-                                                    <div class="col-md-6 text-center">
-                                                        <?php if($subenquiry->vehicle_dispatched_date != ''){?>
-                                                            <h4 class="text-success fw-bold">Vehicle Despatched By Vendor</h4>
-                                                        <?php }?>
+                                <?php if($userType == 'MA'){?>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingEight">
+                                            <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">Vehicle Despatch By Vendor</button>
+                                        </h2>
+                                        <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#accordionExample">
+                                            <div class="accordion-body">
+                                                <?php if($subenquiry){?>
+                                                    <div class="row mt-3">
+                                                        <div class="col-md-6 text-center">
+                                                            <?php if($subenquiry->vehicle_dispatched_date != ''){?>
+                                                                <h4 class="text-success fw-bold">Vehicle Despatched By Vendor</h4>
+                                                            <?php }?>
+                                                        </div>
+                                                        <div class="col-md-6 text-center">
+                                                            <?php if($subenquiry->vehicle_dispatched_date != ''){?>
+                                                                <h6><?=date_format(date_create($subenquiry->vehicle_dispatched_date), "M d, Y h:i A")?></h6>
+                                                            <?php }?>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-md-6 text-center">
-                                                        <?php if($subenquiry->vehicle_dispatched_date != ''){?>
-                                                            <h6><?=date_format(date_create($subenquiry->vehicle_dispatched_date), "M d, Y h:i A")?></h6>
-                                                        <?php }?>
-                                                    </div>
-                                                </div>
-                                            <?php }?>
+                                                <?php }?>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <?php //}?>
+                                <?php }?>
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="headingNine">
                                         <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">Payment To HO </button>
