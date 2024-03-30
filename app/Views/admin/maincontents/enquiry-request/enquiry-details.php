@@ -136,6 +136,7 @@
     $title              = $moduleDetail['title'];
     $primary_key        = $moduleDetail['primary_key'];
     $controller_route   = $moduleDetail['controller_route'];
+    $userType           = $session->user_type;
 ?>
 <div class="pagetitle">
   <h1>
@@ -463,126 +464,128 @@
                         </div>
                     </div>
                 </div>
-                <?php if($row->status >= 2){?>                                    
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo"> Quotations </button>
-                        </h2>
-                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                    <div class="table-responsive">
-                                    <table class="table table-striped table-bordered">
-                                        <tr>
-                                            <th rowspan="2" class="text-center" style="vertical-align: middle;width: 10%;background: #a8e7ae;">Items</th>
-                                            <?php
-                                            if($sharedVendors) { foreach($sharedVendors as $sharedVendor){
-                                                $getVendor = $common_model->find_data('ecomm_users', 'row', ['id' => $sharedVendor->vendor_id], 'id,company_name');
-                                            ?>
-                                                <th colspan="2" class="text-center w-25">
-                                                    <span><?=(($getVendor)?$getVendor->company_name:'')?></span>
-                                                    <?php if($sharedVendor->is_editable){?>
-                                                        <a href="<?=base_url('admin/enquiry-requests/quotation-access/'.encoded($enq_id).'/'.encoded($sharedVendor->vendor_id))?>" title="Access Close" onclick="return confirm('Do you want to access close of quotation submit for this vendor ?');"><i class="fas fa-unlock text-success"></i></a>
-                                                    <?php } else {?>
-                                                        <a href="<?=base_url('admin/enquiry-requests/quotation-access/'.encoded($enq_id).'/'.encoded($sharedVendor->vendor_id))?>" title="Access Open" onclick="return confirm('Do you want to access open quotation submit for this vendor ?');"><i class="fas fa-lock text-danger"></i></a>
-                                                    <?php }?>
-                                                    <?php
-                                                    $submittedDates         = [];
-                                                    $checkQuotationSubmits  = $common_model->find_data('ecomm_enquiry_vendor_quotation_logs', 'array', ['enq_id' => $enq_id, 'vendor_id' => $sharedVendor->vendor_id, 'item_id' => $enquiryProducts[0]->product_id], 'created_at');
-                                                    if($checkQuotationSubmits){
-                                                        foreach($checkQuotationSubmits as $checkQuotationSubmit){
-                                                            $submittedDates[]         = date_format(date_create($checkQuotationSubmit->created_at), "M d, Y h:i A");
-                                                        }
-                                                    }
-                                                    ?>
-                                                    <?php if(count($submittedDates) > 0){?>
-                                                        <p>
-                                                            <a href="<?=base_url('admin/enquiry-requests/view-quotation-logs/'.encoded($enq_id).'/'.encoded($sharedVendor->vendor_id))?>" target="_blank" class="badge bg-success"><small>Submitted : <?=count($submittedDates)?> time(s)</small></a>
-                                                        </p>
-                                                    <?php }?>
-                                                </th>
-                                            <?php } }?>
-                                        </tr>
-                                        <tr>
-                                            <?php
-                                            if($sharedVendors) { foreach($sharedVendors as $sharedVendor){
-                                                $getVendor = $common_model->find_data('ecomm_users', 'row', ['id' => $sharedVendor->vendor_id], 'id,company_name');
-                                            ?>
-                                                <th colspan="2" style="text-align: center;background-color: darkgrey;">Unit Price</th>
-                                                <!-- <th style="text-align: center;background-color: darkgrey;">Qty</th> -->
-                                            <?php } }?>
-                                        </tr>
-                                        <?php
-                                        if($enquiryProducts){ foreach($enquiryProducts as $enquiryProduct){
-                                            $companyItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $enquiryProduct->product_id], 'id,item_name_ecoex');
-                                        ?>
+                <?php if($row->status >= 2){?>
+                    <?php if($userType == 'MA'){?>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo"> Quotations </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                        <div class="table-responsive">
+                                        <table class="table table-striped table-bordered">
                                             <tr>
-                                                <th rowspan="3" class="text-center" style="vertical-align: middle;"><?=(($companyItem)?$companyItem->item_name_ecoex:'')?></th>
+                                                <th rowspan="2" class="text-center" style="vertical-align: middle;width: 10%;background: #a8e7ae;">Items</th>
+                                                <?php
+                                                if($sharedVendors) { foreach($sharedVendors as $sharedVendor){
+                                                    $getVendor = $common_model->find_data('ecomm_users', 'row', ['id' => $sharedVendor->vendor_id], 'id,company_name');
+                                                ?>
+                                                    <th colspan="2" class="text-center w-25">
+                                                        <span><?=(($getVendor)?$getVendor->company_name:'')?></span>
+                                                        <?php if($sharedVendor->is_editable){?>
+                                                            <a href="<?=base_url('admin/enquiry-requests/quotation-access/'.encoded($enq_id).'/'.encoded($sharedVendor->vendor_id))?>" title="Access Close" onclick="return confirm('Do you want to access close of quotation submit for this vendor ?');"><i class="fas fa-unlock text-success"></i></a>
+                                                        <?php } else {?>
+                                                            <a href="<?=base_url('admin/enquiry-requests/quotation-access/'.encoded($enq_id).'/'.encoded($sharedVendor->vendor_id))?>" title="Access Open" onclick="return confirm('Do you want to access open quotation submit for this vendor ?');"><i class="fas fa-lock text-danger"></i></a>
+                                                        <?php }?>
+                                                        <?php
+                                                        $submittedDates         = [];
+                                                        $checkQuotationSubmits  = $common_model->find_data('ecomm_enquiry_vendor_quotation_logs', 'array', ['enq_id' => $enq_id, 'vendor_id' => $sharedVendor->vendor_id, 'item_id' => $enquiryProducts[0]->product_id], 'created_at');
+                                                        if($checkQuotationSubmits){
+                                                            foreach($checkQuotationSubmits as $checkQuotationSubmit){
+                                                                $submittedDates[]         = date_format(date_create($checkQuotationSubmit->created_at), "M d, Y h:i A");
+                                                            }
+                                                        }
+                                                        ?>
+                                                        <?php if(count($submittedDates) > 0){?>
+                                                            <p>
+                                                                <a href="<?=base_url('admin/enquiry-requests/view-quotation-logs/'.encoded($enq_id).'/'.encoded($sharedVendor->vendor_id))?>" target="_blank" class="badge bg-success"><small>Submitted : <?=count($submittedDates)?> time(s)</small></a>
+                                                            </p>
+                                                        <?php }?>
+                                                    </th>
+                                                <?php } }?>
                                             </tr>
                                             <tr>
                                                 <?php
                                                 if($sharedVendors) { foreach($sharedVendors as $sharedVendor){
-                                                    $getVendor      = $common_model->find_data('ecomm_users', 'row', ['id' => $sharedVendor->vendor_id], 'id,company_name');
-                                                    $getQuotePrice  = $common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => $enq_id, 'vendor_id' => $sharedVendor->vendor_id, 'item_id' => $enquiryProduct->product_id, 'status' => 1], 'quote_price,qty,unit_name');
+                                                    $getVendor = $common_model->find_data('ecomm_users', 'row', ['id' => $sharedVendor->vendor_id], 'id,company_name');
                                                 ?>
-                                                    <td style="text-align:center;" colspan="2">
-                                                        <?php if($getQuotePrice){?>
-                                                            <?php if($getQuotePrice->quote_price > 0){?>
-                                                                <span><i class="fa fa-inr"></i> <?=$getQuotePrice->quote_price?> / <?=$getQuotePrice->unit_name?></span>
+                                                    <th colspan="2" style="text-align: center;background-color: darkgrey;">Unit Price</th>
+                                                    <!-- <th style="text-align: center;background-color: darkgrey;">Qty</th> -->
+                                                <?php } }?>
+                                            </tr>
+                                            <?php
+                                            if($enquiryProducts){ foreach($enquiryProducts as $enquiryProduct){
+                                                $companyItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $enquiryProduct->product_id], 'id,item_name_ecoex');
+                                            ?>
+                                                <tr>
+                                                    <th rowspan="3" class="text-center" style="vertical-align: middle;"><?=(($companyItem)?$companyItem->item_name_ecoex:'')?></th>
+                                                </tr>
+                                                <tr>
+                                                    <?php
+                                                    if($sharedVendors) { foreach($sharedVendors as $sharedVendor){
+                                                        $getVendor      = $common_model->find_data('ecomm_users', 'row', ['id' => $sharedVendor->vendor_id], 'id,company_name');
+                                                        $getQuotePrice  = $common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => $enq_id, 'vendor_id' => $sharedVendor->vendor_id, 'item_id' => $enquiryProduct->product_id, 'status' => 1], 'quote_price,qty,unit_name');
+                                                    ?>
+                                                        <td style="text-align:center;" colspan="2">
+                                                            <?php if($getQuotePrice){?>
+                                                                <?php if($getQuotePrice->quote_price > 0){?>
+                                                                    <span><i class="fa fa-inr"></i> <?=$getQuotePrice->quote_price?> / <?=$getQuotePrice->unit_name?></span>
+                                                                <?php } else {?>
+                                                                    <span class="text-danger">NA</span>
+                                                                <?php }?>
+                                                            <?php } else {?>
+                                                                <small class="text-danger">Not Quote</small>
+                                                            <?php }?>
+                                                        </td>
+                                                        <!-- <td style="text-align:center;">
+                                                            <?php if($getQuotePrice){?>
+                                                                <span><?=$getQuotePrice->qty?> <?=$getQuotePrice->unit_name?></span>
                                                             <?php } else {?>
                                                                 <span class="text-danger">NA</span>
                                                             <?php }?>
-                                                        <?php } else {?>
-                                                            <small class="text-danger">Not Quote</small>
-                                                        <?php }?>
-                                                    </td>
-                                                    <!-- <td style="text-align:center;">
-                                                        <?php if($getQuotePrice){?>
-                                                            <span><?=$getQuotePrice->qty?> <?=$getQuotePrice->unit_name?></span>
-                                                        <?php } else {?>
-                                                            <span class="text-danger">NA</span>
-                                                        <?php }?>
-                                                    </td> -->
-                                                <?php } }?>
-                                            </tr>
-                                            <tr>
-                                                <?php
-                                                if($sharedVendors) { foreach($sharedVendors as $sharedVendor){
-                                                    $getVendor      = $common_model->find_data('ecomm_users', 'row', ['id' => $sharedVendor->vendor_id], 'id,company_name');
-                                                    $vendor_name    = (($getVendor)?$getVendor->company_name:'');
-                                                    $item_name      = (($companyItem)?$companyItem->item_name_ecoex:'');
-                                                ?>
-                                                    <td colspan="2" class="text-center">
-                                                        <?php
-                                                        $checkVendorAllocation = $common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enq_id, 'item_id' => $enquiryProduct->product_id]);
-                                                        if(empty($checkVendorAllocation)){
-                                                        ?>
+                                                        </td> -->
+                                                    <?php } }?>
+                                                </tr>
+                                                <tr>
+                                                    <?php
+                                                    if($sharedVendors) { foreach($sharedVendors as $sharedVendor){
+                                                        $getVendor      = $common_model->find_data('ecomm_users', 'row', ['id' => $sharedVendor->vendor_id], 'id,company_name');
+                                                        $vendor_name    = (($getVendor)?$getVendor->company_name:'');
+                                                        $item_name      = (($companyItem)?$companyItem->item_name_ecoex:'');
+                                                    ?>
+                                                        <td colspan="2" class="text-center">
                                                             <?php
-                                                            $getQuotePriceCount  = $common_model->find_data('ecomm_enquiry_vendor_quotations', 'count', ['enq_id' => $enq_id, 'vendor_id' => $sharedVendor->vendor_id, 'item_id' => $enquiryProduct->product_id, 'status' => 1, 'quote_price>' => 0]);
-                                                            // pr($getQuotePrice,0);
-                                                            if($getQuotePriceCount > 0){
+                                                            $checkVendorAllocation = $common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enq_id, 'item_id' => $enquiryProduct->product_id]);
+                                                            if(empty($checkVendorAllocation)){
                                                             ?>
-                                                                <a href="<?=base_url('admin/enquiry-requests/vendor-allocation/'.encoded($enq_id).'/'.encoded($sharedVendor->vendor_id).'/'.encoded($enquiryProduct->product_id))?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to allocate <?=$vendor_name?> for <?=$item_name?> ?');"><i class="fa fa-trophy"></i> Mark As Assigned</a>
-                                                            <?php }?>
-                                                        <?php } else {?>
-                                                            <?php if($checkVendorAllocation->vendor_id == $sharedVendor->vendor_id){?>
-                                                                <!-- win -->
-                                                                <h6 class="text-success fw-bold"><small>ASSIGNED</small></h6>
-                                                                <small class="fw-bold"><?=$checkVendorAllocation->sub_enquiry_no?></small>
+                                                                <?php
+                                                                $getQuotePriceCount  = $common_model->find_data('ecomm_enquiry_vendor_quotations', 'count', ['enq_id' => $enq_id, 'vendor_id' => $sharedVendor->vendor_id, 'item_id' => $enquiryProduct->product_id, 'status' => 1, 'quote_price>' => 0]);
+                                                                // pr($getQuotePrice,0);
+                                                                if($getQuotePriceCount > 0){
+                                                                ?>
+                                                                    <a href="<?=base_url('admin/enquiry-requests/vendor-allocation/'.encoded($enq_id).'/'.encoded($sharedVendor->vendor_id).'/'.encoded($enquiryProduct->product_id))?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to allocate <?=$vendor_name?> for <?=$item_name?> ?');"><i class="fa fa-trophy"></i> Mark As Assigned</a>
+                                                                <?php }?>
                                                             <?php } else {?>
-                                                                <!-- lost -->
-                                                                <h6 class="text-danger fw-bold"><small>NOT ASSIGNED</small></h6>
+                                                                <?php if($checkVendorAllocation->vendor_id == $sharedVendor->vendor_id){?>
+                                                                    <!-- win -->
+                                                                    <h6 class="text-success fw-bold"><small>ASSIGNED</small></h6>
+                                                                    <small class="fw-bold"><?=$checkVendorAllocation->sub_enquiry_no?></small>
+                                                                <?php } else {?>
+                                                                    <!-- lost -->
+                                                                    <h6 class="text-danger fw-bold"><small>NOT ASSIGNED</small></h6>
+                                                                <?php }?>
                                                             <?php }?>
-                                                        <?php }?>
-                                                    </td>
-                                                <?php } }?>
-                                            </tr>
-                                        <?php } }?>
+                                                        </td>
+                                                    <?php } }?>
+                                                </tr>
+                                            <?php } }?>
 
-                                    </table>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    <?php }?>
                 <?php }?>
             </div>
         </div>
@@ -822,9 +825,7 @@
                                     </h2>
                                     <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
                                         <div class="accordion-body">
-                                            <?php
-                                            $userType           = $session->user_type;
-                                            ?>
+                                            
                                             <?php if($getEnquiry){?>
                                                 <div class="row mt-3">
                                                     <div class="col-md-6 text-center">
