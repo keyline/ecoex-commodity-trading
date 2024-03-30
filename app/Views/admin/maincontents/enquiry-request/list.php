@@ -2,6 +2,7 @@
 $title              = $moduleDetail['title'];
 $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
+$userType           = $session->user_type;
 ?>
 
 <div class="pagetitle">
@@ -87,9 +88,6 @@ $controller_route   = $moduleDetail['controller_route'];
                                     </td>
                                     <?php if($row->status >= 11 && $row->status <= 12){?>
                                         <td>
-                                            <?php
-                                            $userType           = $session->user_type;
-                                            ?>
                                             <h6><?=(($row->ecoex_submitted_date != '')?date_format(date_create($row->ecoex_submitted_date), "M d, Y h:i A"):'')?></h6>
                                             <?php if($row->is_ho_approve_ecoex_payment){?>
                                                 <h6 class="badge bg-success">APPROVED</h6>
@@ -114,15 +112,21 @@ $controller_route   = $moduleDetail['controller_route'];
                                             <br><br>
                                         <?php }?>
                                         <?php if($common_model->checkModuleFunctionAccess(23,107)){?>
-                                            <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key).'/'.$current_status)?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i> Delete</a>
-                                            <br><br>
+                                            <?php if($userType == 'MA'){?>
+                                                <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key).'/'.$current_status)?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i> Delete</a>
+                                                <br><br>
+                                            <?php }?>
                                         <?php }?>
                                         <?php if($row->status == 0){?>
                                             <?php if($common_model->checkModuleFunctionAccess(23,110)){?>
-                                                <a href="<?=base_url('admin/' . $controller_route . '/accept-request/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Accept <?=$title?>" onclick="return confirm('Do You Want To Accept This <?=$title?>');"><i class="fa fa-check"></i> Click To Accept</a>
+                                                <?php if($userType == 'MA'){?>
+                                                    <a href="<?=base_url('admin/' . $controller_route . '/accept-request/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Accept <?=$title?>" onclick="return confirm('Do You Want To Accept This <?=$title?>');"><i class="fa fa-check"></i> Click To Accept</a>
+                                                <?php }?>
                                             <?php }?>
                                             <?php if($common_model->checkModuleFunctionAccess(23,111)){?>
-                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Reject <?=$title?>" onclick="getRejectModal(<?=$row->$primary_key?>);"><i class="fa fa-times"></i> Click To Reject</a>
+                                                <?php if($userType == 'MA'){?>
+                                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Reject <?=$title?>" onclick="getRejectModal(<?=$row->$primary_key?>);"><i class="fa fa-times"></i> Click To Reject</a>
+                                                <?php }?>
                                             <?php }?>
                                         <?php } else {?>
                                             <?php if($row->status >= 1 && $row->status <= 12){?>
