@@ -608,214 +608,230 @@
                     ?>
                     <div class="tab-pane fade <?=(($i == 1)?'show active':'')?>" id="subenquiry-<?=$subenquiry->id?>" role="tabpanel" aria-labelledby="subenquiry-tab">
                         <div class="row">
-                            <div class="col-md-4">
-                                <h5 class="fw-bold text-success">Company</h5>
-                                <h6>
-                                    <?=(($getCompany)?$getCompany->company_name:'')?>
-                                </h6>
-                            </div>
-                            <div class="col-md-4">
-                                <h5 class="fw-bold text-success">Plant</h5>
-                                <h6>
-                                    <?=(($getPlant)?$getPlant->plant_name:'')?>
-                                </h6>
-                            </div>
-                            <div class="col-md-4">
-                                <h5 class="fw-bold text-success">Vendor</h5>
-                                <h6>
-                                    <?=(($getVendor)?$getVendor->company_name:'')?>
-                                </h6>
-                            </div>
+                            <?php if($userType == 'MA'){?>
+                                <div class="col-md-4">
+                                    <h5 class="fw-bold text-success">Company</h5>
+                                    <h6>
+                                        <?=(($getCompany)?$getCompany->company_name:'')?>
+                                    </h6>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5 class="fw-bold text-success">Plant</h5>
+                                    <h6>
+                                        <?=(($getPlant)?$getPlant->plant_name:'')?>
+                                    </h6>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5 class="fw-bold text-success">Vendor</h5>
+                                    <h6>
+                                        <?=(($getVendor)?$getVendor->company_name:'')?>
+                                    </h6>
+                                </div>
+                            <?php } else {?>
+                                <div class="col-md-6">
+                                    <h5 class="fw-bold text-success">Company</h5>
+                                    <h6>
+                                        <?=(($getCompany)?$getCompany->company_name:'')?>
+                                    </h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5 class="fw-bold text-success">Plant</h5>
+                                    <h6>
+                                        <?=(($getPlant)?$getPlant->plant_name:'')?>
+                                    </h6>
+                                </div>
+                            <?php }?>
                         </div>
                         <div class="accordion" id="accordionExample">
-
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="heading2">
-                                <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2"> Pickup Scheduled </button>
-                                </h2>
-                                <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2" data-bs-parent="#accordionExample" style="">
-                                    <div class="accordion-body">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Pickup Date/Time</th>
-                                                    <th>Submitted Date/Time</th>
-                                                    <th>Pickup Scheduled Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
-                                                $getPickupDates             = $common_model->find_data('ecomm_enquiry_vendor_pickup_schedule_logs', 'array', ['sub_enquiry_no' => $sub_enquiry_no], 'pickup_date_time,created_at', '', '', $orderBy);
-                                                ?>
-                                                <?php if($getPickupDates){ $sl=1; foreach($getPickupDates as $getPickupDate){?>
-                                                    <tr>
-                                                        <td><?=$sl?></td>
-                                                        <td><?=date_format(date_create($getPickupDate->pickup_date_time), "M d, Y h:i A")?></td>
-                                                        <td><?=date_format(date_create($getPickupDate->created_at), "M d, Y h:i A")?></td>
-                                                        <td>
-                                                            <?php if($sl == 1){?>
-                                                                <?php
-                                                                if($subenquiry->is_pickup_final){
-                                                                    echo date_format(date_create($subenquiry->pickup_scheduled_date), "M d, Y h:i A");
-                                                                } else {
-                                                                ?>
-                                                                    <h6 class="text-warning">Still Not Finalised</h6>
-                                                                    <p>
-                                                                        <?php if($subenquiry->pickup_schedule_edit_access){?>
-                                                                            <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($subenquiry->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-success btn-sm" title="Pickup Scheduled Edit Access Off" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-check"></i> Pickup Schedule Edit Access On</a>
-                                                                        <?php } else {?>
-                                                                            <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($subenquiry->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-danger btn-sm" title="Pickup Scheduled Edit Access On" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-times"></i> Pickup Schedule Edit Access Off</a>
-                                                                        <?php }?>
-                                                                        <?php if($subenquiry->pickup_scheduled_date != ''){?>
-                                                                            <a href="<?=base_url('admin/' . $controller_route . '/final-pickup-scheduled/'.encoded($subenquiry->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-primary btn-sm" title="Final Pickup Scheduled <?=$title?>" onclick="return confirm('Do you want to finalize this date of pickup material from vendor end ?');"><i class="fa fa-eye"></i> Make Final</a>
-                                                                        <?php }?>
-                                                                    </p>
-                                                                <?php } ?>
-                                                            <?php } ?>
-                                                        </td>
-                                                    </tr>
-                                                <?php $sl++; } }?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingThree">
-                                <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree"> Vehicle Placed &nbsp;&nbsp; <span style="float: left; font-size: 14px">(<?=(($subenquiry)?$subenquiry->no_of_vehicle:0)?> vehicles placed)</span> </button>
-                                </h2>
-                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample" style="">
-                                    <div class="accordion-body">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                <th>#</th>
-                                                <th>Vehicle Number</th>
-                                                <th>Vehicle Images</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                $no_of_vehicle                      = (($subenquiry)?$subenquiry->no_of_vehicle:0);
-                                                $vehicle_registration_nos           = (($subenquiry)?json_decode($subenquiry->vehicle_registration_nos):[]);
-                                                $vehicle_images                     = (($subenquiry)?json_decode($subenquiry->vehicle_images):[]);
-                                                $vehicles                           = [];
-                                                if($no_of_vehicle > 0){
-                                                    for($v=0;$v<$no_of_vehicle;$v++){
-                                                        $vehImags = [];
-                                                        if(count($vehicle_images[$v])){
-                                                            for($p=0;$p<count($vehicle_images[$v]);$p++){
-                                                                $vehImags[] = base_url('public/uploads/enquiry/'.$vehicle_images[$v][$p]);
-                                                            }
-                                                        }
-                                                        $vehicles[] = [
-                                                            'vehicle_no'    => $vehicle_registration_nos[$v],
-                                                            'vehicle_img'   => $vehImags,
-                                                        ];
-                                                    }
-                                                }
-                                                $vehicles           = $vehicles;
-                                                ?>
-                                                <?php if($vehicles){ $sl=1; foreach($vehicles as $vehicle){?>
-                                                    <tr>
-                                                        <td><?=$sl++?></td>
-                                                        <td><?=$vehicle['vehicle_no']?></td>
-                                                        <td>
-                                                            <div class="row">
-                                                                <?php if($vehicle['vehicle_img']){ for($v=0;$v<count($vehicle['vehicle_img']);$v++){?>
-                                                                    <div class="col-md-3">
-                                                                        <a href="<?=$vehicle['vehicle_img'][$v]?>" download><img src="<?=$vehicle['vehicle_img'][$v]?>" class="img-thumbnail" style="height:100px;width: 100%;"></a>
-                                                                    </div>
-                                                                <?php } }?>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                <?php } }?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <?php if($row->status >= 5){?>
+                            <?php if($userType == 'MA'){?>
                                 <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingFour">
-                                    <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour"> Material Weighted </button>
+                                    <h2 class="accordion-header" id="heading2">
+                                    <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2"> Pickup Scheduled </button>
                                     </h2>
-                                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                    <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2" data-bs-parent="#accordionExample" style="">
                                         <div class="accordion-body">
-                                            <form method="POST" action="<?=base_url('admin/enquiry-requests/modify-approve-material-weight')?>">
-                                                <input type="hidden" name="sub_enquiry_no" value="<?=$sub_enquiry_no?>">
-                                                <table class="table">
-                                                    <thead>
+                                            <table class="table">
+                                                <thead>
                                                     <tr>
                                                         <th>#</th>
-                                                        <th>Item Name</th>
-                                                        <th>Weighted Qty</th>
-                                                        <th>Vendor Submitted Material Weight</th>
-                                                        <th>Plant Submitted Material Weight</th>
-                                                        <th>Weight Slips</th>
+                                                        <th>Pickup Date/Time</th>
+                                                        <th>Submitted Date/Time</th>
+                                                        <th>Pickup Scheduled Action</th>
                                                     </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php
-                                                        $materialWeights    = $common_model->find_data('ecomm_sub_enquires', 'array', ['sub_enquiry_no' => $sub_enquiry_no]);
-                                                        ?>
-                                                        <?php if($materialWeights){ $sl=1; foreach($materialWeights as $materialWeight){?>
-                                                            <?php
-                                                            $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $subenquiry->item_id], 'item_name_ecoex,hsn');
-                                                            ?>
-                                                            <tr>
-                                                                <td><?=$sl++?></td>
-                                                                <td><?=(($getItem)?$getItem->item_name_ecoex:'')?></td>
-                                                                <td>
-                                                                    <span class="weight-label"><?=$materialWeight->weighted_qty?></span>
-                                                                    <input type="text" name="weighted_qty[]" class="form-control weight-value" value="<?=$materialWeight->weighted_qty?>" style="display: none;">
-                                                                    <?=$materialWeight->weighted_unit?>
-                                                                </td>
-                                                                <td><?=(($materialWeight->material_weight_vendor_date != '')?date_format(date_create($materialWeight->material_weight_vendor_date), "M d, Y h:i A"):'')?></td>
-                                                                <td><?=(($materialWeight->material_weight_plant_date != '')?date_format(date_create($materialWeight->material_weight_plant_date), "M d, Y h:i A"):'')?></td>
-                                                                <td>
-                                                                    <div class="row">
-                                                                        <?php
-                                                                        $material_weighing_slips = json_decode($materialWeight->material_weighing_slips);
-                                                                        ?>
-                                                                        <?php if($material_weighing_slips){ for($v=0;$v<count($material_weighing_slips);$v++){?>
-                                                                            <div class="col-md-6">
-                                                                                <a href="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" download><img src="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" class="img-thumbnail" style="height:100px;width: 100px;"></a>
-                                                                            </div>
-                                                                        <?php } }?>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        <?php } }?>
-                                                        <?php if($subenquiry->is_plant_ecoex_confirm <= 0){?>
-                                                            <tr>
-                                                                <td colspan="3" style="text-align:center;">
-                                                                    <a href="<?=base_url('admin/enquiry-requests/approve-material-weight/'.encoded($sub_enquiry_no))?>" class="btn btn-success" onclick="return confirm('Do you want to approve this request ?');"><i class="fa fa-check-circle"></i> APPROVE</a>
-                                                                </td>
-                                                                <td colspan="3" style="text-align:center;">
-                                                                    <a href="javascript:void(0);" class="btn btn-primary" id="modify-btn" onclick="openMaterialWeightUpdate();"><i class="fa fa-edit"></i> MODIFY</a>
-                                                                    <button type="submit" class="btn btn-primary" id="update-btn" style="display:none;"><i class="fa fa-edit"></i> UPDATE</button>
-                                                                    <a href="javascript:void(0);" class="btn btn-danger" id="cancel-btn" onclick="closeMaterialWeightUpdate();" style="display:none;"><i class="fa fa-times"></i> CANCEL</a>
-                                                                </td>
-                                                            </tr>
-                                                        <?php } else {?>
-                                                            <tr>
-                                                                <td colspan="6" style="text-align:center;">
-                                                                    <h6 class="badge bg-success">Material Weight Approved</h6>
-                                                                </td>
-                                                            </tr>
-                                                        <?php }?>
-                                                    </tbody>
-                                                </table>
-                                            </form>
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                    $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
+                                                    $getPickupDates             = $common_model->find_data('ecomm_enquiry_vendor_pickup_schedule_logs', 'array', ['sub_enquiry_no' => $sub_enquiry_no], 'pickup_date_time,created_at', '', '', $orderBy);
+                                                    ?>
+                                                    <?php if($getPickupDates){ $sl=1; foreach($getPickupDates as $getPickupDate){?>
+                                                        <tr>
+                                                            <td><?=$sl?></td>
+                                                            <td><?=date_format(date_create($getPickupDate->pickup_date_time), "M d, Y h:i A")?></td>
+                                                            <td><?=date_format(date_create($getPickupDate->created_at), "M d, Y h:i A")?></td>
+                                                            <td>
+                                                                <?php if($sl == 1){?>
+                                                                    <?php
+                                                                    if($subenquiry->is_pickup_final){
+                                                                        echo date_format(date_create($subenquiry->pickup_scheduled_date), "M d, Y h:i A");
+                                                                    } else {
+                                                                    ?>
+                                                                        <h6 class="text-warning">Still Not Finalised</h6>
+                                                                        <p>
+                                                                            <?php if($subenquiry->pickup_schedule_edit_access){?>
+                                                                                <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($subenquiry->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-success btn-sm" title="Pickup Scheduled Edit Access Off" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-check"></i> Pickup Schedule Edit Access On</a>
+                                                                            <?php } else {?>
+                                                                                <a href="<?=base_url('admin/' . $controller_route . '/change-status-pickup-edit-access/'.encoded($subenquiry->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-danger btn-sm" title="Pickup Scheduled Edit Access On" onclick="return confirm('Do you want to off pickup Scheduled edit access ?');"><i class="fa fa-times"></i> Pickup Schedule Edit Access Off</a>
+                                                                            <?php }?>
+                                                                            <?php if($subenquiry->pickup_scheduled_date != ''){?>
+                                                                                <a href="<?=base_url('admin/' . $controller_route . '/final-pickup-scheduled/'.encoded($subenquiry->sub_enquiry_no).'/'.encoded(current_url()))?>" class="btn btn-primary btn-sm" title="Final Pickup Scheduled <?=$title?>" onclick="return confirm('Do you want to finalize this date of pickup material from vendor end ?');"><i class="fa fa-eye"></i> Make Final</a>
+                                                                            <?php }?>
+                                                                        </p>
+                                                                    <?php } ?>
+                                                                <?php } ?>
+                                                            </td>
+                                                        </tr>
+                                                    <?php $sl++; } }?>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingThree">
+                                    <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree"> Vehicle Placed &nbsp;&nbsp; <span style="float: left; font-size: 14px">(<?=(($subenquiry)?$subenquiry->no_of_vehicle:0)?> vehicles placed)</span> </button>
+                                    </h2>
+                                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample" style="">
+                                        <div class="accordion-body">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                    <th>#</th>
+                                                    <th>Vehicle Number</th>
+                                                    <th>Vehicle Images</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                    $no_of_vehicle                      = (($subenquiry)?$subenquiry->no_of_vehicle:0);
+                                                    $vehicle_registration_nos           = (($subenquiry)?json_decode($subenquiry->vehicle_registration_nos):[]);
+                                                    $vehicle_images                     = (($subenquiry)?json_decode($subenquiry->vehicle_images):[]);
+                                                    $vehicles                           = [];
+                                                    if($no_of_vehicle > 0){
+                                                        for($v=0;$v<$no_of_vehicle;$v++){
+                                                            $vehImags = [];
+                                                            if(count($vehicle_images[$v])){
+                                                                for($p=0;$p<count($vehicle_images[$v]);$p++){
+                                                                    $vehImags[] = base_url('public/uploads/enquiry/'.$vehicle_images[$v][$p]);
+                                                                }
+                                                            }
+                                                            $vehicles[] = [
+                                                                'vehicle_no'    => $vehicle_registration_nos[$v],
+                                                                'vehicle_img'   => $vehImags,
+                                                            ];
+                                                        }
+                                                    }
+                                                    $vehicles           = $vehicles;
+                                                    ?>
+                                                    <?php if($vehicles){ $sl=1; foreach($vehicles as $vehicle){?>
+                                                        <tr>
+                                                            <td><?=$sl++?></td>
+                                                            <td><?=$vehicle['vehicle_no']?></td>
+                                                            <td>
+                                                                <div class="row">
+                                                                    <?php if($vehicle['vehicle_img']){ for($v=0;$v<count($vehicle['vehicle_img']);$v++){?>
+                                                                        <div class="col-md-3">
+                                                                            <a href="<?=$vehicle['vehicle_img'][$v]?>" download><img src="<?=$vehicle['vehicle_img'][$v]?>" class="img-thumbnail" style="height:100px;width: 100%;"></a>
+                                                                        </div>
+                                                                    <?php } }?>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    <?php } }?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <?php if($row->status >= 5){?>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingFour">
+                                        <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour"> Material Weighted </button>
+                                        </h2>
+                                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                            <div class="accordion-body">
+                                                <form method="POST" action="<?=base_url('admin/enquiry-requests/modify-approve-material-weight')?>">
+                                                    <input type="hidden" name="sub_enquiry_no" value="<?=$sub_enquiry_no?>">
+                                                    <table class="table">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Item Name</th>
+                                                            <th>Weighted Qty</th>
+                                                            <th>Vendor Submitted Material Weight</th>
+                                                            <th>Plant Submitted Material Weight</th>
+                                                            <th>Weight Slips</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <?php
+                                                            $materialWeights    = $common_model->find_data('ecomm_sub_enquires', 'array', ['sub_enquiry_no' => $sub_enquiry_no]);
+                                                            ?>
+                                                            <?php if($materialWeights){ $sl=1; foreach($materialWeights as $materialWeight){?>
+                                                                <?php
+                                                                $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $subenquiry->item_id], 'item_name_ecoex,hsn');
+                                                                ?>
+                                                                <tr>
+                                                                    <td><?=$sl++?></td>
+                                                                    <td><?=(($getItem)?$getItem->item_name_ecoex:'')?></td>
+                                                                    <td>
+                                                                        <span class="weight-label"><?=$materialWeight->weighted_qty?></span>
+                                                                        <input type="text" name="weighted_qty[]" class="form-control weight-value" value="<?=$materialWeight->weighted_qty?>" style="display: none;">
+                                                                        <?=$materialWeight->weighted_unit?>
+                                                                    </td>
+                                                                    <td><?=(($materialWeight->material_weight_vendor_date != '')?date_format(date_create($materialWeight->material_weight_vendor_date), "M d, Y h:i A"):'')?></td>
+                                                                    <td><?=(($materialWeight->material_weight_plant_date != '')?date_format(date_create($materialWeight->material_weight_plant_date), "M d, Y h:i A"):'')?></td>
+                                                                    <td>
+                                                                        <div class="row">
+                                                                            <?php
+                                                                            $material_weighing_slips = json_decode($materialWeight->material_weighing_slips);
+                                                                            ?>
+                                                                            <?php if($material_weighing_slips){ for($v=0;$v<count($material_weighing_slips);$v++){?>
+                                                                                <div class="col-md-6">
+                                                                                    <a href="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" download><img src="<?=getenv('app.uploadsURL').'enquiry/'.$material_weighing_slips[$v]?>" class="img-thumbnail" style="height:100px;width: 100px;"></a>
+                                                                                </div>
+                                                                            <?php } }?>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            <?php } }?>
+                                                            <?php if($subenquiry->is_plant_ecoex_confirm <= 0){?>
+                                                                <tr>
+                                                                    <td colspan="3" style="text-align:center;">
+                                                                        <a href="<?=base_url('admin/enquiry-requests/approve-material-weight/'.encoded($sub_enquiry_no))?>" class="btn btn-success" onclick="return confirm('Do you want to approve this request ?');"><i class="fa fa-check-circle"></i> APPROVE</a>
+                                                                    </td>
+                                                                    <td colspan="3" style="text-align:center;">
+                                                                        <a href="javascript:void(0);" class="btn btn-primary" id="modify-btn" onclick="openMaterialWeightUpdate();"><i class="fa fa-edit"></i> MODIFY</a>
+                                                                        <button type="submit" class="btn btn-primary" id="update-btn" style="display:none;"><i class="fa fa-edit"></i> UPDATE</button>
+                                                                        <a href="javascript:void(0);" class="btn btn-danger" id="cancel-btn" onclick="closeMaterialWeightUpdate();" style="display:none;"><i class="fa fa-times"></i> CANCEL</a>
+                                                                    </td>
+                                                                </tr>
+                                                            <?php } else {?>
+                                                                <tr>
+                                                                    <td colspan="6" style="text-align:center;">
+                                                                        <h6 class="badge bg-success">Material Weight Approved</h6>
+                                                                    </td>
+                                                                </tr>
+                                                            <?php }?>
+                                                        </tbody>
+                                                    </table>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php }?>
                             <?php }?>
 
                             <?php if($row->status >= 6){?>
