@@ -13,18 +13,20 @@ $userType           = $session->user_type;
 <!-- End Page Title -->
 <section class="section dashboard">
     <div class="row mb-3" style="border:1px solid green; padding: 15px; border-radius: 10px;">
-        <div class="col-lg-6">
-            <label for="filter_keyword">Filter Parameteres</label>
-        </div>
-        <div class="col-lg-6">
-            <select class="form-control" id="filter_keyword" name="filter_keyword">
-                <option value="" selected>All Time</option>
-                <option value="today">Today</option>
-                <option value="yesterday">Yesterday</option>
-                <option value="this_month">This Month</option>
-                <option value="last_month">Last Month</option>
-            </select>
-        </div>
+        <form method="GET" name="PostName" action="<?=url('dashboard-filter')?>">
+            <div class="col-lg-6">
+                <label for="filter_keyword">Filter Parameteres</label>
+            </div>
+            <div class="col-lg-6">
+                <select class="form-control" id="filter_keyword" name="filter_keyword">
+                    <option value="" selected>All Time</option>
+                    <option value="today">Today</option>
+                    <option value="yesterday">Yesterday</option>
+                    <option value="this_month">This Month</option>
+                    <option value="last_month">Last Month</option>
+                </select>
+            </div>
+        </form>
     </div>
     <div class="row">
         <!-- Left side columns -->

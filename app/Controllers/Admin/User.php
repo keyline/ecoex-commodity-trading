@@ -267,6 +267,13 @@ class User extends BaseController {
             }
             echo $this->layout_after_login($title,$page_name,$data);
         }
+        public function dashboardFilter(){
+            if(!$this->session->get('is_admin_login')) {
+                return redirect()->to('/admin');
+            }
+            $postData = $this->request->getGet();
+            pr($postData);
+        }
     /* dashboard */
     /* settings */
         public function settings()

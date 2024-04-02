@@ -22,6 +22,7 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 		// authentication
 		// dashboard
 			$routes->match(['get', 'post'], "dashboard", "User::dashboard");
+			$routes->match(['get', 'post'], "dashboard-filter", "User::dashboardFilter");
 			$routes->match(['get', 'post'], "email-logs", "User::emailLogs");
 			$routes->match(['get', 'post'], "email-logs-details/(:any)", "User::emailLogsDetails/$1");
 			$routes->match(['get', 'post'], "login-logs", "User::loginLogs");
