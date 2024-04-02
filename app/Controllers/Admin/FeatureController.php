@@ -40,7 +40,7 @@ class FeatureController extends BaseController {
         $data['row']                = [];
         if($this->request->getMethod() == 'post') {
             $postData   = array(
-                'feature_name'          => $this->request->getPost('feature_name'),
+                'feature_name'          => strtoupper($this->request->getPost('feature_name')),
             );
             $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);            
             $this->session->setFlashdata('success_message', $this->data['title'].' inserted successfully');
@@ -60,7 +60,7 @@ class FeatureController extends BaseController {
 
         if($this->request->getMethod() == 'post') {
             $postData   = array(
-                'feature_name'          => $this->request->getPost('feature_name'),
+                'feature_name'          => strtoupper($this->request->getPost('feature_name')),
             );
             $record = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
             $this->session->setFlashdata('success_message', $this->data['title'].' updated successfully');

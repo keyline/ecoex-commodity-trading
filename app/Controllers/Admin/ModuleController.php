@@ -43,7 +43,7 @@ class ModuleController extends BaseController {
         if($this->request->getMethod() == 'post') {
             $postData   = array(
                 'parent_id'             => (($this->request->getPost('parent_id') != '')?$this->request->getPost('parent_id'):0),
-                'module_name'           => $this->request->getPost('module_name'),
+                'module_name'           => strtoupper($this->request->getPost('module_name')),
             );
             $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
             /* module functions */
@@ -77,7 +77,7 @@ class ModuleController extends BaseController {
         if($this->request->getMethod() == 'post') {
             $postData   = array(
                 'parent_id'             => (($this->request->getPost('parent_id') != '')?$this->request->getPost('parent_id'):0),
-                'module_name'           => $this->request->getPost('module_name'),
+                'module_name'           => strtoupper($this->request->getPost('module_name')),
             );
             $record = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
             /* module functions */
