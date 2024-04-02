@@ -13,7 +13,7 @@ $userType           = $session->user_type;
 <!-- End Page Title -->
 <section class="section dashboard">
     <div class="row mb-3" style="border:1px solid green; padding: 15px; border-radius: 10px;">
-        <form method="GET" name="PostName" action="<?=url('dashboard-filter')?>">
+        <form method="GET" name="PostName" action="<?=base_url('admin/dashboard-filter')?>">
             <div class="col-lg-6">
                 <label for="filter_keyword">Filter Parameteres</label>
             </div>
