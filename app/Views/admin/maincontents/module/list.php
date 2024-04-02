@@ -61,7 +61,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                         $moduleFunctions = $common_model->find_data('ecoex_module_functions', 'array', ['module_id' => $row->id, 'published' => 1]);
                                         if($moduleFunctions){ foreach($moduleFunctions as $moduleFunction){
                                         ?>
-                                            <div class="col-md-3">
+                                            <div class="col-md-4">
                                                 <h5 class="badge bg-primary"><?=$moduleFunction->function_name?></h5>
                                             </div>
                                         <?php } }?>
