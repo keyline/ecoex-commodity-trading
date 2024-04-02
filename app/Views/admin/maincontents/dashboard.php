@@ -12,7 +12,7 @@ $userType           = $session->user_type;
 </div>
 <!-- End Page Title -->
 <section class="section dashboard">
-    <div class="row">
+    <div class="row mb-3" style="boder:1px solid green; padding: 15px; border-radius: 10px;">
         <div class="col-lg-6">
             <label for="filter_dropdown">Filter Parameteres</label>
         </div>
@@ -25,6 +25,8 @@ $userType           = $session->user_type;
                 <option value="last_month">Last Month</option>
             </select>
         </div>
+    </div>
+    <div class="row">
         <!-- Left side columns -->
         <div class="col-lg-8">
             <div class="row">
