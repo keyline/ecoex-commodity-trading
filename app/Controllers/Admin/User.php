@@ -298,6 +298,9 @@ class User extends BaseController {
                 $fDate = date('Y-m-d', strtotime('-30 days'));
                 $tDate = date('Y-m-d',strtotime("-1 days"));
             }
+            if($postData['filter_keyword'] == ''){
+                return redirect()->to('/admin/dashboard');
+            }
 
             $userType                           = $this->session->user_type;
             $company_id                         = $this->session->company_id;
