@@ -24,6 +24,8 @@ $userType           = $session->user_type;
                     <option value="yesterday">Yesterday</option>
                     <option value="this_month">This Month</option>
                     <option value="last_month">Last Month</option>
+                    <option value="last_7_days">Last 7 Days</option>
+                    <option value="last_30_days">Last 30 Days</option>
                 </select>
             </div>
         </div>

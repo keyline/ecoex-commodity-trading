@@ -288,6 +288,14 @@ class User extends BaseController {
                 $fDate = date("Y-m-d", mktime(0, 0, 0, date("m")-1, 1));
                 $tDate = date("Y-m-d", mktime(0, 0, 0, date("m"), 0));
             }
+            if($postData['filter_keyword'] == 'last_7_days'){
+                $fDate = date('Y-m-d', strtotime('-7 days'));
+                $tDate = date('Y-m-d',strtotime("-1 days"));
+            }
+            if($postData['filter_keyword'] == 'last_30_days'){
+                $fDate = date('Y-m-d', strtotime('-30 days'));
+                $tDate = date('Y-m-d',strtotime("-1 days"));
+            }
             echo $fDate.'<||>'.$tDate;die;
         }
     /* dashboard */
