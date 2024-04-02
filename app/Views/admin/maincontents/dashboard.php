@@ -14,7 +14,7 @@ $userType           = $session->user_type;
 <section class="section dashboard">
     <div class="row mb-3" style="border:1px solid green; padding: 15px; border-radius: 10px;">
         <div class="col-lg-6">
-            <label for="filter_dropdown">Filter Parameteres</label>
+            <label for="filter_keyword">Filter Parameteres</label>
         </div>
         <div class="col-lg-6">
             <select class="form-control" id="filter_keyword" name="filter_keyword">
