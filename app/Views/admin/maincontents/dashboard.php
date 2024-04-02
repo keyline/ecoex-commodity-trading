@@ -18,7 +18,7 @@ $userType           = $session->user_type;
                 <label for="filter_keyword">Filter Parameteres</label>
             </div>
             <div class="col-lg-6">
-                <select class="form-control" id="filter_keyword" name="filter_keyword">
+                <select class="form-control" id="filter_keyword" name="filter_keyword" onchange="PostName.submit()">
                     <option value="" selected>All Time</option>
                     <option value="today">Today</option>
                     <option value="yesterday">Yesterday</option>
