@@ -13,6 +13,18 @@ $userType           = $session->user_type;
 <!-- End Page Title -->
 <section class="section dashboard">
     <div class="row">
+        <div class="col-lg-6">
+            <label for="filter_dropdown">Filter Parameteres</label>
+        </div>
+        <div class="col-lg-6">
+            <select class="form-control" id="filter_keyword" name="filter_keyword">
+                <option value="" selected>All Time</option>
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="this_month">This Month</option>
+                <option value="last_month">Last Month</option>
+            </select>
+        </div>
         <!-- Left side columns -->
         <div class="col-lg-8">
             <div class="row">
