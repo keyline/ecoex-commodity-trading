@@ -272,7 +272,23 @@ class User extends BaseController {
                 return redirect()->to('/admin');
             }
             $postData = $this->request->getGet();
-            pr($postData);
+            $fDate = '';
+            $tDate = '';
+            if($postData['filter_keyword'] == 'today'){
+                $fDate = date('Y-m-d');
+            }
+            if($postData['filter_keyword'] == 'yesterday'){
+                $fDate = date('Y-m-d',strtotime("-1 days"));
+            }
+            if($postData['filter_keyword'] == 'this_month'){
+                $fDate = date('Y-m')."-01";
+                $tDate = date('Y-m-d');
+            }
+            if($postData['filter_keyword'] == 'last_month'){
+                $fDate = date("Y-m-d", mktime(0, 0, 0, date("m")-1, 1));
+                $tDate = date("Y-m-d", mktime(0, 0, 0, date("m"), 0));
+            }
+            echo $fDate.'<||>'.$tDate;die;
         }
     /* dashboard */
     /* settings */
