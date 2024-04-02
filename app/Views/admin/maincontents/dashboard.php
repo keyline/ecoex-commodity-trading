@@ -19,13 +19,13 @@ $userType           = $session->user_type;
             </div>
             <div class="col-lg-6">
                 <select class="form-control" id="filter_keyword" name="filter_keyword" onchange="PostName.submit()">
-                    <option value="" selected>All Time</option>
-                    <option value="today">Today</option>
-                    <option value="yesterday">Yesterday</option>
-                    <option value="this_month">This Month</option>
-                    <option value="last_month">Last Month</option>
-                    <option value="last_7_days">Last 7 Days</option>
-                    <option value="last_30_days">Last 30 Days</option>
+                    <option value="" <?=(($filter_keyword == '')?'selected':'')?>>All Time</option>
+                    <option value="today" <?=(($filter_keyword == 'today')?'selected':'')?>>Today</option>
+                    <option value="yesterday" <?=(($filter_keyword == 'yesterday')?'selected':'')?>>Yesterday</option>
+                    <option value="this_month" <?=(($filter_keyword == 'this_month')?'selected':'')?>>This Month</option>
+                    <option value="last_month" <?=(($filter_keyword == 'last_month')?'selected':'')?>>Last Month</option>
+                    <option value="last_7_days" <?=(($filter_keyword == 'last_7_days')?'selected':'')?>>Last 7 Days</option>
+                    <option value="last_30_days" <?=(($filter_keyword == 'last_30_days')?'selected':'')?>>Last 30 Days</option>
                 </select>
             </div>
         </div>
