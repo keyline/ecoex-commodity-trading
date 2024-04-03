@@ -111,9 +111,9 @@ $controller_route   = $moduleDetail['controller_route'];
     $(document).ready(function(){    
         var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
             removeItemButton: true,
-            maxItemCount:30,
-            searchResultLimit:30,
-            renderChoiceLimit:30
+            maxItemCount:50,
+            searchResultLimit:50,
+            renderChoiceLimit:50
         });     
     });
 </script>
