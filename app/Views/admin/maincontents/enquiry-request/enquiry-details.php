@@ -662,7 +662,7 @@
                         </div>
                         <div class="accordion" id="accordionExample">
                             <?php if($userType == 'MA'){?>
-                                <?php if($common_model->checkModuleFunctionAccess(23,123)){?>
+                                <?php if($common_model->checkModuleFunctionAccess(23,124)){?>
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="heading2">
                                     <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2"> Pickup Scheduled </button>
@@ -717,7 +717,7 @@
                                     </div>
                                 </div>
                                 <?php }?>
-                                <?php if($common_model->checkModuleFunctionAccess(23,124)){?>
+                                <?php if($common_model->checkModuleFunctionAccess(23,125)){?>
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="headingThree">
                                     <button class="accordion-button bg-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree"> Vehicle Placed &nbsp;&nbsp; <span style="float: left; font-size: 14px">(<?=(($subenquiry)?$subenquiry->no_of_vehicle:0)?> vehicles placed)</span> </button>
@@ -775,7 +775,7 @@
                                     </div>
                                 </div>
                                 <?php }?>
-                                <?php if($common_model->checkModuleFunctionAccess(23,125)){?>
+                                <?php if($common_model->checkModuleFunctionAccess(23,123)){?>
                                     <?php if($row->status >= 5){?>
                                         <div class="accordion-item">
                                             <h2 class="accordion-header" id="headingFour">
@@ -831,10 +831,14 @@
                                                                 <?php if($subenquiry->is_plant_ecoex_confirm <= 0){?>
                                                                     <tr>
                                                                         <td colspan="3" style="text-align:center;">
-                                                                            <a href="<?=base_url('admin/enquiry-requests/approve-material-weight/'.encoded($sub_enquiry_no))?>" class="btn btn-success" onclick="return confirm('Do you want to approve this request ?');"><i class="fa fa-check-circle"></i> APPROVE</a>
+                                                                            <?php if($common_model->checkModuleFunctionAccess(23,126)){?>
+                                                                                <a href="<?=base_url('admin/enquiry-requests/approve-material-weight/'.encoded($sub_enquiry_no))?>" class="btn btn-success" onclick="return confirm('Do you want to approve this request ?');"><i class="fa fa-check-circle"></i> APPROVE</a>
+                                                                            <?php }?>
                                                                         </td>
                                                                         <td colspan="3" style="text-align:center;">
-                                                                            <a href="javascript:void(0);" class="btn btn-primary" id="modify-btn" onclick="openMaterialWeightUpdate();"><i class="fa fa-edit"></i> MODIFY</a>
+                                                                            <?php if($common_model->checkModuleFunctionAccess(23,127)){?>
+                                                                                <a href="javascript:void(0);" class="btn btn-primary" id="modify-btn" onclick="openMaterialWeightUpdate();"><i class="fa fa-edit"></i> EDIT</a>
+                                                                            <?php }?>
                                                                             <button type="submit" class="btn btn-primary" id="update-btn" style="display:none;"><i class="fa fa-edit"></i> UPDATE</button>
                                                                             <a href="javascript:void(0);" class="btn btn-danger" id="cancel-btn" onclick="closeMaterialWeightUpdate();" style="display:none;"><i class="fa fa-times"></i> CANCEL</a>
                                                                         </td>
