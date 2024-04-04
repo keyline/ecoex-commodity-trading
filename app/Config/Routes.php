@@ -205,6 +205,9 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 			$routes->match(['get', 'post'], "notifications/send/(:any)", "NotificationController::send/$1");
 			$routes->match(['get'], "notifications/list_from_app", "NotificationController::list_from_app");
 		// notifications
+		// reports
+			$routes->match(['get', 'post'], "reports/industrial-commodity-report", "ReportController::industrialCommodityReport");
+		// reports
 	});
 /* ADMIN PANEL */
 /* API */

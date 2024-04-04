@@ -328,6 +328,22 @@ if($userType == 'MA'){
     <?php }?>
     <?php if(($common_model->checkModuleAccess(19)) || ($common_model->checkModuleAccess(20))){?>
         <li class="nav-item">
+            <a class="nav-link <?=(($pageSegment == 'reports')?'':'collapsed')?> <?=(($pageSegment == 'reports')?'active':'')?>" data-bs-target="#notification-nav" data-bs-toggle="collapse" href="#">
+                <i class="fa fa-bell"></i><span>Reports</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="notification-nav" class="nav-content collapse <?=(($pageSegment == 'reports')?'show':'')?>" data-bs-parent="#sidebar-nav">
+                <?php if($common_model->checkModuleAccess(19)){?>
+                    <li>
+                        <a class="<?=(($pageSegment == 'reports')?'active':'')?>" href="<?=base_url('admin/reports/industrial-commodity-report')?>">
+                            <i class="fa fa-arrow-right"></i><span>Industrial Commodity Report</span>
+                        </a>
+                    </li>
+                <?php }?>
+            </ul>
+        </li>
+    <?php }?>
+    <?php if(($common_model->checkModuleAccess(19)) || ($common_model->checkModuleAccess(20))){?>
+        <li class="nav-item">
             <a class="nav-link <?=(($pageSegment == 'notifications' || $pageSegment == 'notifications')?'':'collapsed')?> <?=(($pageSegment == 'notifications' || $pageSegment == 'notifications')?'active':'')?>" data-bs-target="#notification-nav" data-bs-toggle="collapse" href="#">
                 <i class="fa fa-bell"></i><span>Notifications</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
