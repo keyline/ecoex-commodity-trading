@@ -329,7 +329,7 @@ if($userType == 'MA'){
     <?php if(($common_model->checkModuleAccess(19)) || ($common_model->checkModuleAccess(20))){?>
         <li class="nav-item">
             <a class="nav-link <?=(($pageSegment == 'reports')?'':'collapsed')?> <?=(($pageSegment == 'reports')?'active':'')?>" data-bs-target="#notification-nav" data-bs-toggle="collapse" href="#">
-                <i class="fa fa-bell"></i><span>Reports</span><i class="bi bi-chevron-down ms-auto"></i>
+                <i class="fa fa-file"></i><span>Reports</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="notification-nav" class="nav-content collapse <?=(($pageSegment == 'reports')?'show':'')?>" data-bs-parent="#sidebar-nav">
                 <?php if($common_model->checkModuleAccess(19)){?>
