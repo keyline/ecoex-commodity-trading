@@ -252,7 +252,7 @@ if($userType == 'MA'){
                         <i class="fa fa-arrow-right"></i><span>Request Submitted (<?=$step0_count?>)</span>
                     </a>
                 </li>
-                <?php if($userType == 'MA'){?>
+                <?php //if($userType == 'MA'){?>
                     <li>
                         <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 1))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(1))?>">
                             <i class="fa fa-arrow-right"></i><span>Accept Request (<?=$step1_count?>)</span>
@@ -283,7 +283,7 @@ if($userType == 'MA'){
                             <i class="fa fa-arrow-right"></i><span>Material Weighed (<?=$step6_count?>)</span>
                         </a>
                     </li>
-                <?php }?>
+                <?php //}?>
                 <li>
                     <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 7))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(7))?>">
                         <i class="fa fa-arrow-right"></i><span>Invoice From HO (<?=$step7_count?>)</span>
