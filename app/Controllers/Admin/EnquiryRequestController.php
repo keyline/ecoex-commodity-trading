@@ -201,7 +201,7 @@ class EnquiryRequestController extends BaseController {
         }
         $id                         = decoded($id);
         $postData = array(
-                            'status' => 10
+                            'status' => 14
                         );
         $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
         $this->session->setFlashdata('success_message', $this->data['title'].' deleted successfully');
