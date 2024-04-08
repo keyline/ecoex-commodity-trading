@@ -227,7 +227,7 @@ class User extends BaseController {
             if($userType == 'MA'){
                 $data['plant']                      = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'PLANT']);
                 $data['enquiry']                    = $this->common_model->find_data('ecomm_enquires', 'count', ['status!=' => 14]);
-                $data['pendingItem']                = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['status' => 0]);
+                $data['pendingItem']                = $this->common_model->find_data('ecomm_company_items', 'count', ['status' => 0]);
 
                 $data['step0_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 0]);
                 $data['step1_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
@@ -248,7 +248,7 @@ class User extends BaseController {
             } else {
                 $data['plant']                      = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'PLANT', 'parent_id' => $company_id]);
                 $data['enquiry']                    = $this->common_model->find_data('ecomm_enquires', 'count', ['status!=' => 14, 'company_id' => $company_id]);
-                $data['pendingItem']                = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['status' => 0, 'company_id' => $company_id]);
+                $data['pendingItem']                = $this->common_model->find_data('ecomm_company_items', 'count', ['status' => 0, 'company_id' => $company_id]);
 
                 $data['step0_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 0, 'company_id' => $company_id]);
                 $data['step1_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 1, 'company_id' => $company_id]);
