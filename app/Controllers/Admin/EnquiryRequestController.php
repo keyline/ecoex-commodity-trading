@@ -1670,7 +1670,7 @@ class EnquiryRequestController extends BaseController {
         $order_by[0]                = array('field' => 'company_name', 'type' => 'asc');
         $data['avlVendors']         = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1], 'id,company_name', '', '', $order_by);
 
-        $data['sharedVendors']      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'array', ['enq_id' => $enq_id]);
+        $data['sharedVendors']      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'array', ['enq_id' => $enq_id, 'status' => 1]);
 
         $data['getEnquiry']         = $this->common_model->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
 
