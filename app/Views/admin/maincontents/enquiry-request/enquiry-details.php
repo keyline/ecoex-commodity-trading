@@ -282,9 +282,9 @@
                                                                     <?php if($invitedVendor->status == 0){?>
                                                                     <span class="text-warning fw-bold">Yet Not Action</span>
                                                                     <?php } elseif($invitedVendor->status == 1){?>
-                                                                    <span class="text-success fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y")?></span>
+                                                                    <span class="text-success fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y h:i A")?></span>
                                                                     <?php } elseif($invitedVendor->status == 3){?>
-                                                                    <span class="text-danger fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y")?></span>
+                                                                    <span class="text-danger fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y h:i A")?></span>
                                                                     <?php }?>
                                                                 </td>
                                                             </tr>
@@ -461,11 +461,11 @@
                                                     </td>
                                                     <td>
                                                         <?php if($enquiryProduct->status){?>
-                                                        <span class="badge bg-success">APPROVED</span>
+                                                            <span class="badge bg-success">APPROVED</span>
                                                         <?php } else {?>
-                                                        <?php if($common_model->checkModuleFunctionAccess(23,108)){?>
-                                                        <span class="badge bg-danger" data-bs-toggle="modal" data-bs-target="#verticalycentered<?=$enquiryProduct->id?>" data-backdrop="static" data-keyboard="false">CLICK TO APPROVED</span>
-                                                        <?php }?>
+                                                            <?php if($common_model->checkModuleFunctionAccess(23,108)){?>
+                                                                <span class="badge bg-danger" data-bs-toggle="modal" data-bs-target="#verticalycentered<?=$enquiryProduct->id?>" data-backdrop="static" data-keyboard="false">CLICK TO APPROVED</span>
+                                                            <?php }?>
                                                         <?php }?>
                                                     </td>
                                                 </tr>
