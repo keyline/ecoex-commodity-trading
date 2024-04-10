@@ -227,7 +227,7 @@
                                     <p><?=(($row->accepted_date != '')?date_format(date_create($row->accepted_date), "M d, Y h:i A"):'')?></p>
                                     <!-- share to vendors panel -->
                                         <p>
-                                            <?php if($row->status == 2){?>
+                                            <?php if($row->status >= 2 && $row->status >= 5){?>
                                                 <?php if($common_model->checkModuleFunctionAccess(23,116)){?>
                                                     <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#shareModal"><i class="fa fa-share-alt"></i> Quotation Invitation To Vendors</button>
                                                 <?php }?>
@@ -271,20 +271,31 @@
                                                                 <td><?=(($getVendor)?$getVendor->full_address:'')?></td>
                                                                 <td>
                                                                     <?php if($invitedVendor->status == 0){?>
-                                                                    <span class="badge bg-warning"><i class="fa-solid fa-clock"></i> PENDING</span>
+                                                                        <span class="badge bg-warning"><i class="fa-solid fa-clock"></i> PENDING</span>
                                                                     <?php } elseif($invitedVendor->status == 1){?>
-                                                                    <span class="badge bg-success"><i class="fa-solid fa-check-circle"></i> ACCEPTED</span>
+                                                                        <span class="badge bg-success"><i class="fa-solid fa-check-circle"></i> ACCEPTED</span>
                                                                     <?php } elseif($invitedVendor->status == 3){?>
-                                                                    <span class="badge bg-danger"><i class="fa-solid fa-times-circle"></i> REJECTED</span>
+                                                                        <span class="badge bg-danger"><i class="fa-solid fa-times-circle"></i> REJECTED</span>
+                                                                    <?php } elseif($invitedVendor->status == 4){?>
+                                                                        <?php if($invitedVendor->is_quit_admin_approval == 1){?>
+                                                                            <span class="badge bg-danger"><i class="fa-solid fa-power-off"></i> QUITED</span>
+                                                                        <?php } elseif($invitedVendor->is_quit_admin_approval == 0){?>
+                                                                            <a href="<?=base_url('admin/enquiry-requests/approve-vendor-quit/'.encoded($invitedVendor->enq_id).'/'.encoded($invitedVendor->vendor_id))?>" class="btn btn-success btn-sm">Approve Quit</a>
+                                                                            <a href="<?=base_url('admin/enquiry-requests/reject-vendor-quit/'.encoded($invitedVendor->enq_id).'/'.encoded($invitedVendor->vendor_id))?>" class="btn btn-danger btn-sm">Reject Quit</a>
+                                                                        <?php } elseif($invitedVendor->is_quit_admin_approval == 3){?>
+                                                                            <span class="badge bg-danger"><i class="fa-solid fa-power-off"></i> QUIT REJECTED</span>
+                                                                        <?php }?>
                                                                     <?php }?>
                                                                 </td>
                                                                 <td>
                                                                     <?php if($invitedVendor->status == 0){?>
-                                                                    <span class="text-warning fw-bold">Yet Not Action</span>
+                                                                        <span class="text-warning fw-bold">Yet Not Action</span>
                                                                     <?php } elseif($invitedVendor->status == 1){?>
-                                                                    <span class="text-success fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y h:i A")?></span>
+                                                                        <span class="text-success fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y h:i A")?></span>
                                                                     <?php } elseif($invitedVendor->status == 3){?>
-                                                                    <span class="text-danger fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y h:i A")?></span>
+                                                                        <span class="text-danger fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y h:i A")?></span>
+                                                                    <?php } elseif($invitedVendor->status == 4){?>
+                                                                        <span class="text-danger fw-bold"><?=date_format(date_create($invitedVendor->updated_at), "M d, Y h:i A")?></span>
                                                                     <?php }?>
                                                                 </td>
                                                             </tr>

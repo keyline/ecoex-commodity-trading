@@ -5274,6 +5274,60 @@ class ApiController extends BaseController
                 }
                 $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
             }
+            public function vendorQuitEnquiry(){
+                $apiStatus          = TRUE;
+                $apiMessage         = '';
+                $apiResponse        = [];
+                $this->isJSON(file_get_contents('php://input'));
+                $requestData        = $this->extract_json(file_get_contents('php://input'));        
+                $requiredFields     = ['enq_id'];
+                $headerData         = $this->request->headers();
+                if (!$this->validateArray($requiredFields, $requestData)){              
+                    $apiStatus          = FALSE;
+                    $apiMessage         = 'All Data Are Not Present !!!';
+                }
+                if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+                    $Authorization              = $headerData['Authorization'];
+                    $app_access_token           = $this->extractToken($Authorization);
+                    $getTokenValue              = $this->tokenAuth($app_access_token);
+                    $enq_id                     = $requestData['enq_id'];
+                    if($getTokenValue['status']){
+                        $uId        = $getTokenValue['data'][1];
+                        $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                        $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                        if($getUser){
+                            $vendor_quit_timestamp = date('Y-m-d H:i:s');
+                            $this->db->query("UPDATE ecomm_sub_enquires SET is_vendor_quit = 1, vendor_quit_timestamp = '$vendor_quit_timestamp' WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+                            $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_editable = 0, status = 4 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Vendor Raised Quit From Enquiry Successfully. Wait For Admin Approval !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(404);
+                            $apiMessage         = 'Vendor Not Found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        http_response_code($getTokenValue['data'][2]);
+                        $apiStatus                      = FALSE;
+                        $apiMessage                     = $this->getResponseCode(http_response_code());
+                        $apiExtraField                  = 'response_code';
+                        $apiExtraData                   = http_response_code();
+                    }               
+                } else {
+                    http_response_code(400);
+                    $apiStatus          = FALSE;
+                    $apiMessage         = $this->getResponseCode(http_response_code());
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+                $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+            }
         /* quotation */
         /* process request */
             public function vendorProcessRequest()
@@ -5414,6 +5468,9 @@ class ApiController extends BaseController
                                         'vendor_payment_received_date'      => (($row->vendor_payment_received_date != '')?date_format(date_create($row->vendor_payment_received_date), "M d, Y h:i A"):''),
                                         'vehicle_dispatched_date'           => (($row->vehicle_dispatched_date != '')?date_format(date_create($row->vehicle_dispatched_date), "M d, Y h:i A"):''),
                                         'order_complete_date'               => (($row->order_complete_date != '')?date_format(date_create($row->order_complete_date), "M d, Y h:i A"):''),
+                                        'is_vendor_quit'                    => $row->is_vendor_quit,
+                                        'vendor_quit_timestamp'             => (($row->vendor_quit_timestamp != '')?date_format(date_create($row->vendor_quit_timestamp), "M d, Y h:i A"):''),
+                                        'is_quit_admin_approval'            => $row->is_quit_admin_approval,
                                     ];
                                 }
                             }
@@ -5647,6 +5704,9 @@ class ApiController extends BaseController
                                     'vehicles'                          => $vehicles,
                                     'pickup_date_logs'                  => $pickup_date_logs,
                                     'items'                             => $items,
+                                    'is_vendor_quit'                    => $rows[0]->is_vendor_quit,
+                                    'vendor_quit_timestamp'             => (($rows[0]->vendor_quit_timestamp != '')?date_format(date_create($rows[0]->vendor_quit_timestamp), "M d, Y h:i A"):''),
+                                    'is_quit_admin_approval'            => $rows[0]->is_quit_admin_approval,
                                 ];
                             }
 

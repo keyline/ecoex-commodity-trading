@@ -179,6 +179,8 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 			$routes->match(['get', 'post'], "enquiry-requests/quotation-access/(:any)/(:any)", "EnquiryRequestController::quotation_access/$1/$2");
 			$routes->match(['get', 'post'], "enquiry-requests/view-quotation-logs/(:any)/(:any)", "EnquiryRequestController::viewQuotationLogs/$1/$2");
 			$routes->match(['get', 'post'], "enquiry-requests/vendor-allocation/(:any)/(:any)/(:any)", "EnquiryRequestController::vendorAllocation/$1/$2/$3");
+			$routes->match(['get', 'post'], "enquiry-requests/approve-vendor-quit/(:any)/(:any)", "EnquiryRequestController::approveVendorQuit/$1/$2");
+			$routes->match(['get', 'post'], "enquiry-requests/reject-vendor-quit/(:any)/(:any)", "EnquiryRequestController::rejectVendorQuit/$1/$2");
 
 			$routes->match(['get', 'post'], "enquiry-requests/enquiry-details/(:any)", "EnquiryRequestController::enquiryDetails/$1");
 
@@ -292,6 +294,7 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 				// rejected request
 				// quotation
 					$routes->match(['post'], "submit-quotation", "ApiController::submitQuotation");
+					$routes->match(['post'], "vendor-quit-enquiry", "ApiController::vendorQuitEnquiry");
 				// quotation
 				// assigned request
 					$routes->match(['post'], "vendor-process-request", "ApiController::vendorProcessRequest");

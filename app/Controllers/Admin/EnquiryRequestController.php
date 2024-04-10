@@ -1752,4 +1752,40 @@ class EnquiryRequestController extends BaseController {
         $page_name                  = 'enquiry-request/enquiry-details';
         echo $this->layout_after_login($title,$page_name,$data);
     }
+
+    public function approveVendorQuit($enq_id, $vendor_id){
+        $enq_id                         = decoded($enq_id);
+        $vendor_id                      = decoded($vendor_id);
+        $data['enq_id']                 = $enq_id;
+        $data['vendor_id']              = $vendor_id;
+        $getEnquiry                 = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
+        if($getEnquiry){
+            $this->db->query("UPDATE ecomm_sub_enquires SET is_quit_admin_approval = 1, vendor_quit_timestamp = '$vendor_quit_timestamp' WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+            $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quit_admin_approval = 1 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+
+            $this->session->setFlashdata('success_message', 'Vendor Raised Quit Request From Enquiry Approved Successfully !!!');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/enquiry-details/'.encoded($enq_id));
+        } else {
+            $this->session->setFlashdata('error_message', $this->data['title'].' Not Found !!!');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/enquiry-details/'.encoded($enq_id));
+        }
+    }
+
+    public function rejectVendorQuit($enq_id, $vendor_id){
+        $enq_id                         = decoded($enq_id);
+        $vendor_id                      = decoded($vendor_id);
+        $data['enq_id']                 = $enq_id;
+        $data['vendor_id']              = $vendor_id;
+        $getEnquiry                 = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
+        if($getEnquiry){
+            $this->db->query("UPDATE ecomm_sub_enquires SET is_quit_admin_approval = 3, vendor_quit_timestamp = '$vendor_quit_timestamp' WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+            $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quit_admin_approval = 3 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+
+            $this->session->setFlashdata('success_message', 'Vendor Raised Quit Request From Enquiry Rejected Successfully !!!');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/enquiry-details/'.encoded($enq_id));
+        } else {
+            $this->session->setFlashdata('error_message', $this->data['title'].' Not Found !!!');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/enquiry-details/'.encoded($enq_id));
+        }
+    }
 }
