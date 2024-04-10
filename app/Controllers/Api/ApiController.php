@@ -5280,7 +5280,7 @@ class ApiController extends BaseController
                 $apiResponse        = [];
                 $this->isJSON(file_get_contents('php://input'));
                 $requestData        = $this->extract_json(file_get_contents('php://input'));        
-                $requiredFields     = ['enq_id', 'sub_enquiry_no'];
+                $requiredFields     = ['enq_id', 'sub_enq_no'];
                 $headerData         = $this->request->headers();
                 if (!$this->validateArray($requiredFields, $requestData)){              
                     $apiStatus          = FALSE;
@@ -5291,7 +5291,7 @@ class ApiController extends BaseController
                     $app_access_token           = $this->extractToken($Authorization);
                     $getTokenValue              = $this->tokenAuth($app_access_token);
                     $enq_id                     = $requestData['enq_id'];
-                    $sub_enquiry_no             = $requestData['sub_enquiry_no'];
+                    $sub_enquiry_no             = $requestData['sub_enq_no'];
 
                     if($getTokenValue['status']){
                         $uId        = $getTokenValue['data'][1];
