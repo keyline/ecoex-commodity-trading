@@ -5497,6 +5497,7 @@ class ApiController extends BaseController
                                         'sub_enq_id'                        => $row->id,
                                         'sub_enquiry_no'                    => $row->sub_enquiry_no,
                                         'enquiry_sub_status'                => $enquirySubStatus,
+                                        'enquiry_sub_status_id'             => $row->status,
                                         'company_name'                      => (($company)?$company->company_name:''),
                                         'plant_name'                        => (($plant)?$plant->plant_name:''),
                                         'product_count'                     => count($product_count),
