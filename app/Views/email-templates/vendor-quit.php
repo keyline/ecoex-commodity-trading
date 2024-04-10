@@ -4,6 +4,7 @@ $this->common_model         = new CommonModel;
 $generalSetting             = $this->common_model->find_data('general_settings', 'row');
 $company                    = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $company_id]);
 $plant                      = $this->common_model->find_data('ecomm_users', 'row', ['id' => $plant_id]);
+$vendor                     = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendor_id]);
 ?>
 <!doctype html>
 <html lang="en">
@@ -18,8 +19,8 @@ $plant                      = $this->common_model->find_data('ecomm_users', 'row
               <img src="<?=getenv('app.uploadsURL').$generalSetting->site_logo?>" alt="" style=" width: 100%; max-width: 250px;">
           </div>
           <div>
-            <h3 style="text-align: center; font-size: 25px; color: #5c5b5b; font-family: sans-serif;">Hi, Welcome <?=(($generalSetting)?$generalSetting->site_name:'')?>!</h3>
-            <h5 style="text-align: center; font-size: 15px; color: green; font-family: sans-serif;">HO Uploaded Your Requested Invoice</h5>
+            <h3 style="text-align: center; font-size: 25px; color: #5c5b5b; font-family: sans-serif;">Hi, Welcome <?=$entity_name?>!</h3>
+            <h5 style="text-align: center; font-size: 15px; color: green; font-family: sans-serif;">Vendor Quit</h5>
             <table style="width: 100%;  border-spacing: 2px;">
               <tbody>
                 <tr>
@@ -31,8 +32,16 @@ $plant                      = $this->common_model->find_data('ecomm_users', 'row
                   <td style="padding: 10px; background: #89b33c; text-align: left; color: #fff;font-family: sans-serif;font-size: 15px; font-weight: 600;"><?=(($plant)?$plant->plant_name:'')?></td>
                 </tr>
                 <tr>
+                  <th style="background: #3e9854; color: #fff; padding: 10px; text-align: left; font-family: sans-serif; font-size: 14px;">Vendor Name</th>
+                  <td style="padding: 10px; background: #89b33c; text-align: left; color: #fff;font-family: sans-serif;font-size: 15px; font-weight: 600;"><?=(($vendor)?$vendor->company_name:'')?></td>
+                </tr>
+                <tr>
                   <th style="background: #3e9854; color: #fff; padding: 10px; text-align: left; font-family: sans-serif; font-size: 14px;">Enquiry No.</th>
                   <td style="padding: 10px; background: #89b33c; text-align: left; color: #fff;font-family: sans-serif;font-size: 15px; font-weight: 600;"><?=$enquiry_no?></td>
+                </tr>
+                <tr>
+                  <th style="background: #3e9854; color: #fff; padding: 10px; text-align: left; font-family: sans-serif; font-size: 14px;">Sub Enquiry No.</th>
+                  <td style="padding: 10px; background: #89b33c; text-align: left; color: #fff;font-family: sans-serif;font-size: 15px; font-weight: 600;"><?=$sub_enquiry_no?></td>
                 </tr>
               </tbody>
             </table>

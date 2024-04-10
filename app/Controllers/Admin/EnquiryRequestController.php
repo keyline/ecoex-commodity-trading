@@ -1763,6 +1763,35 @@ class EnquiryRequestController extends BaseController {
             $this->db->query("UPDATE ecomm_sub_enquires SET is_quit_admin_approval = 1, vendor_quit_timestamp = '$vendor_quit_timestamp' WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
             $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quit_admin_approval = 1 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
 
+            /* push notification sent */
+                $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
+                if($getDeviceTokens){
+                    foreach($getDeviceTokens as $getDeviceToken){
+                        $fcm_token          = $getDeviceToken->fcm_token;
+                        $messageData = [
+                            'title'     => 'Quit From Enquiry Approved By Ecoex',
+                            'body'      => 'Sub Enquiry Request ('.$getEnquiry->enquiry_no.') Quit From Enquiry Approved By Ecoex',
+                            'badge'     => 1,
+                            'sound'     => 'Default',
+                            'data'      => [],
+                        ];
+                        $this->pushNotification($fcm_token, $messageData);
+                        $users[]    = $getSubEnquiry->vendor_id;
+                        $pushData   = [
+                            'source'            => 'FROM APP',
+                            'title'             => 'Quit From Enquiry Approved By Ecoex',
+                            'description'       => 'Sub Enquiry Request ('.$getEnquiry->enquiry_no.') Quit From Enquiry Approved By Ecoex',
+                            'user_type'         => 'VENDOR',
+                            'users'             => json_encode($users),
+                            'is_send'           => 1,
+                            'send_timestamp'    => date('Y-m-d H:i:s'),
+                            'status'            => 1,
+                        ];
+                        $this->common_model->save_data('notifications', $pushData, '', 'id');
+                    }
+                }
+            /* push notification sent */
+
             $this->session->setFlashdata('success_message', 'Vendor Raised Quit Request From Enquiry Approved Successfully !!!');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/enquiry-details/'.encoded($enq_id));
         } else {
@@ -1780,6 +1809,35 @@ class EnquiryRequestController extends BaseController {
         if($getEnquiry){
             $this->db->query("UPDATE ecomm_sub_enquires SET is_quit_admin_approval = 3, vendor_quit_timestamp = '$vendor_quit_timestamp' WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
             $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quit_admin_approval = 3 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+
+            /* push notification sent */
+                $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
+                if($getDeviceTokens){
+                    foreach($getDeviceTokens as $getDeviceToken){
+                        $fcm_token          = $getDeviceToken->fcm_token;
+                        $messageData = [
+                            'title'     => 'Quit From Enquiry Rejected By Ecoex',
+                            'body'      => 'Sub Enquiry Request ('.$getEnquiry->enquiry_no.') Quit From Enquiry Rejected By Ecoex',
+                            'badge'     => 1,
+                            'sound'     => 'Default',
+                            'data'      => [],
+                        ];
+                        $this->pushNotification($fcm_token, $messageData);
+                        $users[]    = $getSubEnquiry->vendor_id;
+                        $pushData   = [
+                            'source'            => 'FROM APP',
+                            'title'             => 'Quit From Enquiry Rejected By Ecoex',
+                            'description'       => 'Sub Enquiry Request ('.$getEnquiry->enquiry_no.') Quit From Enquiry Rejected By Ecoex',
+                            'user_type'         => 'VENDOR',
+                            'users'             => json_encode($users),
+                            'is_send'           => 1,
+                            'send_timestamp'    => date('Y-m-d H:i:s'),
+                            'status'            => 1,
+                        ];
+                        $this->common_model->save_data('notifications', $pushData, '', 'id');
+                    }
+                }
+            /* push notification sent */
 
             $this->session->setFlashdata('success_message', 'Vendor Raised Quit Request From Enquiry Rejected Successfully !!!');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/enquiry-details/'.encoded($enq_id));

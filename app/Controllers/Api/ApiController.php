@@ -5280,7 +5280,7 @@ class ApiController extends BaseController
                 $apiResponse        = [];
                 $this->isJSON(file_get_contents('php://input'));
                 $requestData        = $this->extract_json(file_get_contents('php://input'));        
-                $requiredFields     = ['enq_id'];
+                $requiredFields     = ['enq_id', 'sub_enquiry_no'];
                 $headerData         = $this->request->headers();
                 if (!$this->validateArray($requiredFields, $requestData)){              
                     $apiStatus          = FALSE;
@@ -5291,20 +5291,60 @@ class ApiController extends BaseController
                     $app_access_token           = $this->extractToken($Authorization);
                     $getTokenValue              = $this->tokenAuth($app_access_token);
                     $enq_id                     = $requestData['enq_id'];
+                    $sub_enquiry_no             = $requestData['sub_enquiry_no'];
+
                     if($getTokenValue['status']){
                         $uId        = $getTokenValue['data'][1];
                         $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                         $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                         if($getUser){
-                            $vendor_quit_timestamp = date('Y-m-d H:i:s');
-                            $this->db->query("UPDATE ecomm_sub_enquires SET is_vendor_quit = 1, vendor_quit_timestamp = '$vendor_quit_timestamp' WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
-                            $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_editable = 0, status = 4 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+                            $getSubEnquiry                 = $this->data['model']->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+                            if($getSubEnquiry){
+                                $vendor_quit_timestamp = date('Y-m-d H:i:s');
+                                $this->db->query("UPDATE ecomm_sub_enquires SET is_vendor_quit = 1, vendor_quit_timestamp = '$vendor_quit_timestamp' WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+                                $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_editable = 0, status = 4 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
 
-                            $apiStatus          = TRUE;
-                            http_response_code(200);
-                            $apiMessage         = 'Vendor Raised Quit From Enquiry Successfully. Wait For Admin Approval !!!';
-                            $apiExtraField      = 'response_code';
-                            $apiExtraData       = http_response_code();
+                                /* email sent */
+                                    // ecoex
+                                        $getCompany                     = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $getSubEnquiry->company_id]);
+                                        $generalSetting                 = $this->common_model->find_data('general_settings', 'row');
+                                        $fields = [
+                                            'enq_id'                => $getSubEnquiry->enq_id,
+                                            'company_id'            => $getSubEnquiry->company_id,
+                                            'plant_id'              => $getSubEnquiry->plant_id,
+                                            'vendor_id'             => $getSubEnquiry->vendor_id,
+                                            'enquiry_no'            => $getSubEnquiry->enquiry_no,
+                                            'sub_enquiry_no'        => $getSubEnquiry->sub_enquiry_no,
+                                            'entity_name'           => (($generalSetting)?$generalSetting->site_name:''),
+                                        ];
+                                        $subject                        = $generalSetting->site_name.' :: Sub Enquiry ('.$getSubEnquiry->sub_enquiry_no.') Vendor Quit';
+                                        $message1                       = view('email-templates/vendor-quit',$fields);
+                                        $this->sendMail((($generalSetting)?$generalSetting->system_email:''), $subject, $message1);
+
+                                        /* email log save */
+                                            $postData2 = [
+                                                'name'                  => (($generalSetting)?$generalSetting->site_name:''),
+                                                'email'                 => (($generalSetting)?$generalSetting->system_email:''),
+                                                'subject'               => $subject,
+                                                'message'               => $message1
+                                            ];
+                                            $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                                        /* email log save */
+                                    // ecoex
+                                /* email sent */
+
+                                $apiStatus          = TRUE;
+                                http_response_code(200);
+                                $apiMessage         = 'Vendor Raised Quit From Enquiry Successfully. Wait For Admin Approval !!!';
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            } else {
+                                $apiStatus          = FALSE;
+                                http_response_code(404);
+                                $apiMessage         = 'Sub Enquiry Not Found !!!';
+                                $apiExtraField      = 'response_code';
+                                $apiExtraData       = http_response_code();
+                            }
                         } else {
                             $apiStatus          = FALSE;
                             http_response_code(404);

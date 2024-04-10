@@ -9,8 +9,8 @@ $generalSetting     = $this->common_model->find_data('general_settings', 'row');
     <title><?=$generalSetting->site_name?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   </head>
-  <body style="padding: 0; margin: 0; box-sizing: border-box;">
-    <section style="padding: 80px 0; height: 80vh; margin: 0 15px;">
+  <body style="padding: 0; margin: 0;">
+    <section style="padding: 80px 0; margin: 0 15px;">
         <div style="max-width: 600px; background: #ffffff; margin: 0 auto; border-radius: 15px; padding: 20px 15px; box-shadow: 0 0 30px -5px #ccc;">
           <div style="text-align: center;">
               <img src="<?=env('UPLOADS_URL').$generalSetting->site_logo?>" alt="" style=" width: 100%; max-width: 250px;">
