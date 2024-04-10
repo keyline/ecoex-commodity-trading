@@ -5298,7 +5298,7 @@ class ApiController extends BaseController
                         $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                         $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                         if($getUser){
-                            $getSubEnquiry                 = $this->data['model']->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+                            $getSubEnquiry                 = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
                             if($getSubEnquiry){
                                 $vendor_quit_timestamp = date('Y-m-d H:i:s');
                                 $this->db->query("UPDATE ecomm_sub_enquires SET is_vendor_quit = 1, vendor_quit_timestamp = '$vendor_quit_timestamp' WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
