@@ -238,10 +238,10 @@
                                             <?php }?>
 
                                             <?php $sharedLink = base_url('enquiry-request/'.encoded($row->id));?>
-                                            <a href="whatsapp://send?text=<?=$sharedLink?>" class="btn btn-outline-success btn-sm" data-action="share/whatsapp/share"><i class="fa fa-share-alt"></i> Share Details To Vendors via Whatsapp</a>
-                                            <a href="" class="btn btn-outline-success btn-sm" onclick="copyToClipboard()"><i class="fa fa-copy"></i> Copy Whatsapp Link For Share</a>
+                                            <a href="whatsapp://send?text=<?=$sharedLink?>" class="btn btn-warning btn-sm" data-action="share/whatsapp/share"><i class="fa fa-share-alt"></i> Share Details To Vendors via Whatsapp</a>
+                                            <a href="" class="btn btn-warning btn-sm" onclick="copyToClipboard()"><i class="fa fa-copy"></i> Copy Whatsapp Link For Share</a>
                                             <span id="whatsapp_link" style="display: none;"><?=$sharedLink?></span>
-                                            <input type="text" placeholder="Paste here" />
+                                            <input type="hidden" placeholder="Paste here" />
                                         </p>
                                         <div class="collapse" id="sharedVendor">
                                             <div class="card">
