@@ -320,7 +320,7 @@ class User extends BaseController {
             $data['company']                    = $this->common_model->find_data('ecoex_companies', 'count', ['status!=' => 3, 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
             $data['vendor']                     = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'VENDOR', 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
             $data['itemCategory']               = $this->common_model->find_data('ecomm_product_categories', 'count', ['status' => 1, 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
-            echo $this->db->getLastQuery();die;
+            // echo $this->db->getLastQuery();die;
             if($userType == 'MA'){
                 $data['plant']                      = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'PLANT', 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
                 $data['enquiry']                    = $this->common_model->find_data('ecomm_enquires', 'count', ['status!=' => 14, 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
