@@ -298,6 +298,14 @@ class User extends BaseController {
                 $fDate = date('Y-m-d', strtotime('-30 days'));
                 $tDate = date('Y-m-d',strtotime("-1 days"));
             }
+            if($postData['filter_keyword'] == 'this_year'){
+                $fDate = date('Y')."-01-01";
+                $tDate = date('Y')."-12-31";
+            }
+            if($postData['filter_keyword'] == 'last_year'){
+                $fDate = (date('Y') - 1)."-01-01";
+                $tDate = (date('Y') - 1)."-12-31";
+            }
             if($postData['filter_keyword'] == ''){
                 return redirect()->to('/admin/dashboard');
             }
@@ -312,7 +320,7 @@ class User extends BaseController {
             $data['company']                    = $this->common_model->find_data('ecoex_companies', 'count', ['status!=' => 3, 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
             $data['vendor']                     = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'VENDOR', 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
             $data['itemCategory']               = $this->common_model->find_data('ecomm_product_categories', 'count', ['status' => 1, 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
-
+            echo $this->db->getLastQuery();die;
             if($userType == 'MA'){
                 $data['plant']                      = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'PLANT', 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
                 $data['enquiry']                    = $this->common_model->find_data('ecomm_enquires', 'count', ['status!=' => 14, 'created_at>=' => $fDate, 'created_at<=' => $tDate]);

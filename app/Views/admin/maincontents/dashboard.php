@@ -26,6 +26,8 @@ $userType           = $session->user_type;
                     <option value="last_month" <?=(($filter_keyword == 'last_month')?'selected':'')?>>Last Month</option>
                     <option value="last_7_days" <?=(($filter_keyword == 'last_7_days')?'selected':'')?>>Last 7 Days</option>
                     <option value="last_30_days" <?=(($filter_keyword == 'last_30_days')?'selected':'')?>>Last 30 Days</option>
+                    <option value="this_year" <?=(($filter_keyword == 'this_year')?'selected':'')?>>This Year</option>
+                    <option value="last_year" <?=(($filter_keyword == 'last_year')?'selected':'')?>>Last Year</option>
                 </select>
             </div>
         </div>
