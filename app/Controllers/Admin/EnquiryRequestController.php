@@ -1760,6 +1760,7 @@ class EnquiryRequestController extends BaseController {
         $data['vendor_id']              = $vendor_id;
         $getEnquiry                 = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
         if($getEnquiry){
+            $vendor_quit_timestamp = date('Y-m-d H:i:s');
             $this->db->query("UPDATE ecomm_sub_enquires SET is_quit_admin_approval = 1, vendor_quit_timestamp = '$vendor_quit_timestamp' WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
             $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quit_admin_approval = 1 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
 
