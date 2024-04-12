@@ -2316,7 +2316,7 @@ class ApiController extends BaseController
                         $step0_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId]);
                         $step1_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status>=' => 0, 'status<=' => 2]);
                         $groupBy[0]         = 'sub_enquiry_no';
-                        $step2_count        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['plant_id' => $uId, 'status>=' => 3.3, 'status<=' => 10.10], '', '', $groupBy);
+                        $step2_count        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['plant_id' => $uId, 'status>=' => 3.3, 'status<=' => 10.10, 'is_vendor_quit' => 0], '', '', $groupBy);
                         $step3_count        = $this->common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $uId, 'status' => 13]);
                         $step4_count        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['plant_id' => $uId, 'status' => 12.12]);
                         $getCompany         = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $getUser->parent_id]);
@@ -4375,7 +4375,7 @@ class ApiController extends BaseController
                         // $quotation_request      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId, 'status' => 1]);
 
                         $groupBy[0]             = 'sub_enquiry_no';
-                        $process_request        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['vendor_id' => $uId, 'status<=' => 10.10], '', '', $groupBy);
+                        $process_request        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['vendor_id' => $uId, 'status<=' => 10.10, 'is_vendor_quit' => 0], '', '', $groupBy);
                         $rejected_enquiry       = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId, 'status' => 3]);
                         $completed_count        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['vendor_id' => $uId, 'status' => 12.12]);
                         $apiResponse            = [
