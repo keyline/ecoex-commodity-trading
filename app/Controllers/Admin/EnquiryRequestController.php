@@ -1777,7 +1777,7 @@ class EnquiryRequestController extends BaseController {
                             'data'      => [],
                         ];
                         $this->pushNotification($fcm_token, $messageData);
-                        $users[]    = $getSubEnquiry->vendor_id;
+                        $users[]    = $vendor_id;
                         $pushData   = [
                             'source'            => 'FROM APP',
                             'title'             => 'Quit From Enquiry Approved By Ecoex',
@@ -1824,7 +1824,7 @@ class EnquiryRequestController extends BaseController {
                             'data'      => [],
                         ];
                         $this->pushNotification($fcm_token, $messageData);
-                        $users[]    = $getSubEnquiry->vendor_id;
+                        $users[]    = $vendor_id;
                         $pushData   = [
                             'source'            => 'FROM APP',
                             'title'             => 'Quit From Enquiry Rejected By Ecoex',
