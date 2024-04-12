@@ -1761,8 +1761,8 @@ class EnquiryRequestController extends BaseController {
         $getEnquiry                 = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
         if($getEnquiry){
             $vendor_quit_timestamp = date('Y-m-d H:i:s');
-            $this->db->query("UPDATE ecomm_sub_enquires SET is_quit_admin_approval = 1, vendor_quit_timestamp = '$vendor_quit_timestamp' WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
-            $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quit_admin_approval = 1 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+            $this->db->query("UPDATE ecomm_sub_enquires SET is_quit_admin_approval = 1, vendor_quit_timestamp = '$vendor_quit_timestamp' WHERE enq_id = '$enq_id' AND vendor_id = '$vendor_id'");
+            $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quit_admin_approval = 1 WHERE enq_id = '$enq_id' AND vendor_id = '$vendor_id'");
 
             /* push notification sent */
                 $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
@@ -1808,8 +1808,8 @@ class EnquiryRequestController extends BaseController {
         $data['vendor_id']              = $vendor_id;
         $getEnquiry                 = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
         if($getEnquiry){
-            $this->db->query("UPDATE ecomm_sub_enquires SET is_vendor_quit = 0, is_quit_admin_approval = 0, vendor_quit_timestamp = '' WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
-            $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quit_admin_approval = 0, status = 1 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+            $this->db->query("UPDATE ecomm_sub_enquires SET is_vendor_quit = 0, is_quit_admin_approval = 0, vendor_quit_timestamp = '' WHERE enq_id = '$enq_id' AND vendor_id = '$vendor_id'");
+            $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quit_admin_approval = 0, status = 1 WHERE enq_id = '$enq_id' AND vendor_id = '$vendor_id'");
 
             /* push notification sent */
                 $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
