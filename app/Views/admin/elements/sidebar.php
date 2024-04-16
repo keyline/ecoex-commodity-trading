@@ -300,12 +300,13 @@ if($userType == 'MA'){
                             <i class="fa fa-arrow-right"></i><span>Payment received from Vendor (<?=$step9_count?>)</span>
                         </a>
                     </li>
+                <?php }?>
                     <li>
                         <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 10))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(10))?>">
                             <i class="fa fa-arrow-right"></i><span>Vehicle Dispatched (<?=$step10_count?>)</span>
                         </a>
                     </li>
-                <?php }?>
+                
                 <li>
                     <a class="<?=((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 11))?'active':'')?>" href="<?=base_url('admin/enquiry-requests/list/'.encoded(11))?>">
                         <i class="fa fa-arrow-right"></i><span>Payment to HO (<?=$step11_count?>)</span>
