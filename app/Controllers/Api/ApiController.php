@@ -2178,6 +2178,7 @@ class ApiController extends BaseController
                         if($notifications){
                             foreach($notifications as $notification){
                                 $users = json_decode($notification->users);
+                                pr($users);
                                 if(in_array($uId, $users)){
                                     $apiResponse[]        = [
                                         'id'                    => $notification->id,
