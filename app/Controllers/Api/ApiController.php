@@ -5431,10 +5431,11 @@ class ApiController extends BaseController
                             // $rows               = $this->db->query("SELECT * FROM `ecomm_sub_enquires` WHERE `vendor_id` = '$uId' and is_vendor_quit = 0 and is_quit_admin_approval = 0 and $conditions group by sub_enquiry_no order by $fieldName $typeName limit $offset,$limit")->getResult();
                             $rows               = $this->db->query("SELECT * FROM `ecomm_sub_enquires` WHERE `vendor_id` = '$uId' and $conditions group by sub_enquiry_no order by $fieldName $typeName limit $offset,$limit")->getResult();
                             // echo $this->db->getLastQuery();die;
-                            
+
                             if($rows){
                                 foreach($rows as $row){
                                     $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $row->enq_id]);
+                                    pr($getEnquiry);
                                     if($getEnquiry){
                                         if($getEnquiry->status == 0){
                                             $enquiryMainStatus = 'Request Submitted';
