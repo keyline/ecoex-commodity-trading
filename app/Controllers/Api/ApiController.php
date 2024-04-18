@@ -2336,7 +2336,7 @@ class ApiController extends BaseController
                             ],
                             [
                                 'id'            => 2,
-                                'label'         => 'Pending/Accepted Request',
+                                'label'         => 'Accepted Request',
                                 'value'         => $step1_count,
                                 'color_code'    => '#E79D0CE8'
                             ],
