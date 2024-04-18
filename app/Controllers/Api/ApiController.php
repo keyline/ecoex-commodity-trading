@@ -2174,7 +2174,7 @@ class ApiController extends BaseController
                         } else {
                             $offset = (($limit * $page_no) - $limit); // ((15 * 3) - 15)
                         }
-                        $notifications  = $this->common_model->find_data('notifications', 'array', ['status' => 1, 'is_send' => 1, 'user_type' => $type, 'users LIKE' => '%$uId%'], 'id,title,description,send_timestamp,users', '', '', $orderBy, $limit, $offset);
+                        $notifications  = $this->common_model->find_data('notifications', 'array', ['status' => 1, 'is_send' => 1, 'user_type' => $type, 'users LIKE' => '%'.$uId.'%'], 'id,title,description,send_timestamp,users', '', '', $orderBy, $limit, $offset);
                         echo $this->db->getLastQuery();
                         pr($notifications);
                         if($notifications){
