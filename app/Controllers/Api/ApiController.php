@@ -2174,21 +2174,22 @@ class ApiController extends BaseController
                         } else {
                             $offset = (($limit * $page_no) - $limit); // ((15 * 3) - 15)
                         }
-                        $notifications  = $this->common_model->find_data('notifications', 'array', ['status' => 1, 'is_send' => 1, 'user_type' => $type], 'id,title,description,send_timestamp,users', '', '', $orderBy, $limit, $offset);
+                        $notifications  = $this->common_model->find_data('notifications', 'array', ['status' => 1, 'is_send' => 1, 'user_type' => $type, 'users LIKE' => '%$uId%'], 'id,title,description,send_timestamp,users', '', '', $orderBy, $limit, $offset);
                         echo $this->db->getLastQuery();
+                        pr($notifications);
                         if($notifications){
                             foreach($notifications as $notification){
-                                echo $notification->id;
-                                $users = json_decode($notification->users);
-                                pr($users);
-                                if(in_array($uId, $users)){
+                                // echo $notification->id;
+                                // $users = json_decode($notification->users);
+                                // pr($users);
+                                // if(in_array($uId, $users)){
                                     $apiResponse[]        = [
                                         'id'                    => $notification->id,
                                         'title'                 => $notification->title,
                                         'description'           => $notification->description,
                                         'send_timestamp'        => date_format(date_create($notification->send_timestamp), "M d, Y h:i A"),
                                     ];
-                                }
+                                // }
                             }
                         }
                         $apiStatus          = TRUE;
