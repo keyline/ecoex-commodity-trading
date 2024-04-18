@@ -2166,6 +2166,7 @@ class ApiController extends BaseController
                     $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                     $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                     if($getUser){
+                        $type = $getUser->type;
                         $orderBy[0]     = ['field' => 'id', 'type' => 'DESC'];
                         $limit          = 15; // per page elements
                         if($page_no == 1){
@@ -2173,7 +2174,8 @@ class ApiController extends BaseController
                         } else {
                             $offset = (($limit * $page_no) - $limit); // ((15 * 3) - 15)
                         }
-                        $notifications  = $this->common_model->find_data('notifications', 'array', ['status' => 1, 'is_send' => 1], 'id,title,description,send_timestamp,users', '', '', $orderBy, $limit, $offset);
+                        $notifications  = $this->common_model->find_data('notifications', 'array', ['status' => 1, 'is_send' => 1, 'user_type' => $type], 'id,title,description,send_timestamp,users', '', '', $orderBy, $limit, $offset);
+                        pr($notifications);
                         if($notifications){
                             foreach($notifications as $notification){
                                 $users = json_decode($notification->users);
