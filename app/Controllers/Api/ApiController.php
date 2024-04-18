@@ -5435,7 +5435,6 @@ class ApiController extends BaseController
                             if($rows){
                                 foreach($rows as $row){
                                     $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $row->enq_id]);
-                                    pr($getEnquiry);
                                     if($getEnquiry){
                                         if($getEnquiry->status == 0){
                                             $enquiryMainStatus = 'Request Submitted';
