@@ -1,4 +1,3 @@
-Header unset upgrade
 # Disable directory browsing
 Options -Indexes
 
