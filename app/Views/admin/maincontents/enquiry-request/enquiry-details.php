@@ -1134,7 +1134,7 @@
                                 <?php if($row->status >= 11){?>
                                     <div class="accordion-item">
                                         <h2 class="accordion-header" id="headingEleven">
-                                            <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">Order Complete By Ecoex</button>
+                                            <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">Enquiry Complete By Ecoex</button>
                                         </h2>
                                         <div id="collapseEleven" class="accordion-collapse collapse" aria-labelledby="headingEleven" data-bs-parent="#accordionExample">
                                             <div class="accordion-body">
@@ -1142,11 +1142,11 @@
                                                     <div class="row mt-3">
                                                         <div class="col-md-6 text-center">
                                                             <?php if($row->order_complete_date != ''){?>
-                                                                <h4 class="text-success fw-bold">Order Completed By Ecoex</h4>
+                                                                <h4 class="text-success fw-bold">Enquiry Completed By Ecoex</h4>
                                                             <?php } else {?>
-                                                                <h4 class="text-warning fw-bold">Order Yet Not Completed By Ecoex</h4>
+                                                                <h4 class="text-warning fw-bold">Enquiry Yet Not Completed By Ecoex</h4>
                                                                 <?php if($userType == 'MA'){?>
-                                                                    <a href="<?=base_url('admin/' . $controller_route . '/order-complete/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Complete <?=$title?>" onclick="return confirm('Do You Want To Complete This <?=$title?>');"><i class="fa-solid fa-flag-checkered"></i> Click To Complete</a>
+                                                                    <a href="<?=base_url('admin/' . $controller_route . '/order-complete/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Complete <?=$title?>" onclick="return confirm('Do You Want To Complete This <?=$title?>');"><i class="fa-solid fa-flag-checkered"></i> Click To Complete Enquiry</a>
                                                                 <?php }?>
                                                             <?php }?>
                                                         </div>
