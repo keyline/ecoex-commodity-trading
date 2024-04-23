@@ -41,7 +41,7 @@ $userType           = $session->user_type;
                                 <th scope="col">Company<br>Plant</th>
                                 <th scope="col">Tentative Collection Date</th>
                                 <th scope="col">Created At<br>Created By<br>Updated At<br>Updated By</th>
-                                <?php if($rows){ if($rows[0]->status >= 11 && $rows[0]->status <= 12){?><th scope="col">Ecoex Payment<br>Approve Status<br>HO Approve<br>Order Complete</th><?php } }?>
+                                <?php if($rows){ if($rows[0]->status >= 11 && $rows[0]->status <= 12){?><th scope="col">Ecoex Payment<br>Approve Status<br>HO Approve<br>Enquiry Complete</th><?php } }?>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -95,7 +95,7 @@ $userType           = $session->user_type;
 
                                                 <?php if($row->order_complete_date == ''){?>
                                                     <?php if($userType == 'MA'){?>
-                                                        <a href="<?=base_url('admin/' . $controller_route . '/order-complete/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Complete <?=$title?>" onclick="return confirm('Do You Want To Complete This <?=$title?>');"><i class="fa-solid fa-flag-checkered"></i> Click To Complete</a>
+                                                        <a href="<?=base_url('admin/' . $controller_route . '/order-complete/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Complete <?=$title?>" onclick="return confirm('Do You Want To Complete This <?=$title?>');"><i class="fa-solid fa-flag-checkered"></i> Click To Complete Enquiry</a>
                                                     <?php }?>
                                                 <?php } else {?>
                                                     <h6 class="badge bg-success">COMPLETED</h6>
