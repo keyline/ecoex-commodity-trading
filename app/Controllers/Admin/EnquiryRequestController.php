@@ -203,7 +203,9 @@ class EnquiryRequestController extends BaseController {
         $postData = array(
                             'status' => 14
                         );
-        $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
+        $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
+        $this->common_model->save_data('ecomm_sub_enquires', ['status' => 14.14], $id, 'enq_id');
+
         $this->session->setFlashdata('success_message', $this->data['title'].' deleted successfully');
         return redirect()->to('/admin/'.$this->data['controller_route'].'/list/'.encoded($current_status));
     }
