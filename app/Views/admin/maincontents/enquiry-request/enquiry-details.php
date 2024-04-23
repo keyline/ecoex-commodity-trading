@@ -889,7 +889,9 @@
                                                     <div class="row mt-3">
                                                         <div class="col-md-6 text-center">
                                                             <?php if($getEnquiry->is_invoice_from_ho == 0){?>
-                                                                <a href="<?=base_url('admin/enquiry-requests/request-invoice-to-HO-from-ecoex/'.encoded($getEnquiry->id).'/'.encoded($sub_enquiry_no))?>" class="btn btn-warning btn-sm" onclick="return confirm('Do you want to sent request for invoice to HO ?');"><i class="fa-solid fa-code-pull-request"></i> Request For Invoice To HO</a>
+                                                                <?php if($userType == 'MA'){?>
+                                                                    <a href="<?=base_url('admin/enquiry-requests/request-invoice-to-HO-from-ecoex/'.encoded($getEnquiry->id).'/'.encoded($sub_enquiry_no))?>" class="btn btn-warning btn-sm" onclick="return confirm('Do you want to sent request for invoice to HO ?');"><i class="fa-solid fa-code-pull-request"></i> Request For Invoice To HO</a>
+                                                                <?php }?>
                                                             <?php } elseif($getEnquiry->is_invoice_from_ho >= 1){?>
                                                                 <h4 class="text-success fw-bold">Invoice Request Sent To HO Succesfully</h4>
                                                                 <h5><?=date_format(date_create($getEnquiry->invoice_from_ho_request_date), "M d, Y h:i A")?></h5>
