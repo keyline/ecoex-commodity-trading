@@ -1111,14 +1111,16 @@
                                                             <?php }?>
                                                         </div>
                                                         <div class="col-md-6 text-center">
-                                                            <?php if(!$getEnquiry->is_ho_approve_ecoex_payment){?>
-                                                                <h4 class="text-warning fw-bold">Ecoex Payment Still Not Approved By HO</h4>
-                                                                <?php if($userType == 'COMPANY'){?>
-                                                                    <a href="<?=base_url('admin/enquiry-requests/approve-ecoex-payment-by-ho/'.encoded($getEnquiry->id).'/'.encoded($sub_enquiry_no))?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to approve ecoex payment ?');"><i class="fas fa-check"></i> Approve Ecoex Payment</a>
+                                                            <?php if($getEnquiry->ecoex_submitted_date != ''){?>
+                                                                <?php if(!$getEnquiry->is_ho_approve_ecoex_payment){?>
+                                                                    <h4 class="text-warning fw-bold">Ecoex Payment Still Not Approved By HO</h4>
+                                                                    <?php if($userType == 'COMPANY'){?>
+                                                                        <a href="<?=base_url('admin/enquiry-requests/approve-ecoex-payment-by-ho/'.encoded($getEnquiry->id).'/'.encoded($sub_enquiry_no))?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to approve ecoex payment ?');"><i class="fas fa-check"></i> Approve Ecoex Payment</a>
+                                                                    <?php }?>
+                                                                <?php } else {?>
+                                                                    <h4 class="text-success fw-bold">Ecoex Payment Approved By HO</h4>
+                                                                    <h6><?=date_format(date_create($getEnquiry->ho_approve_date), "M d, Y h:i A")?></h6>
                                                                 <?php }?>
-                                                            <?php } else {?>
-                                                                <h4 class="text-success fw-bold">Ecoex Payment Approved By HO</h4>
-                                                                <h6><?=date_format(date_create($getEnquiry->ho_approve_date), "M d, Y h:i A")?></h6>
                                                             <?php }?>
                                                         </div>
                                                     </div>
