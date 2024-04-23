@@ -95,7 +95,7 @@ $userType           = $session->user_type;
 
                                                 <?php if($row->order_complete_date == ''){?>
                                                     <?php if($userType == 'MA'){?>
-                                                        <a href="<?=base_url('admin/' . $controller_route . '/order-complete/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Complete <?=$title?>" onclick="return confirm('Do You Want To Complete This <?=$title?>');"><i class="fa-solid fa-flag-checkered"></i> Click To Complete Enquiry</a>
+                                                        <a href="<?=base_url('admin/' . $controller_route . '/order-complete/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm" title="Complete <?=$title?>" onclick="return confirm('Do You Want To Complete This <?=$title?>');"><i class="fa-solid fa-flag-checkered"></i> Click To Complete</a>
                                                     <?php }?>
                                                 <?php } else {?>
                                                     <h6 class="badge bg-success">COMPLETED</h6>
