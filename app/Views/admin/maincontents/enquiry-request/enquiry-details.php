@@ -699,13 +699,13 @@
                                                 <tbody>
                                                     <?php
                                                     $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
-                                                    $getPickupDates             = $common_model->find_data('ecomm_enquiry_vendor_pickup_schedule_logs', 'array', ['sub_enquiry_no' => $sub_enquiry_no], 'pickup_date_time,created_at,pickup_schedule_remarks', '', '', $orderBy);
+                                                    $getPickupDates             = $common_model->find_data('ecomm_enquiry_vendor_pickup_schedule_logs', 'array', ['sub_enquiry_no' => $sub_enquiry_no], 'pickup_date_time,created_at', '', '', $orderBy);
                                                     ?>
                                                     <?php if($getPickupDates){ $sl=1; foreach($getPickupDates as $getPickupDate){?>
                                                         <tr>
                                                             <td><?=$sl?></td>
                                                             <td><?=date_format(date_create($getPickupDate->pickup_date_time), "M d, Y h:i A")?></td>
-                                                            <td><?=$getPickupDate->pickup_schedule_remarks?></td>
+                                                            <td><?=$subenquiry->pickup_schedule_remarks?></td>
                                                             <td><?=date_format(date_create($getPickupDate->created_at), "M d, Y h:i A")?></td>
                                                             <td>
                                                                 <?php if($sl == 1){?>
