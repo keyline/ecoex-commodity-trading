@@ -705,7 +705,15 @@
                                                         <tr>
                                                             <td><?=$sl?></td>
                                                             <td><?=date_format(date_create($getPickupDate->pickup_date_time), "M d, Y h:i A")?></td>
-                                                            <td><?=$subenquiry->pickup_schedule_remarks?></td>
+                                                            <td>
+                                                                <?php if($sl == 1){?>
+                                                                    <form method="POST" action="">
+                                                                        <input type="text" name="sub_enquiry_no" value="<?=$subenquiry->sub_enquiry_no?>">
+                                                                        <textarea class="form-control" name="pickup_schedule_remarks" placeholder="Enter Remarks"><?=$subenquiry->pickup_schedule_remarks?></textarea>
+                                                                        <button type="submit" class="btn btn-info btn-sm">Submit</button>
+                                                                    </form>
+                                                                <?php } ?>
+                                                            </td>
                                                             <td><?=date_format(date_create($getPickupDate->created_at), "M d, Y h:i A")?></td>
                                                             <td>
                                                                 <?php if($sl == 1){?>
