@@ -699,7 +699,7 @@
                                                 <tbody>
                                                     <?php
                                                     $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
-                                                    $getPickupDates             = $common_model->find_data('ecomm_enquiry_vendor_pickup_schedule_logs', 'array', ['sub_enquiry_no' => $sub_enquiry_no], 'pickup_date_time,created_at', '', '', $orderBy);
+                                                    $getPickupDates             = $common_model->find_data('ecomm_enquiry_vendor_pickup_schedule_logs', 'array', ['sub_enquiry_no' => $sub_enquiry_no], 'pickup_date_time,created_at,pickup_schedule_remarks', '', '', $orderBy);
                                                     ?>
                                                     <?php if($getPickupDates){ $sl=1; foreach($getPickupDates as $getPickupDate){?>
                                                         <tr>
