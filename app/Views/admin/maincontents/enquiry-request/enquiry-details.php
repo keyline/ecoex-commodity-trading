@@ -691,6 +691,7 @@
                                                     <tr>
                                                         <th>#</th>
                                                         <th>Pickup Date/Time</th>
+                                                        <th>Pickup Schedule Remarks</th>
                                                         <th>Submitted Date/Time</th>
                                                         <th>Pickup Scheduled Action</th>
                                                     </tr>
@@ -704,6 +705,7 @@
                                                         <tr>
                                                             <td><?=$sl?></td>
                                                             <td><?=date_format(date_create($getPickupDate->pickup_date_time), "M d, Y h:i A")?></td>
+                                                            <td><?=$getPickupDate->pickup_schedule_remarks?></td>
                                                             <td><?=date_format(date_create($getPickupDate->created_at), "M d, Y h:i A")?></td>
                                                             <td>
                                                                 <?php if($sl == 1){?>
