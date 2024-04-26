@@ -1745,6 +1745,13 @@ class EnquiryRequestController extends BaseController {
                     return redirect()->to(current_url());
                 }
             }
+            if($this->request->getPost('mode') == 'remarks'){
+                $sub_enquiry_no                 = $this->request->getPost('sub_enquiry_no');
+                $pickup_schedule_remarks        = $this->request->getPost('pickup_schedule_remarks');
+                $this->common_model->save_data('ecomm_sub_enquires', ['pickup_schedule_remarks' => $pickup_schedule_remarks], $sub_enquiry_no, 'sub_enquiry_no');
+                $this->session->setFlashdata('success_message', $this->data['title'].' Pickup Scheduled Remarks Has Been Updated Successfully !!!');
+                return redirect()->to(current_url());
+            }
         }
 
         $groupBy[0]                 = 'sub_enquiry_no';
