@@ -64,10 +64,10 @@ class VendorController extends BaseController {
                     if($upload_array['status']) {
                         $profile_image = $upload_array['newFilename'];
                     } else {
-                        $profile_image = $data['row']->profile_image;
+                        $profile_image = '';
                     }
                 } else {
-                    $profile_image = $data['row']->profile_image;
+                    $profile_image = '';
                 }
             /* profile image */
             /* GST CERTIFICATE */
