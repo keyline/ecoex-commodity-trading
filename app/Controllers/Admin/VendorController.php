@@ -101,6 +101,7 @@ class VendorController extends BaseController {
                 }
             /* PAN CARD */
             $postData   = array(
+                'type'                                      => 'VENDOR',
                 'gst_no'                                    => $this->request->getPost('gst_no'),
                 'gst_certificate'                           => $gst_certificate,
                 'company_name'                              => $this->request->getPost('company_name'),
