@@ -220,6 +220,7 @@ class User extends BaseController {
             $page_name                          = 'dashboard';
 
             $data['filter_keyword']             = '';
+            $data['filter_keyword_text']        = 'All Time';
             $data['company']                    = $this->common_model->find_data('ecoex_companies', 'count', ['status!=' => 3]);
             $data['vendor']                     = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'VENDOR']);
             $data['itemCategory']               = $this->common_model->find_data('ecomm_product_categories', 'count', ['status' => 1]);
@@ -278,33 +279,41 @@ class User extends BaseController {
             $tDate = '';
             if($postData['filter_keyword'] == 'today'){
                 $fDate = date('Y-m-d');
+                $filter_keyword_text = 'Today';
             }
             if($postData['filter_keyword'] == 'yesterday'){
                 $fDate = date('Y-m-d',strtotime("-1 days"));
+                $filter_keyword_text = 'Yesterday';
             }
             if($postData['filter_keyword'] == 'this_month'){
                 $fDate = date('Y-m')."-01";
                 $tDate = date('Y-m-d');
+                $filter_keyword_text = 'This Month';
             }
             if($postData['filter_keyword'] == 'last_month'){
                 $fDate = date("Y-m-d", mktime(0, 0, 0, date("m")-1, 1));
                 $tDate = date("Y-m-d", mktime(0, 0, 0, date("m"), 0));
+                $filter_keyword_text = 'Last Month';
             }
             if($postData['filter_keyword'] == 'last_7_days'){
                 $fDate = date('Y-m-d', strtotime('-7 days'));
                 $tDate = date('Y-m-d',strtotime("-1 days"));
+                $filter_keyword_text = 'Last 7 Days';
             }
             if($postData['filter_keyword'] == 'last_30_days'){
                 $fDate = date('Y-m-d', strtotime('-30 days'));
                 $tDate = date('Y-m-d',strtotime("-1 days"));
+                $filter_keyword_text = 'Last 30 Days';
             }
             if($postData['filter_keyword'] == 'this_year'){
                 $fDate = date('Y')."-01-01";
                 $tDate = date('Y')."-12-31";
+                $filter_keyword_text = 'This Year';
             }
             if($postData['filter_keyword'] == 'last_year'){
                 $fDate = (date('Y') - 1)."-01-01";
                 $tDate = (date('Y') - 1)."-12-31";
+                $filter_keyword_text = 'Last Year';
             }
             if($postData['filter_keyword'] == ''){
                 return redirect()->to('/admin/dashboard');
@@ -317,6 +326,7 @@ class User extends BaseController {
             $page_name                          = 'dashboard';
 
             $data['filter_keyword']             = $postData['filter_keyword'];
+            $data['filter_keyword_text']        = $filter_keyword_text;
             $data['company']                    = $this->common_model->find_data('ecoex_companies', 'count', ['status!=' => 3, 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
             $data['vendor']                     = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'VENDOR', 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
             $data['itemCategory']               = $this->common_model->find_data('ecomm_product_categories', 'count', ['status' => 1, 'created_at>=' => $fDate, 'created_at<=' => $tDate]);

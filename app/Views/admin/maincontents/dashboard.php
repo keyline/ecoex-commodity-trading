@@ -52,7 +52,7 @@ $userType           = $session->user_type;
                                 </ul>
                             </div> -->
                             <div class="card-body">
-                                <h5 class="card-title">Companies <span>| All Time</span></h5>
+                                <h5 class="card-title">Companies <span>| <?=$filter_keyword_text?></span></h5>
                                 <div class="d-flex align-items-center">
                                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                         <i class="bi bi-people"></i>
@@ -82,7 +82,7 @@ $userType           = $session->user_type;
                             </ul>
                         </div> -->
                         <div class="card-body">
-                            <h5 class="card-title">Plants <span>| All Time</span></h5>
+                            <h5 class="card-title">Plants <span>| <?=$filter_keyword_text?></span></h5>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-people"></i>
@@ -112,7 +112,7 @@ $userType           = $session->user_type;
                                 </ul>
                             </div> -->
                             <div class="card-body">
-                                <h5 class="card-title">Vendors <span>| All Time</span></h5>
+                                <h5 class="card-title">Vendors <span>| <?=$filter_keyword_text?></span></h5>
                                 <div class="d-flex align-items-center">
                                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                         <i class="bi bi-people"></i>
@@ -143,7 +143,7 @@ $userType           = $session->user_type;
                             </ul>
                         </div> -->
                         <div class="card-body">
-                            <h5 class="card-title">Enquires <span>| All Time</span></h5>
+                            <h5 class="card-title">Enquires <span>| <?=$filter_keyword_text?></span></h5>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-people"></i>
@@ -173,7 +173,7 @@ $userType           = $session->user_type;
                             </ul>
                         </div> -->
                         <div class="card-body">
-                            <h5 class="card-title">Pending Items <span>| All Time</span></h5>
+                            <h5 class="card-title">Pending Items <span>| <?=$filter_keyword_text?></span></h5>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-people"></i>
@@ -203,7 +203,7 @@ $userType           = $session->user_type;
                                 </ul>
                             </div> -->
                             <div class="card-body">
-                                <h5 class="card-title">Item Categories <span>| All Time</span></h5>
+                                <h5 class="card-title">Item Categories <span>| <?=$filter_keyword_text?></span></h5>
                                 <div class="d-flex align-items-center">
                                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                         <i class="bi bi-people"></i>
@@ -234,7 +234,7 @@ $userType           = $session->user_type;
                             </ul>
                         </div> -->
                         <div class="card-body">
-                            <h5 class="card-title">Recent Enquires <span>| All Time</span></h5>
+                            <h5 class="card-title">Recent Enquires <span>| <?=$filter_keyword_text?></span></h5>
                             <table class="table table-borderless datatable">
                                 <thead>
                                     <tr>
@@ -252,7 +252,7 @@ $userType           = $session->user_type;
                                         $getPlant                   = $common_model->find_data('ecomm_users', 'row', ['id' => $recent_enquiry->plant_id], 'plant_name');
                                     ?>
                                         <tr>
-                                            <th scope="row"><a target="_blank" href="<?=base_url('admin/enquiry-requests/enquiry-details/'.encoded($recent_enquiry->id))?>">#<?=$recent_enquiry->enquiry_no?></a></th>
+                                            <th scope="row"><a href="<?=base_url('admin/enquiry-requests/enquiry-details/'.encoded($recent_enquiry->id))?>">#<?=$recent_enquiry->enquiry_no?></a></th>
                                             <td><?=(($getCompany)?$getCompany->company_name:'')?></td>
                                             <td><?=(($getPlant)?$getPlant->plant_name:'')?></td>
                                             <td>
@@ -341,7 +341,7 @@ $userType           = $session->user_type;
                     </ul>
                 </div> -->
                 <div class="card-body pb-0">
-                    <h5 class="card-title">Enquiry Requests <span>| All Time</span></h5>
+                    <h5 class="card-title">Enquiry Requests <span>| <?=$filter_keyword_text?></span></h5>
                     <div id="trafficChart" style="min-height: 800px;" class="echart"></div>
                     <script>
                         document.addEventListener("DOMContentLoaded", () => {
