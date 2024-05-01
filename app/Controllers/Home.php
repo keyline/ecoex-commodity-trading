@@ -135,12 +135,12 @@ class Home extends BaseController
         /* mail functionality */
             $subject                    = $data['general_settings']->site_name.' :: Enquiry Report on '.$data['filter_keyword_text'];
             $message                    = $html;
-            $this->sendMail($data['general_settings']->system_email, $subject, $message);
+            $this->sendMail($data['general_settings']->site_mail, $subject, $message);
         /* mail functionality */
         /* email log save */
             $postData2 = [
                 'name'                  => $data['general_settings']->site_name,
-                'email'                 => $data['general_settings']->system_email,
+                'email'                 => $data['general_settings']->site_mail,
                 'subject'               => $subject,
                 'message'               => $message
             ];
