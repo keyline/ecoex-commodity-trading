@@ -73,9 +73,9 @@ $this->common_model         = new CommonModel;
                     </thead>
                     <tbody>
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td><?=$request_submit_count?></td>
+                            <td><?=$request_accept_count?></td>
+                            <td><?=$request_complete_count?></td>
                         </tr>
                     </tbody>
                 </table>

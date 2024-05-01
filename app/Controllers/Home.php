@@ -126,6 +126,10 @@ class Home extends BaseController
         $data['f_date']                     = date('Y-m-d',strtotime("-1 days"));
         $data['t_date']                     = date('Y-m-d',strtotime("-1 days"));
         $data['filter_keyword_text']        = date('M d, Y l',strtotime("-1 days"));
+        $yesterday                          = date('Y-m-d',strtotime("-1 days"));
+        $data['request_submit_count']       = $this->common_model->find_data('ecomm_enquires','count', ['created_at LIKE' => '%' . $yesterday . '%']);
+        $data['request_accept_count']       = $this->common_model->find_data('ecomm_enquires','count', ['accepted_date LIKE' => '%' . $yesterday . '%']);
+        $data['request_complete_count']     = $this->common_model->find_data('ecomm_enquires','count', ['order_complete_date LIKE' => '%' . $yesterday . '%']);
 
         return view('enquiry-cron', $data);
     }
