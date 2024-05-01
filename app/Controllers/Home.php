@@ -133,8 +133,8 @@ class Home extends BaseController
 
         $html = view('enquiry-cron', $data);
         /* mail functionality */
-            echo $subject                    = $data['general_settings']->site_name.' :: Enquiry Report on '.$data['filter_keyword_text'];
-            echo $message                    = $html;die;
+            $subject                    = $data['general_settings']->site_name.' :: Enquiry Report on '.$data['filter_keyword_text'];
+            $message                    = $html;
             $this->sendMail($data['general_settings']->system_email, $subject, $message);
         /* mail functionality */
         /* email log save */
