@@ -66,9 +66,9 @@ $this->common_model         = new CommonModel;
                 <table class="table table-striped table-hover table-bordered">
                     <thead>
                         <tr>
-                            <th style="text-align:center; text-transform:uppercase;background-color: red;color: #000;">Request Submitted</th>
-                            <th style="text-align:center; text-transform:uppercase;background-color: red;color: #000;">Request Accepted</th>
-                            <th style="text-align:center; text-transform:uppercase;background-color: #9a00ff;color: #fff;">Order Complete</th>
+                            <th style="text-align:center; text-transform:uppercase;background-color: #a8cf45;color: #000;">Request Submitted</th>
+                            <th style="text-align:center; text-transform:uppercase;background-color: #75b54e;color: #000;">Request Accepted</th>
+                            <th style="text-align:center; text-transform:uppercase;background-color: #48974e;color: #000;">Order Complete</th>
                         </tr>
                     </thead>
                     <tbody>
