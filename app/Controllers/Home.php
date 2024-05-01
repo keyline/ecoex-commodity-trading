@@ -131,6 +131,20 @@ class Home extends BaseController
         $data['request_accept_count']       = $this->common_model->find_data('ecomm_enquires','count', ['accepted_date LIKE' => '%' . $yesterday . '%']);
         $data['request_complete_count']     = $this->common_model->find_data('ecomm_enquires','count', ['order_complete_date LIKE' => '%' . $yesterday . '%']);
 
-        return view('enquiry-cron', $data);
+        $html = view('enquiry-cron', $data);
+        /* mail functionality */
+            echo $subject                    = $data['general_settings']->site_name.' :: Enquiry Report on '.$data['filter_keyword_text'];
+            echo $message                    = $html;die;
+            $this->sendMail($data['general_settings']->system_email, $subject, $message);
+        /* mail functionality */
+        /* email log save */
+            $postData2 = [
+                'name'                  => $data['general_settings']->site_name,
+                'email'                 => $data['general_settings']->system_email,
+                'subject'               => $subject,
+                'message'               => $message
+            ];
+            $this->common_model->save_data('email_logs', $postData2, '', 'id');
+        /* email log save */
     }
 }
