@@ -58,11 +58,28 @@ $this->common_model         = new CommonModel;
 
     <h3 class="text-center">
         <img src="<?=getenv('app.uploadsURL').$general_settings->site_logo?>" alt="<?=$general_settings->site_name?>">
-        <p class="mt-3">Enquiry Report : <?=$filter_keyword_text?></p>
+        <p class="mt-3">Commodity Enquiry Report : <?=$filter_keyword_text?></p>
     </h3>
     <div class=" justify-content-center d-flex">
         <div class="row col-md-12 col-sm-12 col-xs-12">
-            
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center; text-transform:uppercase;background-color: red;color: #000;">Request Submitted</th>
+                            <th style="text-align:center; text-transform:uppercase;background-color: red;color: #000;">Request Accepted</th>
+                            <th style="text-align:center; text-transform:uppercase;background-color: #9a00ff;color: #fff;">Order Complete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
