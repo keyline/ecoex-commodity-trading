@@ -19,7 +19,6 @@ class Home extends BaseController
         $data['general_settings']   = $this->common_model->find_data('general_settings','row');
         $id                         = decoded($id);
         $data['enquiry']            = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $id]);
-        
         return view('enquiry-request-details', $data);
     }
     public function deleteAccountRequest()
@@ -47,7 +46,6 @@ class Home extends BaseController
         
         return view('delete-account-request', $data);
     }
-
     public function getEmailOTP(){
         $apiStatus          = TRUE;
         $apiMessage         = '';
@@ -120,5 +118,15 @@ class Home extends BaseController
             $apiMessage         = 'We Don\'t Recognize You !!!';
         }
         $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+    }
+    public function enquiryCron()
+    {
+        $data['general_settings']           = $this->common_model->find_data('general_settings','row');
+        $data['filter_keyword']             = 'yesterday';
+        $data['f_date']                     = date('Y-m-d',strtotime("-1 days"));
+        $data['t_date']                     = date('Y-m-d',strtotime("-1 days"));
+        $data['filter_keyword_text']        = date('M d, Y l',strtotime("-1 days"));
+
+        return view('enquiry-cron', $data);
     }
 }
