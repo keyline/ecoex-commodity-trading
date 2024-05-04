@@ -4382,7 +4382,7 @@ class ApiController extends BaseController
                         $groupBy[0]             = 'sub_enquiry_no';
                         $process_request        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['vendor_id' => $uId, 'status<=' => 10.10], '', '', $groupBy);
                         $rejected_enquiry       = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId, 'status' => 3]);
-                        $completed_count        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['vendor_id' => $uId, 'status' => 12.12]);
+                        $completed_count        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['vendor_id' => $uId, 'status' => 12.12], '', '', $groupBy);
                         $apiResponse            = [
                             'vendor_id'         => $getUser->id,
                             'gst_no'            => $getUser->gst_no,
