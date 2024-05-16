@@ -5,7 +5,7 @@ $company_id                 = $session->company_id;
 <div class="d-flex align-items-center justify-content-between">
     <a href="index.html" class="logo d-flex align-items-center">
     <!-- <img src="<?=getenv('app.adminAssetsURL')?>assets/img/logo.png" alt="<?=$general_settings->site_name?>"> -->
-    <span class="d-none d-lg-block" style="font-size: <?=$general_settings->project_name_font_size?>;color: <?=$general_settings->project_name_font_color?>;"><?=$general_settings->site_name?></span>
+    <span class="d-none d-lg-block" style="font-size: <?=$general_settings->project_name_font_size?>px;color: <?=$general_settings->project_name_font_color?>;"><?=$general_settings->site_name?></span>
     </a>
     <i class="bi bi-list toggle-sidebar-btn"></i>
 </div>
@@ -174,7 +174,7 @@ $company_id                 = $session->company_id;
                         <?php } ?>
                     <?php }?>
                 <?php }?>
-                <span class="d-none d-md-block dropdown-toggle ps-2" style="font-size: <?=$general_settings->profile_name_font_size?>;color: <?=$general_settings->profile_name_font_color?>;"><?=$session->name?></span>
+                <span class="d-none d-md-block dropdown-toggle ps-2" style="font-size: <?=$general_settings->profile_name_font_size?>px;color: <?=$general_settings->profile_name_font_color?>;"><?=$session->name?></span>
             </a><!-- End Profile Iamge Icon -->
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                 <li class="dropdown-header">
