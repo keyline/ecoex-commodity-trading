@@ -5,7 +5,7 @@
     </head>
     <body>
         <!-- ======= Header ======= -->
-        <header id="header" class="header fixed-top d-flex align-items-center">
+        <header id="header" class="header fixed-top d-flex align-items-center" style="background-color: <?=$general_settings->headerbar_bgcolor?>;">
             <?=$header?>
         </header>
         <!-- End Header -->

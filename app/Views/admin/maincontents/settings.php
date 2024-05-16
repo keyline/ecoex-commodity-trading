@@ -54,35 +54,38 @@ $user_type = session('user_type');
               <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab1">Profile</button>
             </li>
             <?php if($user_type == 'MA'){?>
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab2">General</button>
-            </li>
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab2">General</button>
+              </li>
             <?php }?>
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab3">Change Password</button>
-            </li>
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab3">Change Password</button>
+              </li>
             <?php if($user_type == 'MA'){?>
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab4">Email</button>
-            </li>
-            <!-- <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab9">Email Templates</button>
-            </li> -->
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab5">SMS</button>
-            </li>
-            <!-- <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab6">Footer</button>
-            </li>
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab7">SEO</button>
-            </li>
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab8">Payment</button>
-            </li>
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab10">Bank Account</button>
-            </li> -->
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab4">Email</button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab5">SMS</button>
+              </li>
+              <!-- <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab6">Footer</button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab7">SEO</button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab8">Payment</button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab9">Email Templates</button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab10">Bank Account</button>
+              </li> -->
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab11">Color</button>
+              </li>
             <?php }?>
           </ul>
           <div class="tab-content pt-2">
@@ -641,6 +644,63 @@ $user_type = session('user_type');
                   <label for="ifsc_code" class="col-md-4 col-lg-3 col-form-label">IFSC Code</label>
                   <div class="col-md-8 col-lg-9">
                     <input name="ifsc_code" type="text" class="form-control" id="ifsc_code" value="<?=$setting->ifsc_code?>" required>
+                  </div>
+                </div>
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </form><!-- End bank settings Form -->
+            </div>
+            <div class="tab-pane fade pt-3" id="tab11">
+              <!-- bank settings Form -->
+              <form method="POST" action="<?=base_url('admin/color-settings')?>" enctype="multipart/form-data">
+                <div class="row mb-3">
+                  <label for="headerbar_bgcolor" class="col-md-4 col-lg-3 col-form-label">Header Bar Color</label>
+                  <div class="col-md-8 col-lg-9">
+                    <input name="headerbar_bgcolor" type="text" class="form-control" id="headerbar_bgcolor" value="<?=$setting->headerbar_bgcolor?>" required>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="project_name_font_color" class="col-md-4 col-lg-3 col-form-label">Project Name Font Color (top-left corner)</label>
+                  <div class="col-md-8 col-lg-9">
+                    <input name="project_name_font_color" type="text" class="form-control" id="project_name_font_color" value="<?=$setting->project_name_font_color?>" required>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="project_name_font_size" class="col-md-4 col-lg-3 col-form-label">Project Name Font Size (top-left corner)</label>
+                  <div class="col-md-8 col-lg-9">
+                    <select name="project_name_font_size" class="form-control" id="project_name_font_size" required>
+                      <option value="" selected>Select</option>
+                      <?php for($i=1;$i<=40;$i++){?>
+                      <option value="<?=$i?>" <?=(($setting->project_name_font_size == $i)?'selected':'')?>><?=$i?>px</option>
+                      <?php }?>
+                    </select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="profile_name_font_color" class="col-md-4 col-lg-3 col-form-label">Profile Name Font Color (top-right corner)</label>
+                  <div class="col-md-8 col-lg-9">
+                    <input name="profile_name_font_color" type="text" class="form-control" id="profile_name_font_color" value="<?=$setting->profile_name_font_color?>" required>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="profile_name_font_size" class="col-md-4 col-lg-3 col-form-label">Profile Name Font Size (top-right corner)</label>
+                  <div class="col-md-8 col-lg-9">
+                    <select name="profile_name_font_size" class="form-control" id="profile_name_font_size" required>
+                      <option value="" selected>Select</option>
+                      <?php for($i=1;$i<=40;$i++){?>
+                      <option value="<?=$i?>" <?=(($setting->profile_name_font_size == $i)?'selected':'')?>><?=$i?>px</option>
+                      <?php }?>
+                    </select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="profile_image_show" class="col-md-4 col-lg-3 col-form-label">Profile Image Show (top-right corner)</label>
+                  <div class="col-md-8 col-lg-9">
+                    <select name="profile_image_show" class="form-control" id="profile_image_show" required>
+                      <option value="1" <?=(($setting->profile_image_show == 1)?'selected':'')?>>YES</option>
+                      <option value="0" <?=(($setting->profile_image_show == 0)?'selected':'')?>>NO</option>
+                    </select>
                   </div>
                 </div>
                 <div class="text-center">

@@ -39,6 +39,7 @@ $routes->get('/enquiry-cron', 'Home::enquiryCron');
 			$routes->match(['post'], "seo-settings", "User::seoSetting");
 			$routes->match(['post'], "payment-settings", "User::paymentSetting");
 			$routes->match(['post'], "bank-settings", "User::bankSetting");
+			$routes->match(['post'], "color-settings", "User::colorSetting");
 			$routes->match(['get','post'], "test-email", "User::testEmail");
 		// settings
 		// access & permission

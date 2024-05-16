@@ -606,7 +606,6 @@ class User extends BaseController {
         public function footerSetting()
         {
             $user_id                = $this->session->get('user_id');
-            // pr($this->request->getPost());
             $footer_text            = $this->request->getPost('footer_text');
             $footer_link_name       = $this->request->getPost('footer_link_name');
             $footer_link            = $this->request->getPost('footer_link');
@@ -665,6 +664,21 @@ class User extends BaseController {
             ];
             $this->common_model->save_data('general_settings', $fields, 1, 'id');
             $this->session->setFlashdata('success_message', 'Bank Settings Updated Successfully !!!');
+            return redirect()->to('/admin/settings');
+        }
+        public function colorSetting()
+        {
+            $user_id                = $this->session->get('user_id');
+            $fields = [
+                'headerbar_bgcolor'                     => $this->request->getPost('headerbar_bgcolor'),
+                'project_name_font_color'               => $this->request->getPost('project_name_font_color'),
+                'project_name_font_size'                => $this->request->getPost('project_name_font_size'),
+                'profile_name_font_color'               => $this->request->getPost('profile_name_font_color'),
+                'profile_name_font_size'                => $this->request->getPost('profile_name_font_size'),
+                'profile_image_show'                    => $this->request->getPost('profile_image_show'),
+            ];
+            $this->common_model->save_data('general_settings', $fields, 1, 'id');
+            $this->session->setFlashdata('success_message', 'Color Settings Updated Successfully !!!');
             return redirect()->to('/admin/settings');
         }
     /* settings */
