@@ -657,13 +657,13 @@ $user_type = session('user_type');
                 <div class="row mb-3">
                   <label for="headerbar_bgcolor" class="col-md-4 col-lg-3 col-form-label">Header Bar Color</label>
                   <div class="col-md-8 col-lg-9">
-                    <input name="headerbar_bgcolor" type="text" class="form-control" id="headerbar_bgcolor" value="<?=$setting->headerbar_bgcolor?>" required>
+                    <input name="headerbar_bgcolor" type="color" class="form-control" id="headerbar_bgcolor" value="<?=$setting->headerbar_bgcolor?>" required>
                   </div>
                 </div>
                 <div class="row mb-3">
                   <label for="project_name_font_color" class="col-md-4 col-lg-3 col-form-label">Project Name Font Color (top-left corner)</label>
                   <div class="col-md-8 col-lg-9">
-                    <input name="project_name_font_color" type="text" class="form-control" id="project_name_font_color" value="<?=$setting->project_name_font_color?>" required>
+                    <input name="project_name_font_color" type="color" class="form-control" id="project_name_font_color" value="<?=$setting->project_name_font_color?>" required>
                   </div>
                 </div>
                 <div class="row mb-3">
@@ -680,7 +680,7 @@ $user_type = session('user_type');
                 <div class="row mb-3">
                   <label for="profile_name_font_color" class="col-md-4 col-lg-3 col-form-label">Profile Name Font Color (top-right corner)</label>
                   <div class="col-md-8 col-lg-9">
-                    <input name="profile_name_font_color" type="text" class="form-control" id="profile_name_font_color" value="<?=$setting->profile_name_font_color?>" required>
+                    <input name="profile_name_font_color" type="color" class="form-control" id="profile_name_font_color" value="<?=$setting->profile_name_font_color?>" required>
                   </div>
                 </div>
                 <div class="row mb-3">
