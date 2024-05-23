@@ -462,7 +462,7 @@ $userType           = $session->user_type;
                                 '#e7bcf3',
                                 '#9d96f5',
                                 '#8378EA',
-                                '#96BFFF',
+                                '#91cc75',
                                 '#ff9f7f'
                               ],
                               radius: ['30%', '50%'],
