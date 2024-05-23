@@ -449,7 +449,7 @@ $userType           = $session->user_type;
                             series: [{
                               name: 'Access From',
                               type: 'pie',
-                              color: {
+                              color: [
                                 '#37A2DA',
                                 '#32C5E9',
                                 '#67E0E3',
@@ -464,7 +464,7 @@ $userType           = $session->user_type;
                                 '#8378EA',
                                 '#96BFFF',
                                 '#ff9f7f'
-                              },
+                              ],
                               radius: ['30%', '50%'],
                               avoidLabelOverlap: true,
                               label: {
