@@ -399,10 +399,10 @@ $userType           = $session->user_type;
                                                     $bgcolor        =   '#ff0000';
                                                 } elseif($recent_enquiry->status == 12){
                                                     $enquiryStatus  = 'Order Complete';
-                                                    $bgcolor        =   '#ff0000';
+                                                    $bgcolor        =   '#91cc75';
                                                 } elseif($recent_enquiry->status == 13){
                                                     $enquiryStatus  = 'Reject Request';
-                                                    $bgcolor        =   '#91cc75';
+                                                    $bgcolor        =   '#ff0000';
                                                 } 
                                                 ?>
                                                 <span class="badge" style="background-color: <?=$bgcolor?>; color: #FFF;"><?=$enquiryStatus?></span>
