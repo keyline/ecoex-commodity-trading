@@ -38,6 +38,23 @@ class ReportController extends BaseController {
 
         if($this->request->getGet('mode') == 'advance_search'){
             $requestData = $this->request->getGet();
+            $search_company_id      = $requestData['search_company_id'];
+            if(array_key_exists('is_date_range', $requestData)){
+                $search_range_from  = explode("-", $requestData['search_range_from']);
+                $search_range_to    = explode("-", $requestData['search_range_to']);
+                $from_date          = $search_range_from[0] . '-'.$search_range_from[1].'-01';
+                $to_date            = $search_range_from[0] . '-'.$search_range_from[1].'-31';
+            } else {
+                $search_day_id      = $requestData['search_day_id'];
+                if($search_day_id == 'this_month'){
+                    $from_date  = date('Y')'-'.date('m').'-01';
+                    $to_date    = date('Y')'-'.date('m').'-31';
+                } elseif($search_day_id == 'last_month'){
+                    $from_date  = date("Y-m-d", mktime(0, 0, 0, date("m")-1, 1));
+                    $to_date    = date("Y-m-d", mktime(0, 0, 0, date("m"), 0));
+                }
+            }
+            echo $from_date . '||' . $to_date;
             pr($requestData);
         }
 
