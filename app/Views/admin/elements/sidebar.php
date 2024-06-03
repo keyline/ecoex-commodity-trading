@@ -328,7 +328,7 @@ if($userType == 'MA'){
         </li>
     <?php }?>
     <?php if(($common_model->checkModuleAccess(19)) || ($common_model->checkModuleAccess(20))){?>
-        <!-- <li class="nav-item">
+        <li class="nav-item">
             <a class="nav-link <?=(($pageSegment == 'reports')?'':'collapsed')?> <?=(($pageSegment == 'reports')?'active':'')?>" data-bs-target="#report-nav" data-bs-toggle="collapse" href="#">
                 <i class="fa fa-file"></i><span>Reports</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
@@ -341,7 +341,7 @@ if($userType == 'MA'){
                     </li>
                 <?php }?>
             </ul>
-        </li> -->
+        </li>
     <?php }?>
     <?php if(($common_model->checkModuleAccess(19)) || ($common_model->checkModuleAccess(20))){?>
         <li class="nav-item">
