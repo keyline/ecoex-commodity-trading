@@ -94,3 +94,16 @@ $controller_route   = $moduleDetail['controller_route'];
     </div>
   </div>
 </section>
+<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript">
+  $("#is_date_range").click(function() {
+      if($(this).is(":checked")) {
+          $("#day_range_row").show();
+          $("#day_type_row").hide();
+      } else {
+          $("#day_range_row").hide();
+          $("#day_type_row").show();
+      }
+  });
+</script>
