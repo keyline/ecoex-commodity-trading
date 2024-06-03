@@ -47,8 +47,8 @@ class ReportController extends BaseController {
             } else {
                 $search_day_id      = $requestData['search_day_id'];
                 if($search_day_id == 'this_month'){
-                    $from_date  = date('Y')'-'.date('m').'-01';
-                    $to_date    = date('Y')'-'.date('m').'-31';
+                    $from_date  = date('Y') . '-' . date('m').'-01';
+                    $to_date    = date('Y') . '-' . date('m').'-31';
                 } elseif($search_day_id == 'last_month'){
                     $from_date  = date("Y-m-d", mktime(0, 0, 0, date("m")-1, 1));
                     $to_date    = date("Y-m-d", mktime(0, 0, 0, date("m"), 0));
