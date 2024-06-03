@@ -49,7 +49,7 @@ $controller_route   = $moduleDetail['controller_route'];
                 <div class="col-md-3 col-lg-3" id="day_type_row" style="display: <?=(($is_date_range == 1)?'none':'block')?>;">
                     <label for="search_day_id">Days</label>
                     <select name="search_day_id" class="form-control" id="search_day_id" required>
-                        <option value="all" <?=(($search_day_id == 'all')?'selected':'')?>>All</option>
+                        <!-- <option value="all" <?=(($search_day_id == 'all')?'selected':'')?>>All</option>
                         <hr>
                         <option value="today" <?=(($search_day_id == 'today')?'selected':'')?>>Today</option>
                         <hr>
@@ -58,15 +58,15 @@ $controller_route   = $moduleDetail['controller_route'];
                         <option value="this_week" <?=(($search_day_id == 'this_week')?'selected':'')?>>This Week</option>
                         <hr>
                         <option value="last_week" <?=(($search_day_id == 'last_week')?'selected':'')?>>Last Week</option>
-                        <hr>
+                        <hr> -->
                         <option value="this_month" <?=(($search_day_id == 'this_month')?'selected':'')?>>This Month</option>
                         <hr>
                         <option value="last_month" <?=(($search_day_id == 'last_month')?'selected':'')?>>Last Month</option>
                         <hr>
-                        <option value="last_7_days" <?=(($search_day_id == 'last_7_days')?'selected':'')?>>Last 7 Days</option>
+                        <!-- <option value="last_7_days" <?=(($search_day_id == 'last_7_days')?'selected':'')?>>Last 7 Days</option>
                         <hr>
                         <option value="last_30_days" <?=(($search_day_id == 'last_30_days')?'selected':'')?>>Last 30 Days</option>
-                        <hr>
+                        <hr> -->
                     </select>
                 </div>
                 <div class="col-md-2 col-lg-2" style="margin-top: 18px;">
