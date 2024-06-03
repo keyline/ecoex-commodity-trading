@@ -103,13 +103,13 @@ $controller_route   = $moduleDetail['controller_route'];
                     document.addEventListener("DOMContentLoaded", () => {
                       new ApexCharts(document.querySelector("#columnChart"), {
                         series: [{
-                          name: 'Net Profit',
+                          name: 'Scrap Qty',
                           data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
                         }, {
-                          name: 'Revenue',
+                          name: 'Number Of Plant',
                           data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
                         }, {
-                          name: 'Free Cash Flow',
+                          name: 'Vehicle Count',
                           data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
                         }],
                         chart: {
@@ -136,7 +136,7 @@ $controller_route   = $moduleDetail['controller_route'];
                         },
                         yaxis: {
                           title: {
-                            text: '$ (thousands)'
+                            text: 'Number'
                           }
                         },
                         fill: {
