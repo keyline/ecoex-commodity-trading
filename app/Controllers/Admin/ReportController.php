@@ -22,7 +22,7 @@ class ReportController extends BaseController {
             'primary_key'           => 'id'
         );
     }
-    public function industrialCommodityReport()
+    public function analyticsReport()
     {
         $data['moduleDetail']       = $this->data;
         
