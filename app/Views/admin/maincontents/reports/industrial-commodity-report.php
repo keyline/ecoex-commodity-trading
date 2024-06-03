@@ -41,7 +41,7 @@ $controller_route   = $moduleDetail['controller_route'];
                       <option value="all" <?=(($search_company_id == 'all')?'selected':'')?>>All</option>
                       <hr>
                       <?php if($companies){ foreach($companies as $row){?>
-                          <option value="<?=$row->id?>" <?=(($search_company_id == $row->id)?'selected':'')?>><?=$row->name?></option>
+                          <option value="<?=$row->id?>" <?=(($search_company_id == $row->id)?'selected':'')?>><?=$row->company_name?></option>
                           <hr>
                       <?php } }?>
                   </select>
