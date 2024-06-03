@@ -34,6 +34,13 @@ class ReportController extends BaseController {
         $data['search_range_from']  = '';
         $data['search_range_to']    = '';
         $data['companies']          = $this->common_model->find_data('ecoex_companies', 'array', ['type' => 'COMPANY', 'status>=' => 1, 'status<=' => 2], 'id,company_name');
+        $data['response']           = [];
+
+        if($this->request->getPost()){
+            $requestData = $this->request->getPost();
+            pr($requestData);
+        }
+
         echo $this->layout_after_login($title,$page_name,$data);
     }
 }
