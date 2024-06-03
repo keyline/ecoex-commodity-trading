@@ -36,7 +36,7 @@ class ReportController extends BaseController {
         $data['companies']          = $this->common_model->find_data('ecoex_companies', 'array', ['type' => 'COMPANY', 'status>=' => 1, 'status<=' => 2], 'id,company_name');
         $data['response']           = [];
 
-        if($this->request->getPost()){
+        if($this->request->getMethod() == 'post') {
             $requestData = $this->request->getPost();
             pr($requestData);
         }
