@@ -43,7 +43,7 @@ class ReportController extends BaseController {
                 $search_range_from  = explode("-", $requestData['search_range_from']);
                 $search_range_to    = explode("-", $requestData['search_range_to']);
                 $from_date          = $search_range_from[0] . '-'.$search_range_from[1].'-01';
-                $to_date            = $search_range_from[0] . '-'.$search_range_from[1].'-31';
+                $to_date            = $search_range_to[0] . '-'.$search_range_to[1].'-31';
             } else {
                 $search_day_id      = $requestData['search_day_id'];
                 if($search_day_id == 'this_month'){
