@@ -26,8 +26,8 @@ class ReportController extends BaseController {
     {
         $data['moduleDetail']       = $this->data;
         
-        $title                      = 'Manage Industrial Commodity Reports';
-        $page_name                  = 'reports/industrial-commodity-report';
+        $title                      = 'Manage Analytics Reports';
+        $page_name                  = 'reports/analytics-report';
         $data['search_company_id']  = '';
         $data['search_day_id']      = '';
         $data['is_date_range']      = '';

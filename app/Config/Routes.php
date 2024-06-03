@@ -210,7 +210,7 @@ $routes->get('/enquiry-cron', 'Home::enquiryCron');
 			$routes->match(['get'], "notifications/list_from_app", "NotificationController::list_from_app");
 		// notifications
 		// reports
-			$routes->match(['get', 'post'], "reports/industrial-commodity-report", "ReportController::industrialCommodityReport");
+			$routes->match(['get', 'post'], "reports/analytics-report", "ReportController::analyticsReport");
 		// reports
 	});
 /* ADMIN PANEL */

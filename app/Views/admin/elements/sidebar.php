@@ -335,8 +335,8 @@ if($userType == 'MA'){
             <ul id="report-nav" class="nav-content collapse <?=(($pageSegment == 'reports')?'show':'')?>" data-bs-parent="#sidebar-nav">
                 <?php if($common_model->checkModuleAccess(19)){?>
                     <li>
-                        <a class="<?=(($pageSegment == 'reports')?'active':'')?>" href="<?=base_url('admin/reports/industrial-commodity-report')?>">
-                            <i class="fa fa-arrow-right"></i><span>Industrial Commodity Report</span>
+                        <a class="<?=(($pageSegment == 'reports')?'active':'')?>" href="<?=base_url('admin/reports/analytics-report')?>">
+                            <i class="fa fa-arrow-right"></i><span>Analytics Report</span>
                         </a>
                     </li>
                 <?php }?>
