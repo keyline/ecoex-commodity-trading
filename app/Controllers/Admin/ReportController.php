@@ -28,6 +28,12 @@ class ReportController extends BaseController {
         
         $title                      = 'Manage Industrial Commodity Reports';
         $page_name                  = 'reports/industrial-commodity-report';
+        $data['search_company_id']  = '';
+        $data['search_day_id']      = '';
+        $data['is_date_range']      = '';
+        $data['search_range_from']  = '';
+        $data['search_range_to']    = '';
+        $data['companies']          = $this->common_model->find_data('ecoex_companies', 'array', ['type' => 'COMPANY', 'status>=' => 1, 'status<=' => 2], 'id,company_name');
         echo $this->layout_after_login($title,$page_name,$data);
     }
 }
