@@ -55,11 +55,29 @@ class ReportController extends BaseController {
                     $to_date    = date("Y-m-d", mktime(0, 0, 0, date("m"), 0));
                 }
             }
+            $monthList          = $this->getMonthsInRange($from_date, $to_date);
+            pr($monthList);
             echo $sql           = "SELECT id,enquiry_no FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$from_date' AND created_at <= '$to_date'";
             $enquires           = $this->db->query($sql)->getResult();
             pr($enquires);
         }
 
         echo $this->layout_after_login($title,$page_name,$data);
+    }
+    public function getMonthsInRange($startDate, $endDate)
+    {
+        $months = array();
+
+        while (strtotime($startDate) <= strtotime($endDate)) {
+            $months[] = array(
+                'year' => date('Y', strtotime($startDate)),
+                'month' => date('m', strtotime($startDate)),
+            );
+
+            // Set date to 1 so that new month is returned as the month changes.
+            $startDate = date('01 M Y', strtotime($startDate . '+ 1 month'));
+        }
+
+        return $months;
     }
 }
