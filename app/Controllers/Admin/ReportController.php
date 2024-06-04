@@ -65,7 +65,7 @@ class ReportController extends BaseController {
                     $sql           = "SELECT id,enquiry_no FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate'";
                     $enquires           = $this->db->query($sql)->getResult();
                     $response[]       = [
-                        'month_year_name' => $this->company_name->monthName($monthList[$m]['month']).'-'.$monthList[$m]['year']
+                        'month_year_name' => $this->common_model->monthName($monthList[$m]['month']).'-'.$monthList[$m]['year']
                     ];
                     if($enquires){
                         foreach($enquires as $enquiry){
