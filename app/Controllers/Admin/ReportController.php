@@ -38,7 +38,7 @@ class ReportController extends BaseController {
 
         if($this->request->getGet('mode') == 'advance_search'){
             $requestData = $this->request->getGet();
-            pr($requestData,0);
+            // pr($requestData,0);
             $search_company_id      = $requestData['search_company_id'];
             if(array_key_exists('is_date_range', $requestData)){
                 $search_range_from  = explode("-", $requestData['search_range_from']);
@@ -56,9 +56,17 @@ class ReportController extends BaseController {
                 }
             }
             $monthList          = $this->getMonthsInRange($from_date, $to_date);
-            pr($monthList);
-            echo $sql           = "SELECT id,enquiry_no FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$from_date' AND created_at <= '$to_date'";
-            $enquires           = $this->db->query($sql)->getResult();
+            if(!empty($monthList)){
+                for($m=0;$m<count($monthList);$m++){
+                    $monthYear          = $monthList[$m]['year'].'-'.$monthList[$m]['month'];
+                    $fdate              = $monthList[$m]['year'].'-'.$monthList[$m]['month'].'-01';
+                    $tdate              = $monthList[$m]['year'].'-'.$monthList[$m]['month'].'-31';
+                    echo $sql           = "SELECT id,enquiry_no FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate'";
+                    echo '<br>';
+                    $enquires           = $this->db->query($sql)->getResult();
+                }
+            }
+            die;
             pr($enquires);
         }
 
