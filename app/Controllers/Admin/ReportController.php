@@ -74,7 +74,6 @@ class ReportController extends BaseController {
                     }
                 }
             }
-            die;
             pr($response);
         }
 
