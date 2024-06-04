@@ -54,7 +54,7 @@ class ReportController extends BaseController {
                     $to_date    = date("Y-m-d", mktime(0, 0, 0, date("m"), 0));
                 }
             }
-            $sql = "SELECT id,enquiry_no FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$from_date' AND created_at <= '$to_date'";
+            echo $sql = "SELECT id,enquiry_no FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$from_date' AND created_at <= '$to_date'";
             $enquires           = $this->db->query($sql)->getResult();
             pr($enquires);
         }
