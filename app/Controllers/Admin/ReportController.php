@@ -38,6 +38,7 @@ class ReportController extends BaseController {
 
         if($this->request->getGet('mode') == 'advance_search'){
             $requestData = $this->request->getGet();
+            pr($requestData,0);
             $search_company_id      = $requestData['search_company_id'];
             if(array_key_exists('is_date_range', $requestData)){
                 $search_range_from  = explode("-", $requestData['search_range_from']);
@@ -54,7 +55,7 @@ class ReportController extends BaseController {
                     $to_date    = date("Y-m-d", mktime(0, 0, 0, date("m"), 0));
                 }
             }
-            echo $sql = "SELECT id,enquiry_no FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$from_date' AND created_at <= '$to_date'";
+            echo $sql           = "SELECT id,enquiry_no FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$from_date' AND created_at <= '$to_date'";
             $enquires           = $this->db->query($sql)->getResult();
             pr($enquires);
         }
