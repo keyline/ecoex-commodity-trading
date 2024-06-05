@@ -88,7 +88,6 @@ class ReportController extends BaseController {
                             }
                         }
                     }
-                    pr($vehicles,0);
                     $records[]         = [
                         'month_year_name'   => "'".$this->common_model->monthName($monthList[$m]['month'])."-".$monthList[$m]['year']."'",
                         'scrap_qty'         => $plantCount,
@@ -101,7 +100,7 @@ class ReportController extends BaseController {
                 'graph_title'       => $graph_title,
                 'records'           => $records,
             ];
-            pr($response);
+            // pr($response);
             $data['is_search']                  = 1;
             $data['search_day_id']              = $requestData['search_day_id'];
             $data['is_date_range']              = $is_date_range;
