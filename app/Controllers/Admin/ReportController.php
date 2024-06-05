@@ -49,18 +49,21 @@ class ReportController extends BaseController {
                 $from_date          = $search_range_from[0] . '-'.$search_range_from[1].'-01';
                 $to_date            = $search_range_to[0] . '-'.$search_range_to[1].'-31';
                 $is_date_range      = 1;
+                $graph_title        = (($getCompany)?$getCompany->company_name:'')." ".$this->common_model->monthShortName($search_range_from[1])."-".$search_range_from[0]." to ".$this->common_model->monthShortName($search_range_to[1])."-".$search_range_to[0];
             } else {
                 $search_day_id      = $requestData['search_day_id'];
                 if($search_day_id == 'this_month'){
-                    $from_date  = date('Y') . '-' . date('m').'-01';
-                    $to_date    = date('Y') . '-' . date('m').'-31';
+                    $from_date          = date('Y') . '-' . date('m').'-01';
+                    $to_date            = date('Y') . '-' . date('m').'-31';
+                    $graph_title        = (($getCompany)?$getCompany->company_name:'')." ".$this->common_model->monthShortName(date('m'))."-".date('Y');
                 } elseif($search_day_id == 'last_month'){
-                    $from_date  = date("Y-m-d", mktime(0, 0, 0, date("m")-1, 1));
-                    $to_date    = date("Y-m-d", mktime(0, 0, 0, date("m"), 0));
+                    $from_date          = date("Y-m-d", mktime(0, 0, 0, date("m")-1, 1));
+                    $to_date            = date("Y-m-d", mktime(0, 0, 0, date("m"), 0));
+                    $graph_title        = (($getCompany)?$getCompany->company_name:'')." ".$this->common_model->monthShortName(date("m", mktime(0, 0, 0, date("m")-1, 1)))."-".date('Y');
                 }
                 $is_date_range      = 0;
             }
-            $graph_title        = (($getCompany)?$getCompany->company_name:'')." ".$this->common_model->monthShortName($search_range_from[1])."-".$search_range_from[0]." to ".$this->common_model->monthShortName($search_range_to[1])."-".$search_range_to[0];
+            
             $monthList          = $this->getMonthsInRange($from_date, $to_date);
             if(!empty($monthList)){
                 for($m=0;$m<count($monthList);$m++){
