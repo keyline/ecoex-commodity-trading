@@ -37,10 +37,10 @@ class ReportController extends BaseController {
         $data['response']           = [];
 
         if($this->request->getGet('mode') == 'advance_search'){
-            $response       = [];
+            $records        = [];
             $requestData    = $this->request->getGet();
-            // pr($requestData,0);
             $search_company_id      = $requestData['search_company_id'];
+            $getCompany             = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $search_company_id]);
             if(array_key_exists('is_date_range', $requestData)){
                 $search_range_from  = explode("-", $requestData['search_range_from']);
                 $search_range_to    = explode("-", $requestData['search_range_to']);
@@ -56,6 +56,7 @@ class ReportController extends BaseController {
                     $to_date    = date("Y-m-d", mktime(0, 0, 0, date("m"), 0));
                 }
             }
+            $graph_title        = (($getCompany)?$getCompany->company_name:'')." ".$this->common_model->monthName($search_range_from[1])."-".$search_range_from[0]." to ".$this->common_model->monthName($search_range_from[1])."-".$search_range_from[0];
             $monthList          = $this->getMonthsInRange($from_date, $to_date);
             if(!empty($monthList)){
                 for($m=0;$m<count($monthList);$m++){
@@ -64,11 +65,11 @@ class ReportController extends BaseController {
                     $tdate              = $monthList[$m]['year'].'-'.$monthList[$m]['month'].'-31';
                     $sql                = "SELECT id,enquiry_no,plant_id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate' group by plant_id";
                     $plantCount         = $this->db->query($sql)->getNumRows();
-                    $response[]         = [
+                    $records[]         = [
                         'month_year_name'   => $this->common_model->monthName($monthList[$m]['month']).'-'.$monthList[$m]['year'],
                         'scrap_qty'         => $plantCount,
                         'no_of_plant'       => $plantCount,
-                        'vehicle_count'     => $plantCount,
+                        'vehicle_count'     => $plantCount
                     ];
                     // pr($enquires,0);
                     // if($enquires){
@@ -78,6 +79,10 @@ class ReportController extends BaseController {
                     // }
                 }
             }
+            $response = [
+                'graph_title'       => $graph_title,
+                'records'           => $records,
+            ];
             pr($response);
             $data['response']           = $response;
         }
