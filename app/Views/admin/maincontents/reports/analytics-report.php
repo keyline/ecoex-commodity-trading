@@ -96,7 +96,7 @@ $controller_route   = $moduleDetail['controller_route'];
               <div class="col-lg-12 col-md-12">
                 <div class="card">
                   <div class="card-body">
-                    <h5 class="card-title"><?=$graph_title?></h5>
+                    <h5 class="card-title"><?=$response['graph_title']?></h5>
 
                     <!-- Column Chart -->
                     <div id="columnChart"></div>
