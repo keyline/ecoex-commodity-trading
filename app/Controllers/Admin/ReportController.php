@@ -70,17 +70,29 @@ class ReportController extends BaseController {
                     $sql                = "SELECT id,enquiry_no,plant_id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate' group by plant_id";
                     $plantCount         = $this->db->query($sql)->getNumRows();
                     $enquires           = $this->db->query("SELECT id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate'")->getResult();
-                    pr($enquires);
+                    $vehicles           = [];
                     if($enquires){
                         foreach($enquires as $enquiry){
-                            
+                            $subEnquiries = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enquiry->id], 'vehicle_registration_nos');
+                            if($subEnquiries){
+                                foreach($subEnquiries as $subEnquiry){
+                                    $vehicle_registration_nos = json_decode($subEnquiry->vehicle_registration_nos);
+                                    if(!empty($vehicle_registration_nos)){
+                                        for($v=0;$v<count($vehicle_registration_nos);$v++){
+                                            if(in_array($vehicle_registration_nos[$v], $vehicles)){
+                                                $vehicles[] = $vehicle_registration_nos[$v];
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                     $records[]         = [
                         'month_year_name'   => "'".$this->common_model->monthName($monthList[$m]['month'])."-".$monthList[$m]['year']."'",
                         'scrap_qty'         => $plantCount,
                         'no_of_plant'       => $plantCount,
-                        'vehicle_count'     => $plantCount
+                        'vehicle_count'     => count($vehicles)
                     ];
                 }
             }
