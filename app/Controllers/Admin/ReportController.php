@@ -53,9 +53,45 @@ class ReportController extends BaseController {
             } else {
                 $search_day_id      = $requestData['search_day_id'];
                 if($search_day_id == 'this_month'){
-                    echo $currentMonth  = (int)date('m');die;
+                    $currentMonth  = (int)date('m');
+                    if($currentMonth==1) {
+                      $lastDay = 31;
+                    }
+                    if($currentMonth==2) {
+                      $lastDay = 28;
+                    }
+                    if($currentMonth==3) {
+                      $lastDay = 31;
+                    }
+                    if($currentMonth==4) {
+                      $lastDay = 30;
+                    }
+                    if($currentMonth==5) {
+                      $lastDay = 31;
+                    }
+                    if($currentMonth==6) {
+                      $lastDay = 30;
+                    }
+                    if($currentMonth==7) {
+                      $lastDay = 31;
+                    }
+                    if($currentMonth==8) {
+                      $lastDay = 31;
+                    }
+                    if($currentMonth==9) {
+                      $lastDay = 30;
+                    }
+                    if($currentMonth==10) {
+                      $lastDay = 31;
+                    }
+                    if($currentMonth==11) {
+                      $lastDay = 30;
+                    }
+                    if($currentMonth==12) {
+                        $lastDay = 31;
+                    }
                     $from_date          = date('Y') . '-' . date('m').'-01';
-                    $to_date            = date('Y') . '-' . date('m').'-31';
+                    $to_date            = date('Y') . '-' . date('m').'-'.$lastDay;
                     $graph_title        = (($getCompany)?$getCompany->company_name:'')." ".$this->common_model->monthShortName(date('m'))."-".date('Y');
                 } elseif($search_day_id == 'last_month'){
                     $from_date          = date("Y-m-d", mktime(0, 0, 0, date("m")-1, 1));
