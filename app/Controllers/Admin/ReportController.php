@@ -56,7 +56,7 @@ class ReportController extends BaseController {
                     $to_date    = date("Y-m-d", mktime(0, 0, 0, date("m"), 0));
                 }
             }
-            $graph_title        = (($getCompany)?$getCompany->company_name:'')." ".$this->common_model->monthName($search_range_from[1])."-".$search_range_from[0]." to ".$this->common_model->monthName($search_range_from[1])."-".$search_range_from[0];
+            $graph_title        = (($getCompany)?$getCompany->company_name:'')." ".$this->common_model->monthName($search_range_from[1])."-".$search_range_from[0]." to ".$this->common_model->monthName($search_range_to[1])."-".$search_range_to[0];
             $monthList          = $this->getMonthsInRange($from_date, $to_date);
             if(!empty($monthList)){
                 for($m=0;$m<count($monthList);$m++){
