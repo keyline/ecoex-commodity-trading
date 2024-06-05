@@ -91,6 +91,7 @@ $controller_route   = $moduleDetail['controller_route'];
           </form>
           <?php
           if($response){
+            pr($response);
             $month_year_name  = array_column($response['records'], 'month_year_name');
             $scrap_qty        = array_column($response['records'], 'scrap_qty');
             $no_of_plant      = array_column($response['records'], 'no_of_plant');
