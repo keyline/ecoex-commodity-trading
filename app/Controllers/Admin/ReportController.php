@@ -62,10 +62,11 @@ class ReportController extends BaseController {
                     $monthYear          = $monthList[$m]['year'].'-'.$monthList[$m]['month'];
                     $fdate              = $monthList[$m]['year'].'-'.$monthList[$m]['month'].'-01';
                     $tdate              = $monthList[$m]['year'].'-'.$monthList[$m]['month'].'-31';
-                    echo $sql           = "SELECT id,enquiry_no,plant_id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate' group by plant_id";
-                    echo $enquires           = $this->db->query($sql)->getNumRows();
-                    $response[]       = [
-                        'month_year_name' => $this->common_model->monthName($monthList[$m]['month']).'-'.$monthList[$m]['year']
+                    $sql                = "SELECT id,enquiry_no,plant_id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate' group by plant_id";
+                    $plantCount         = $this->db->query($sql)->getNumRows();
+                    $response[]         = [
+                        'month_year_name'   => $this->common_model->monthName($monthList[$m]['month']).'-'.$monthList[$m]['year'],
+                        'no_of_plant'       => $plantCount,
                     ];
                     // pr($enquires,0);
                     // if($enquires){
