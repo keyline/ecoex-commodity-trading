@@ -131,12 +131,12 @@ $controller_route   = $moduleDetail['controller_route'];
                           plotOptions: {
                             bar: {
                               horizontal: false,
-                              columnWidth: '55%',
+                              columnWidth: '25%',
                               endingShape: 'rounded'
                             },
                           },
                           dataLabels: {
-                            enabled: false
+                            enabled: true
                           },
                           stroke: {
                             show: true,
