@@ -88,6 +88,7 @@ class ReportController extends BaseController {
                             }
                         }
                     }
+                    pr($vehicles,0);
                     $records[]         = [
                         'month_year_name'   => "'".$this->common_model->monthName($monthList[$m]['month'])."-".$monthList[$m]['year']."'",
                         'scrap_qty'         => $plantCount,
