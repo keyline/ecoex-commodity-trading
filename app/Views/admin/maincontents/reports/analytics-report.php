@@ -91,6 +91,10 @@ $controller_route   = $moduleDetail['controller_route'];
           </form>
           <?php
           if($response){
+            $month_year_name  = array_column($response['records'], 'month_year_name');
+            $scrap_qty        = array_column($response['records'], 'scrap_qty');
+            $no_of_plant      = array_column($response['records'], 'no_of_plant');
+            $vehicle_count    = array_column($response['records'], 'vehicle_count');
           ?>
             <div class="row">
               <div class="col-lg-12 col-md-12">
@@ -106,13 +110,13 @@ $controller_route   = $moduleDetail['controller_route'];
                         new ApexCharts(document.querySelector("#columnChart"), {
                           series: [{
                             name: 'Scrap Qty',
-                            data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
+                            data: ['<?=implode(', ', $scrap_qty);?>']
                           }, {
                             name: 'Number Of Plant',
-                            data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
+                            data: ['<?=implode(', ', $no_of_plant);?>']
                           }, {
                             name: 'Vehicle Count',
-                            data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
+                            data: ['<?=implode(', ', $vehicle_count);?>']
                           }],
                           chart: {
                             type: 'bar',
@@ -134,7 +138,7 @@ $controller_route   = $moduleDetail['controller_route'];
                             colors: ['transparent']
                           },
                           xaxis: {
-                            categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                            categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun'],
                           },
                           yaxis: {
                             title: {
