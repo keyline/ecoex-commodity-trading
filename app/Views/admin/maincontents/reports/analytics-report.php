@@ -90,77 +90,77 @@ $controller_route   = $moduleDetail['controller_route'];
             </div>
           </form>
           <?php
-          pr($response);
+          if($response){
           ?>
-          <div class="row">
-            <div class="col-lg-12 col-md-12">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Column Chart</h5>
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title"><?=$graph_title?></h5>
 
-                  <!-- Column Chart -->
-                  <div id="columnChart"></div>
+                    <!-- Column Chart -->
+                    <div id="columnChart"></div>
 
-                  <script>
-                    document.addEventListener("DOMContentLoaded", () => {
-                      new ApexCharts(document.querySelector("#columnChart"), {
-                        series: [{
-                          name: 'Scrap Qty',
-                          data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
-                        }, {
-                          name: 'Number Of Plant',
-                          data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
-                        }, {
-                          name: 'Vehicle Count',
-                          data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
-                        }],
-                        chart: {
-                          type: 'bar',
-                          height: 350
-                        },
-                        plotOptions: {
-                          bar: {
-                            horizontal: false,
-                            columnWidth: '55%',
-                            endingShape: 'rounded'
+                    <script>
+                      document.addEventListener("DOMContentLoaded", () => {
+                        new ApexCharts(document.querySelector("#columnChart"), {
+                          series: [{
+                            name: 'Scrap Qty',
+                            data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
+                          }, {
+                            name: 'Number Of Plant',
+                            data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
+                          }, {
+                            name: 'Vehicle Count',
+                            data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
+                          }],
+                          chart: {
+                            type: 'bar',
+                            height: 350
                           },
-                        },
-                        dataLabels: {
-                          enabled: false
-                        },
-                        stroke: {
-                          show: true,
-                          width: 2,
-                          colors: ['transparent']
-                        },
-                        xaxis: {
-                          categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
-                        },
-                        yaxis: {
-                          title: {
-                            text: 'Number'
-                          }
-                        },
-                        fill: {
-                          opacity: 1
-                        },
-                        tooltip: {
-                          y: {
-                            formatter: function(val) {
-                              return "$ " + val + " thousands"
+                          plotOptions: {
+                            bar: {
+                              horizontal: false,
+                              columnWidth: '55%',
+                              endingShape: 'rounded'
+                            },
+                          },
+                          dataLabels: {
+                            enabled: false
+                          },
+                          stroke: {
+                            show: true,
+                            width: 2,
+                            colors: ['transparent']
+                          },
+                          xaxis: {
+                            categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                          },
+                          yaxis: {
+                            title: {
+                              text: 'Number'
+                            }
+                          },
+                          fill: {
+                            opacity: 1
+                          },
+                          tooltip: {
+                            y: {
+                              formatter: function(val) {
+                                return "$ " + val + " thousands"
+                              }
                             }
                           }
-                        }
-                      }).render();
-                    });
-                  </script>
-                  <!-- End Column Chart -->
+                        }).render();
+                      });
+                    </script>
+                    <!-- End Column Chart -->
 
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-
+          <?php }?>
         </div>
       </div>
     </div>
