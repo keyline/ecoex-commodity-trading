@@ -501,6 +501,45 @@ class CommonModel extends Model
         }
         return $month_name;
     }
+    function monthShortName($monthNo) {
+      if($monthNo==1) {
+          $month_name = 'Jan';
+      }
+      if($monthNo==2) {
+          $month_name = 'Feb';
+      }
+      if($monthNo==3) {
+          $month_name = 'Mar';
+      }
+      if($monthNo==4) {
+          $month_name = 'Apr';
+      }
+      if($monthNo==5) {
+          $month_name = 'May';
+      }
+      if($monthNo==6) {
+          $month_name = 'Jun';
+      }
+      if($monthNo==7) {
+          $month_name = 'Jul';
+      }
+      if($monthNo==8) {
+          $month_name = 'Aug';
+      }
+      if($monthNo==9) {
+          $month_name = 'Sep';
+      }
+      if($monthNo==10) {
+          $month_name = 'Oct';
+      }
+      if($monthNo==11) {
+          $month_name = 'Nov';
+      }
+      if($monthNo==12) {
+          $month_name = 'Dec';
+      }
+      return $month_name;
+    }
     function financialyear($year){
         return substr_replace($year, '-', 2, 0);
     }

@@ -60,7 +60,7 @@ class ReportController extends BaseController {
                 }
                 $is_date_range      = 0;
             }
-            $graph_title        = (($getCompany)?$getCompany->company_name:'')." ".$this->common_model->monthName($search_range_from[1])."-".$search_range_from[0]." to ".$this->common_model->monthName($search_range_to[1])."-".$search_range_to[0];
+            $graph_title        = (($getCompany)?$getCompany->company_name:'')." ".$this->common_model->monthShortName($search_range_from[1])."-".$search_range_from[0]." to ".$this->common_model->monthShortName($search_range_to[1])."-".$search_range_to[0];
             $monthList          = $this->getMonthsInRange($from_date, $to_date);
             if(!empty($monthList)){
                 for($m=0;$m<count($monthList);$m++){
@@ -89,7 +89,7 @@ class ReportController extends BaseController {
                         }
                     }
                     $records[]         = [
-                        'month_year_name'   => "'".$this->common_model->monthName($monthList[$m]['month'])."-".$monthList[$m]['year']."'",
+                        'month_year_name'   => "'".$this->common_model->monthShortName($monthList[$m]['month'])."-".$monthList[$m]['year']."'",
                         'scrap_qty'         => $plantCount,
                         'no_of_plant'       => $plantCount,
                         'vehicle_count'     => count($vehicles)
