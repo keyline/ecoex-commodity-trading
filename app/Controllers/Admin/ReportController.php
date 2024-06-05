@@ -46,50 +46,17 @@ class ReportController extends BaseController {
             if(array_key_exists('is_date_range', $requestData)){
                 $search_range_from  = explode("-", $requestData['search_range_from']);
                 $search_range_to    = explode("-", $requestData['search_range_to']);
+                $currentMonth       = (int)$search_range_from[1];
+                $lastDay            = lastdayMonth($currentMonth);
                 $from_date          = $search_range_from[0] . '-'.$search_range_from[1].'-01';
-                $to_date            = $search_range_to[0] . '-'.$search_range_to[1].'-31';
+                $to_date            = $search_range_to[0] . '-'.$search_range_to[1].'-'.$lastDay;
                 $is_date_range      = 1;
                 $graph_title        = (($getCompany)?$getCompany->company_name:'')." ".$this->common_model->monthShortName($search_range_from[1])."-".$search_range_from[0]." to ".$this->common_model->monthShortName($search_range_to[1])."-".$search_range_to[0];
             } else {
                 $search_day_id      = $requestData['search_day_id'];
                 if($search_day_id == 'this_month'){
-                    $currentMonth  = (int)date('m');
-                    if($currentMonth==1) {
-                      $lastDay = 31;
-                    }
-                    if($currentMonth==2) {
-                      $lastDay = 28;
-                    }
-                    if($currentMonth==3) {
-                      $lastDay = 31;
-                    }
-                    if($currentMonth==4) {
-                      $lastDay = 30;
-                    }
-                    if($currentMonth==5) {
-                      $lastDay = 31;
-                    }
-                    if($currentMonth==6) {
-                      $lastDay = 30;
-                    }
-                    if($currentMonth==7) {
-                      $lastDay = 31;
-                    }
-                    if($currentMonth==8) {
-                      $lastDay = 31;
-                    }
-                    if($currentMonth==9) {
-                      $lastDay = 30;
-                    }
-                    if($currentMonth==10) {
-                      $lastDay = 31;
-                    }
-                    if($currentMonth==11) {
-                      $lastDay = 30;
-                    }
-                    if($currentMonth==12) {
-                        $lastDay = 31;
-                    }
+                    $currentMonth       = (int)date('m');
+                    $lastDay            = lastdayMonth($currentMonth);
                     $from_date          = date('Y') . '-' . date('m').'-01';
                     $to_date            = date('Y') . '-' . date('m').'-'.$lastDay;
                     $graph_title        = (($getCompany)?$getCompany->company_name:'')." ".$this->common_model->monthShortName(date('m'))."-".date('Y');
@@ -103,43 +70,8 @@ class ReportController extends BaseController {
             $monthList          = $this->getMonthsInRange($from_date, $to_date);
             if(!empty($monthList)){
                 for($m=0;$m<count($monthList);$m++){
-                    $currentMonth  = (int)$monthList[$m]['month'];
-                    if($currentMonth==1) {
-                      $lastDay = 31;
-                    }
-                    if($currentMonth==2) {
-                      $lastDay = 28;
-                    }
-                    if($currentMonth==3) {
-                      $lastDay = 31;
-                    }
-                    if($currentMonth==4) {
-                      $lastDay = 30;
-                    }
-                    if($currentMonth==5) {
-                      $lastDay = 31;
-                    }
-                    if($currentMonth==6) {
-                      $lastDay = 30;
-                    }
-                    if($currentMonth==7) {
-                      $lastDay = 31;
-                    }
-                    if($currentMonth==8) {
-                      $lastDay = 31;
-                    }
-                    if($currentMonth==9) {
-                      $lastDay = 30;
-                    }
-                    if($currentMonth==10) {
-                      $lastDay = 31;
-                    }
-                    if($currentMonth==11) {
-                      $lastDay = 30;
-                    }
-                    if($currentMonth==12) {
-                        $lastDay = 31;
-                    }
+                    $currentMonth       = (int)$monthList[$m]['month'];
+                    $lastDay            = lastdayMonth($currentMonth);
                     $monthYear          = $monthList[$m]['year'].'-'.$monthList[$m]['month'];
                     $fdate              = $monthList[$m]['year'].'-'.$monthList[$m]['month'].'-01';
                     $tdate              = $monthList[$m]['year'].'-'.$monthList[$m]['month'].'-'.$lastDay;

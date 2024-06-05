@@ -368,6 +368,47 @@ if ( ! function_exists('test_method'))
       }
       return $month_name;
     }
+    function lastdayMonth($monthNo) {
+      $lastDay = 31;
+      $currentMonth  = (int)$monthNo;
+      if($currentMonth==1) {
+        $lastDay = 31;
+      }
+      if($currentMonth==2) {
+        $lastDay = 28;
+      }
+      if($currentMonth==3) {
+        $lastDay = 31;
+      }
+      if($currentMonth==4) {
+        $lastDay = 30;
+      }
+      if($currentMonth==5) {
+        $lastDay = 31;
+      }
+      if($currentMonth==6) {
+        $lastDay = 30;
+      }
+      if($currentMonth==7) {
+        $lastDay = 31;
+      }
+      if($currentMonth==8) {
+        $lastDay = 31;
+      }
+      if($currentMonth==9) {
+        $lastDay = 30;
+      }
+      if($currentMonth==10) {
+        $lastDay = 31;
+      }
+      if($currentMonth==11) {
+        $lastDay = 30;
+      }
+      if($currentMonth==12) {
+          $lastDay = 31;
+      }
+      return $lastDay;
+    }
     function clean($string) 
     {
        $string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
