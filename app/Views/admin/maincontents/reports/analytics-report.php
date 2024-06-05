@@ -89,7 +89,9 @@ $controller_route   = $moduleDetail['controller_route'];
                 <?php }?>
             </div>
           </form>
-
+          <?php
+          pr($response);
+          ?>
           <div class="row">
             <div class="col-lg-12 col-md-12">
               <div class="card">

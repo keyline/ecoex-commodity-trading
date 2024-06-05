@@ -83,7 +83,7 @@ class ReportController extends BaseController {
                 'graph_title'       => $graph_title,
                 'records'           => $records,
             ];
-            pr($response);
+            // pr($response);
             $data['response']           = $response;
         }
 
