@@ -66,7 +66,9 @@ class ReportController extends BaseController {
                     $plantCount         = $this->db->query($sql)->getNumRows();
                     $response[]         = [
                         'month_year_name'   => $this->common_model->monthName($monthList[$m]['month']).'-'.$monthList[$m]['year'],
+                        'scrap_qty'         => $plantCount,
                         'no_of_plant'       => $plantCount,
+                        'vehicle_count'     => $plantCount,
                     ];
                     // pr($enquires,0);
                     // if($enquires){
@@ -77,6 +79,7 @@ class ReportController extends BaseController {
                 }
             }
             pr($response);
+            $data['response']           = $response;
         }
 
         echo $this->layout_after_login($title,$page_name,$data);
