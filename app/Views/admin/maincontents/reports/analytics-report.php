@@ -102,7 +102,7 @@ $controller_route   = $moduleDetail['controller_route'];
             // pr($vehicle_count,0);
             // die;
           ?>
-            <div class="row">
+            <div class="row mt-3">
               <div class="col-lg-12 col-md-12">
                 <div class="card">
                   <div class="card-body">
