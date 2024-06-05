@@ -91,11 +91,16 @@ $controller_route   = $moduleDetail['controller_route'];
           </form>
           <?php
           if($response){
-            pr($response);
+            pr($response,0);
             $month_year_name  = array_column($response['records'], 'month_year_name');
             $scrap_qty        = array_column($response['records'], 'scrap_qty');
             $no_of_plant      = array_column($response['records'], 'no_of_plant');
             $vehicle_count    = array_column($response['records'], 'vehicle_count');
+            pr($month_year_name,0);
+            pr($scrap_qty,0);
+            pr($no_of_plant,0);
+            pr($vehicle_count,0);
+            die;
           ?>
             <div class="row">
               <div class="col-lg-12 col-md-12">
