@@ -116,13 +116,13 @@ $controller_route   = $moduleDetail['controller_route'];
                         new ApexCharts(document.querySelector("#columnChart1"), {
                           series: [{
                             name: 'Scrap Qty',
-                            data: ['<?=implode(', ', $scrap_qty);?>']
+                            data: [<?=implode(', ', $scrap_qty);?>]
                           }, {
                             name: 'Number Of Plant',
-                            data: ['<?=implode(', ', $no_of_plant);?>']
+                            data: [<?=implode(', ', $no_of_plant);?>]
                           }, {
                             name: 'Vehicle Count',
-                            data: ['<?=implode(', ', $vehicle_count);?>']
+                            data: [<?=implode(', ', $vehicle_count);?>]
                           }],
                           chart: {
                             type: 'bar',
