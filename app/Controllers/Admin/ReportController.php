@@ -101,7 +101,6 @@ class ReportController extends BaseController {
                 $is_date_range      = 0;
             }
             $monthList          = $this->getMonthsInRange($from_date, $to_date);
-            pr($monthList);
             if(!empty($monthList)){
                 for($m=0;$m<count($monthList);$m++){
                     $monthYear          = $monthList[$m]['year'].'-'.$monthList[$m]['month'];
