@@ -144,7 +144,7 @@ $controller_route   = $moduleDetail['controller_route'];
                             colors: ['transparent']
                           },
                           xaxis: {
-                            categories: ['<?=implode(', ', $month_year_name);?>'],
+                            categories: [<?=implode(", ", $month_year_name);?>],
                           },
                           yaxis: {
                             title: {

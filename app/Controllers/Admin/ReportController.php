@@ -70,7 +70,7 @@ class ReportController extends BaseController {
                     $sql                = "SELECT id,enquiry_no,plant_id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate' group by plant_id";
                     $plantCount         = $this->db->query($sql)->getNumRows();
                     $records[]         = [
-                        'month_year_name'   => $this->common_model->monthName($monthList[$m]['month']).'-'.$monthList[$m]['year'],
+                        'month_year_name'   => "'".$this->common_model->monthName($monthList[$m]['month']).'-'.$monthList[$m]['year']."'",
                         'scrap_qty'         => $plantCount,
                         'no_of_plant'       => $plantCount,
                         'vehicle_count'     => $plantCount
