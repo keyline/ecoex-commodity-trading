@@ -53,7 +53,7 @@ class ReportController extends BaseController {
             } else {
                 $search_day_id      = $requestData['search_day_id'];
                 if($search_day_id == 'this_month'){
-                    echo date('m');die;
+                    echo $currentMonth  = (int)date('m');die;
                     $from_date          = date('Y') . '-' . date('m').'-01';
                     $to_date            = date('Y') . '-' . date('m').'-31';
                     $graph_title        = (($getCompany)?$getCompany->company_name:'')." ".$this->common_model->monthShortName(date('m'))."-".date('Y');
