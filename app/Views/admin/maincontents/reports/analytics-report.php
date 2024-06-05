@@ -144,7 +144,7 @@ $controller_route   = $moduleDetail['controller_route'];
                             colors: ['transparent']
                           },
                           xaxis: {
-                            categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                            categories: ['<?=implode(', ', $month_year_name);?>'],
                           },
                           yaxis: {
                             title: {
