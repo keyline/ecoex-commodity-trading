@@ -79,7 +79,7 @@ class ReportController extends BaseController {
                                     $vehicle_registration_nos = json_decode($subEnquiry->vehicle_registration_nos);
                                     if(!empty($vehicle_registration_nos)){
                                         for($v=0;$v<count($vehicle_registration_nos);$v++){
-                                            if(in_array($vehicle_registration_nos[$v], $vehicles)){
+                                            if(!in_array($vehicle_registration_nos[$v], $vehicles)){
                                                 $vehicles[] = $vehicle_registration_nos[$v];
                                             }
                                         }
@@ -100,7 +100,7 @@ class ReportController extends BaseController {
                 'graph_title'       => $graph_title,
                 'records'           => $records,
             ];
-            // pr($response);
+            pr($response);
             $data['is_search']                  = 1;
             $data['search_day_id']              = $requestData['search_day_id'];
             $data['is_date_range']              = $is_date_range;
