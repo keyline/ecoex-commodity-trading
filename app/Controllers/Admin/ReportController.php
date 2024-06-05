@@ -46,7 +46,7 @@ class ReportController extends BaseController {
             if(array_key_exists('is_date_range', $requestData)){
                 $search_range_from  = explode("-", $requestData['search_range_from']);
                 $search_range_to    = explode("-", $requestData['search_range_to']);
-                $currentMonth       = (int)$search_range_from[1];
+                $currentMonth       = (int)$search_range_to[1];
                 $lastDay            = lastdayMonth($currentMonth);
                 $from_date          = $search_range_from[0] . '-'.$search_range_from[1].'-01';
                 $to_date            = $search_range_to[0] . '-'.$search_range_to[1].'-'.$lastDay;
