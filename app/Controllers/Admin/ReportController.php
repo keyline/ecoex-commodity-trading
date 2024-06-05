@@ -67,7 +67,9 @@ class ReportController extends BaseController {
                 }
                 $is_date_range      = 0;
             }
+            echo $from_date.'||'.$to_date;
             $monthList          = $this->getMonthsInRange($from_date, $to_date);
+            pr($monthList);
             if(!empty($monthList)){
                 for($m=0;$m<count($monthList);$m++){
                     $currentMonth       = (int)$monthList[$m]['month'];
