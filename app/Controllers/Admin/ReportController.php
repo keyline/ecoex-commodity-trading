@@ -103,9 +103,46 @@ class ReportController extends BaseController {
             $monthList          = $this->getMonthsInRange($from_date, $to_date);
             if(!empty($monthList)){
                 for($m=0;$m<count($monthList);$m++){
+                    $currentMonth  = (int)$monthList[$m]['month'];
+                    if($currentMonth==1) {
+                      $lastDay = 31;
+                    }
+                    if($currentMonth==2) {
+                      $lastDay = 28;
+                    }
+                    if($currentMonth==3) {
+                      $lastDay = 31;
+                    }
+                    if($currentMonth==4) {
+                      $lastDay = 30;
+                    }
+                    if($currentMonth==5) {
+                      $lastDay = 31;
+                    }
+                    if($currentMonth==6) {
+                      $lastDay = 30;
+                    }
+                    if($currentMonth==7) {
+                      $lastDay = 31;
+                    }
+                    if($currentMonth==8) {
+                      $lastDay = 31;
+                    }
+                    if($currentMonth==9) {
+                      $lastDay = 30;
+                    }
+                    if($currentMonth==10) {
+                      $lastDay = 31;
+                    }
+                    if($currentMonth==11) {
+                      $lastDay = 30;
+                    }
+                    if($currentMonth==12) {
+                        $lastDay = 31;
+                    }
                     $monthYear          = $monthList[$m]['year'].'-'.$monthList[$m]['month'];
                     $fdate              = $monthList[$m]['year'].'-'.$monthList[$m]['month'].'-01';
-                    $tdate              = $monthList[$m]['year'].'-'.$monthList[$m]['month'].'-31';
+                    $tdate              = $monthList[$m]['year'].'-'.$monthList[$m]['month'].'-'.$lastDay;
                     $sql                = "SELECT id,enquiry_no,plant_id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate' group by plant_id";
                     $plantCount         = $this->db->query($sql)->getNumRows();
                     $enquires           = $this->db->query("SELECT id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate'")->getResult();
