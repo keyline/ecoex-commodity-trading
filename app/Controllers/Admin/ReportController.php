@@ -53,6 +53,7 @@ class ReportController extends BaseController {
             } else {
                 $search_day_id      = $requestData['search_day_id'];
                 if($search_day_id == 'this_month'){
+                    echo date('m');die;
                     $from_date          = date('Y') . '-' . date('m').'-01';
                     $to_date            = date('Y') . '-' . date('m').'-31';
                     $graph_title        = (($getCompany)?$getCompany->company_name:'')." ".$this->common_model->monthShortName(date('m'))."-".date('Y');
@@ -63,8 +64,8 @@ class ReportController extends BaseController {
                 }
                 $is_date_range      = 0;
             }
-            
             $monthList          = $this->getMonthsInRange($from_date, $to_date);
+            pr($monthList);
             if(!empty($monthList)){
                 for($m=0;$m<count($monthList);$m++){
                     $monthYear          = $monthList[$m]['year'].'-'.$monthList[$m]['month'];
