@@ -103,11 +103,11 @@ $controller_route   = $moduleDetail['controller_route'];
                     <h5 class="card-title"><?=$response['graph_title']?></h5>
 
                     <!-- Column Chart -->
-                    <div id="columnChart"></div>
+                    <div id="columnChart1"></div>
 
                     <script>
                       document.addEventListener("DOMContentLoaded", () => {
-                        new ApexCharts(document.querySelector("#columnChart"), {
+                        new ApexCharts(document.querySelector("#columnChart1"), {
                           series: [{
                             name: 'Scrap Qty',
                             data: ['<?=implode(', ', $scrap_qty);?>']
@@ -151,7 +151,8 @@ $controller_route   = $moduleDetail['controller_route'];
                           tooltip: {
                             y: {
                               formatter: function(val) {
-                                return "$ " + val + " thousands"
+                                // return "$ " + val + " thousands"
+                                return val
                               }
                             }
                           }
