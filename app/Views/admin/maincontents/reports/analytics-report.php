@@ -213,7 +213,7 @@ $controller_route   = $moduleDetail['controller_route'];
       $.ajax({
           type: "POST",
           url: base_url + "admin/reports/get-company-product",
-          data: {search_company_id : search_company_id},
+          data: {company_id : search_company_id},
           dataType: "JSON",
           beforeSend: function () {
             
