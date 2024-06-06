@@ -32,11 +32,12 @@ $controller_route   = $moduleDetail['controller_route'];
     <div class="col-xl-12">
       <div class="card">
         <div class="card-body pt-3">
+          <span class="text-danger">Star (*) marks fields are mandatory</span>
           <form method="GET" action="" enctype="multipart/form-data">
             <input type="hidden" name="mode" value="advance_search">
             <div class="row mb-3 align-items-center">
-                <div class="col-md-3 col-lg-3">
-                  <label for="search_company_id">Company</label>
+                <div class="col-md-2 col-lg-2">
+                  <label for="search_company_id">Company <span class="text-danger">*</span></label>
                   <select name="search_company_id" class="form-control" id="search_company_id" required>
                       <option value="" selected>Select Company</option>
                       <hr>
@@ -46,7 +47,24 @@ $controller_route   = $moduleDetail['controller_route'];
                       <?php } }?>
                   </select>
                 </div>
-                <div class="col-md-3 col-lg-3" id="day_type_row" style="display: <?=(($is_date_range == 1)?'none':'block')?>;">
+                <div class="col-md-2 col-lg-2">
+                  <label for="search_unit_id">Unit <span class="text-danger">*</span></label>
+                  <select name="search_unit_id" class="form-control" id="search_unit_id" required>
+                      <option value="" selected>Select Unit</option>
+                      <hr>
+                      <?php if($units){ foreach($units as $row){?>
+                          <option value="<?=$row->id?>" <?=(($search_unit_id == $row->id)?'selected':'')?>><?=$row->name?></option>
+                          <hr>
+                      <?php } }?>
+                  </select>
+                </div>
+                <div class="col-md-2 col-lg-2">
+                  <label for="search_product_id">Product</label>
+                  <select name="search_product_id" class="form-control" id="search_product_id">
+                      
+                  </select>
+                </div>
+                <div class="col-md-2 col-lg-2" id="day_type_row" style="display: <?=(($is_date_range == 1)?'none':'block')?>;">
                     <label for="search_day_id">Days</label>
                     <select name="search_day_id" class="form-control" id="search_day_id" required>
                         <!-- <option value="all" <?=(($search_day_id == 'all')?'selected':'')?>>All</option>
@@ -73,9 +91,8 @@ $controller_route   = $moduleDetail['controller_route'];
                     <label for="is_date_range">Date Range</label>
                     <input type="checkbox" id="is_date_range" name="is_date_range" <?=(($is_date_range == 1)?'checked':'')?>>
                 </div>
-                <div class="col-md-4 col-lg-4" id="day_range_row" style="display: <?=(($is_date_range == 1)?'block':'none')?>; margin-top: 18px;">
+                <div class="col-md-2 col-lg-2" id="day_range_row" style="display: <?=(($is_date_range == 1)?'block':'none')?>; margin-top: 18px;">
                     <div class="input-group input-daterange">
-                        <!-- <label for="search_range_from">Custom Month Range</label> -->
                         <input type="month" id="search_range_from" name="search_range_from" class="form-control" value="<?=$search_range_from?>" max="<?=date('Y-m')?>" style="height: 40px;">
                         <span class="input-group-text">To</span>
                         <input type="month" id="search_range_to" name="search_range_to" class="form-control" value="<?=$search_range_to?>" max="<?=date('Y-m')?>" style="height: 40px;">
