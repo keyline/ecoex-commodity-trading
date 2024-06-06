@@ -149,7 +149,7 @@ class ReportController extends BaseController {
         $requestData        = $this->request->getPost();
         $company_id         = $requestData['company_id'];
         $orderBy[0]         = ['field' => 'item_name_ecoex', 'type' => 'ASC'];
-        $rows               = $this->common_model->find_data('ecomm_company_items', 'array', ['status' => 1], 'id,item_name_ecoex', '', '', $orderBy);
+        $rows               = $this->common_model->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => $company_id], 'id,item_name_ecoex', '', '', $orderBy);
         if($rows){
             foreach($rows as $row){
                 $apiResponse[] = [

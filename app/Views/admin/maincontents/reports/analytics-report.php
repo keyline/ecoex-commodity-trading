@@ -59,7 +59,7 @@ $controller_route   = $moduleDetail['controller_route'];
                   </select>
                 </div>
                 <div class="col-md-2 col-lg-2">
-                  <label for="search_product_id">Product</label>
+                  <label for="search_product_id">Item</label>
                   <select name="search_product_id" class="form-control" id="search_product_id">
                       
                   </select>
@@ -219,16 +219,17 @@ $controller_route   = $moduleDetail['controller_route'];
             
           },
           success: function (rply) {
-            console.log(rply);
+            // console.log(rply);
             $("#search_product_id").empty();
-            // if(rply.success){
-            //     let html = '';
-            //     $.each(rply.data.cartData, function(key, item) {
-            //         html += '';
-            //     });
-            // }else{
-            //     toastAlert("error", "Something Went Wrong In Loading The Page !!!");
-            // }
+            if(rply.success){
+                let html = '<option value="" selected>Select Item</option><option value="all">All</option>';
+                $.each(rply.data, function(key, item) {
+                  html += '<option value="' + item.id + '">' + item.name + '</option>';
+                });
+                $("#search_product_id").html(html);
+            }else{
+              
+            }
           }
       });
     });
