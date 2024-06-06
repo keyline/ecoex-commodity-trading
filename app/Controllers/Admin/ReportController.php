@@ -29,9 +29,9 @@ class ReportController extends BaseController {
         $title                              = 'Manage Analytics Reports';
         $page_name                          = 'reports/analytics-report';
         
-        $orderBy1[0]                        = ['field' => 'company_name', 'type' =. 'ASC'];
+        $orderBy1[0]                        = ['field' => 'company_name', 'type' => 'ASC'];
         $data['companies']                  = $this->common_model->find_data('ecoex_companies', 'array', ['type' => 'COMPANY', 'status>=' => 1, 'status<=' => 2], 'id,company_name', '', '', $orderBy1);
-        $orderBy2[0]                        = ['field' => 'name', 'type' =. 'ASC'];
+        $orderBy2[0]                        = ['field' => 'name', 'type' => 'ASC'];
         $data['units']                      = $this->common_model->find_data('ecomm_units', 'array', ['status' => 1], 'id,name', '', '', $orderBy2);
         $data['is_search']                  = 0;
         $data['search_day_id']              = '';
