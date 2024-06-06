@@ -219,7 +219,7 @@ $controller_route   = $moduleDetail['controller_route'];
             
           },
           success: function (rply) {
-            alert(rply);
+            console.log(rply);
             $("#search_product_id").empty();
             // if(rply.success){
             //     let html = '';
