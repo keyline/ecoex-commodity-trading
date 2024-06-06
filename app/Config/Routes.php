@@ -211,6 +211,7 @@ $routes->get('/enquiry-cron', 'Home::enquiryCron');
 		// notifications
 		// reports
 			$routes->match(['get', 'post'], "reports/analytics-report", "ReportController::analyticsReport");
+			$routes->match(['get', 'post'], "reports/get-company-product", "ReportController::getCompanyProduct");
 		// reports
 	});
 /* ADMIN PANEL */

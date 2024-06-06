@@ -198,12 +198,15 @@ $controller_route   = $moduleDetail['controller_route'];
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script type="text/javascript">
   $("#is_date_range").click(function() {
-      if($(this).is(":checked")) {
-          $("#day_range_row").show();
-          $("#day_type_row").hide();
-      } else {
-          $("#day_range_row").hide();
-          $("#day_type_row").show();
-      }
+    if($(this).is(":checked")) {
+        $("#day_range_row").show();
+        $("#day_type_row").hide();
+    } else {
+        $("#day_range_row").hide();
+        $("#day_type_row").show();
+    }
   });
+  $(function(){
+    alert('ok');
+  })
 </script>
