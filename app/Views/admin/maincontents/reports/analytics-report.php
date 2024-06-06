@@ -207,6 +207,30 @@ $controller_route   = $moduleDetail['controller_route'];
     }
   });
   $(function(){
-    alert('ok');
+    $('#search_company_id').on('change', function(){
+      var base_url          = '<?=base_url()?>';
+      var search_company_id = $('#search_company_id').val();
+      $.ajax({
+          type: "POST",
+          url: base_url + "admin/reports/get-company-product",
+          data: {search_company_id : search_company_id},
+          dataType: "JSON",
+          beforeSend: function () {
+            
+          },
+          success: function (rply) {
+            alert(rply);
+            $("#search_product_id").empty();
+            // if(rply.success){
+            //     let html = '';
+            //     $.each(rply.data.cartData, function(key, item) {
+            //         html += '';
+            //     });
+            // }else{
+            //     toastAlert("error", "Something Went Wrong In Loading The Page !!!");
+            // }
+          }
+      });
+    });
   })
 </script>
