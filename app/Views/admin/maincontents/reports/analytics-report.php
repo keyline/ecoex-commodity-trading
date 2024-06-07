@@ -143,7 +143,7 @@ $controller_route   = $moduleDetail['controller_route'];
                           }],
                           chart: {
                             type: 'bar',
-                            height: 750
+                            height: 550
                           },
                           plotOptions: {
                             bar: {
