@@ -127,7 +127,7 @@ class ReportController extends BaseController {
                     }
                     $records[]         = [
                         'month_year_name'   => "'".$this->common_model->monthShortName($monthList[$m]['month'])."-".$monthList[$m]['year']."'",
-                        'scrap_qty'         => number_format(array_sum($weightMatQty), 3),
+                        'scrap_qty'         => round(array_sum($weightMatQty)),
                         'no_of_plant'       => $plantCount,
                         'vehicle_count'     => count($vehicles)
                     ];
