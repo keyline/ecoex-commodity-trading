@@ -129,6 +129,7 @@ $controller_route   = $moduleDetail['controller_route'];
                     <div id="columnChart1"></div>
 
                     <script>
+                      var convertedUnit = '<?=$convertedUnit?>';
                       document.addEventListener("DOMContentLoaded", () => {
                         new ApexCharts(document.querySelector("#columnChart1"), {
                           series: [{
@@ -180,7 +181,7 @@ $controller_route   = $moduleDetail['controller_route'];
                             y: {
                               formatter: function(val) {
                                 // return "$ " + val + " thousands"
-                                return val
+                                return val + " " + convertedUnit
                               }
                             }
                           }

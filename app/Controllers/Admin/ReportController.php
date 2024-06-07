@@ -39,6 +39,7 @@ class ReportController extends BaseController {
         $data['search_company_id']          = '';
         $data['search_unit_id']             = '';
         $data['search_product_id']          = '';
+        $data['convertedUnit']              = '';
         $data['search_range_from']          = '';
         $data['search_range_to']            = '';
         $data['response']                   = [];
@@ -111,9 +112,14 @@ class ReportController extends BaseController {
                                         }
                                     }
                                     if($search_unit_id == 'KG'){
-                                        $weightMatQty[]       = weightConversion($subEnquiry->weighted_qty, 'KG', 'MT');
+                                        $weightMatQty[]         = weightConversion($subEnquiry->weighted_qty, 'KG', 'MT');
+                                        $convertedUnit          = 'MT';
                                     } elseif($search_unit_id == 'MT'){
-                                        $weightMatQty[]       = $subEnquiry->weighted_qty;
+                                        $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                        $convertedUnit          = 'MT';
+                                    } elseif($search_unit_id == 'PCS'){
+                                        $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                        $convertedUnit          = 'PCS';
                                     }
                                 }
                             }
@@ -138,6 +144,7 @@ class ReportController extends BaseController {
             $data['search_company_id']          = $search_company_id;
             $data['search_unit_id']             = $search_unit_id;
             $data['search_product_id']          = $search_product_id;
+            $data['convertedUnit']              = $convertedUnit;
             $data['search_range_from']          = $requestData['search_range_from'];
             $data['search_range_to']            = $requestData['search_range_to'];
             $data['response']                   = $response;
