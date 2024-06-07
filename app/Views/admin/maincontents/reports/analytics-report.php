@@ -216,7 +216,7 @@ $controller_route   = $moduleDetail['controller_route'];
 
     var base_url          = '<?=base_url()?>';
     var search_company_id = '<?=$search_company_id?>';
-    var search_product_id = '<?=$search_product_id?>';
+    var search_product_id = parseInt('<?=$search_product_id?>');
     $.ajax({
         type: "POST",
         url: base_url + "admin/reports/get-company-product",
