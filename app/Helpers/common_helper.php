@@ -416,4 +416,12 @@ if ( ! function_exists('test_method'))
        $string3 = preg_replace('/-+/', '-', $string2);
        return strtolower($string3);
     }
+    function weightConversion($weight, $from, $to = 'MT') 
+    {
+      $convertedWeight = 0;
+      if($from == 'KG' && $to == 'MT'){
+        $convertedWeight = ($weight * 0.001);
+      }
+      return $convertedWeight;
+    }
 }
