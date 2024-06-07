@@ -153,9 +153,9 @@ $controller_route   = $moduleDetail['controller_route'];
                             },
                           },
                           colors: [ // this array contains different color code for each data
-                            "#33b2df",
-                            "#546E7A",
-                            "#d4526e"
+                            "#13d8aa",
+                            "#f48024",
+                            "#A5978B"
                           ],
                           dataLabels: {
                             enabled: true
