@@ -148,7 +148,7 @@ $controller_route   = $moduleDetail['controller_route'];
                           plotOptions: {
                             bar: {
                               horizontal: false,
-                              columnWidth: '45%',
+                              columnWidth: '7%',
                               endingShape: 'rounded'
                             },
                           },
