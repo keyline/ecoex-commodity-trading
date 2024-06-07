@@ -207,6 +207,39 @@ $controller_route   = $moduleDetail['controller_route'];
     }
   });
   $(function(){
+
+    var base_url          = '<?=base_url()?>';
+    var search_company_id = '<?=$search_company_id?>';
+    var search_product_id = '<?=$search_product_id?>';
+    $.ajax({
+        type: "POST",
+        url: base_url + "admin/reports/get-company-product",
+        data: {company_id : search_company_id},
+        dataType: "JSON",
+        beforeSend: function () {
+          
+        },
+        success: function (rply) {
+          $("#search_product_id").empty();
+          if(rply.success){
+            selected = '';
+            if(search_product_id == 'all'){
+              selected = 'selected';
+            }
+            let html = '<option value="all" ' + selected + '>All</option><hr>';
+            $.each(rply.data, function(key, item) {
+              if(search_product_id == item.name){
+                selected = 'selected';
+              }
+              html += '<option value="' + item.name + '' + selected + '">' + item.name + ' (' + item.unit + ')</option><hr>';
+            });
+            $("#search_product_id").html(html);
+          }else{
+            
+          }
+        }
+    });
+
     $('#search_company_id').on('change', function(){
       var base_url          = '<?=base_url()?>';
       var search_company_id = $('#search_company_id').val();
@@ -219,7 +252,6 @@ $controller_route   = $moduleDetail['controller_route'];
             
           },
           success: function (rply) {
-            // console.log(rply);
             $("#search_product_id").empty();
             if(rply.success){
                 let html = '<option value="all" selected>All</option><hr>';
