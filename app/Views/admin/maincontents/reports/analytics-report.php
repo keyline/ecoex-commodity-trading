@@ -53,7 +53,7 @@ $controller_route   = $moduleDetail['controller_route'];
                       <option value="" selected>Select Unit</option>
                       <hr>
                       <?php if($units){ foreach($units as $row){?>
-                          <option value="<?=$row->id?>" <?=(($search_unit_id == $row->id)?'selected':'')?>><?=$row->name?></option>
+                          <option value="<?=$row->name?>" <?=(($search_unit_id == $row->name)?'selected':'')?>><?=$row->name?></option>
                           <hr>
                       <?php } }?>
                   </select>

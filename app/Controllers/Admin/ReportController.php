@@ -84,20 +84,22 @@ class ReportController extends BaseController {
                     $fdate              = $monthList[$m]['year'].'-'.$monthList[$m]['month'].'-01';
                     $tdate              = $monthList[$m]['year'].'-'.$monthList[$m]['month'].'-'.$lastDay;
 
-                    if($search_product_id == 'all'){
-
-                    } else {
-                        
-                    }
+                    
 
                     $sql                = "SELECT id,enquiry_no,plant_id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate' group by plant_id";
                     $plantCount         = $this->db->query($sql)->getNumRows();
-                    $enquires           = $this->db->query("SELECT id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate'")->getResult();
-                    pr($enquires);
+                    $enquires           = $this->db->query("SELECT id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate' AND status < 13")->getResult();
+                    // pr($enquires);
                     $vehicles           = [];
+                    $weightMatQty       = [];
                     if($enquires){
                         foreach($enquires as $enquiry){
-                            $subEnquiries = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enquiry->id], 'vehicle_registration_nos');
+                            if($search_product_id == 'all'){
+                                $subEnquiries = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enquiry->id], 'vehicle_registration_nos,weighted_qty,item_id');
+                            } else {
+                                $subEnquiries = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enquiry->id, 'weighted_unit' => $search_unit_id], 'vehicle_registration_nos,weighted_qty,item_id');
+                            }
+                            
                             if($subEnquiries){
                                 foreach($subEnquiries as $subEnquiry){
                                     $vehicle_registration_nos = json_decode($subEnquiry->vehicle_registration_nos);
@@ -108,13 +110,14 @@ class ReportController extends BaseController {
                                             }
                                         }
                                     }
+                                    $weightMatQty[]       = $subEnquiry->weighted_qty;
                                 }
                             }
                         }
                     }
                     $records[]         = [
                         'month_year_name'   => "'".$this->common_model->monthShortName($monthList[$m]['month'])."-".$monthList[$m]['year']."'",
-                        'scrap_qty'         => $plantCount,
+                        'scrap_qty'         => array_sum($weightMatQty),
                         'no_of_plant'       => $plantCount,
                         'vehicle_count'     => count($vehicles)
                     ];
