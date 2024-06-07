@@ -222,7 +222,7 @@ $controller_route   = $moduleDetail['controller_route'];
             // console.log(rply);
             $("#search_product_id").empty();
             if(rply.success){
-                let html = '<option value="" selected>Select Item</option><hr><option value="all">All</option><hr>';
+                let html = '<option value="all" selected>All</option><hr>';
                 $.each(rply.data, function(key, item) {
                   html += '<option value="' + item.id + '">' + item.name + ' (' + item.unit + ')</option><hr>';
                 });

@@ -38,6 +38,7 @@ class ReportController extends BaseController {
         $data['is_date_range']              = 0;
         $data['search_company_id']          = '';
         $data['search_unit_id']             = '';
+        $data['search_product_id']          = '';
         $data['search_range_from']          = '';
         $data['search_range_to']            = '';
         $data['response']                   = [];
@@ -46,7 +47,10 @@ class ReportController extends BaseController {
             $records        = [];
             $requestData    = $this->request->getGet();
             $search_company_id      = $requestData['search_company_id'];
+            $search_unit_id         = $requestData['search_unit_id'];
+            $search_product_id      = $requestData['search_product_id'];
             $getCompany             = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $search_company_id]);
+
             if(array_key_exists('is_date_range', $requestData)){
                 $search_range_from  = explode("-", $requestData['search_range_from']);
                 $search_range_to    = explode("-", $requestData['search_range_to']);
@@ -79,9 +83,17 @@ class ReportController extends BaseController {
                     $monthYear          = $monthList[$m]['year'].'-'.$monthList[$m]['month'];
                     $fdate              = $monthList[$m]['year'].'-'.$monthList[$m]['month'].'-01';
                     $tdate              = $monthList[$m]['year'].'-'.$monthList[$m]['month'].'-'.$lastDay;
+
+                    if($search_product_id == 'all'){
+
+                    } else {
+                        
+                    }
+
                     $sql                = "SELECT id,enquiry_no,plant_id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate' group by plant_id";
                     $plantCount         = $this->db->query($sql)->getNumRows();
                     $enquires           = $this->db->query("SELECT id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate'")->getResult();
+                    pr($enquires);
                     $vehicles           = [];
                     if($enquires){
                         foreach($enquires as $enquiry){
@@ -117,6 +129,8 @@ class ReportController extends BaseController {
             $data['search_day_id']              = $requestData['search_day_id'];
             $data['is_date_range']              = $is_date_range;
             $data['search_company_id']          = $search_company_id;
+            $data['search_unit_id']             = $search_unit_id;
+            $data['search_product_id']          = $search_product_id;
             $data['search_range_from']          = $requestData['search_range_from'];
             $data['search_range_to']            = $requestData['search_range_to'];
             $data['response']                   = $response;
