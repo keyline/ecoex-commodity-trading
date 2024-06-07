@@ -232,13 +232,12 @@ $controller_route   = $moduleDetail['controller_route'];
             if(search_product_id == 'all'){
               selected = 'selected';
             }
-            console.log(search_product_id);
             let html = '<option value="all" ' + selected + '>All</option><hr>';
             $.each(rply.data, function(key, item) {
               if(search_product_id == item.id){
                 selected = 'selected';
               }
-              html += '<option value="' + item.id + '' + selected + '">' + item.name + ' (' + item.unit + ')</option><hr>';
+              html += '<option value="' + item.id + '"' + selected + '>' + item.name + ' (' + item.unit + ')</option><hr>';
             });
             $("#search_product_id").html(html);
           }else{
