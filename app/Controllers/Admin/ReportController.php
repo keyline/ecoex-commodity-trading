@@ -95,7 +95,7 @@ class ReportController extends BaseController {
                     if($enquires){
                         foreach($enquires as $enquiry){
                             if($search_product_id == 'all'){
-                                $subEnquiries = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enquiry->id], 'vehicle_registration_nos,weighted_qty,item_id');
+                                $subEnquiries = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enquiry->id, 'weighted_unit' => $search_unit_id], 'vehicle_registration_nos,weighted_qty,item_id');
                             } else {
                                 $subEnquiries = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enquiry->id, 'weighted_unit' => $search_unit_id], 'vehicle_registration_nos,weighted_qty,item_id');
                             }
