@@ -85,14 +85,13 @@ class ReportController extends BaseController {
                     $fdate              = $monthList[$m]['year'].'-'.$monthList[$m]['month'].'-01';
                     $tdate              = $monthList[$m]['year'].'-'.$monthList[$m]['month'].'-'.$lastDay;
 
-                    
-
                     $sql                = "SELECT id,enquiry_no,plant_id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate' group by plant_id";
                     $plantCount         = $this->db->query($sql)->getNumRows();
                     $enquires           = $this->db->query("SELECT id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate' AND status < 13")->getResult();
                     // pr($enquires);
                     $vehicles           = [];
                     $weightMatQty       = [];
+                    $convertedUnit      = 'MT';
                     if($enquires){
                         foreach($enquires as $enquiry){
                             if($search_product_id == 'all'){
@@ -111,7 +110,7 @@ class ReportController extends BaseController {
                                             }
                                         }
                                     }
-                                    $convertedUnit          = 'MT';
+
                                     if($search_unit_id == 'KG'){
                                         $weightMatQty[]         = weightConversion($subEnquiry->weighted_qty, 'KG', 'MT');
                                         $convertedUnit          = 'MT';
