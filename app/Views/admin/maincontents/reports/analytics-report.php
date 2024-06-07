@@ -87,11 +87,11 @@ $controller_route   = $moduleDetail['controller_route'];
                         <hr> -->
                     </select>
                 </div>
-                <div class="col-md-4 col-lg-4" style="margin-top: 18px;">
+                <div class="col-md-3 col-lg-3" style="margin-top: 18px;">
                     <label for="is_date_range">Date Range</label>
                     <input type="checkbox" id="is_date_range" name="is_date_range" <?=(($is_date_range == 1)?'checked':'')?>>
                 </div>
-                <div class="col-md-4 col-lg-4" id="day_range_row" style="display: <?=(($is_date_range == 1)?'block':'none')?>; margin-top: 18px;">
+                <div class="col-md-3 col-lg-3" id="day_range_row" style="display: <?=(($is_date_range == 1)?'block':'none')?>; margin-top: 18px;">
                     <div class="input-group input-daterange">
                         <input type="month" id="search_range_from" name="search_range_from" class="form-control" value="<?=$search_range_from?>" max="<?=date('Y-m')?>" style="height: 40px;">
                         <span class="input-group-text">To</span>
