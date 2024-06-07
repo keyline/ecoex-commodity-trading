@@ -148,6 +148,7 @@ class ReportController extends BaseController {
             $data['search_range_from']          = $requestData['search_range_from'];
             $data['search_range_to']            = $requestData['search_range_to'];
             $data['response']                   = $response;
+            pr($data);
         }
 
         echo $this->layout_after_login($title,$page_name,$data);
