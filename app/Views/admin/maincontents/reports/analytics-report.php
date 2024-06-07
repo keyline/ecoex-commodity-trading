@@ -143,7 +143,7 @@ $controller_route   = $moduleDetail['controller_route'];
                           }],
                           chart: {
                             type: 'bar',
-                            height: 350
+                            height: 750
                           },
                           plotOptions: {
                             bar: {
@@ -152,6 +152,11 @@ $controller_route   = $moduleDetail['controller_route'];
                               endingShape: 'rounded'
                             },
                           },
+                          colors: [ // this array contains different color code for each data
+                            "#33b2df",
+                            "#546E7A",
+                            "#d4526e"
+                          ],
                           dataLabels: {
                             enabled: true
                           },
