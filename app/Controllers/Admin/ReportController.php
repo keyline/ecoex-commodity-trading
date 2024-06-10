@@ -45,8 +45,9 @@ class ReportController extends BaseController {
         $data['response']                   = [];
 
         if($this->request->getGet('mode') == 'advance_search'){
-            $records        = [];
-            $requestData    = $this->request->getGet();
+            $records                = [];
+            $details_data           = [];
+            $requestData            = $this->request->getGet();
             $search_company_id      = $requestData['search_company_id'];
             $search_unit_id         = $requestData['search_unit_id'];
             $search_product_id      = $requestData['search_product_id'];
@@ -95,9 +96,9 @@ class ReportController extends BaseController {
                     if($enquires){
                         foreach($enquires as $enquiry){
                             if($search_product_id == 'all'){
-                                $subEnquiries = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enquiry->id, 'weighted_unit' => $search_unit_id], 'vehicle_registration_nos,weighted_qty,item_id');
+                                $subEnquiries = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enquiry->id, 'weighted_unit' => $search_unit_id], 'vehicle_registration_nos,weighted_qty,item_id,weighted_unit,enquiry_no,sub_enquiry_no');
                             } else {
-                                $subEnquiries = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enquiry->id, 'weighted_unit' => $search_unit_id, 'item_id' => $search_product_id], 'vehicle_registration_nos,weighted_qty,item_id');
+                                $subEnquiries = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enquiry->id, 'weighted_unit' => $search_unit_id, 'item_id' => $search_product_id], 'vehicle_registration_nos,weighted_qty,item_id,weighted_unit,enquiry_no,sub_enquiry_no,enq_id');
                             }
                             
                             if($subEnquiries){
@@ -121,6 +122,18 @@ class ReportController extends BaseController {
                                         $weightMatQty[]         = $subEnquiry->weighted_qty;
                                         $convertedUnit          = 'PCS';
                                     }
+
+                                    /* details data for table */
+                                        $getItem        = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $subEnquiry->item_id], 'item_name_ecoex');
+                                        $details_data[] = [
+                                            'enq_id'            => $subEnquiry->enq_id,
+                                            'enquiry_no'        => $subEnquiry->enquiry_no,
+                                            'sub_enquiry_no'    => $subEnquiry->sub_enquiry_no,
+                                            'item_name'         => (($getItem)?$getItem->item_name_ecoex:''),
+                                            'weighted_qty'      => $subEnquiry->weighted_qty,
+                                            'weighted_unit'     => $subEnquiry->weighted_unit,
+                                        ];
+                                    /* details data for table */
                                 }
                             }
                         }
@@ -136,8 +149,9 @@ class ReportController extends BaseController {
             $response = [
                 'graph_title'       => $graph_title,
                 'records'           => $records,
+                'details_data'      => $details_data,
             ];
-            // pr($response);
+            pr($response);
             $data['is_search']                  = 1;
             $data['search_day_id']              = $requestData['search_day_id'];
             $data['is_date_range']              = $is_date_range;
