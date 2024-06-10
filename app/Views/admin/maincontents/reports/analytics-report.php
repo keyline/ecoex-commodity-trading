@@ -112,6 +112,7 @@ $controller_route   = $moduleDetail['controller_route'];
             $scrap_qty        = array_column($response['records'], 'scrap_qty');
             $no_of_plant      = array_column($response['records'], 'no_of_plant');
             $vehicle_count    = array_column($response['records'], 'vehicle_count');
+            $details_data     = $response['details_data'];
             // pr($response,0);
             // pr($month_year_name,0);
             // pr($scrap_qty,0);
@@ -190,6 +191,40 @@ $controller_route   = $moduleDetail['controller_route'];
                     </script>
                     <!-- End Column Chart -->
 
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-lg-12 col-md-12">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">Details Data</h5>
+                    <table class="table table-striped table-bordered">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Enquiry No.</th>
+                          <th>Sub Enquiry No.</th>
+                          <th>Item Name</th>
+                          <th>Weighted Qty</th>
+                          <th>Weighted Unit</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php if($details_data){ $sl_no = 1; foreach($details_data as $details){?>
+                          <tr>
+                            <td><?=$sl_no++?></td>
+                            <td><?=$details['enquiry_no']?></td>
+                            <td><?=$details['sub_enquiry_no']?></td>
+                            <td><?=$details['item_name']?></td>
+                            <td><?=$details['weighted_qty']?></td>
+                            <td><?=$details['weighted_unit']?></td>
+                          </tr>
+                        <?php } } ?>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>

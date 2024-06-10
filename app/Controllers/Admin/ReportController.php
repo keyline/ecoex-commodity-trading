@@ -151,7 +151,7 @@ class ReportController extends BaseController {
                 'records'           => $records,
                 'details_data'      => $details_data,
             ];
-            pr($response);
+            // pr($response);
             $data['is_search']                  = 1;
             $data['search_day_id']              = $requestData['search_day_id'];
             $data['is_date_range']              = $is_date_range;
