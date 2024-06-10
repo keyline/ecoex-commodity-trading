@@ -216,7 +216,7 @@ $controller_route   = $moduleDetail['controller_route'];
                         <?php if($details_data){ $sl_no = 1; foreach($details_data as $details){?>
                           <tr>
                             <td><?=$sl_no++?></td>
-                            <td><?=$details['enquiry_no']?></td>
+                            <td><a href="<?=base_url('admin/enquiry-requests/enquiry-details/'.encoded($details['enq_id']))?>" target="_blank"><?=$details['enquiry_no']?></a></td>
                             <td><?=$details['sub_enquiry_no']?></td>
                             <td><?=$details['item_name']?></td>
                             <td><?=$details['weighted_qty']?></td>
