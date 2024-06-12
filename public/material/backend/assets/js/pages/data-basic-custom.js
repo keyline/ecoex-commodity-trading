@@ -1,7 +1,18 @@
 $(document).ready(function() {
     setTimeout(function() {
         // [ Zero Configuration ] start
-        $('#simpletable').DataTable();
+        // const dataTable = new simpleDatatables.DataTable("#simpletable", {
+        //     searchable: true,
+        //     fixedHeight: true,
+        // });
+        $('#simpletable').DataTable({
+            layout: {
+                topStart: {
+                    buttons: ['csv', 'excel', 'pdf', 'print']
+                }
+            }
+        });
+        // let dataTable = new DataTable("#myTable");
 
         // [ Default Ordering ] start
         $('#order-table').DataTable({
