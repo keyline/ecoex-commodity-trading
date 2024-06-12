@@ -1,0 +1,43 @@
+:root{
+	--maincolor:#f19620;
+}
+.btn_org{background: var(--maincolor); border-color: var(--maincolor);}
+.dailyhour_cal {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 24px;
+    align-items: center;
+    font-weight: 700;
+}
+.dailyhour_cal h3 {
+    font-size: 18px;
+    padding-right: 4px;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+/* surajit */
+.dataTables_length label,
+.dataTables_filter label{
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.dataTables_length label select{
+    margin: 0 10px;
+}
+.dataTables_filter label input{
+    margin-left: 10px;
+}
+.pagination{
+    justify-content: end;
+}
+.sidebar-nav .nav-content a:hover, .sidebar-nav .nav-content a.active{
+    color: #dc3545
+}
+.passeye {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translate(0, -50%);
+}
