@@ -247,59 +247,11 @@ h6 {
 }
 
 .card-body {
-  /* padding: 0 20px 20px 20px; */
-  padding: 20px 25px;
+  padding: 0 20px 20px 20px;
 }
 
 .card-img-overlay {
   background-color: rgba(255, 255, 255, 0.6);
-}
-
-.order-card {
-  color: #fff;
-}
-
-.order-card i {
-  font-size: 26px;
-}
-
-.bg-c-blue {
-  background: linear-gradient(45deg, #4099ff, #73b4ff);
-}
-
-.text-right {
-  text-align: right !important;
-}
-
-.text-white {
-  color: #fff !important;
-}
-
-.feather {
-  font-family: 'feather' !important;
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-.icon-paperclip:before {
-  content: "\e904";
-}
-
-.bg-c-green {
-  background: linear-gradient(45deg, #2ed8b6, #59e0c5);
-}
-
-.text-c-green {
-  color: #2ed8b6;
-}
-
-.b-c-green {
-  border: 1px solid #2ed8b6;
 }
 
 /* Alerts */
@@ -429,7 +381,7 @@ h6 {
   z-index: 997;
   height: 60px;
   box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);
-  background-color: #ffc107;
+  background-color: #fff;
   padding-left: 20px;
   /* Toggle Sidebar Button */
   /* Search Bar */
@@ -650,7 +602,7 @@ h6 {
   top: 60px;
   left: 0;
   bottom: 0;
-  width: 230px;
+  width: 300px;
   z-index: 996;
   transition: all 0.3s;
   padding: 20px;
@@ -681,7 +633,7 @@ h6 {
 
   #main,
   #footer {
-    margin-left: 220px;
+    margin-left: 300px;
   }
 }
 
@@ -730,7 +682,7 @@ h6 {
 .sidebar-nav .nav-link {
   display: flex;
   align-items: center;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: #4154f1;
   transition: 0.3;
@@ -738,9 +690,7 @@ h6 {
   padding: 10px 15px;
   border-radius: 4px;
 }
-select.form-control {
-    height: 40px;
-}
+
 .sidebar-nav .nav-link i {
   font-size: 16px;
   margin-right: 10px;
@@ -1281,35 +1231,3 @@ select.form-control {
   font-size: 13px;
   color: #012970;
 }
-
-
-.dt-buttons button{
-  padding: 2px 20px;
-  background-color: #198754;
-  color: #fff;
-  border-radius: 50px;
-  border:2px solid #198754;
-  transition: all .3s ease-in-out;
-  box-shadow: 0 9px 20px -10px #a5a5a5;
-}
-.dt-buttons button:hover{
-  background: transparent;
-  color: #198754;
-  border:2px solid #198754;
-}
-.table .badge {
-  border-radius: 50px;
-}
-
-@media (max-width: 767px) {
-.card-body{padding: 20px 5px;}	
-#main {padding: 20px 5px;}
-}
-@media (max-width: 480px) {
-body{font-size: 12px;}
-select.form-control {
-    font-size: 12px;
-}
-}
-
-

@@ -429,7 +429,7 @@ h6 {
   z-index: 997;
   height: 60px;
   box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);
-  background-color: #ffc107;
+  background-color: #fff;
   padding-left: 20px;
   /* Toggle Sidebar Button */
   /* Search Bar */
@@ -1300,16 +1300,3 @@ select.form-control {
 .table .badge {
   border-radius: 50px;
 }
-
-@media (max-width: 767px) {
-.card-body{padding: 20px 5px;}	
-#main {padding: 20px 5px;}
-}
-@media (max-width: 480px) {
-body{font-size: 12px;}
-select.form-control {
-    font-size: 12px;
-}
-}
-
-

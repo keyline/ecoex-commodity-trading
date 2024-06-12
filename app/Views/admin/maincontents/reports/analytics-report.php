@@ -4,7 +4,7 @@ $title              = $moduleDetail['title'];
 $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
 ?>
-<style type="text/css">
+<!-- <style type="text/css">
   #simpletable_filter{
       float: right;
   }
@@ -12,7 +12,7 @@ $controller_route   = $moduleDetail['controller_route'];
       display: inline-flex;
       padding: 10px;
   }
-</style>
+</style> -->
 <div class="pagetitle">
   <h1><?=$page_header?></h1>
   <nav>
