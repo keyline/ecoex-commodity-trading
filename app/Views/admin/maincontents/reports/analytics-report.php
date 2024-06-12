@@ -4,6 +4,15 @@ $title              = $moduleDetail['title'];
 $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
 ?>
+<style type="text/css">
+  #simpletable_filter{
+      float: right;
+  }
+  .simpletable_length label {
+      display: inline-flex;
+      padding: 10px;
+  }
+</style>
 <div class="pagetitle">
   <h1><?=$page_header?></h1>
   <nav>
@@ -113,12 +122,6 @@ $controller_route   = $moduleDetail['controller_route'];
             $no_of_plant      = array_column($response['records'], 'no_of_plant');
             $vehicle_count    = array_column($response['records'], 'vehicle_count');
             $details_data     = $response['details_data'];
-            // pr($response,0);
-            // pr($month_year_name,0);
-            // pr($scrap_qty,0);
-            // pr($no_of_plant,0);
-            // pr($vehicle_count,0);
-            // die;
           ?>
             <div class="row mt-3">
               <div class="col-lg-12 col-md-12">
@@ -201,7 +204,7 @@ $controller_route   = $moduleDetail['controller_route'];
                 <div class="card">
                   <div class="card-body">
                     <h5 class="card-title">Details Data</h5>
-                    <table class="table table-striped table-bordered">
+                    <table id="simpletable" class="table table-striped table-bordered nowrap" style="width: 100%">
                       <thead>
                         <tr>
                           <th>#</th>

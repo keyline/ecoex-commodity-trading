@@ -30,13 +30,27 @@
         <script src="<?=getenv('app.adminAssetsURL')?>assets/vendor/chart.js/chart.umd.js"></script>
         <script src="<?=getenv('app.adminAssetsURL')?>assets/vendor/echarts/echarts.min.js"></script>
         <script src="<?=getenv('app.adminAssetsURL')?>assets/vendor/quill/quill.min.js"></script>
-        <script src="<?=getenv('app.adminAssetsURL')?>assets/vendor/simple-datatables/simple-datatables.js"></script>
+        <!-- <script src="<?=getenv('app.adminAssetsURL')?>assets/vendor/simple-datatables/simple-datatables.js"></script> -->
         <script src="<?=getenv('app.adminAssetsURL')?>assets/vendor/tinymce/tinymce.min.js"></script>
         <script src="<?=getenv('app.adminAssetsURL')?>assets/vendor/php-email-form/validate.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css" integrity="sha512-rRQtF4V2wtAvXsou4iUAs2kXHi3Lj9NE7xJR77DE7GHsxgY9RTWy93dzMXgDIG8ToiRTD45VsDNdTiUagOFeZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <!-- Template Main JS File -->
         <script src="<?=getenv('app.adminAssetsURL')?>assets/js/main.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+        <script src="<?=getenv('app.adminAssetsURL')?>assets/js/pages/data-basic-custom.js"></script>
+
+        <link href="https://cdn.datatables.net/v/dt/dt-2.0.3/datatables.min.css" rel="stylesheet">
+        <script src="https://cdn.datatables.net/v/dt/dt-2.0.3/datatables.min.js"></script>
+        <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+        <script src="https://cdn.datatables.net/buttons/3.0.1/js/dataTables.buttons.js"></script>
+        <script src="https://cdn.datatables.net/buttons/3.0.1/js/buttons.dataTables.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+        <script src="https://cdn.datatables.net/buttons/3.0.1/js/buttons.html5.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/3.0.1/js/buttons.print.min.js"></script>
+
         <script type="text/javascript">
             $(document).ready(function(){
                 $('.hide-message').delay(5000).fadeOut('slow');
