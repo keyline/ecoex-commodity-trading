@@ -177,6 +177,7 @@ $controller_route   = $moduleDetail['controller_route'];
                               formatter: function(val) {
                                 // return "$ " + val + " thousands"
                                 // return val + " " + convertedUnit
+                                return val
                               }
                             }
                           }
