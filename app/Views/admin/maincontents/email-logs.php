@@ -29,7 +29,7 @@ $user_type = session('user_type');
     <div class="col-xl-12">
       <div class="card">
         <div class="card-body pt-3">
-            <table class="table datatable">
+            <table id="simpletable" class="table table-striped table-bordered nowrap" style="width: 100%">
                 <thead>
                     <tr>
                         <th scope="col">#</th>

@@ -39,7 +39,7 @@ $company_id                 = $session->company_id;
                             <a href="<?=base_url('admin/' . $controller_route . '/add/')?>" class="btn btn-outline-success btn-sm">Add <?=$title?></a>
                         </h5>
                     <?php }?>
-                    <table class="table datatable">
+                    <table id="simpletable" class="table table-striped table-bordered nowrap" style="width: 100%">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>

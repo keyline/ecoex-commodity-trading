@@ -33,7 +33,7 @@ $userType           = $session->user_type;
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <table class="table datatable">
+                    <table id="simpletable" class="table table-striped table-bordered nowrap" style="width: 100%">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>

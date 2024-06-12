@@ -46,7 +46,7 @@ $user_type = session('user_type');
           </ul>
           <div class="tab-content pt-2">
             <div class="tab-pane fade show active profile-overview" id="tab1">
-              <table class="table datatable">
+              <table id="simpletable" class="table table-striped table-bordered nowrap" style="width: 100%">
                 <thead>
                     <tr>
                       <th scope="col">#</th>
