@@ -208,7 +208,7 @@ $controller_route   = $moduleDetail['controller_route'];
                         </tr>
                       </thead>
                       <tbody>
-                        <?php if($details_data){ $sl_no = 1; $tot_weight_qty = 0; foreach($details_data as $details){?>
+                        <?php $sl_no = 1; $tot_weight_qty = 0; if($details_data){ foreach($details_data as $details){?>
                           <tr>
                             <td><?=$sl_no++?></td>
                             <td><a href="<?=base_url('admin/enquiry-requests/enquiry-details/'.encoded($details['enq_id']))?>" target="_blank"><?=$details['enquiry_no']?></a></td>
