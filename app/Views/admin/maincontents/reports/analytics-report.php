@@ -208,7 +208,7 @@ $controller_route   = $moduleDetail['controller_route'];
                         </tr>
                       </thead>
                       <tbody>
-                        <?php if($details_data){ $sl_no = 1; foreach($details_data as $details){?>
+                        <?php if($details_data){ $sl_no = 1; $tot_weight_qty = 0; foreach($details_data as $details){?>
                           <tr>
                             <td><?=$sl_no++?></td>
                             <td><a href="<?=base_url('admin/enquiry-requests/enquiry-details/'.encoded($details['enq_id']))?>" target="_blank"><?=$details['enquiry_no']?></a></td>
@@ -217,8 +217,15 @@ $controller_route   = $moduleDetail['controller_route'];
                             <td><?=$details['weighted_qty']?></td>
                             <td><?=$details['weighted_unit']?></td>
                           </tr>
-                        <?php } } ?>
+                        <?php $tot_weight_qty += $details['weighted_qty']; } } ?>
                       </tbody>
+                      <tfoot>
+                        <tr>
+                          <th colspan="4" style="text-align: center;">Total</th>
+                          <th><?=$tot_weight_qty?></th>
+                          <th></th>
+                        </tr>
+                      </tfoot>
                     </table>
                   </div>
                 </div>
