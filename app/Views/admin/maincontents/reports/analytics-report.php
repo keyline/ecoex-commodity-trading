@@ -223,7 +223,7 @@ $controller_route   = $moduleDetail['controller_route'];
                         <tr>
                           <th colspan="4" style="text-align: center;">Total</th>
                           <th><?=$tot_weight_qty?></th>
-                          <th></th>
+                          <th><?=$convertedUnit?></th>
                         </tr>
                       </tfoot>
                     </table>
