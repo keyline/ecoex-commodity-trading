@@ -113,14 +113,15 @@ class ReportController extends BaseController {
                                     }
 
                                     if($search_unit_id == 'KG'){
-                                        $weightMatQty[]         = weightConversion($subEnquiry->weighted_qty, 'KG', 'MT');
-                                        $convertedUnit          = 'MT';
+                                        // $weightMatQty[]         = weightConversion($subEnquiry->weighted_qty, 'KG', 'MT');
+                                        $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                        $convertedUnit          = $search_unit_id;
                                     } elseif($search_unit_id == 'MT'){
                                         $weightMatQty[]         = $subEnquiry->weighted_qty;
-                                        $convertedUnit          = 'MT';
+                                        $convertedUnit          = $search_unit_id;
                                     } elseif($search_unit_id == 'PCS'){
                                         $weightMatQty[]         = $subEnquiry->weighted_qty;
-                                        $convertedUnit          = 'PCS';
+                                        $convertedUnit          = $search_unit_id;
                                     }
 
                                     /* details data for table */
