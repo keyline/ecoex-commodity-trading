@@ -118,7 +118,7 @@ $controller_route   = $moduleDetail['controller_route'];
               <div class="col-lg-12 col-md-12">
                 <div class="card">
                   <div class="card-body">
-                    <h5 class="card-title"><?=$response['graph_title']?> <small class="text-danger">In graph scrap qty always show in MT</small></h5>
+                    <h5 class="card-title"><?=$response['graph_title']?> <small class="text-danger" style="font-size: 12px;color: red !important;">( In graph scrap qty always show in MT )</small></h5>
 
                     <!-- Column Chart -->
                     <div id="columnChart1"></div>
