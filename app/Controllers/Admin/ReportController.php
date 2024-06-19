@@ -113,8 +113,8 @@ class ReportController extends BaseController {
                                     }
 
                                     if($search_unit_id == 'KG'){
-                                        // $weightMatQty[]         = weightConversion($subEnquiry->weighted_qty, 'KG', 'MT');
-                                        $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                        $weightMatQty[]         = weightConversion($subEnquiry->weighted_qty, 'KG', 'MT');
+                                        // $weightMatQty[]         = $subEnquiry->weighted_qty;
                                         $convertedUnit          = $search_unit_id;
                                     } elseif($search_unit_id == 'MT'){
                                         $weightMatQty[]         = $subEnquiry->weighted_qty;
@@ -163,7 +163,7 @@ class ReportController extends BaseController {
             $data['search_range_from']          = $requestData['search_range_from'];
             $data['search_range_to']            = $requestData['search_range_to'];
             $data['response']                   = $response;
-            // pr($data);
+            pr($response);
         }
 
         echo $this->layout_after_login($title,$page_name,$data);
