@@ -120,17 +120,30 @@ class ReportController extends BaseController {
                                         }
                                     }
 
-                                    if($search_unit_id == 'KG'){
-                                        $weightMatQty[]         = weightConversion($subEnquiry->weighted_qty, 'KG', 'MT');
-                                        // $weightMatQty[]         = $subEnquiry->weighted_qty;
-                                        $convertedUnit          = $search_unit_id;
-                                    } elseif($search_unit_id == 'MT'){
+                                    if($search_unit_id == 'PCS'){
                                         $weightMatQty[]         = $subEnquiry->weighted_qty;
                                         $convertedUnit          = $search_unit_id;
-                                    } elseif($search_unit_id == 'PCS'){
-                                        $weightMatQty[]         = $subEnquiry->weighted_qty;
-                                        $convertedUnit          = $search_unit_id;
+                                    } else {
+                                        if($subEnquiry->weighted_unit == 'MT'){
+                                            $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                            $convertedUnit          = $search_unit_id;
+                                        } else {
+                                            $weightMatQty[]         = weightConversion($subEnquiry->weighted_qty, 'KG', 'MT');
+                                            // $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                            $convertedUnit          = $search_unit_id;
+                                        }
                                     }
+                                    // if($search_unit_id == 'KG'){
+                                    //     $weightMatQty[]         = weightConversion($subEnquiry->weighted_qty, 'KG', 'MT');
+                                    //     // $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                    //     $convertedUnit          = $search_unit_id;
+                                    // } elseif($search_unit_id == 'MT'){
+                                    //     $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                    //     $convertedUnit          = $search_unit_id;
+                                    // } elseif($search_unit_id == 'PCS'){
+                                    //     $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                    //     $convertedUnit          = $search_unit_id;
+                                    // }
 
                                     /* details data for table */
                                         $getItem        = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $subEnquiry->item_id], 'item_name_ecoex');
