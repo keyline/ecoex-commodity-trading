@@ -222,13 +222,13 @@ $controller_route   = $moduleDetail['controller_route'];
                         <tfoot>
                           <tr>
                             <th colspan="4" style="text-align: center;">Total</th>
-                            <th><?=$tot_weight_qty?></th>
+                            <th><?=number_format($tot_weight_qty, 3)?></th>
                             <!-- <th><?=$convertedUnit?></th> -->
                             <th>KG</th>
                           </tr>
                           <tr>
                             <th colspan="4" style="text-align: center;">Total</th>
-                            <th><?=($tot_weight_qty / 1000)?></th>
+                            <th><?=number_format(($tot_weight_qty / 1000), 3)?></th>
                             <!-- <th><?=$convertedUnit?></th> -->
                             <th>MT</th>
                           </tr>
