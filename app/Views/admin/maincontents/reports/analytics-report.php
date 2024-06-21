@@ -168,7 +168,7 @@ $controller_route   = $moduleDetail['controller_route'];
                           },
                           yaxis: {
                             title: {
-                              text: 'Number'
+                              text: 'Number in <?=$search_unit_id?>'
                             }
                           },
                           fill: {
