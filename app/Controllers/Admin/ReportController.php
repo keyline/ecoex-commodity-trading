@@ -152,8 +152,9 @@ class ReportController extends BaseController {
                                             'enquiry_no'        => $subEnquiry->enquiry_no,
                                             'sub_enquiry_no'    => $subEnquiry->sub_enquiry_no,
                                             'item_name'         => (($getItem)?$getItem->item_name_ecoex:''),
-                                            'weighted_qty'      => $subEnquiry->weighted_qty,
-                                            'weighted_unit'     => $subEnquiry->weighted_unit,
+                                            'weighted_qty'      => (($subEnquiry->weighted_unit == 'KG')?$subEnquiry->weighted_qty:weightConversion($subEnquiry->weighted_qty, 'MT', 'KG')),
+                                            // 'weighted_unit'     => $subEnquiry->weighted_unit,
+                                            'weighted_unit'     => 'KG',
                                         ];
                                     /* details data for table */
                                 }

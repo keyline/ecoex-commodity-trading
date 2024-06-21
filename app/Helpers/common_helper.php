@@ -421,6 +421,8 @@ if ( ! function_exists('test_method'))
       $convertedWeight = 0;
       if($from == 'KG' && $to == 'MT'){
         $convertedWeight = ($weight * 0.001);
+      } elseif($from == 'MT' && $to == 'KG'){
+        $convertedWeight = ($weight * 1000);
       }
       return $convertedWeight;
     }
