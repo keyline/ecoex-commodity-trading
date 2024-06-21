@@ -447,7 +447,7 @@ $userType           = $session->user_type;
                               left: 'center'
                             },
                             series: [{
-                              name: 'Access From',
+                              name: 'Enquiry Status',
                               type: 'pie',
                               color: [
                                 '#37A2DA',

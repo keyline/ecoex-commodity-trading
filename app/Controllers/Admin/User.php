@@ -300,10 +300,12 @@ class User extends BaseController {
             $tDate = '';
             if($postData['filter_keyword'] == 'today'){
                 $fDate = date('Y-m-d');
+                $tDate = date('Y-m-d');
                 $filter_keyword_text = 'Today';
             }
             if($postData['filter_keyword'] == 'yesterday'){
                 $fDate = date('Y-m-d',strtotime("-1 days"));
+                $tDate = date('Y-m-d',strtotime("-1 days"));
                 $filter_keyword_text = 'Yesterday';
             }
             if($postData['filter_keyword'] == 'this_month'){
