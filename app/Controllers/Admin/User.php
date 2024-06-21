@@ -361,7 +361,7 @@ class User extends BaseController {
 
                 $data['step0_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 0, 'updated_at>=' => $fDate, 'updated_at<=' => $tDate]);
                 $data['step1_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 1, 'updated_at>=' => $fDate, 'updated_at<=' => $tDate]);
-                echo $this->db->getLastQuery();due;
+                echo $this->db->getLastQuery();die;
                 $data['step2_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 2, 'updated_at>=' => $fDate, 'updated_at<=' => $tDate]);
                 $data['step3_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 3, 'updated_at>=' => $fDate, 'updated_at<=' => $tDate]);
                 $data['step4_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 4, 'updated_at>=' => $fDate, 'updated_at<=' => $tDate]);
