@@ -119,7 +119,7 @@ $controller_route   = $moduleDetail['controller_route'];
                 <div class="card">
                   <div class="card-body">
                     <h5 class="card-title"><?=$response['graph_title']?> 
-                      <!-- <small class="text-danger" style="font-size: 12px;color: red !important;">( In graph scrap qty always show in MT )</small> -->
+                      <small class="text-danger" style="font-size: 12px;color: red !important;">( In graph scrap qty show in <?=$search_unit_id?> )</small>
                     </h5>
 
                     <!-- Column Chart -->
@@ -168,7 +168,7 @@ $controller_route   = $moduleDetail['controller_route'];
                           },
                           yaxis: {
                             title: {
-                              text: 'Number in <?=$search_unit_id?>'
+                              text: 'Number'
                             }
                           },
                           fill: {
