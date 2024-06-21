@@ -360,7 +360,7 @@ class User extends BaseController {
                 $data['pendingItem']                = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['status' => 0, 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
 
                 $data['step0_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 0, 'updated_at>=' => $fDate, 'updated_at<=' => $tDate]);
-                $data['step1_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 1, 'updated_at>=' => $fDate, 'updated_at<=' => $tDate]);
+                $data['step1_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 1, 'updated_at LIKE ' => '%'.$fDate.'%']);
                 echo $this->db->getLastQuery();die;
                 $data['step2_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 2, 'updated_at>=' => $fDate, 'updated_at<=' => $tDate]);
                 $data['step3_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 3, 'updated_at>=' => $fDate, 'updated_at<=' => $tDate]);
