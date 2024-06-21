@@ -128,8 +128,11 @@ class ReportController extends BaseController {
                                             $weightMatQty[]         = $subEnquiry->weighted_qty;
                                             $convertedUnit          = $search_unit_id;
                                         } else {
-                                            // $weightMatQty[]         = weightConversion($subEnquiry->weighted_qty, 'KG', 'MT');
-                                            $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                            if($search_unit_id == 'MT'){
+                                                $weightMatQty[]         = weightConversion($subEnquiry->weighted_qty, 'KG', 'MT');
+                                            } else {
+                                                $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                            }
                                             $convertedUnit          = $search_unit_id;
                                         }
                                     }
