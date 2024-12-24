@@ -171,13 +171,15 @@ $company_id                 = $session->company_id;
                         <div class="row mb-3">
                             <label for="plant_email" class="col-md-2 col-lg-2 col-form-label">Email <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="email" name="email" class="form-control" id="plant_email" value="<?=$email?>" required>
+                                <!-- <input type="email" name="email" class="form-control" id="plant_email" value="<?=$email?>" required> -->
+                                <input type="email" name="email" class="form-control" value="<?=$email?>" required>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="plant_phone" class="col-md-2 col-lg-2 col-form-label">Phone <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="text" name="phone" class="form-control" id="plant_phone" value="<?=$phone?>" onkeypress="return isNumber(event)" maxlength="10" minlength="10" required>
+                                <!-- <input type="text" name="phone" class="form-control" id="plant_phone" value="<?=$phone?>" onkeypress="return isNumber(event)" maxlength="10" minlength="10" required> -->
+                                <input type="text" name="phone" class="form-control" value="<?=$phone?>" onkeypress="return isNumber(event)" maxlength="10" minlength="10" required>
                             </div>
                         </div>
                         <div class="row mb-3">
