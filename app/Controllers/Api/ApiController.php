@@ -947,7 +947,7 @@ class ApiController extends BaseController
                     $fcm_token                  = $requestData['fcm_token'];
                     $device_type                = trim($headerData['Source'], "Source: ");
                     $checkUser                  = $this->common_model->find_data('ecomm_users', 'row', ['email' => $email, 'type' => $type]);
-                    pr($checkUser);
+                    // pr($checkUser);
                     if($checkUser){
                         if($checkUser->status != 3){
                             if($checkUser->status >= 1){
