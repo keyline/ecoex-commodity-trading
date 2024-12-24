@@ -145,7 +145,7 @@ abstract class BaseController extends Controller
             $emailSetting->setFrom($from_email, $from_name);
             $emailSetting->setTo($to_email);
             // $emailSetting->setBCC('sudip.keyline@gmail.com', 'Ecoex Commodity Trading');
-            $emailSetting->setCC('neha@ecoex.market', 'Ecoex Commodity Trading');
+            // $emailSetting->setCC('neha@ecoex.market', 'Ecoex Commodity Trading');
             $emailSetting->setSubject($email_subject);
             $emailSetting->setMessage($mailbody);
 
