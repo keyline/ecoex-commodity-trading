@@ -836,7 +836,7 @@
                                                                 ?>
                                                                 <?php if($materialWeights){ $sl=1; foreach($materialWeights as $materialWeight){?>
                                                                     <?php
-                                                                    $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $subenquiry->item_id], 'item_name_ecoex,hsn,alias_name,billing_name');
+                                                                    $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $materialWeight->item_id], 'item_name_ecoex,hsn,alias_name,billing_name');
                                                                     ?>
                                                                     <tr>
                                                                         <td><?=$sl++?></td>
