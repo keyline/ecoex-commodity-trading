@@ -866,12 +866,12 @@
                                                                 <?php } }?>
                                                                 <?php if($subenquiry->is_plant_ecoex_confirm <= 0){?>
                                                                     <tr>
-                                                                        <td colspan="3" style="text-align:center;">
+                                                                        <td colspan="4" style="text-align:center;">
                                                                             <?php if($common_model->checkModuleFunctionAccess(23,126)){?>
                                                                                 <a href="<?=base_url('admin/enquiry-requests/approve-material-weight/'.encoded($sub_enquiry_no))?>" class="btn btn-success" onclick="return confirm('Do you want to approve this request ?');"><i class="fa fa-check-circle"></i> APPROVE</a>
                                                                             <?php }?>
                                                                         </td>
-                                                                        <td colspan="3" style="text-align:center;">
+                                                                        <td colspan="4" style="text-align:center;">
                                                                             <?php if($common_model->checkModuleFunctionAccess(23,127)){?>
                                                                                 <a href="javascript:void(0);" class="btn btn-primary" id="modify-btn" onclick="openMaterialWeightUpdate();"><i class="fa fa-edit"></i> EDIT</a>
                                                                             <?php }?>
@@ -881,7 +881,7 @@
                                                                     </tr>
                                                                 <?php } else {?>
                                                                     <tr>
-                                                                        <td colspan="6" style="text-align:center;">
+                                                                        <td colspan="8" style="text-align:center;">
                                                                             <h6 class="badge bg-success">Material Weight Approved</h6>
                                                                         </td>
                                                                     </tr>
