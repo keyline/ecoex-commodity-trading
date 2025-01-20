@@ -821,7 +821,9 @@
                                                             <thead>
                                                             <tr>
                                                                 <th>#</th>
-                                                                <th>Item Name</th>
+                                                                <th>Item Name<br>(Ecoex)</th>
+                                                                <th>Alias<br>(App)</th>
+                                                                <th>Billing<br>Name</th>
                                                                 <th>Weighted Qty</th>
                                                                 <th>Vendor Submitted Material Weight</th>
                                                                 <th>Plant Submitted Material Weight</th>
@@ -834,11 +836,13 @@
                                                                 ?>
                                                                 <?php if($materialWeights){ $sl=1; foreach($materialWeights as $materialWeight){?>
                                                                     <?php
-                                                                    $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $subenquiry->item_id], 'item_name_ecoex,hsn');
+                                                                    $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $subenquiry->item_id], 'item_name_ecoex,hsn,alias_name,billing_name');
                                                                     ?>
                                                                     <tr>
                                                                         <td><?=$sl++?></td>
                                                                         <td><?=(($getItem)?$getItem->item_name_ecoex:'')?></td>
+                                                                        <td><?=(($getItem)?$getItem->alias_name:'')?></td>
+                                                                        <td><?=(($getItem)?$getItem->billing_name:'')?></td>
                                                                         <td>
                                                                             <span class="weight-label"><?=$materialWeight->weighted_qty?></span>
                                                                             <input type="text" name="weighted_qty[]" class="form-control weight-value" value="<?=$materialWeight->weighted_qty?>" style="display: none;">
