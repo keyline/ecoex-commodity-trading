@@ -199,6 +199,7 @@ $routes->get('/enquiry-cron', 'Home::enquiryCron');
 			$routes->match(['get', 'post'], "enquiry-requests/upload-payment-by-ecoex-for-ho", "EnquiryRequestController::uploadPaymentByEcoexForHo");
 			$routes->match(['get', 'post'], "enquiry-requests/approve-ecoex-payment-by-ho/(:any)/(:any)", "EnquiryRequestController::approveEcoexPaymentByHo/$1/$2");
 			$routes->match(['get', 'post'], "enquiry-requests/order-complete/(:any)", "EnquiryRequestController::orderComplete/$1");
+			$routes->match(['get', 'post'], "enquiry-requests/sub-enquiry-quit/(:any)/(:any)/(:any)", "EnquiryRequestController::subEnquiryQuit/$1/$2/$3");
 		// enquiry requests
 		// notifications
 			$routes->match(['get'], "notifications/list", "NotificationController::list");

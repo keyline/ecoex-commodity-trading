@@ -664,9 +664,10 @@
                                     <h5 class="fw-bold text-success">Is Quit</h5>
                                     <h6>
                                         <?php if($subenquiry->is_vendor_quit){?>
-                                            <a href="" class="badge bg-danger">Click to cancel quit</a>
+                                            <a href="<?=base_url('admin/enquiry-requests/sub-enquiry-quit/'.$subenquiry->is_vendor_quit.'/'.$subenquiry->sub_enquiry_no.'/'.$subenquiry->enq_id)?>" class="badge bg-danger">Click to cancel quit</a>
+                                            <h6><?=date_format(date_create($subenquiry->vendor_quit_timestamp), "M d, Y h:i A")?></h6>
                                         <?php } else {?>
-                                            <a href="" class="badge bg-success">Click to quit</a>
+                                            <a href="<?=base_url('admin/enquiry-requests/sub-enquiry-quit/'.$subenquiry->is_vendor_quit.'/'.$subenquiry->sub_enquiry_no.'/'.$subenquiry->enq_id)?>" class="badge bg-success">Click to quit</a>
                                         <?php }?>
                                     </h6>
                                 </div>

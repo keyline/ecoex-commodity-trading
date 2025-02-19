@@ -1856,4 +1856,16 @@ class EnquiryRequestController extends BaseController {
             return redirect()->to('/admin/'.$this->data['controller_route'].'/enquiry-details/'.encoded($enq_id));
         }
     }
+
+    public function subEnquiryQuit($is_vendor_quit, $sub_enquiry_no, $enq_id){
+        if($is_vendor_quit == 1){
+            $this->common_model->save_data('ecomm_sub_enquires', ['is_vendor_quit' => 0, 'vendor_quit_timestamp' => '', 'is_quit_admin_approval' => 0], $sub_enquiry_no, 'sub_enquiry_no');
+            $this->session->setFlashdata('success_message', 'Sub Enquiry Quit Cancelled Successfully !!!');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/enquiry-details/'.encoded($enq_id));
+        } else {
+            $this->common_model->save_data('ecomm_sub_enquires', ['is_vendor_quit' => 1, 'vendor_quit_timestamp' => date('Y-m-d H:i:s'), 'is_quit_admin_approval' => 1], $sub_enquiry_no, 'sub_enquiry_no');
+            $this->session->setFlashdata('success_message', 'Sub Enquiry Quited Successfully !!!');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/enquiry-details/'.encoded($enq_id));
+        }
+    }
 }
