@@ -5,8 +5,6 @@
     background-color: #48974e;
     border: 1px solid #48974e;
     }
-</style>
-<style type="text/css">
     .progress-bar-wrapper ul.progress-bar {
     	width: 100%;
     	margin: 0;
@@ -644,22 +642,28 @@
                     <div class="tab-pane fade <?=(($i == 1)?'show active':'')?>" id="subenquiry-<?=$subenquiry->id?>" role="tabpanel" aria-labelledby="subenquiry-tab">
                         <div class="row">
                             <?php if($userType == 'MA'){?>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <h5 class="fw-bold text-success">Company</h5>
                                     <h6>
                                         <?=(($getCompany)?$getCompany->company_name:'')?>
                                     </h6>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <h5 class="fw-bold text-success">Plant</h5>
                                     <h6>
                                         <?=(($getPlant)?$getPlant->plant_name:'')?>
                                     </h6>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <h5 class="fw-bold text-success">Vendor</h5>
                                     <h6>
                                         <?=(($getVendor)?$getVendor->company_name:'')?>
+                                    </h6>
+                                </div>
+                                <div class="col-md-3">
+                                    <h5 class="fw-bold text-success">Is Quit</h5>
+                                    <h6>
+                                        quit button quote here
                                     </h6>
                                 </div>
                             <?php } else {?>
