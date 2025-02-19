@@ -663,7 +663,11 @@
                                 <div class="col-md-3">
                                     <h5 class="fw-bold text-success">Is Quit</h5>
                                     <h6>
-                                        quit button quote here
+                                        <?php if($subenquiry->is_vendor_quit){?>
+                                            <a href="" class="badge bg-danger">Click to cancel quit</a>
+                                        <?php } else {?>
+                                            <a href="" class="badge bg-success">Click to quit</a>
+                                        <?php }?>
                                     </h6>
                                 </div>
                             <?php } else {?>
