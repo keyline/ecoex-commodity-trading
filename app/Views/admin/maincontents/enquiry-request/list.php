@@ -4,7 +4,12 @@ $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
 $userType           = $session->user_type;
 ?>
-
+<style>
+#simpletable_wrapper .dt-layout-row.dt-layout-table {
+  width: 100%;
+  overflow:auto;
+}
+</style>
 <div class="pagetitle">
     <h1><?=$page_header?></h1>
     <nav>
@@ -33,6 +38,7 @@ $userType           = $session->user_type;
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
+                    
                     <table id="simpletable" class="table table-striped table-bordered nowrap" style="width: 100%">
                         <thead>
                             <tr>

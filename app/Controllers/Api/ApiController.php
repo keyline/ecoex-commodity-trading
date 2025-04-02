@@ -54,6 +54,7 @@ class ApiController extends BaseController
             $requestData        = $this->extract_json(file_get_contents('php://input'));        
             $requiredFields     = ['page_slug'];
             $headerData         = $this->request->headers();
+           
             if (!$this->validateArray($requiredFields, $requestData)){              
                 http_response_code(406);
                 $apiStatus          = FALSE;
