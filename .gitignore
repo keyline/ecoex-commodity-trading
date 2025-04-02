@@ -128,5 +128,7 @@ nb-configuration.xml
 
 
 /public/uploads/*
+writable/public/uploads/enquiry*
+
 
 
