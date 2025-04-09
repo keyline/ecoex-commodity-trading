@@ -215,10 +215,13 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 	$routes->get('manage-notifications', 'ManageNotificationsController::index'); // List all notifications
 	$routes->get('manage-notifications/new', 'ManageNotificationsController::new'); // Show form to create
 	$routes->post('manage-notifications', 'ManageNotificationsController::create'); // Store new notification
-	$routes->get('manage-notifications/(:num)', 'ManageNotificationsController::show/$1'); // View a single notification
-	$routes->get('manage-notifications/(:num)/edit', 'ManageNotificationsController::edit/$1'); // Show edit form
-	$routes->put('manage-notifications/(:num)', 'ManageNotificationsController::update/$1'); // Update notification
-	$routes->delete('manage-notifications/(:num)', 'ManageNotificationsController::delete/$1'); // Delete notification
+	$routes->get('manage-notifications/(:segment)', 'ManageNotificationsController::show/$1'); // View a single notification
+	$routes->get('manage-notifications/(:segment)/edit', 'ManageNotificationsController::edit/$1'); // Show edit form
+	$routes->put('manage-notifications/(:segment)', 'ManageNotificationsController::update/$1'); // Update notification
+	$routes->delete('manage-notifications/(:segment)', 'ManageNotificationsController::delete/$1'); // Delete notification
+	$routes->get('manage-notifications/status/(:segment)/(:segment)', 'ManageNotificationsController::updateStatus/$1/$2', ['as' => 'manage-notifications-status']);
+
+
 
 	// manage notifications
 

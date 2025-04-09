@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Test;
 
-class TestRepo
+class NotificationRepo
 {
 
     public function __construct()

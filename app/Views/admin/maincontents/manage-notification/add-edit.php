@@ -1,12 +1,18 @@
 <?php
-if (false && $row) {
-    $user_type        = $row->user_type;
-    $title            = $row->title;
-    $description      = $row->description;
+if (count($row)) {
+    $updateId        = $row['id'];
+    $email           = $row['email'];
+    $is_ho           = $row['is_ho'];
+    $is_push         = $row['is_push_notification'];
+    $is_sms          = $row['is_sms'];
+    $is_vendor       = $row['is_vendor'];
 } else {
-    $user_type        = '';
-    $title            = '';
-    $description      = '';
+    $updateId        = 0;
+    $email           = '';
+    $is_ho           = '';
+    $is_push         = '';
+    $is_sms          = '';
+    $is_vendor       = '';
 }
 ?>
 
@@ -40,11 +46,11 @@ if (false && $row) {
 
         <div class="col-xl-12">
             <div class="card">
-
-              
-
                 <div class="card-body pt-3">
                     <form method="POST" action="<?= base_url('admin/' . $controller_route) ?>" enctype="multipart/form-data">
+                        <input type="hidden" name="update_id" value="<?= $updateId ?>">
+       
+                
                         <!-- Email Input Tags -->
                         <div class="row mb-3">
                             <label for="input-tags" class="col-md-2 col-lg-2 col-form-label">Emails</label>
@@ -52,7 +58,7 @@ if (false && $row) {
                                 <input type="text" id="input-tags" class="form-control" placeholder="Type emails and press comma" />
                                 <div class="error-msg text-danger mt-1" id="error-msg" style="display: none;">Invalid email format detected.</div>
                                 <div id="badge-container" class="mt-2"></div>
-                                <input type="hidden" id="other_article_part_doi_no" name="mn_email" value="<?= $emails ?? '' ?>">
+                                <input type="hidden" id="other_article_part_doi_no" name="mn_email" value="<?= $email ?? '' ?>">
                                 <?php if (session('errors.mn_email')): ?>
                                     <div class="text-danger"><?= session('errors.mn_email') ?></div>
                                 <?php endif; ?>
@@ -65,26 +71,26 @@ if (false && $row) {
                             <label class="col-md-2 col-lg-2 col-form-label">Options</label>
                             <div class="col-md-10 col-lg-10">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="mn_is_vendor" id="mn_is_vendor" value="1" <?= isset($mn_is_vendor) && $mn_is_vendor ? 'checked' : '' ?>>
+                                    <input class="form-check-input" type="checkbox" name="mn_is_vendor" id="mn_is_vendor" value="1" <?= isset($is_vendor) && $is_vendor ? 'checked' : '' ?>>
                                     <label class="form-check-label" for="mn_is_vendor">Is Vendor</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="mn_is_ho" id="mn_is_ho" value="1" <?= isset($mn_is_ho) && $mn_is_ho ? 'checked' : '' ?>>
+                                    <input class="form-check-input" type="checkbox" name="mn_is_ho" id="mn_is_ho" value="1" <?= isset($is_ho) && $is_ho ? 'checked' : '' ?>>
                                     <label class="form-check-label" for="mn_is_ho">Is Head Office</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="mn_is_sms_to_vendor" id="mn_is_sms_to_vendor" value="1" <?= isset($mn_is_sms_to_vendor) && $mn_is_sms_to_vendor ? 'checked' : '' ?>>
+                                    <input class="form-check-input" type="checkbox" name="mn_is_sms_to_vendor" id="mn_is_sms_to_vendor" value="1" <?= isset($is_sms) && $is_sms ? 'checked' : '' ?>>
                                     <label class="form-check-label" for="mn_is_sms_to_vendor">Send SMS to Vendor</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="mn_is_push_notification" id="mn_is_push_notification" value="1" <?= isset($mn_is_push_notification) && $mn_is_push_notification ? 'checked' : '' ?>>
+                                    <input class="form-check-input" type="checkbox" name="mn_is_push_notification" id="mn_is_push_notification" value="1" <?= isset($is_push) && $is_push ? 'checked' : '' ?>>
                                     <label class="form-check-label" for="mn_is_push_notification">Push Notification</label>
                                 </div>
                             </div>
                         </div>
 
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary"><?= ((false && $row) ? 'Save' : 'Add') ?></button>
+                            <button type="submit" class="btn btn-primary"><?= ((count($row)) ? 'Save' : 'Add') ?></button>
                         </div>
                     </form>
                 </div>
