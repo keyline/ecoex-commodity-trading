@@ -220,10 +220,18 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 	$routes->put('manage-notifications/(:segment)', 'ManageNotificationsController::update/$1'); // Update notification
 	$routes->delete('manage-notifications/(:segment)', 'ManageNotificationsController::delete/$1'); // Delete notification
 	$routes->get('manage-notifications/status/(:segment)/(:segment)', 'ManageNotificationsController::updateStatus/$1/$2', ['as' => 'manage-notifications-status']);
-
-
-
 	// manage notifications
+
+	// manage functionalities
+	$routes->get('functionalities', 'FunctionalitiesController::index', ['as' => 'functionalities.index']); // List view
+	$routes->get('functionalities/new', 'FunctionalitiesController::create', ['as' => 'functionalities.create']); // Show create form
+	$routes->post('functionalities', 'FunctionalitiesController::store', ['as' => 'functionalities.store']); // Store new record
+	$routes->get('functionalities/(:segment)/edit', 'FunctionalitiesController::edit/$1', ['as' => 'functionalities.edit']); // Show edit form
+	$routes->post('functionalities/(:segment)', 'FunctionalitiesController::update/$1', ['as' => 'functionalities.update']); // Update record
+	$routes->delete('functionalities/(:segment)', 'FunctionalitiesController::delete/$1', ['as' => 'functionalities.delete']); // Delete record
+	$routes->get('functionalities/status/(:segment)/(:segment)', 'FunctionalitiesController::updateStatus/$1/$2', ['as' => 'functionalities.status']); // Toggle status
+	// manage functionalities
+
 
 
 

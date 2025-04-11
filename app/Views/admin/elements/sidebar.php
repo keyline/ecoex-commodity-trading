@@ -121,6 +121,14 @@ if ($userType == 'MA') {
                             </a>
                         </li>
                     <?php } ?>
+
+                    <?php if ($common_model->checkModuleAccess(6)) { ?>
+                        <li>
+                            <a class="<?= (($pageSegment == 'functionalities') ? 'active' : '') ?>" href="<?= base_url(route_to('functionalities.index')) ?>">
+                                <i class="fa fa-arrow-right"></i><span>Functionalities</span>
+                            </a>
+                        </li>
+                    <?php } ?>
                 </ul>
             </li>
         <?php } ?>
@@ -347,7 +355,7 @@ if ($userType == 'MA') {
     <?php } ?>
     <?php if (($common_model->checkModuleAccess(19)) || ($common_model->checkModuleAccess(20))) { ?>
         <li class="nav-item">
-            <a class="nav-link <?= (($pageSegment == 'notifications' || $pageSegment == 'notifications') ? '' : 'collapsed') ?> <?= (($pageSegment == 'notifications' || $pageSegment == 'notifications') ? 'active' : '') ?>" data-bs-target="#notification-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link <?= (($pageSegment == 'notifications' || $pageSegment == 'notifications' || $pageSegment == 'manage-notifications') ? '' : 'collapsed') ?> <?= (($pageSegment == 'notifications' || $pageSegment == 'notifications' || $pageSegment == 'manage-notifications') ? 'active' : '') ?>" data-bs-target="#notification-nav" data-bs-toggle="collapse" href="#">
                 <i class="fa fa-bell"></i><span>Notifications</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="notification-nav" class="nav-content collapse <?= (($pageSegment == 'notifications' || $pageSegment == 'notifications') ? 'show' : '') ?>" data-bs-parent="#sidebar-nav">
@@ -355,7 +363,7 @@ if ($userType == 'MA') {
 
                 <?php if ($common_model->checkModuleAccess(19)) { ?>
                     <li>
-                        <a class="<?= (($pageSegment == 'notifications') ? 'active' : '') ?>" href="<?= base_url('admin/manage-notifications') ?>">
+                        <a class="<?= (($pageSegment == 'manage-notifications') ? 'active' : '') ?>" href="<?= base_url('admin/manage-notifications') ?>">
                             <i class="fa fa-arrow-right"></i><span>Manage</span>
                         </a>
                     </li>
