@@ -49,8 +49,34 @@ if (count($row)) {
                 <div class="card-body pt-3">
                     <form method="POST" action="<?= base_url('admin/' . $controller_route) ?>" enctype="multipart/form-data">
                         <input type="hidden" name="update_id" value="<?= $updateId ?>">
-       
-                
+
+                        <div class="row mb-3">
+                            <label for="input-tags" class="col-md-2 col-lg-2 col-form-label">Platform</label>
+                            <div class="col-md-10 col-lg-10">
+
+                                <select class="form-select" aria-label="Default select example">
+                                    <option selected value="">Select</option>
+                                </select>
+                                <?php if (session('errors.mn_email')): ?>
+                                    <div class="text-danger"><?= session('errors.mn_email') ?></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+
+                        <div class="row mb-3">
+                            <label for="input-tags" class="col-md-2 col-lg-2 col-form-label">Functionality</label>
+                            <div class="col-md-10 col-lg-10">
+
+                                <select class="form-select" aria-label="Default select example">
+                                    <option selected value="">Select</option>
+                                </select>
+                                <?php if (session('errors.mn_email')): ?>
+                                    <div class="text-danger"><?= session('errors.mn_email') ?></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
                         <!-- Email Input Tags -->
                         <div class="row mb-3">
                             <label for="input-tags" class="col-md-2 col-lg-2 col-form-label">Emails</label>
