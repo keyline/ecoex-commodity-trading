@@ -188,7 +188,7 @@ $controller_route   = $moduleDetail['controller_route'];
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="contact_person_document" class="col-md-2 col-lg-2 col-form-label">Proprietor PAN Card <span class="text-danger">*</span></label>
+                            <label for="contact_person_document" class="col-md-2 col-lg-2 col-form-label">Proprietor PAN Card </label>
                             <div class="col-md-10 col-lg-10">
                                 <input type="file" name="contact_person_document" class="form-control" id="contact_person_document" <?=(($row)?'':'')?>>
                                 <br>
