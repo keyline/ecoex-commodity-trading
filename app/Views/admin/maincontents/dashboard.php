@@ -337,110 +337,6 @@ $userType           = $session->user_type;
                     </div>
                     <!-- End Item Categories Card -->
                 <?php }?>
-
-                <!-- Recent Sales -->
-                <div class="col-12">
-                    <div class="card recent-sales overflow-auto">
-                        <!-- <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div> -->
-                        <div class="card-body">
-                            <h5 class="card-title">Recent Enquires <span>| <?=$filter_keyword_text?></span></h5>
-                            <table class="table table-borderless datatable">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Company</th>
-                                        <th scope="col">Plant</th>
-                                        <th scope="col">Items</th>
-                                        <th scope="col">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    if($recent_enquiries){ foreach($recent_enquiries as $recent_enquiry){
-                                        $getCompany                 = $common_model->find_data('ecoex_companies', 'row', ['id' => $recent_enquiry->company_id], 'company_name');
-                                        $getPlant                   = $common_model->find_data('ecomm_users', 'row', ['id' => $recent_enquiry->plant_id], 'plant_name');
-                                    ?>
-                                        <tr>
-                                            <th scope="row"><a href="<?=base_url('admin/enquiry-requests/enquiry-details/'.encoded($recent_enquiry->id))?>">#<?=$recent_enquiry->enquiry_no?></a></th>
-                                            <td><?=(($getCompany)?$getCompany->company_name:'')?></td>
-                                            <td><?=(($getPlant)?$getPlant->plant_name:'')?></td>
-                                            <td>
-                                                <ul>
-                                                    <?php
-                                                    $getEnquiryItems            = $common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $recent_enquiry->id]);
-                                                    if($getEnquiryItems){ $sl=1; foreach($getEnquiryItems as $getEnquiryItem){
-                                                        $getItem                = $common_model->find_data('ecomm_company_items', 'row', ['id' => $getEnquiryItem->product_id], 'alias_name');
-                                                    ?>
-                                                    <li><?=(($getItem)?$getItem->alias_name:$getEnquiryItem->new_product_name)?></li>
-                                                    <?php } }?>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <?php
-                                                if($recent_enquiry->status == 0){
-                                                    $enquiryStatus  = 'Request Submitted';
-                                                    $bgcolor        =   '#4154f1';
-                                                } elseif($recent_enquiry->status == 1){
-                                                    $enquiryStatus  = 'Accept Request';
-                                                    $bgcolor        =   '#4154f1';
-                                                } elseif($recent_enquiry->status == 2){
-                                                    $enquiryStatus  = 'Vendor Allocated';
-                                                    $bgcolor        =   '#4154f1';
-                                                } elseif($recent_enquiry->status == 3){
-                                                    $enquiryStatus  = 'Vendor Assigned';
-                                                    $bgcolor        =   '#4154f1';
-                                                } elseif($recent_enquiry->status == 4){
-                                                    $enquiryStatus  = 'Pickup Scheduled';
-                                                    $bgcolor        =   '#4154f1';
-                                                } elseif($recent_enquiry->status == 5){
-                                                    $enquiryStatus  = 'Vehicle Placed';
-                                                    $bgcolor        =   '#4154f1';
-                                                } elseif($recent_enquiry->status == 6){
-                                                    $enquiryStatus  = 'Material Weighed';
-                                                    $bgcolor        =   '#4154f1';
-                                                } elseif($recent_enquiry->status == 7){
-                                                    $enquiryStatus  = 'Invoice from HO';
-                                                    $bgcolor        =   '#4154f1';
-                                                } elseif($recent_enquiry->status == 8){
-                                                    $enquiryStatus  = 'Invoice to Vendor';
-                                                    $bgcolor        =   '#4154f1';
-                                                } elseif($recent_enquiry->status == 9){
-                                                    $enquiryStatus  = 'Payment received from Vendor';
-                                                    $bgcolor        =   '#ff0000';
-                                                } elseif($recent_enquiry->status == 10){
-                                                    $enquiryStatus  = 'Vehicle Dispatched';
-                                                    $bgcolor        =   '#ff0000';
-                                                } elseif($recent_enquiry->status == 11){
-                                                    $enquiryStatus  = 'Payment to HO';
-                                                    $bgcolor        =   '#ff0000';
-                                                } elseif($recent_enquiry->status == 12){
-                                                    $enquiryStatus  = 'Order Complete';
-                                                    $bgcolor        =   '#91cc75';
-                                                } elseif($recent_enquiry->status == 13){
-                                                    $enquiryStatus  = 'Reject Request';
-                                                    $bgcolor        =   '#ff0000';
-                                                } 
-                                                ?>
-                                                <span class="badge" style="background-color: <?=$bgcolor?>; color: #FFF;"><?=$enquiryStatus?></span>
-                                            </td>
-                                        </tr>
-                                    <?php } }?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <!-- End Recent Sales -->
             </div>
         </div>
         <!-- End Left side columns -->
@@ -574,4 +470,98 @@ $userType           = $session->user_type;
         </div>
         <!-- End Right side columns -->
     </div>
+    <!-- Recent Sales -->
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="card recent-sales overflow-auto">
+                <div class="card-body">
+                    <h5 class="card-title">Recent Enquires <span>| <?=$filter_keyword_text?></span></h5>
+                    <table class="table table-borderless datatable">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Company</th>
+                                <th scope="col">Plant</th>
+                                <th scope="col">Items</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if($recent_enquiries){ foreach($recent_enquiries as $recent_enquiry){
+                                $getCompany                 = $common_model->find_data('ecoex_companies', 'row', ['id' => $recent_enquiry->company_id], 'company_name');
+                                $getPlant                   = $common_model->find_data('ecomm_users', 'row', ['id' => $recent_enquiry->plant_id], 'plant_name');
+                            ?>
+                                <tr>
+                                    <th scope="row"><a href="<?=base_url('admin/enquiry-requests/enquiry-details/'.encoded($recent_enquiry->id))?>">#<?=$recent_enquiry->enquiry_no?></a></th>
+                                    <td><?=(($getCompany)?$getCompany->company_name:'')?></td>
+                                    <td><?=(($getPlant)?$getPlant->plant_name:'')?></td>
+                                    <td>
+                                        <ul>
+                                            <?php
+                                            $getEnquiryItems            = $common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $recent_enquiry->id]);
+                                            if($getEnquiryItems){ $sl=1; foreach($getEnquiryItems as $getEnquiryItem){
+                                                $getItem                = $common_model->find_data('ecomm_company_items', 'row', ['id' => $getEnquiryItem->product_id], 'alias_name');
+                                            ?>
+                                            <li><?=(($getItem)?$getItem->alias_name:$getEnquiryItem->new_product_name)?></li>
+                                            <?php } }?>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <?php
+                                        if($recent_enquiry->status == 0){
+                                            $enquiryStatus  = 'Request Submitted';
+                                            $bgcolor        =   '#4154f1';
+                                        } elseif($recent_enquiry->status == 1){
+                                            $enquiryStatus  = 'Accept Request';
+                                            $bgcolor        =   '#4154f1';
+                                        } elseif($recent_enquiry->status == 2){
+                                            $enquiryStatus  = 'Vendor Allocated';
+                                            $bgcolor        =   '#4154f1';
+                                        } elseif($recent_enquiry->status == 3){
+                                            $enquiryStatus  = 'Vendor Assigned';
+                                            $bgcolor        =   '#4154f1';
+                                        } elseif($recent_enquiry->status == 4){
+                                            $enquiryStatus  = 'Pickup Scheduled';
+                                            $bgcolor        =   '#4154f1';
+                                        } elseif($recent_enquiry->status == 5){
+                                            $enquiryStatus  = 'Vehicle Placed';
+                                            $bgcolor        =   '#4154f1';
+                                        } elseif($recent_enquiry->status == 6){
+                                            $enquiryStatus  = 'Material Weighed';
+                                            $bgcolor        =   '#4154f1';
+                                        } elseif($recent_enquiry->status == 7){
+                                            $enquiryStatus  = 'Invoice from HO';
+                                            $bgcolor        =   '#4154f1';
+                                        } elseif($recent_enquiry->status == 8){
+                                            $enquiryStatus  = 'Invoice to Vendor';
+                                            $bgcolor        =   '#4154f1';
+                                        } elseif($recent_enquiry->status == 9){
+                                            $enquiryStatus  = 'Payment received from Vendor';
+                                            $bgcolor        =   '#ff0000';
+                                        } elseif($recent_enquiry->status == 10){
+                                            $enquiryStatus  = 'Vehicle Dispatched';
+                                            $bgcolor        =   '#ff0000';
+                                        } elseif($recent_enquiry->status == 11){
+                                            $enquiryStatus  = 'Payment to HO';
+                                            $bgcolor        =   '#ff0000';
+                                        } elseif($recent_enquiry->status == 12){
+                                            $enquiryStatus  = 'Order Complete';
+                                            $bgcolor        =   '#91cc75';
+                                        } elseif($recent_enquiry->status == 13){
+                                            $enquiryStatus  = 'Reject Request';
+                                            $bgcolor        =   '#ff0000';
+                                        } 
+                                        ?>
+                                        <span class="badge" style="background-color: <?=$bgcolor?>; color: #FFF;"><?=$enquiryStatus?></span>
+                                    </td>
+                                </tr>
+                            <?php } }?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Recent Sales -->
 </section>
