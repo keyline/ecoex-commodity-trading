@@ -280,8 +280,11 @@ $userType           = $session->user_type;
                     </div>
                     <!-- End Item Categories Card -->
                     <?php if($itemCats){ foreach($itemCats as $itemCat){?>
+                        <?php
+                        $getCompanyCats = $common_model->find_data('ecomm_company_category', 'array', ['category_id' => $itemCat->id], 'id,category_alias');
+                        ?>
                         <div class="col-xxl-4 col-md-6">
-                            <div class="card info-card revenue-card">
+                            <div class="card info-card sales-card">
                                 <div class="card-body">
                                     <h5 class="card-title"><?=$itemCat->name?> <span>| <?=$filter_keyword_text?></span></h5>
                                     <div class="d-flex align-items-center">
@@ -289,8 +292,19 @@ $userType           = $session->user_type;
                                             <i class="bi bi-list-nested"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6><?=$itemCategory?></h6>
-                                            <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                                            <h6><?=count($getCompanyCats)?></h6>
+                                            <p>
+                                                <span class="text-muted small pt-2 ps-1">increase</span>
+                                                <span class="text-success small pt-1 fw-bold">8%</span>
+                                            </p>
+                                            <p>
+                                                <span class="text-muted small pt-2 ps-1">increase</span>
+                                                <span class="text-success small pt-1 fw-bold">8%</span>
+                                            </p>
+                                            <p>
+                                                <span class="text-muted small pt-2 ps-1">increase</span>
+                                                <span class="text-success small pt-1 fw-bold">8%</span>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
