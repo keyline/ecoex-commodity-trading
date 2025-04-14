@@ -297,6 +297,7 @@ $userType           = $session->user_type;
                                                     <i class="bi bi-arrow-right-short"></i>
                                                     <span class="text-muted small pt-2 ps-1"><?=$getCompanyCat->category_alias?></span>
                                                     <span class="text-success small pt-1 fw-bold"><?=$getCompanyItem?></span>
+                                                    <hr>
                                                 </p>
                                             <?php } }?>
                                         </div>
