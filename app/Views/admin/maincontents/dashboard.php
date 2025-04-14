@@ -280,9 +280,7 @@ $userType           = $session->user_type;
                     </div>
                     <!-- End Item Categories Card -->
                     <?php if($itemCats){ foreach($itemCats as $itemCat){?>
-                        <?php
-                        $getCompanyCats = $common_model->find_data('ecomm_company_category', 'array', ['category_id' => $itemCat->id], 'id,category_alias');
-                        ?>
+                        <?php $getCompanyCats = $common_model->find_data('ecomm_company_category', 'array', ['category_id' => $itemCat->id], 'id,category_alias'); ?>
                         <div class="col-xxl-4 col-md-6">
                             <div class="card info-card sales-card">
                                 <div class="card-body">
@@ -293,18 +291,14 @@ $userType           = $session->user_type;
                                         </div>
                                         <div class="ps-3">
                                             <h6><?=count($getCompanyCats)?></h6>
-                                            <p>
-                                                <span class="text-muted small pt-2 ps-1">increase</span>
-                                                <span class="text-success small pt-1 fw-bold">8%</span>
-                                            </p>
-                                            <p>
-                                                <span class="text-muted small pt-2 ps-1">increase</span>
-                                                <span class="text-success small pt-1 fw-bold">8%</span>
-                                            </p>
-                                            <p>
-                                                <span class="text-muted small pt-2 ps-1">increase</span>
-                                                <span class="text-success small pt-1 fw-bold">8%</span>
-                                            </p>
+                                            <?php if($getCompanyCats){ foreach($getCompanyCats as $getCompanyCat){?>
+                                                <?php $getCompanyItem = $common_model->find_data('ecomm_company_items', 'count', ['item_category' => $getCompanyCat->id], 'id,category_alias'); ?>
+                                                <p>
+                                                    <i class="bi bi-arrow-right-short"></i>
+                                                    <span class="text-muted small pt-2 ps-1"><?=$getCompanyCat->category_alias?></span>
+                                                    <span class="text-success small pt-1 fw-bold"><?=$getCompanyItem?></span>
+                                                </p>
+                                            <?php } }?>
                                         </div>
                                     </div>
                                 </div>
