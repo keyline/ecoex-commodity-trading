@@ -190,8 +190,8 @@ $controller_route   = $moduleDetail['controller_route'];
                         <div class="row mb-3">
                             <label for="contact_person_document" class="col-md-2 col-lg-2 col-form-label">Proprietor PAN Card <span class="text-danger">*</span></label>
                             <div class="col-md-10 col-lg-10">
-                                <input type="file" name="contact_person_document" class="form-control" id="contact_person_document" <?=(($row)?'':'required')?>>
-                                <small class="text-info">* Only pdf files are allowed</small><br>
+                                <input type="file" name="contact_person_document" class="form-control" id="contact_person_document" <?=(($row)?'':'')?>>
+                                <br>
                                 <?php if($contact_person_document != ''){?>
                                     <a href="<?=getenv('app.uploadsURL').'user/'.$contact_person_document?>" class="badge bg-primary" target="_blank" title="<?=$company_name?>">View Document</a>
                                 <?php }?>

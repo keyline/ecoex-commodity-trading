@@ -82,7 +82,7 @@ class VendorController extends BaseController {
                         $gst_certificate = '';
                     }
                 } else {
-                    $gst_certificate = $data['row']->gst_certificate;
+                    $gst_certificate = '';
                 }
             /* GST CERTIFICATE */
             /* PAN CARD */
@@ -97,7 +97,7 @@ class VendorController extends BaseController {
                         $contact_person_document = '';
                     }
                 } else {
-                    $contact_person_document = $data['row']->contact_person_document;
+                    $contact_person_document = '';
                 }
             /* PAN CARD */
             $postData   = array(
