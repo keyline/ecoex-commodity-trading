@@ -292,7 +292,7 @@ $userType           = $session->user_type;
                                         <div class="ps-3">
                                             <h6><?=count($getCompanyCats)?></h6>
                                             <?php if($getCompanyCats){ foreach($getCompanyCats as $getCompanyCat){?>
-                                                <?php $getCompanyItem = $common_model->find_data('ecomm_company_items', 'count', ['item_category' => $getCompanyCat->id], 'id,category_alias'); ?>
+                                                <?php $getCompanyItem = $common_model->find_data('ecomm_company_items', 'count', ['item_category' => $getCompanyCat->id]); ?>
                                                 <p>
                                                     <i class="bi bi-arrow-right-short"></i>
                                                     <span class="text-muted small pt-2 ps-1"><?=$getCompanyCat->category_alias?></span>
