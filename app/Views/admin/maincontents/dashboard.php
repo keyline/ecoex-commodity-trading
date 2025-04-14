@@ -282,7 +282,7 @@ $userType           = $session->user_type;
                     <?php if($itemCats){ foreach($itemCats as $itemCat){?>
                         <?php $getCompanyCats = $common_model->find_data('ecomm_company_category', 'array', ['category_id' => $itemCat->id], 'id,category_alias'); ?>
                         <div class="col-xxl-4 col-md-6">
-                            <div class="card info-card sales-card">
+                            <div class="card info-card sales-card" style="border: 1px solid #4a984f;height: 531px;">
                                 <div class="card-body">
                                     <h5 class="card-title"><?=$itemCat->name?> <span>| <?=$filter_keyword_text?></span></h5>
                                     <div class="d-flex align-items-center">
