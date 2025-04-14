@@ -224,6 +224,7 @@ class User extends BaseController {
             $data['company']                    = $this->common_model->find_data('ecoex_companies', 'count', ['status!=' => 3]);
             $data['vendor']                     = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'VENDOR']);
             $data['itemCategory']               = $this->common_model->find_data('ecomm_product_categories', 'count', ['status' => 1]);
+            $data['itemCats']                   = $this->common_model->find_data('ecomm_product_categories', 'array', ['status' => 1], 'id,name');
 
             if($userType == 'MA'){
                 $data['plant']                      = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'PLANT']);
