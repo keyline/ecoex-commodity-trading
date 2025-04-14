@@ -286,7 +286,7 @@ $userType           = $session->user_type;
                                     <h5 class="card-title"><?=$itemCat->name?> <span>| <?=$filter_keyword_text?></span></h5>
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-people"></i>
+                                            <i class="bi bi-list-nested"></i>
                                         </div>
                                         <div class="ps-3">
                                             <h6><?=$itemCategory?></h6>
