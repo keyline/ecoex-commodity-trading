@@ -47,9 +47,10 @@ class ManageNotificationsController extends BaseController
 
     public function index()
     {
-        $title                      = 'Manage Notifications';
-        $page_name                  = 'manage-notification/list';
-        $this->data['rows']         = $this->manageNotification->getAllNotifications();
+        $title                       = 'Manage Notifications';
+        $page_name                   = 'manage-notification/list2';
+        $this->data['rows']          = $this->manageNotification->getAllNotifications();
+        $this->data['functionality'] = $this->manageNotification->functionality();
 
         echo $this->layout_after_login($title, $page_name, $this->data);
     }
@@ -72,89 +73,102 @@ class ManageNotificationsController extends BaseController
 
     public function create()
     {
+        $post = $this->request->getPost();
 
-        helper(['form']);
-        // Define validation rules
-        $validationRules = [
-            'mn_email' => [
-                'label' => 'Email',
-                'rules' => [
-                    'required',
-                    function ($str) {
-                        // Split the string into individual emails
-                        $emails = array_map('trim', explode(',', $str));
-                        // Validate each email address
-                        foreach ($emails as $email) {
-                            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                                return false;
-                            }
-                        }
-                        return true;
-                    }
-                ],
-                'errors' => [
-                    'required' => 'The {field} field is required.',
-                    'custom'   => 'One or more email addresses are invalid.'
-                ]
-            ],
-            'platform' => [
-                'label' => 'Platform',
-                'rules' => 'required|in_list[ecoex_admin,company_admin,plant_app,vendor_app]',
-                'errors' => [
-                    'required' => 'Platform is required.',
-                    'in_list'  => 'Selected platform is invalid.',
-                ]
-            ],
-            'functionality' => [
-                'label' => 'Functionality',
-                'rules' => 'required|integer',
-                'errors' => [
-                    'required' => 'Functionality is required.',
-                    'integer'  => 'Functionality must be a numeric ID.',
-                ]
-            ]
-            // Optional checkboxes
-            // 'mn_is_vendor' => [
-            //     'label' => 'Is Vendor',
-            //     'rules' => 'permit_empty|in_list[1]',
-            //     'errors' => [
-            //         'in_list' => 'Invalid selection for {field}.',
-            //     ],
-            // ],
+        $errors = [];
 
+        $functionalityIds = $this->request->getPost('functionality') ?? [];
+        $emails = $this->request->getPost('mn_email') ?? [];
+        $update_id = $this->request->getPost('update_id') ?? [];
 
+        $checkboxes = [
+            'mn_ecoex_admin_email',
+            'mn_company_admin_email',
+            'mn_vendor_email',
+            'mn_plant_email',
+            'mn_vendor_sms',
+            'mn_plant_sms',
+            'mn_vendor_push',
+            'mn_plant_push'
         ];
 
+        foreach ($functionalityIds as $funId) {
+            $email = trim($emails[$funId] ?? '');
+            $checked = false;
 
-        // Validate input
-        if (!$this->validate($validationRules)) {
-            // Validation failed
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            // Check if at least one checkbox is selected for this functionality
+            foreach ($checkboxes as $checkbox) {
+                if (isset($post[$checkbox][$funId])) {
+                    $checked = true;
+                    break;
+                }
+            }
+            if ($email == '') {
+                continue; // skip to next functionalityId
+                // $errors["functionality_$funId"] = "You must fill email input.";
+            }
+
+            // Validation conditions
+            if ($email !== '' && !$checked) {
+                $errors["functionality_$funId"] = "You must select at least one notification method for emails.";
+            }
+
+            if ($checked && $email === '') {
+                $errors["functionality_$funId"] = "Email is required when any notification option is selected.";
+            }
+
+            // Email format check 
+            if ($email !== '') {
+                $emailList = explode(',', $email);
+                foreach ($emailList as $singleEmail) {
+                    if (!filter_var(trim($singleEmail), FILTER_VALIDATE_EMAIL)) {
+                        $errors["functionality_$funId"] = "Invalid email format for functionality ID: $funId";
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!empty($errors)) {
+            return redirect()->back()->withInput()->with('errors', $errors);
         }
 
         // Validation passed
-        $formData = [
-            'mn_fun_id'               => $this->request->getPost('functionality'),
-            'mn_email'                => json_encode($this->request->getPost('mn_email')),
-            'mn_ecoex_admin_email'    => $this->request->getPost('mn_ecoex_admin_email') ? 1 : 0,
-            'mn_company_admin_email'  => $this->request->getPost('mn_company_admin_email') ? 1 : 0,
-            'mn_vendor_email'         => $this->request->getPost('mn_vendor_email') ? 1 : 0,
-            'mn_vendor_sms'           => $this->request->getPost('mn_vendor_sms') ? 1 : 0,
-            'mn_vendor_push'          => $this->request->getPost('mn_vendor_push') ? 1 : 0,
-            'mn_plant_email'          => $this->request->getPost('mn_plant_email') ? 1 : 0,
-            'mn_plant_sms'            => $this->request->getPost('mn_plant_sms') ? 1 : 0,
-            'mn_plant_push'           => $this->request->getPost('mn_plant_push') ? 1 : 0
-        ];
-        
-        try {
-            // Delegate data insertion 
-            $this->manageNotification->saveData($formData, $this->request->getPost('update_id'));
-            return redirect()->to('admin/manage-notifications')->with('success_message', 'Form submitted successfully.');
-        } catch (Exception $e) {
-            // Handle exceptions
-            log_message('error', 'An error occurred in ' . __FILE__ . ' on line ' . __LINE__ . ': ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error_message', 'An unexpected error occurred. Please try again later.|'.$e->getMessage());
+        foreach ($functionalityIds as $funId) {
+
+            // Skip if email is blank
+            $email = trim($emails[$funId] ?? '');
+            if ($email === '') {
+                continue; // skip to next functionalityId
+            }
+
+            $formData = [
+                'mn_fun_id'               => $funId,
+                'mn_email'                => json_encode($emails[$funId]) ?? null,
+                'mn_ecoex_admin_email'    => isset($post['mn_ecoex_admin_email'][$funId]) ? 1 : 0,
+                'mn_company_admin_email'  => isset($post['mn_company_admin_email'][$funId]) ? 1 : 0,
+                'mn_vendor_email'         => isset($post['mn_vendor_email'][$funId]) ? 1 : 0,
+                'mn_plant_email'          => isset($post['mn_plant_email'][$funId]) ? 1 : 0,
+                'mn_vendor_sms'           => isset($post['mn_vendor_sms'][$funId]) ? 1 : 0,
+                'mn_plant_sms'            => isset($post['mn_plant_sms'][$funId]) ? 1 : 0,
+                'mn_vendor_push'          => isset($post['mn_vendor_push'][$funId]) ? 1 : 0,
+                'mn_plant_push'           => isset($post['mn_plant_push'][$funId]) ? 1 : 0,
+            ];
+
+
+            try {
+                // Data insertion 
+                $this->manageNotification->saveData($formData, $update_id[$funId]);
+            } catch (Exception $e) {
+                // Handle exceptions
+                log_message('error', 'An error occurred in ' . __FILE__ . ' on line ' . __LINE__ . ': ' . $e->getMessage());
+                return redirect()->back()->withInput()->with('error_message', 'An unexpected error occurred. Please try again later.|' . $e->getMessage());
+            }
         }
+
+        // After processing all records, do the redirect:
+        return redirect()->to('admin/manage-notifications')
+            ->with('success_message', 'Form submitted successfully.');
     }
 
     public function edit($id)

@@ -119,12 +119,33 @@ class NotificationsRepository
     public function FunctionalityList()
     {
         try {
-            return $this->db->table('functionalities')
-                ->select('fun_id,fun_platform,fun_functionality_name')
-                ->where('fun_status =', 1)
-                ->orderBy('fun_functionality_name', 'ASC')
-                ->get()
-                ->getResult();
+            // return $this->db->table('functionalities')
+            //     ->select('fun_id,fun_platform,fun_functionality_name')
+            //     ->where('fun_status =', 1)
+            //     ->orderBy('fun_rank', 'ASC')
+            //     ->get()
+            //     ->getResult();
+
+// functionalities with  notification data
+                $builder = $this->db->table('functionalities');
+                $builder->select('functionalities.fun_id,
+                                  functionalities.fun_platform,
+                                  functionalities.fun_functionality_name,
+                                  manage_notification.mn_id,
+                                  manage_notification.mn_email,
+                                  manage_notification.mn_ecoex_admin_email,
+                                  manage_notification.mn_company_admin_email,
+                                  manage_notification.mn_vendor_email,
+                                  manage_notification.mn_plant_email,
+                                  manage_notification.mn_vendor_sms,
+                                  manage_notification.mn_plant_sms,
+                                  manage_notification.mn_vendor_push,
+                                  manage_notification.mn_plant_push');
+                $builder->join('manage_notification', 'manage_notification.mn_fun_id = functionalities.fun_id', 'left');
+                $builder->where('fun_status', 1);
+                $builder->orderBy('fun_rank', 'ASC');
+                
+            return $builder->get()->getResult();
         } catch (DatabaseException $e) {
             log_message('error', 'Database error while get functionalities: ' . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
             throw $e;
