@@ -71,17 +71,6 @@ $userType           = $session->user_type;
                     <!-- Companies Card -->
                     <div class="col-xxl-4 col-md-6">
                         <div class="card info-card sales-card">
-                            <!-- <div class="filter">
-                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                    <li class="dropdown-header text-start">
-                                        <h6>Filter</h6>
-                                    </li>
-                                    <li><a class="dropdown-item" href="#">Today</a></li>
-                                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                                </ul>
-                            </div> -->
                             <div class="card-body">
                                 <h5 class="card-title">Companies <span>| <?=$filter_keyword_text?></span></h5>
                                 <div class="d-flex align-items-center">
@@ -101,17 +90,6 @@ $userType           = $session->user_type;
                 <!-- Plants Card -->
                 <div class="col-xxl-4 col-md-6">
                     <div class="card info-card revenue-card">
-                        <!-- <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div> -->
                         <div class="card-body">
                             <h5 class="card-title">Plants <span>| <?=$filter_keyword_text?></span></h5>
                             <div class="d-flex align-items-center">
@@ -131,17 +109,6 @@ $userType           = $session->user_type;
                     <!-- Vendors Card -->
                     <div class="col-xxl-4 col-xl-12">
                         <div class="card info-card customers-card">
-                            <!-- <div class="filter">
-                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                    <li class="dropdown-header text-start">
-                                        <h6>Filter</h6>
-                                    </li>
-                                    <li><a class="dropdown-item" href="#">Today</a></li>
-                                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                                </ul>
-                            </div> -->
                             <div class="card-body">
                                 <h5 class="card-title">Vendors <span>| <?=$filter_keyword_text?></span></h5>
                                 <div class="d-flex align-items-center">
@@ -162,17 +129,6 @@ $userType           = $session->user_type;
                     <!-- Vendors Card -->
                     <div class="col-xxl-4 col-xl-12">
                         <div class="card info-card customers-card">
-                            <!-- <div class="filter">
-                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                    <li class="dropdown-header text-start">
-                                        <h6>Filter</h6>
-                                    </li>
-                                    <li><a class="dropdown-item" href="#">Today</a></li>
-                                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                                </ul>
-                            </div> -->
                             <div class="card-body">
                                 <h5 class="card-title">Vendors <span>| <?=$filter_keyword_text?></span></h5>
                                 <div class="d-flex align-items-center">
@@ -191,19 +147,8 @@ $userType           = $session->user_type;
                 <?php }?>
                 
                 <!-- Enquires Card -->
-                <div class="col-xxl-4 col-md-6">
+                <div class="col-xxl-6 col-md-6">
                     <div class="card info-card sales-card">
-                        <!-- <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div> -->
                         <div class="card-body">
                             <h5 class="card-title">Enquires <span>| <?=$filter_keyword_text?></span></h5>
                             <div class="d-flex align-items-center">
@@ -218,22 +163,10 @@ $userType           = $session->user_type;
                         </div>
                     </div>
                 </div>
-                
                 <!-- End Enquires Card -->
                 <!-- Pending Items Card -->
-                <div class="col-xxl-4 col-xl-12">
+                <div class="col-xxl-6 col-xl-12">
                     <div class="card info-card customers-card">
-                        <!-- <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div> -->
                         <div class="card-body">
                             <h5 class="card-title">Pending Items <span>| <?=$filter_keyword_text?></span></h5>
                             <div class="d-flex align-items-center">
@@ -251,19 +184,8 @@ $userType           = $session->user_type;
                 <!-- End Pending Items Card -->
                 <?php if($userType == 'MA'){?>
                     <!-- Item Categories Card -->
-                    <div class="col-xxl-4 col-md-6">
+                    <div class="col-xxl-6 col-md-6">
                         <div class="card info-card revenue-card">
-                            <!-- <div class="filter">
-                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                    <li class="dropdown-header text-start">
-                                        <h6>Filter</h6>
-                                    </li>
-                                    <li><a class="dropdown-item" href="#">Today</a></li>
-                                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                                </ul>
-                            </div> -->
                             <div class="card-body">
                                 <h5 class="card-title">Item Categories <span>| <?=$filter_keyword_text?></span></h5>
                                 <div class="d-flex align-items-center">
@@ -278,7 +200,7 @@ $userType           = $session->user_type;
                             </div>
                         </div>
                     </div>
-                    <div class="col-xxl-4 col-md-6">
+                    <div class="col-xxl-6 col-md-6">
                         <div class="card info-card revenue-card">
                             <div class="card-body">
                                 <h5 class="card-title">Item Sub-Categories <span>| <?=$filter_keyword_text?></span></h5>
@@ -287,7 +209,7 @@ $userType           = $session->user_type;
                                         <i class="bi bi-people"></i>
                                     </div>
                                     <div class="ps-3">
-                                        <h6><?=count($itemCats)?></h6>
+                                        <h6><?=$companyCats?></h6>
                                         <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span> -->
                                     </div>
                                 </div>
@@ -325,19 +247,8 @@ $userType           = $session->user_type;
                 <?php }?>
                 <?php if($userType == 'U'){?>
                     <!-- Item Categories Card -->
-                    <div class="col-xxl-4 col-md-6">
+                    <div class="col-xxl-6 col-md-6">
                         <div class="card info-card revenue-card">
-                            <!-- <div class="filter">
-                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                    <li class="dropdown-header text-start">
-                                        <h6>Filter</h6>
-                                    </li>
-                                    <li><a class="dropdown-item" href="#">Today</a></li>
-                                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                                </ul>
-                            </div> -->
                             <div class="card-body">
                                 <h5 class="card-title">Item Categories <span>| <?=$filter_keyword_text?></span></h5>
                                 <div class="d-flex align-items-center">
@@ -346,6 +257,22 @@ $userType           = $session->user_type;
                                     </div>
                                     <div class="ps-3">
                                         <h6><?=$itemCategory?></h6>
+                                        <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-6 col-md-6">
+                        <div class="card info-card revenue-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Item Sub-Categories <span>| <?=$filter_keyword_text?></span></h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-people"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6><?=$companyCats?></h6>
                                         <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span> -->
                                     </div>
                                 </div>
