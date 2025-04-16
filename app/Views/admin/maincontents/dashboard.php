@@ -278,10 +278,26 @@ $userType           = $session->user_type;
                             </div>
                         </div>
                     </div>
+                    <div class="col-xxl-4 col-md-6">
+                        <div class="card info-card revenue-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Item Sub-Categories <span>| <?=$filter_keyword_text?></span></h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-people"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6><?=count($itemCats)?></h6>
+                                        <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- End Item Categories Card -->
                     <?php if($itemCats){ foreach($itemCats as $itemCat){?>
                         <?php $getCompanyCats = $common_model->find_data('ecomm_company_category', 'array', ['category_id' => $itemCat->id], 'id,category_alias'); ?>
-                        <div class="col-xxl-4 col-md-6">
+                        <!-- <div class="col-xxl-4 col-md-6">
                             <div class="card info-card sales-card" style="border: 1px solid #4a984f;height: 531px;">
                                 <div class="card-body">
                                     <h5 class="card-title"><?=$itemCat->name?> <span>| <?=$filter_keyword_text?></span></h5>
@@ -304,7 +320,7 @@ $userType           = $session->user_type;
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     <?php } }?>
                 <?php }?>
                 <?php if($userType == 'U'){?>
