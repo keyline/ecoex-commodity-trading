@@ -69,4 +69,8 @@ class FunctionalityService
     {
         return $this->repository->updateStatus($id, $status);
     }
+
+    public function isRankUnique($rank, $excludeId = null){
+        return $this->repository->isRankUnique($rank,$excludeId);
+    }
 }

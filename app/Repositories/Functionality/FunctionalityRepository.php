@@ -16,6 +16,7 @@ class FunctionalityRepository
         $this->primaryKey = 'fun_id';
     }
 
+
     public function create(array $data)
     {
         try {
@@ -106,6 +107,22 @@ class FunctionalityRepository
                 ->update();
         } catch (DatabaseException $e) {
             log_message('error', 'Database error while updating status: ' . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
+            throw $e;
+        }
+    }
+
+    public function isRankUnique($rank, $excludeId = null): bool
+    {
+        try {
+            $this->tabel->where('fun_rank', $rank);
+
+            if (!is_null($excludeId)) {
+                $this->tabel->where($this->primaryKey . ' !=', $excludeId);
+            }
+
+            return ($this->tabel->countAllResults() === 0);
+        } catch (DatabaseException $e) {
+            log_message('error', 'Database error : ' . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
             throw $e;
         }
     }

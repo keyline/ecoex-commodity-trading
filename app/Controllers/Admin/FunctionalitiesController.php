@@ -63,7 +63,8 @@ class FunctionalitiesController extends BaseController
     {
         helper(['form']);
 
-        // $id = $this->request->getPost('update_id');
+        $id = $this->request->getPost('update_id');
+
         $validationRules = [
             'platform' => [
                 'label' => 'Platform',
@@ -79,7 +80,7 @@ class FunctionalitiesController extends BaseController
             ]
         ];
 
-      
+
 
 
 
@@ -87,6 +88,10 @@ class FunctionalitiesController extends BaseController
         if (!$this->validate($validationRules)) {
             // Validation failed
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        if (!$this->functionality->isRankUnique($this->request->getPost('rank'), $id)) {
+            return redirect()->back()->withInput()->with('error_message', 'The Rank must be unique.');
         }
 
         // Validation passed
