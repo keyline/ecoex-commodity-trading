@@ -1859,7 +1859,7 @@ class EnquiryRequestController extends BaseController
 
         $groupBy[0]                 = 'sub_enquiry_no';
         $data['subenquires']        = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enq_id], '', '', $groupBy);
-
+ 
         $title                      = 'View Enquiry Details Of ' . $data['row']->enquiry_no;
         $page_name                  = 'enquiry-request/enquiry-details';
         echo $this->layout_after_login($title, $page_name, $data);

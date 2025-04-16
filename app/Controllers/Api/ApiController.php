@@ -2360,7 +2360,7 @@ class ApiController extends BaseController
 
                     // _____________ Completed Request _____________
                     // $step4_count        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['plant_id' => $uId, 'status' => 12.12]);
-                    
+
                     # new code on :10/04/2025
                     $step4_count = $this->completeRequestCount($uId);
 
@@ -5786,6 +5786,25 @@ class ApiController extends BaseController
                         }
                         $plant                          = $this->common_model->find_data('ecomm_users', 'row', ['id' => $rows[0]->plant_id]);
                         $payment                        = [];
+
+                        //  code update by shubha on:16_04_2023
+
+                        $multiVendorInvoice             = [];
+                        $vendor_invoice_file_arr        = json_decode($rows[0]->vendor_invoice_file_arr, true);
+                        $vendor_invoice_amount_arr      = json_decode($rows[0]->vendor_invoice_amount_arr, true);
+                        $vendor_invoice_amount_arr_sum  = count($vendor_invoice_amount_arr) ? array_sum($vendor_invoice_amount_arr) : 0.00;
+
+                        for ($i = 0; $i < count($vendor_invoice_file_arr); $i++) {
+                            $multiVendorInvoice[] = [
+                                'amount' => $vendor_invoice_amount_arr[$i],
+                                'file'   => $vendor_invoice_file_arr[$i] != '' ? getenv('app.uploadsURL') . 'enquiry/' . $vendor_invoice_file_arr[$i] : ''
+                            ];
+                        }
+
+
+
+
+                        //  code update by shubha on:16_04_2023
                         if ($rows[0]->payment_amount > 0) {
                             $payment = [
                                 'payment_amount'                => $rows[0]->payment_amount,
@@ -5796,6 +5815,10 @@ class ApiController extends BaseController
                                 'is_approve_vendor_payment'     => $rows[0]->is_approve_vendor_payment,
                             ];
                         }
+
+
+
+
                         $apiResponse = [
                             'enq_id'                            => $rows[0]->enq_id,
                             'enquiry_no'                        => $rows[0]->enquiry_no,
@@ -5823,8 +5846,13 @@ class ApiController extends BaseController
                             'material_weighing_edit_vendor'     => $rows[0]->material_weighing_edit_vendor,
                             'material_weighing_edit_plant'      => $rows[0]->material_weighing_edit_plant,
                             'is_plant_ecoex_confirm'            => $rows[0]->is_plant_ecoex_confirm,
-                            'vendor_invoice_amount'             => $rows[0]->vendor_invoice_amount,
-                            'vendor_invoice_file'               => (($rows[0]->vendor_invoice_file != '') ? getenv('app.uploadsURL') . 'enquiry/' . $rows[0]->vendor_invoice_file : ''),
+                            // old code 
+                            // 'vendor_invoice_amount'             => $rows[0]->vendor_invoice_amount,
+                            // 'vendor_invoice_file'               => (($rows[0]->vendor_invoice_file != '') ? getenv('app.uploadsURL') . 'enquiry/' . $rows[0]->vendor_invoice_file : ''),
+                            // new code update by shubha on :16_04_24
+                            'vendor_invoice_amount'             => $vendor_invoice_amount_arr_sum,
+                            'vendor_invoice_file'               => $multiVendorInvoice[0]['file'] ?? '',
+                            // new code update by shubha on :16_04_24
                             'is_payment_submit'                 => (($rows[0]->payment_amount > 0) ? 1 : 0),
                             'payment'                           => $payment,
                             'vehicles'                          => $vehicles,
@@ -5833,6 +5861,8 @@ class ApiController extends BaseController
                             'is_vendor_quit'                    => $rows[0]->is_vendor_quit,
                             'vendor_quit_timestamp'             => (($rows[0]->vendor_quit_timestamp != '') ? date_format(date_create($rows[0]->vendor_quit_timestamp), "M d, Y h:i A") : ''),
                             'is_quit_admin_approval'            => $rows[0]->is_quit_admin_approval,
+
+                            'multi_vendor_invoice'              => $multiVendorInvoice
                         ];
                     }
 
