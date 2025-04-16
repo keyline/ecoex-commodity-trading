@@ -85,7 +85,14 @@ class NotificationsRepository
     public function getById($id)
     {
         try {
+            // return $this->tabel
+            //     ->where($this->primaryKey, $id)
+            //     ->get()
+            //     ->getRow();
+
             return $this->tabel
+                ->select('manage_notification.*,functionalities.fun_platform')
+                ->join('functionalities', 'manage_notification.mn_fun_id = functionalities.fun_id')
                 ->where($this->primaryKey, $id)
                 ->get()
                 ->getRow();
@@ -105,6 +112,21 @@ class NotificationsRepository
                 ->update();
         } catch (DatabaseException $e) {
             log_message('error', 'Database error while updating status: ' . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
+            throw $e;
+        }
+    }
+
+    public function FunctionalityList()
+    {
+        try {
+            return $this->db->table('functionalities')
+                ->select('fun_id,fun_platform,fun_functionality_name')
+                ->where('fun_status =', 1)
+                ->orderBy('fun_functionality_name', 'ASC')
+                ->get()
+                ->getResult();
+        } catch (DatabaseException $e) {
+            log_message('error', 'Database error while get functionalities: ' . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
             throw $e;
         }
     }

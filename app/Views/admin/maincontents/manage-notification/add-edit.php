@@ -1,19 +1,33 @@
 <?php
 if (count($row)) {
     $updateId        = $row['id'];
+    $platform        = $row['platform'];
+    $fun_id          = $row['fun_id'];
     $email           = $row['email'];
-    $is_ho           = $row['is_ho'];
-    $is_push         = $row['is_push_notification'];
-    $is_sms          = $row['is_sms'];
-    $is_vendor       = $row['is_vendor'];
+    $mn_ecoex_admin_email = $row['mn_ecoex_admin_email'];
+    $mn_company_admin_email = $row['mn_company_admin_email'];
+    $mn_vendor_email = $row['mn_vendor_email'];
+    $mn_vendor_sms = $row['mn_vendor_sms'];
+    $mn_vendor_push = $row['mn_vendor_push'];
+    $mn_plant_email = $row['mn_plant_email'];
+    $mn_plant_sms = $row['mn_plant_sms'];
+    $mn_plant_push = $row['mn_plant_push'];
 } else {
     $updateId        = 0;
+    $platform        = '';
+    $fun_id          = '';
     $email           = '';
-    $is_ho           = '';
-    $is_push         = '';
-    $is_sms          = '';
-    $is_vendor       = '';
+    $mn_fun_id       = '';
+    $mn_ecoex_admin_email = '';
+    $mn_company_admin_email = '';
+    $mn_vendor_email = '';
+    $mn_vendor_sms = '';
+    $mn_vendor_push = '';
+    $mn_plant_email = '';
+    $mn_plant_sms = '';
+    $mn_plant_push = '';
 }
+
 ?>
 
 <div class="pagetitle">
@@ -49,16 +63,23 @@ if (count($row)) {
                 <div class="card-body pt-3">
                     <form method="POST" action="<?= base_url('admin/' . $controller_route) ?>" enctype="multipart/form-data">
                         <input type="hidden" name="update_id" value="<?= $updateId ?>">
+                        <input type="hidden" id="fun_id" name="fun_id" value="<?= $fun_id ?>">
 
                         <div class="row mb-3">
                             <label for="input-tags" class="col-md-2 col-lg-2 col-form-label">Platform</label>
                             <div class="col-md-10 col-lg-10">
 
-                                <select class="form-select" aria-label="Default select example">
-                                    <option selected value="">Select</option>
+                                <!-- First dropdown for Platform -->
+                                <select class="form-select" id="platform" name="platform" required>
+                                    <option value="">Select Platform</option>
+                                    <?php foreach ($platforms as $key => $label): ?>
+                                        <option value="<?= $key ?>" <?= ($key == $platform) ? 'selected' : '' ?>><?= $label ?></option>
+                                    <?php endforeach; ?>
                                 </select>
-                                <?php if (session('errors.mn_email')): ?>
-                                    <div class="text-danger"><?= session('errors.mn_email') ?></div>
+
+
+                                <?php if (session('errors.platform')): ?>
+                                    <div class="text-danger"><?= session('errors.platform') ?></div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -68,11 +89,13 @@ if (count($row)) {
                             <label for="input-tags" class="col-md-2 col-lg-2 col-form-label">Functionality</label>
                             <div class="col-md-10 col-lg-10">
 
-                                <select class="form-select" aria-label="Default select example">
-                                    <option selected value="">Select</option>
+                                <!-- Second dropdown for Functionality -->
+                                <select class="form-select" id="functionality" name="functionality" required>
+                                    <option value="">Select Functionality</option>
                                 </select>
-                                <?php if (session('errors.mn_email')): ?>
-                                    <div class="text-danger"><?= session('errors.mn_email') ?></div>
+
+                                <?php if (session('errors.functionality')): ?>
+                                    <div class="text-danger"><?= session('errors.functionality') ?></div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -92,25 +115,46 @@ if (count($row)) {
                         </div>
 
 
-                        <!-- Options -->
+                        <!-- Notification Options -->
                         <div class="row mb-3">
-                            <label class="col-md-2 col-lg-2 col-form-label">Options</label>
+                            <label class="col-md-2 col-lg-2 col-form-label">Notification Options</label>
                             <div class="col-md-10 col-lg-10">
+                                <!-- Email Options -->
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="mn_is_vendor" id="mn_is_vendor" value="1" <?= isset($is_vendor) && $is_vendor ? 'checked' : '' ?>>
-                                    <label class="form-check-label" for="mn_is_vendor">Is Vendor</label>
+                                    <input class="form-check-input" type="checkbox" name="mn_ecoex_admin_email" id="mn_ecoex_admin_email" value="1" <?= isset($mn_ecoex_admin_email) && $mn_ecoex_admin_email ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="mn_ecoex_admin_email">Ecoex Admin Email</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="mn_is_ho" id="mn_is_ho" value="1" <?= isset($is_ho) && $is_ho ? 'checked' : '' ?>>
-                                    <label class="form-check-label" for="mn_is_ho">Is Head Office</label>
+                                    <input class="form-check-input" type="checkbox" name="mn_company_admin_email" id="mn_company_admin_email" value="1" <?= isset($mn_company_admin_email) && $mn_company_admin_email ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="mn_company_admin_email">Company Admin Email</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="mn_is_sms_to_vendor" id="mn_is_sms_to_vendor" value="1" <?= isset($is_sms) && $is_sms ? 'checked' : '' ?>>
-                                    <label class="form-check-label" for="mn_is_sms_to_vendor">Send SMS to Vendor</label>
+                                    <input class="form-check-input" type="checkbox" name="mn_vendor_email" id="mn_vendor_email" value="1" <?= isset($mn_vendor_email) && $mn_vendor_email ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="mn_vendor_email">Vendor Email</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="mn_is_push_notification" id="mn_is_push_notification" value="1" <?= isset($is_push) && $is_push ? 'checked' : '' ?>>
-                                    <label class="form-check-label" for="mn_is_push_notification">Push Notification</label>
+                                    <input class="form-check-input" type="checkbox" name="mn_plant_email" id="mn_plant_email" value="1" <?= isset($mn_plant_email) && $mn_plant_email ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="mn_plant_email">Plant Email</label>
+                                </div>
+
+                                <!-- SMS Options -->
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="mn_vendor_sms" id="mn_vendor_sms" value="1" <?= isset($mn_vendor_sms) && $mn_vendor_sms ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="mn_vendor_sms">Vendor SMS</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="mn_plant_sms" id="mn_plant_sms" value="1" <?= isset($mn_plant_sms) && $mn_plant_sms ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="mn_plant_sms">Plant SMS</label>
+                                </div>
+
+                                <!-- Push Notification Options -->
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="mn_vendor_push" id="mn_vendor_push" value="1" <?= isset($mn_vendor_push) && $mn_vendor_push ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="mn_vendor_push">Vendor Push</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="mn_plant_push" id="mn_plant_push" value="1" <?= isset($mn_plant_push) && $mn_plant_push ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="mn_plant_push">Plant Push</label>
                                 </div>
                             </div>
                         </div>
@@ -186,5 +230,61 @@ if (count($row)) {
             $(this).parent().remove();
             $('#other_article_part_doi_no').val(tagsArray.join(','));
         });
+
+
+
+
+        // drop down logic
+        // Convert PHP array of objects to JSON
+        var functionalities = <?php echo json_encode($functionality); ?>;
+
+        // Group functionalities by their platform
+        var functionalitiesByPlatform = {};
+        $.each(functionalities, function(i, item) {
+            if (!functionalitiesByPlatform[item.fun_platform]) {
+                functionalitiesByPlatform[item.fun_platform] = [];
+            }
+            functionalitiesByPlatform[item.fun_platform].push(item);
+        });
+
+
+        // Listen for changes on the platform dropdown
+        $('#platform').on('change', function() {
+            var platform = $(this).val();
+            var options = '<option value="">Select Functionality</option>';
+
+            // Check if the selected platform has functionalities
+            if (platform && functionalitiesByPlatform[platform]) {
+                $.each(functionalitiesByPlatform[platform], function(i, item) {
+                    options += '<option value="' + item.fun_id + '">' + item.fun_functionality_name + '</option>';
+                });
+            }
+            // Update the functionality dropdown
+            $('#functionality').html(options);
+        });
+
+
+
+        function populateFunctionalities(platform, fun_id = '', targetDropdownId = '#functionality') {
+
+            var options = '<option value="">Select Functionality</option>';
+
+            if (platform && functionalitiesByPlatform[platform]) {
+                $.each(functionalitiesByPlatform[platform], function(i, item) {
+                    var selected = (fun_id == item.fun_id) ? ' selected' : '';
+                    options += '<option value="' + item.fun_id + '"' + selected + '>' + item.fun_functionality_name + '</option>';
+                });
+            }
+
+            $(targetDropdownId).html(options);
+        }
+
+
+        var selectedPlatform = $('#platform').val();
+        var fun_id = $("#fun_id").val();
+
+        populateFunctionalities(selectedPlatform, fun_id);
+
+
     });
 </script>

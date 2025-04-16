@@ -44,6 +44,7 @@ class ManageNotificationsController extends BaseController
         }
     }
 
+
     public function index()
     {
         $title                      = 'Manage Notifications';
@@ -62,12 +63,16 @@ class ManageNotificationsController extends BaseController
     {
         $title                      = 'Add';
         $page_name                  = 'manage-notification/add-edit';
+        $this->data['platforms']    = $this->manageNotification->platformList();
+        $this->data['functionality'] = $this->manageNotification->functionality();
         $this->data['row']          = [];
+
         echo $this->layout_after_login($title, $page_name, $this->data);
     }
 
     public function create()
     {
+
         helper(['form']);
         // Define validation rules
         $validationRules = [
@@ -92,35 +97,32 @@ class ManageNotificationsController extends BaseController
                     'custom'   => 'One or more email addresses are invalid.'
                 ]
             ],
+            'platform' => [
+                'label' => 'Platform',
+                'rules' => 'required|in_list[ecoex_admin,company_admin,plant_app,vendor_app]',
+                'errors' => [
+                    'required' => 'Platform is required.',
+                    'in_list'  => 'Selected platform is invalid.',
+                ]
+            ],
+            'functionality' => [
+                'label' => 'Functionality',
+                'rules' => 'required|integer',
+                'errors' => [
+                    'required' => 'Functionality is required.',
+                    'integer'  => 'Functionality must be a numeric ID.',
+                ]
+            ]
             // Optional checkboxes
-            'mn_is_vendor' => [
-                'label' => 'Is Vendor',
-                'rules' => 'permit_empty|in_list[1]',
-                'errors' => [
-                    'in_list' => 'Invalid selection for {field}.',
-                ],
-            ],
-            'mn_is_ho' => [
-                'label' => 'Is Head Office',
-                'rules' => 'permit_empty|in_list[1]',
-                'errors' => [
-                    'in_list' => 'Invalid selection for {field}.',
-                ],
-            ],
-            'mn_is_sms_to_vendor' => [
-                'label' => 'Send SMS to Vendor',
-                'rules' => 'permit_empty|in_list[1]',
-                'errors' => [
-                    'in_list' => 'Invalid selection for {field}.',
-                ],
-            ],
-            'mn_is_push_notification' => [
-                'label' => 'Push Notification',
-                'rules' => 'permit_empty|in_list[1]',
-                'errors' => [
-                    'in_list' => 'Invalid selection for {field}.',
-                ],
-            ],
+            // 'mn_is_vendor' => [
+            //     'label' => 'Is Vendor',
+            //     'rules' => 'permit_empty|in_list[1]',
+            //     'errors' => [
+            //         'in_list' => 'Invalid selection for {field}.',
+            //     ],
+            // ],
+
+
         ];
 
 
@@ -132,14 +134,18 @@ class ManageNotificationsController extends BaseController
 
         // Validation passed
         $formData = [
-            'mn_email' => json_encode($this->request->getPost('mn_email')),
-            'mn_is_vendor' => $this->request->getPost('mn_is_vendor') ? 1 : 0,
-            'mn_is_ho' => $this->request->getPost('mn_is_ho') ? 1 : 0,
-            'mn_is_sms_to_vendor' => $this->request->getPost('mn_is_sms_to_vendor') ? 1 : 0,
-            'mn_is_push_notification' => $this->request->getPost('mn_is_push_notification') ? 1 : 0,
+            'mn_fun_id'               => $this->request->getPost('functionality'),
+            'mn_email'                => json_encode($this->request->getPost('mn_email')),
+            'mn_ecoex_admin_email'    => $this->request->getPost('mn_ecoex_admin_email') ? 1 : 0,
+            'mn_company_admin_email'  => $this->request->getPost('mn_company_admin_email') ? 1 : 0,
+            'mn_vendor_email'         => $this->request->getPost('mn_vendor_email') ? 1 : 0,
+            'mn_vendor_sms'           => $this->request->getPost('mn_vendor_sms') ? 1 : 0,
+            'mn_vendor_push'          => $this->request->getPost('mn_vendor_push') ? 1 : 0,
+            'mn_plant_email'          => $this->request->getPost('mn_plant_email') ? 1 : 0,
+            'mn_plant_sms'            => $this->request->getPost('mn_plant_sms') ? 1 : 0,
+            'mn_plant_push'           => $this->request->getPost('mn_plant_push') ? 1 : 0
         ];
-
-
+        
         try {
             // Delegate data insertion 
             $this->manageNotification->saveData($formData, $this->request->getPost('update_id'));
@@ -147,7 +153,7 @@ class ManageNotificationsController extends BaseController
         } catch (Exception $e) {
             // Handle exceptions
             log_message('error', 'An error occurred in ' . __FILE__ . ' on line ' . __LINE__ . ': ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error_message', 'An unexpected error occurred. Please try again later.');
+            return redirect()->back()->withInput()->with('error_message', 'An unexpected error occurred. Please try again later.|'.$e->getMessage());
         }
     }
 
@@ -156,7 +162,8 @@ class ManageNotificationsController extends BaseController
         $title                      = 'Update';
         $page_name                  = 'manage-notification/add-edit';
         $this->data['row']          = $this->manageNotification->getNotificationById(decoded($id));
-
+        $this->data['platforms']    = $this->manageNotification->platformList();
+        $this->data['functionality'] = $this->manageNotification->functionality();
         echo $this->layout_after_login($title, $page_name, $this->data);
     }
 
