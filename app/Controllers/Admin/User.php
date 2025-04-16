@@ -228,7 +228,7 @@ class User extends BaseController {
             // $data['companyCats']                = $this->common_model->find_data('ecomm_company_items', 'count', ['status!=' => 3]);
 
             $join[0]                            = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_company_items', 'field_table_master' => 'company_id', 'type' => 'INNER'];
-            $data['companyCats']                = $this->common_model->find_data('ecomm_company_items', 'count', ['ecomm_company_items.status!=' => 3, 'ecomm_company_items.status' => 2], '', $join);
+            $data['companyCats']                = $this->common_model->find_data('ecomm_company_items', 'count', ['ecomm_company_items.status!=' => 3, 'ecoex_companies.status' => 2], '', $join);
 
             if($userType == 'MA'){
                 $data['plant']                      = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'PLANT']);
