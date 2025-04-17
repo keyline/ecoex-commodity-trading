@@ -125,4 +125,12 @@ nb-configuration.xml
 /results/
 /phpunit*.xml
 /.phpunit.*.cache
+/public/uploads/enquiry/
+/writable/public/uploads/enquiry/
+
+
+/public/uploads/*
+writable/public/uploads/enquiry*
+
+
 
