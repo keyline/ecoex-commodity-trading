@@ -336,5 +336,8 @@ $routes->group("api", ["namespace" => "App\Controllers\Api"], function ($routes)
 	// assigned request
 	/* vendor panel */
 	// after login
+
+
+	$routes->match(['get'], "swap-sub-enquires-data", "ApiController::swapSubenquiresdata");
 });
 /* API */

@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\CommonModel;
 use App\Libraries\CreatorJwt;
 use App\Libraries\JWT;
+use CodeIgniter\Database\Exceptions\DatabaseException;
 
 class ApiController extends BaseController
 {
@@ -6716,5 +6717,54 @@ class ApiController extends BaseController
             return array('status' => FALSE, 'data' => '');
         }
         return array('status' => TRUE, 'data' => $decoded);
+    }
+
+
+    # vendor invoice data swap
+    public function swapSubEnquiresData()
+    {
+        $db      = \Config\Database::connect();
+        $builder = $db->table('ecomm_sub_enquires');
+
+        $records = $builder
+            ->select(['id', 'vendor_invoice_amount', 'vendor_invoice_file'])
+            ->where('vendor_invoice_file !=', '')
+            ->orderBy('id', 'ASC')
+            ->get()
+            ->getResult();
+
+        if (empty($records)) {
+            echo 'swapSubEnquiresData: no vendor‑invoice files to migrate.';
+        }
+
+    
+        $db->transBegin();
+
+        try {
+            foreach ($records as $row) {
+                $payload = [
+                    'vendor_invoice_amount_arr' => json_encode([$row->vendor_invoice_amount]),
+                    'vendor_invoice_file_arr'   => json_encode([$row->vendor_invoice_file]),
+                ];
+
+                // use a fresh builder for each update
+                $upd = $db
+                    ->table('ecomm_sub_enquires')
+                    ->where('id', $row->id)
+                    ->update($payload);
+
+                if (! $upd) {
+                    $err = $db->error();
+                    throw new \Exception("Failed updating ID {$row->id}: {$err['message']}");
+                }
+            }
+
+            
+            $db->transCommit();
+            echo 'Swap Sub Enquires Data: successfully migrated ' . count($records) . ' records.';
+        } catch (\Exception $e) {
+            $db->transRollback();
+            echo 'swapSubEnquiresData transaction failed: ' . $e->getMessage();
+        }
     }
 }
