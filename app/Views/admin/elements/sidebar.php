@@ -121,14 +121,6 @@ if ($userType == 'MA') {
                             </a>
                         </li>
                     <?php } ?>
-
-                    <?php if ($common_model->checkModuleAccess(6)) { ?>
-                        <li>
-                            <a class="<?= (($pageSegment == 'functionalities') ? 'active' : '') ?>" href="<?= base_url(route_to('functionalities.index')) ?>">
-                                <i class="fa fa-arrow-right"></i><span>Functionalities</span>
-                            </a>
-                        </li>
-                    <?php } ?>
                 </ul>
             </li>
         <?php } ?>
@@ -136,10 +128,10 @@ if ($userType == 'MA') {
 
     <?php if (($common_model->checkModuleAccess(8)) || ($common_model->checkModuleAccess(9)) || ($common_model->checkModuleAccess(10)) || ($common_model->checkModuleAccess(11)) || ($common_model->checkModuleAccess(12)) || ($common_model->checkModuleAccess(13))) { ?>
         <li class="nav-item">
-            <a class="nav-link <?= (($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'pending-products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages') ? '' : 'collapsed') ?> <?= (($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'pending-products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages') ? 'active' : '') ?>" data-bs-target="#master-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link <?= (($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'pending-products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages'||$pageSegment=='functionalities') ? '' : 'collapsed') ?> <?= (($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'pending-products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages'||$pageSegment=='functionalities') ? 'active' : '') ?>" data-bs-target="#master-nav" data-bs-toggle="collapse" href="#">
                 <i class="fa fa-database"></i><span>Masters</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="master-nav" class="nav-content collapse <?= (($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'pending-products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages') ? 'show' : '') ?>" data-bs-parent="#sidebar-nav">
+            <ul id="master-nav" class="nav-content collapse <?= (($pageSegment == 'product-category' || $pageSegment == 'products' || $pageSegment == 'pending-products' || $pageSegment == 'units' || $pageSegment == 'states' || $pageSegment == 'districts' || $pageSegment == 'member-types' || $pageSegment == 'pages'|| $pageSegment=='functionalities') ? 'show' : '') ?>" data-bs-parent="#sidebar-nav">
                 <?php if ($common_model->checkModuleAccess(8)) { ?>
                     <li>
                         <a class="<?= (($pageSegment == 'product-category') ? 'active' : '') ?>" href="<?= base_url('admin/product-category/list') ?>">
@@ -189,6 +181,13 @@ if ($userType == 'MA') {
                     <li>
                         <a class="<?= (($pageSegment == 'pages') ? 'active' : '') ?>" href="<?= base_url('admin/pages/list') ?>">
                             <i class="fa fa-arrow-right"></i><span>Pages</span>
+                        </a>
+                    </li>
+                <?php } ?>
+                <?php if ($common_model->checkModuleAccess(13)) { ?>
+                    <li>
+                        <a class="<?= (($pageSegment == 'functionalities') ? 'active' : '') ?>" href="<?= base_url(route_to('functionalities.index')) ?>">
+                            <i class="fa fa-arrow-right"></i><span>Functionalities</span>
                         </a>
                     </li>
                 <?php } ?>
@@ -358,7 +357,7 @@ if ($userType == 'MA') {
             <a class="nav-link <?= (($pageSegment == 'notifications' || $pageSegment == 'notifications' || $pageSegment == 'manage-notifications') ? '' : 'collapsed') ?> <?= (($pageSegment == 'notifications' || $pageSegment == 'notifications' || $pageSegment == 'manage-notifications') ? 'active' : '') ?>" data-bs-target="#notification-nav" data-bs-toggle="collapse" href="#">
                 <i class="fa fa-bell"></i><span>Notifications</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="notification-nav" class="nav-content collapse <?= (($pageSegment == 'notifications' || $pageSegment == 'notifications') ? 'show' : '') ?>" data-bs-parent="#sidebar-nav">
+            <ul id="notification-nav" class="nav-content collapse <?= (($pageSegment == 'notifications' || $pageSegment == 'notifications'|| $pageSegment == 'manage-notifications' ) ? 'show' : '') ?>" data-bs-parent="#sidebar-nav">
 
 
                 <?php if ($common_model->checkModuleAccess(19)) { ?>
