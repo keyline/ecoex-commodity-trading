@@ -99,7 +99,7 @@
                                     <?php endforeach; ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="4" style="text-align:center; color:red">No notifications found.</td>
+                                        <td colspan="6" style="text-align:center; color:red">No notifications found.</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
