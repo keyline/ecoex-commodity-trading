@@ -32,6 +32,7 @@
                         </h5>
                     <?php } ?>
                     <?php if (!empty($rows)) { ?>
+                        <div class="table-responsive">
                         <table id="simpletable" class="table table-striped table-bordered nowrap" style="width: 100%">
                         <?php  } else {  ?>
                             <table id="" class="table table-striped table-bordered nowrap" style="width: 100%">
@@ -55,7 +56,7 @@
                                     <?php foreach ($rows as $row): ?>
                                         <tr>
                                             <th scope="row"><?= ++$sl ?></th>
-                                            <td> <?= $row->fun_functionality_name ?> </td>
+                                            <td style="max-width: 200ch; word-wrap: break-word; white-space: normal;"> <?= $row->fun_functionality_name ?> </td>
                                             <td> <?= ucwords(str_replace('_', ' ',  $row->fun_platform)) ?> </td>
                                             <td> <?= $row->fun_rank ?> </td>
                                             <td>
@@ -104,6 +105,8 @@
                                 <?php endif; ?>
                             </tbody>
                             </table>
+                                </div>
+
                 </div>
             </div>
         </div>
