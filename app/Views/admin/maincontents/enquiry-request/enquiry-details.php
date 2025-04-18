@@ -1069,7 +1069,7 @@ $userType           = $session->user_type;
                                                                             <h6><?= date_format(date_create($subenquiry->invoice_to_vendor_date), "M d, Y h:i A") ?></h6>
                                                                         <?php } ?>
                                                                     </div>
-                                                                    <div class="col-md-6 text-center">
+                                                                    <div class="col-md-4 text-center">
                                                                         <?php
                                                                         if (!count($vendor_invoice_file_arr)) { ?>
                                                                             <h4 class="text-success fw-bold">Invoice Uploaded By Ecoex Succesfully</h4>

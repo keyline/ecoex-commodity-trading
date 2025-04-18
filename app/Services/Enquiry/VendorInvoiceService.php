@@ -28,9 +28,14 @@ class VendorInvoiceService
     {
         $enq_id                     = decoded($postData['enq_id']);
         $sub_enquiry_no             = decoded($postData['sub_enquiry_no']);
-        $invoice_amount             = $postData['vendor_invoice_amount'];
+        // $invoice_amount          = $postData['vendor_invoice_amount'];
+        $invoice_amount             = array_map(function ($val) {
+            // Cast to float, format with 2 decimals, dot as decimal separator, no thousands sep
+            return number_format((float)$val, 2, '.', '');
+        },  $postData['vendor_invoice_amount']);
+        
         $vendor_invoice_file        = [];
-
+      
 
         try {
             $this->db->transStart();  // Start Transaction
