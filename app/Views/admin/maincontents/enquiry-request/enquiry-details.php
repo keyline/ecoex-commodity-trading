@@ -1031,7 +1031,7 @@ $userType           = $session->user_type;
                                                                     <div class="col-md-8 text-center">
 
                                                                         <?php
-                                                                        if (count($vendor_invoice_file_arr)) {
+                                                                        if (!count($vendor_invoice_file_arr)) {
                                                                             include_once('./app/Views/admin/maincontents/enquiry-request/multipleVendorInvoice.php');
                                                                         ?>
 
@@ -1071,7 +1071,7 @@ $userType           = $session->user_type;
                                                                     </div>
                                                                     <div class="col-md-4 text-center">
                                                                         <?php
-                                                                        if (!count($vendor_invoice_file_arr)) { ?>
+                                                                        if (count($vendor_invoice_file_arr)) { ?>
                                                                             <h4 class="text-success fw-bold">Invoice Uploaded By Ecoex Succesfully</h4>
                                                                             <!-- old code -->
                                                                             <!-- <a download href="<?= getenv('app.uploadsURL') . 'enquiry/' . $subenquiry->vendor_invoice_file ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');"><i class="fas fa-download"></i> Download Invoice From Vendor</a>
