@@ -1028,10 +1028,10 @@ $userType           = $session->user_type;
                                                                 $vendor_invoice_amount_arr = json_decode($subenquiry->vendor_invoice_amount_arr, true);
                                                             ?>
                                                                 <div class="row mt-3">
-                                                                    <div class="col-md-6 text-center">
+                                                                    <div class="col-md-8 text-center">
 
                                                                         <?php
-                                                                        if (!count($vendor_invoice_file_arr)) {
+                                                                        if (count($vendor_invoice_file_arr)) {
                                                                             include_once('./app/Views/admin/maincontents/enquiry-request/multipleVendorInvoice.php');
                                                                         ?>
 
@@ -1071,7 +1071,7 @@ $userType           = $session->user_type;
                                                                     </div>
                                                                     <div class="col-md-6 text-center">
                                                                         <?php
-                                                                        if (count($vendor_invoice_file_arr)) { ?>
+                                                                        if (!count($vendor_invoice_file_arr)) { ?>
                                                                             <h4 class="text-success fw-bold">Invoice Uploaded By Ecoex Succesfully</h4>
                                                                             <!-- old code -->
                                                                             <!-- <a download href="<?= getenv('app.uploadsURL') . 'enquiry/' . $subenquiry->vendor_invoice_file ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');"><i class="fas fa-download"></i> Download Invoice From Vendor</a>
@@ -1540,23 +1540,33 @@ $userType           = $session->user_type;
 
         // vendor multi invoice
 
-        var maxItems = 5; // Maximum number of invoice items allowed
+        var maxItems = 10; // Maximum number of invoice items allowed
 
-        $('#addInvoiceItem').click(function() {
-            var itemCount = $('#invoiceItemsContainer .invoiceItem').length;
+        // Add new row
+        $('#invoiceItemsContainer').on('click', '.add-row', function() {
+            var container = $('#invoiceItemsContainer');
+            var itemCount = container.find('.invoiceItem').length;
+
             if (itemCount < maxItems) {
-                var newItem = $('.invoiceItem:first').clone();
-                newItem.find('input').val('');
-                $('#invoiceItemsContainer').append(newItem);
+                var newRow = $(this).closest('.invoiceItem').clone();
+                newRow.find('input').val(''); // Clear inputs
+                // Change add button to remove button
+                newRow.find('.add-row')
+                    .removeClass('btn-success')
+                    .addClass('btn-danger')
+                    .html('<i class="fas fa-minus"></i>')
+                    .removeClass('add-row')
+                    .addClass('remove-row');
+                container.append(newRow);
             } else {
-                alert('You can add up to ' + maxItems + ' invoice items only.');
+                alert('Maximum of ' + maxItems + ' invoice items allowed.');
             }
         });
 
-        $('#removeInvoiceItem').click(function() {
-            var itemCount = $('#invoiceItemsContainer .invoiceItem').length;
-            if (itemCount > 1) {
-                $('#invoiceItemsContainer .invoiceItem:last').remove();
+        // Remove row
+        $('#invoiceItemsContainer').on('click', '.remove-row', function() {
+            if ($('#invoiceItemsContainer .invoiceItem').length > 1) {
+                $(this).closest('.invoiceItem').remove();
             } else {
                 alert('At least one invoice item is required.');
             }
