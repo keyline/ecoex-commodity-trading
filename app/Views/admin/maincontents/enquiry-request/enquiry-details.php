@@ -361,11 +361,13 @@ $userType           = $session->user_type;
                         <div class="col-md-6">
                             <h5 class="fw-bold text-success">GPS Tracking Image</h5>
                             <h6>
-                                <?php if ($row->gps_tracking_image != '') { ?>
-                                    <a href="<?= getenv('app.uploadsURL') . 'enquiry/' . $row->gps_tracking_image ?>" target="_blank"><img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $row->gps_tracking_image ?>" alt="<?= $row->enquiry_no ?>" class="img-thumbnail" style="width: 250px; height: 250px; margin-top: 10px;"></a>
-                                <?php } else { ?>
-                                    <img src="<?= getenv('app.NO_IMAGE') ?>" alt="<?= $row->enquiry_no ?>" class="img-thumbnail" style="width: 250px; height: 250px; margin-top: 10px;">
-                                <?php } ?>
+                                <div class="popup_gallery">
+                                    <?php if ($row->gps_tracking_image != '') { ?>
+                                        <a href="<?= getenv('app.uploadsURL') . 'enquiry/' . $row->gps_tracking_image ?>" target="_blank"><img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $row->gps_tracking_image ?>" alt="<?= $row->enquiry_no ?>" class="img-thumbnail" style="width: 250px; height: 250px; margin-top: 10px;"></a>
+                                    <?php } else { ?>
+                                        <img src="<?= getenv('app.NO_IMAGE') ?>" alt="<?= $row->enquiry_no ?>" class="img-thumbnail" style="width: 250px; height: 250px; margin-top: 10px;">
+                                    <?php } ?>
+                                </div>
                             </h6>
                         </div>
                         <div class="col-md-6">
@@ -848,9 +850,10 @@ $userType           = $session->user_type;
                                                                             <td><?= $vehicle['vehicle_no'] ?></td>
                                                                             <td>
                                                                                 <div class="row">
+
                                                                                     <?php if ($vehicle['vehicle_img']) {
                                                                                         for ($v = 0; $v < count($vehicle['vehicle_img']); $v++) { ?>
-                                                                                            <div class="col-md-3">
+                                                                                            <div class="col-md-3 popup_gallery">
                                                                                                 <a href="<?= $vehicle['vehicle_img'][$v] ?>" download><img src="<?= $vehicle['vehicle_img'][$v] ?>" class="img-thumbnail" style="height:100px;width: 100%;"></a>
                                                                                             </div>
                                                                                     <?php }
@@ -918,7 +921,7 @@ $userType           = $session->user_type;
                                                                                             ?>
                                                                                             <?php if ($material_weighing_slips) {
                                                                                                 for ($v = 0; $v < count($material_weighing_slips); $v++) { ?>
-                                                                                                    <div class="col-md-6">
+                                                                                                    <div class="col-md-6 popup_gallery">
                                                                                                         <a href="<?= getenv('app.uploadsURL') . 'enquiry/' . $material_weighing_slips[$v] ?>" download><img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $material_weighing_slips[$v] ?>" class="img-thumbnail" style="height:100px;width: 100px;"></a>
                                                                                                     </div>
                                                                                             <?php }
@@ -1128,7 +1131,13 @@ $userType           = $session->user_type;
                                                                             <h6>Payment Mode : <?= $subenquiry->payment_mode ?></h6>
                                                                             <?php if ($subenquiry->payment_mode != 'CASH') { ?>
                                                                                 <h6>Transaction No. : <?= $subenquiry->txn_no ?></h6>
-                                                                                <h6>Transaction Screenshot : <img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $subenquiry->txn_screenshot ?>" style="width: 200px; height: 200px;"></h6>
+                                                                                <h6>Transaction Screenshot :
+                                                                                    <div class="popup_gallery">
+                                                                                        <a target="_blank" href="<?= getenv('app.uploadsURL') . 'enquiry/' . $subenquiry->txn_screenshot ?>">
+                                                                                            <img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $subenquiry->txn_screenshot ?>" style="width: 200px; height: 200px;">
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </h6>
                                                                             <?php } ?>
                                                                         <?php } ?>
                                                                     </div>
@@ -1233,7 +1242,14 @@ $userType           = $session->user_type;
                                                                         <h6>Payment Mode : <?= $getEnquiry->ecoex_payment_mode ?></h6>
                                                                         <?php if ($getEnquiry->ecoex_payment_mode != 'CASH') { ?>
                                                                             <h6>Transaction No. : <?= $getEnquiry->ecoex_txn_no ?></h6>
-                                                                            <h6>Transaction Screenshot : <img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $getEnquiry->ecoex_txn_screenshot ?>" style="width: 200px; height: 200px;" class="img-thumbnail"></h6>
+                                                                            <h6>Transaction Screenshot :
+                                                                                <div class="popup_gallery">
+                                                                                    <a target="_blank" href="<?= getenv('app.uploadsURL') . 'enquiry/' . $getEnquiry->ecoex_txn_screenshot ?>">
+                                                                                        <img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $getEnquiry->ecoex_txn_screenshot ?>" style="width: 200px; height: 200px;" class="img-thumbnail">
+                                                                                    <a/>
+                                                                                </div>
+                                                                            </h6>
+
                                                                         <?php } ?>
                                                                     <?php } ?>
                                                                 </div>
