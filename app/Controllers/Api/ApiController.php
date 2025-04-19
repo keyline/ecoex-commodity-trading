@@ -8,6 +8,15 @@ use App\Libraries\CreatorJwt;
 use App\Libraries\JWT;
 use CodeIgniter\Database\Exceptions\DatabaseException;
 
+
+// use function imagecreatefromjpeg;
+// use function imagecolorallocate;
+// use function imagefilledrectangle;
+// use function imagettftext;
+// use function imagejpeg;
+use CodeIgniter\Images\Image;
+
+
 class ApiController extends BaseController
 {
     /* before login */
@@ -2677,9 +2686,13 @@ class ApiController extends BaseController
             $app_access_token           = $this->extractToken($Authorization);
             $getTokenValue              = $this->tokenAuth($app_access_token);
             if ($getTokenValue['status']) {
+
                 $uId        = $getTokenValue['data'][1];
                 $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                 $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                $plat_location= $getUser->location.','.$getUser->state;
+                
+             
                 if ($getUser) {
                     $plant_id       = $getUser->id;
                     $company_id     = $getUser->parent_id;
@@ -2718,6 +2731,18 @@ class ApiController extends BaseController
                             $file               = 'public/uploads/enquiry/' . $fileName;
                             $success            = file_put_contents($file, $data);
                             $gps_tracking       = $fileName;
+
+
+                            // ___________ set water-mark ___________
+                            $imagePath = $file;
+                            $outputPath = $file;
+                            $latitude = $requestData['latitude'];
+                            $longitude = $requestData['longitude'];
+                            $locationName = $plat_location??'';
+                            $dateTime = date('Y-m-d H:i:s');
+                            $this->addGpsDataToImage($imagePath, $outputPath, $latitude, $longitude, $locationName, $dateTime);
+                            // ______________________________________
+
                         }
                     } else {
                         $gps_tracking = '';
@@ -2741,7 +2766,7 @@ class ApiController extends BaseController
                         'device_model'              => $requestData['device_model'],
                         'created_by'                => $uId,
                     ];
-                    // pr($fields1);die;
+                   
 
                     /* email notification */
                     $plantName                  = $getUser->plant_name;
@@ -6719,6 +6744,189 @@ class ApiController extends BaseController
         return array('status' => TRUE, 'data' => $decoded);
     }
 
+    // protected function addGpsDataToImage($imagePath, $outputPath, $latitude, $longitude, $locationName, $dateTime)
+    // {
+
+    //     // Load image
+    //     $image = \imagecreatefromjpeg($imagePath);
+    //     if (!$image) {
+    //         die("Could not load image.");
+    //     }
+
+    //     // Set font properties
+    //     $font = public_path('fonts/arial.ttf'); // Ensure this file is present in the project directory
+    //     $fontSize = 10; // Font size
+    //     $textColor = \imagecolorallocate($image, 255, 255, 255); // White text
+    //     $shadowColor = \imagecolorallocate($image, 0, 0, 0); // Black shadow
+    //     $bgColor = \imagecolorallocatealpha($image, 0, 0, 0, 20); // Semi-transparent black
+    //     $locationIcon = "📍";
+
+    //     // Text content
+    //     $text = "Location: $locationName\nLat: $latitude\nLon: $longitude\nDate: $dateTime";
+
+    //     // Get image dimensions
+    //     $imageWidth = \imagesx($image);
+    //     $imageHeight = \imagesy($image);
+
+    //     // Get text box dimensions
+    //     $bbox = \imagettfbbox($fontSize, 0, $font, $text);
+    //     $textWidth = ($bbox[2] - $bbox[0]);
+    //     $textHeight = ($bbox[5] - $bbox[1]) * 1; // Adjusted for multiple lines
+    //     // echo $textWidth.'||'.$textHeight;
+    //     // Set position at bottom-right corner with padding
+    //     $padding = 15;
+    //     $padding_top = 0;
+    //     $padding_right = 10;
+    //     $padding_bottom = 70;
+    //     $padding_left = 10;
+    //     $x = $imageWidth - $textWidth - $padding_right - 20; // Extra padding for background
+    //     $y = $imageHeight - $padding_bottom;
+    //     $bgX1 = $x - 10; // Background X start
+    //     $bgY1 = $y - $textHeight; // Background Y start
+    //     $bgX2 = $imageWidth - $padding; // Background X end
+    //     $bgY2 = $y - 25; // Background Y end
+
+    //     // Draw background rectangle
+    //     \imagefilledrectangle($image, $bgX1, $bgY1, $bgX2, $bgY2, $bgColor);
+
+    //     // Draw text shadow
+    //     \imagettftext($image, $fontSize, 0, $x + 0, $y + 0, $shadowColor, $font, $text);
+
+    //     // Draw actual text
+    //     \imagettftext($image, $fontSize, 0, $x, $y, $textColor, $font, $text);
+
+    //     // Save the modified image
+    //     \imagejpeg($image, $outputPath, 100);
+    //     imagedestroy($image);
+
+    //     // Embed GPS data using ExifTool (requires installation)
+    //     $exifCmd = "exiftool -GPSLatitude=$latitude -GPSLongitude=$longitude -GPSLatitudeRef=N -GPSLongitudeRef=E -overwrite_original $outputPath";
+    //     exec($exifCmd);
+
+    //     // echo "GPS-tagged image created successfully!";
+    // }
+
+    // _________________
+    
+    protected function addGpsDataToImage($imagePath, $outputPath, $latitude, $longitude, $locationName, $dateTime)
+    {
+        // Load the image
+        $image = \Config\Services::image('gd')
+            ->withFile($imagePath);
+        $gdImage = $image->getResource();
+    
+        // Prepare your lines
+        $lines = [
+            "Location: {$locationName}",
+            "Lat: {$latitude}",
+            "Lon: {$longitude}",
+            "Date: {$dateTime}",
+        ];
+    
+        // Font settings
+        $fontFile    = ROOTPATH . 'public/font/ariali.ttf';
+        $fontSize    = 10;
+        $lineSpacing = 1.5;    // multiplier
+    
+        // Padding
+        $bgPadding    = 5;
+        $rightPadding = 20;
+        $bottomPadding = 20;
+    
+        // First, measure each line’s raw bbox and derive ascent/descent and "lineHeight"
+        $metrics = [];
+        foreach ($lines as $line) {
+            $bbox = imagettfbbox($fontSize, 0, $fontFile, $line);
+            // bbox indices: [0]=llx, [1]=lly, [2]=lrx, [3]=lry, [4]=urx, [5]=ury, [6]=ulx, [7]=uly
+            $ascent  = abs($bbox[7]);                // distance from baseline up to top of text
+            $descent = abs($bbox[1]);                // distance from baseline down to bottom
+            $height  = ($ascent + $descent) * $lineSpacing;
+            $width   = $bbox[2] - $bbox[0];
+            $metrics[] = compact('bbox','ascent','descent','height','width');
+        }
+    
+        // Compute block width & total block height
+        $blockWidth  = max(array_column($metrics, 'width'));
+        $blockHeight = array_sum(array_column($metrics, 'height'));
+    
+        // Decide starting X (baseline‐left for each line) and starting Y (we’ll compute baseline of first line)
+        $imgW = imagesx($gdImage);
+        $imgH = imagesy($gdImage);
+        $startX = $imgW - $rightPadding - $blockWidth;
+    
+        // We want the *bottom* of the multiline block (i.e. baseline of last line + its descent) 
+        // to sit at imgH - bottomPadding.  So:
+        $lastMetric    = end($metrics);
+        $baselineLastY = $imgH - $bottomPadding - $lastMetric['descent'];
+        // Now walk backwards to find the first line’s baseline:
+        $remaining = 0;
+        // Summing all but the last line’s heights:
+        foreach (array_slice($metrics, 0, -1) as $m) {
+            $remaining += $m['height'];
+        }
+        $baselineFirstY = $baselineLastY - $remaining;
+    
+        // Now compute the exact pixel‐extents for the background box by simulating each line’s bbox:
+        $minX = PHP_INT_MAX; $minY = PHP_INT_MAX;
+        $maxX = PHP_INT_MIN; $maxY = PHP_INT_MIN;
+        $currentBaselineY = $baselineFirstY;
+        foreach ($metrics as $m) {
+            // each text‐line bbox offset by [$startX, $currentBaselineY]
+            for ($i = 0; $i < 8; $i += 2) {
+                $px = $startX +  $m['bbox'][$i];
+                $py = $currentBaselineY + $m['bbox'][$i+1];
+                $minX = min($minX, $px);
+                $minY = min($minY, $py);
+                $maxX = max($maxX, $px);
+                $maxY = max($maxY, $py);
+            }
+            // next baseline
+            $currentBaselineY += $m['height'];
+        }
+    
+        // inflate by bgPadding
+        $minX -= $bgPadding;
+        $minY -= $bgPadding;
+        $maxX += $bgPadding;
+        $maxY += $bgPadding;
+    
+        // allocate colors
+        $bgColor     = imagecolorallocatealpha($gdImage, 0, 0, 0, 20);
+        $textColor   = imagecolorallocate($gdImage, 255, 255, 255);
+        $shadowColor = imagecolorallocate($gdImage, 0, 0, 0);
+    
+        // draw background
+        imagefilledrectangle($gdImage, $minX, $minY, $maxX, $maxY, $bgColor);
+    
+        // draw each line (with 1px shadow)
+        $currentBaselineY = $baselineFirstY;
+        foreach ($lines as $idx => $line) {
+            imagettftext(
+                $gdImage, $fontSize, 0,
+                $startX + 1, $currentBaselineY + 1,
+                $shadowColor, $fontFile, $line
+            );
+            imagettftext(
+                $gdImage, $fontSize, 0,
+                $startX, $currentBaselineY,
+                $textColor, $fontFile, $line
+            );
+            $currentBaselineY += $metrics[$idx]['height'];
+        }
+    
+        // save out and embed EXIF
+        $image->save($outputPath, 100);
+        $exifCmd = sprintf(
+            'exiftool -GPSLatitude=%s -GPSLongitude=%s -GPSLatitudeRef=N -GPSLongitudeRef=E -overwrite_original %s',
+            escapeshellarg($latitude),
+            escapeshellarg($longitude),
+            escapeshellarg($outputPath)
+        );
+        exec($exifCmd);
+    }
+    
+    #__________________________________________________________ END _________________________________________________________
+
 
     # vendor invoice data swap
     public function swapSubEnquiresData()
@@ -6737,7 +6945,7 @@ class ApiController extends BaseController
             echo 'swapSubEnquiresData: no vendor‑invoice files to migrate.';
         }
 
-    
+
         $db->transBegin();
 
         try {
@@ -6759,7 +6967,7 @@ class ApiController extends BaseController
                 }
             }
 
-            
+
             $db->transCommit();
             echo 'Swap Sub Enquires Data: successfully migrated ' . count($records) . ' records.';
         } catch (\Exception $e) {
