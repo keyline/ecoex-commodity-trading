@@ -986,8 +986,11 @@ $userType           = $session->user_type;
                                                                 <div class="col-md-6 text-center">
                                                                     <?php if ($getEnquiry->is_invoice_from_ho == 1) { ?>
                                                                         <h4 class="text-warning fw-bold">HO Still Not Uploaded Invoice</h4>
-                                                                        <?php if ($userType == 'COMPANY') { ?>
-                                                                            <form method="POST" action="<?= base_url('admin/enquiry-requests/upload-invoice-by-HO') ?>" enctype="multipart/form-data">
+                                                                        <?php if ($userType == 'COMPANY') {
+                                                                            include_once('./app/Views/admin/maincontents/enquiry-request/multipleHoInvoice.php');
+                                                                        ?>
+                                                                            <!-- old code 21_4_25 -->
+                                                                            <!-- <form method="POST" action="<?= base_url('admin/enquiry-requests/upload-invoice-by-HO') ?>" enctype="multipart/form-data">
                                                                                 <input type="hidden" name="enq_id" value="<?= encoded($getEnquiry->id) ?>">
                                                                                 <input type="hidden" name="sub_enquiry_no" value="<?= encoded($sub_enquiry_no) ?>">
                                                                                 <div class="form-group">
@@ -1000,12 +1003,30 @@ $userType           = $session->user_type;
                                                                                     <small class="text-primary">Only PDF file allowed</small>
                                                                                 </div>
                                                                                 <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-file-invoice"></i> Upload Invoice</button>
-                                                                            </form>
+                                                                            </form> -->
+                                                                            <!-- old code 21_4_25-->
                                                                         <?php } ?>
-                                                                    <?php } elseif ($getEnquiry->is_invoice_from_ho == 2) { ?>
+                                                                    <?php } elseif ($getEnquiry->is_invoice_from_ho == 2) {
+                                                                        $ho_payable_amount_arr = json_decode($getEnquiry->ho_payable_amount_arr, true);
+                                                                        $ho_invoice_file_arr = json_decode($getEnquiry->invoice_file_from_ho_arr, true);
+                                                                    ?>
                                                                         <h4 class="text-success fw-bold">Invoice Uploaded By HO Succesfully</h4>
-                                                                        <a download href="<?= getenv('app.uploadsURL') . 'enquiry/' . $getEnquiry->invoice_file_from_ho ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');"><i class="fas fa-download"></i> Download Invoice From HO</a>
-                                                                        <h5><i class="fa fa-inr"></i> <?= $getEnquiry->ho_payable_amount ?></h5>
+
+                                                                        <!-- <a download href="<?= getenv('app.uploadsURL') . 'enquiry/' . $getEnquiry->invoice_file_from_ho ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');"><i class="fas fa-download"></i> Download Invoice From HO</a>
+                                                                        <h5><i class="fa fa-inr"></i> <?= $getEnquiry->ho_payable_amount ?></h5> -->
+
+
+
+                                                                        <?php for ($i = 0; $i < count($ho_invoice_file_arr); $i++) { ?>
+
+                                                                            <div class="invoice_div mb-3" style="margin-bottom: 5px; border: 1px solid #ccc; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 300px; margin: auto; border-radius: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); background: #f9f9f9;">
+                                                                                <h5 style="margin-bottom: 10px;"><i class="fa fa-inr"></i> <?= $ho_payable_amount_arr[$i] ?></h5>
+                                                                                <a download href="<?= getenv('app.uploadsURL') . 'enquiry/' . $ho_invoice_file_arr[$i] ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');" style="padding: 8px 12px; text-decoration: none;">
+                                                                                    <i class="fas fa-download"></i> Download Invoice 
+                                                                                </a>
+                                                                            </div>
+
+                                                                        <?php } ?>
                                                                         <h5><?= date_format(date_create($getEnquiry->invoice_from_ho_date), "M d, Y h:i A") ?></h5>
                                                                     <?php } ?>
                                                                 </div>
@@ -1088,10 +1109,6 @@ $userType           = $session->user_type;
                                                                                         <i class="fas fa-download"></i> Download Invoice From Ecoex
                                                                                     </a>
                                                                                 </div>
-
-
-
-
 
                                                                             <?php } ?>
 
@@ -1246,7 +1263,7 @@ $userType           = $session->user_type;
                                                                                 <div class="popup_gallery">
                                                                                     <a target="_blank" href="<?= getenv('app.uploadsURL') . 'enquiry/' . $getEnquiry->ecoex_txn_screenshot ?>">
                                                                                         <img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $getEnquiry->ecoex_txn_screenshot ?>" style="width: 200px; height: 200px;" class="img-thumbnail">
-                                                                                    <a/>
+                                                                                        <a />
                                                                                 </div>
                                                                             </h6>
 
@@ -1360,7 +1377,7 @@ $userType           = $session->user_type;
     $slNo = 1;
     foreach ($enquiryPendingProducts as $enquiryPendingProduct) {
 
-        ?>
+?>
         <?php
         $getItem = $common_model->find_data('ecomm_company_items', 'row', ['enq_product_id' => $enquiryPendingProduct->id]);
         ?>
@@ -1555,6 +1572,44 @@ $userType           = $session->user_type;
             renderChoiceLimit: 30
         });
 
+
+        // Ho multi invoice
+        $(function() {
+            var hoMaxItems = 10; // max rows allowed
+
+            // Add new HO row
+            $('#hoInvoiceItemsContainer').on('click', '.add-ho-row', function() {
+                var container = $('#hoInvoiceItemsContainer');
+                var count = container.find('.hoInvoiceItem').length;
+
+                if (count < hoMaxItems) {
+                    // Clone the current row
+                    var newRow = $(this).closest('.hoInvoiceItem').clone();
+                    // Clear its inputs
+                    newRow.find('input').val('');
+                    // Change the plus button to minus
+                    newRow.find('.add-ho-row')
+                        .removeClass('btn-success add-ho-row')
+                        .addClass('btn-danger remove-ho-row')
+                        .html('<i class="fas fa-minus"></i>');
+                    // Append
+                    container.append(newRow);
+                } else {
+                    alert('Maximum of ' + hoMaxItems + ' invoice items allowed.');
+                }
+            });
+
+            // Remove HO row
+            $('#hoInvoiceItemsContainer').on('click', '.remove-ho-row', function() {
+                var container = $('#hoInvoiceItemsContainer');
+                // Always keep at least one
+                if (container.find('.hoInvoiceItem').length > 1) {
+                    $(this).closest('.hoInvoiceItem').remove();
+                } else {
+                    alert('At least one invoice item is required.');
+                }
+            });
+        });
 
         // vendor multi invoice
 

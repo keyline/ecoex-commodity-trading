@@ -1182,12 +1182,23 @@ class EnquiryRequestController extends BaseController
     }
     public function uploadInvoiceByHO()
     {
+        $file_arr                   = [];
         $enq_id                     = decoded($this->request->getPost('enq_id'));
         $sub_enquiry_no             = decoded($this->request->getPost('sub_enquiry_no'));
-
+    
         $getEnquiry                 = $this->data['model']->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
         if ($getEnquiry) {
             /* ho invoice */
+            $invoice_amount             = array_map(function ($val) {
+                // Cast to float, format with 2 decimals, dot as decimal separator, no thousands sep
+                return number_format((float)$val, 2, '.', '');
+            },  $this->request->getPost('ho_payable_amount'));
+            $files = $this->request->getFileMultiple('invoice_file_from_ho');
+
+
+
+            # old code 
+            /*
             $file = $this->request->getFile('invoice_file_from_ho');
             $originalName = $file->getClientName();
             $fieldName = 'invoice_file_from_ho';
@@ -1203,12 +1214,23 @@ class EnquiryRequestController extends BaseController
                 $this->session->setFlashdata('error_message', 'Please Upload Invoice !!!');
                 return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/' . encoded($sub_enquiry_no)));
             }
+            */
+
+            # new code by shubha on 21-4-25 
+            # upload multiple files
+
+            $file_arr = $this->common_model->commonFileArrayUpload('enquiry/', $files, 'pdf');
+
+         
+            # upload multiple files
             /* ho invoice */
             $fields                     = [
                 'status'                            => 7,
                 'is_invoice_from_ho'                => 2,
-                'ho_payable_amount'                 => $this->request->getPost('ho_payable_amount'),
-                'invoice_file_from_ho'              => $invoice_file_from_ho,
+                // 'ho_payable_amount'                 => $this->request->getPost('ho_payable_amount'),
+                // 'invoice_file_from_ho'              => $invoice_file_from_ho,
+                'ho_payable_amount_arr'             => json_encode($invoice_amount),
+                'invoice_file_from_ho_arr'          => json_encode($file_arr),
                 'invoice_from_ho_date'              => date('Y-m-d H:i:s'),
             ];
             $this->common_model->save_data('ecomm_enquires', $fields, $enq_id, 'id');

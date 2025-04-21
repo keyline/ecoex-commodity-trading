@@ -400,7 +400,7 @@ class CommonModel extends Model
                             $status = 1;
                         }
                     }                    
-                    $newFilename = time().$imge;
+                    $newFilename = $p.time().$imge;
                     $temp = $images[$p]->getTempName();
                     if($path=='') {
                         $upload_path = 'public/uploads/';
