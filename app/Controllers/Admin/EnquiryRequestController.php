@@ -1348,7 +1348,7 @@ class EnquiryRequestController extends BaseController
         $postData = $this->request->getPost();
 
         $files    = $this->request->getFiles('vendor_invoice_file');
-       
+
         // Call the service method
         try {
             $result = $this->vendorInvoiceService->uploadInvoiceByEcoexForVendor($postData, $files['vendor_invoice_file']);
@@ -1746,6 +1746,7 @@ class EnquiryRequestController extends BaseController
 
     public function enquiryDetails($enq_id)
     {
+
         if (!$this->common_model->checkModuleFunctionAccess(23, 109)) {
             $data['action']             = 'Access Forbidden';
             $title                      = $data['action'] . ' ' . $this->data['title'];
@@ -1758,9 +1759,24 @@ class EnquiryRequestController extends BaseController
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
         $data['moduleDetail']       = $this->data;
         $data['enquiryStatus']      = (($data['row']) ? $data['row']->status : 1);
-        $data['enquiryProducts']    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id]);
-        $data['enquiryPendingProducts']    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id, 'status' => 0]);
+        # old code commented by shubha on 19/04/25
+        //  $data['enquiryProducts']    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id]);
+        $data['enquiryPendingProducts'] = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id, 'status' => 0]);
+        # new code by shubha on 19/04/25
+        //  Build the subquery for MAX(id) per product_id
+        $subQuery = $this->db->table('ecomm_enquiry_products')
+            ->select('MAX(id) as id')
+            ->where('enq_id', $enq_id)
+            ->groupBy('product_id')
+            ->getCompiledSelect();
 
+        // Use the compiled subquery in the JOIN manually
+        $data['enquiryProducts'] = $this->db->table('ecomm_enquiry_products ep')
+            ->join("($subQuery) AS sub", 'ep.id = sub.id')
+            ->get()
+            ->getResult();
+
+        # new code by shubha on 19/04/25
         $company_id                 = $data['row']->company_id;
         $orderBy[0]                 = ['field' => 'category_alias', 'type' => 'ASC'];
         $data['cats']               = $this->common_model->find_data('ecomm_company_category', 'array', ['status' => 1, 'company_id' => $company_id], 'category_id,category_alias', '', '', $orderBy);

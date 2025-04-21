@@ -1358,7 +1358,9 @@ $userType           = $session->user_type;
 <!-- item approve modal-->
 <?php if ($enquiryPendingProducts) {
     $slNo = 1;
-    foreach ($enquiryPendingProducts as $enquiryPendingProduct) { ?>
+    foreach ($enquiryPendingProducts as $enquiryPendingProduct) {
+
+        ?>
         <?php
         $getItem = $common_model->find_data('ecomm_company_items', 'row', ['enq_product_id' => $enquiryPendingProduct->id]);
         ?>
