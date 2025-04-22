@@ -8,7 +8,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="vendor_invoice_amount">Vendor Invoice Amount</label>
-                    <input type="text" class="form-control" name="vendor_invoice_amount[]" required>
+                    <input type="text" class="form-control" name="vendor_invoice_amount[]" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/^0+(\d)/, '$1').replace(/(\..*)\./g, '$1');" required>
                 </div>
             </div>
             <div class="col-md-5">

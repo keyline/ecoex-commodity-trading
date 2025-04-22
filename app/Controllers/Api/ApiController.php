@@ -2668,15 +2668,53 @@ class ApiController extends BaseController
         }
         $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
     }
+
+
+    protected function getAddressFromLatLong($lat, $lng)
+    {
+        $url = "https://nominatim.openstreetmap.org/reverse?format=json&lat={$lat}&lon={$lng}&zoom=18&addressdetails=1";
+
+        $opts = [
+            "http" => [
+                "header" => "User-Agent: PHP"
+            ]
+        ];
+        $context = stream_context_create($opts);
+        $response = file_get_contents($url, false, $context);
+
+        if ($response === FALSE) {
+            return "Unable to connect to OpenStreetMap.";
+        }
+
+        $data = json_decode($response, true);
+
+        if (isset($data['display_name'])) {
+            $address = $data['display_name'];
+            // Convert string to array by splitting with ','
+            $parts = explode(', ', $address);
+            // Remove the 3rd index element (4th item)
+            unset($parts[2]);
+            // Reindex the array and convert it back to a string
+            return implode(', ', array_values($parts));
+
+            // return $data['display_name'];
+            // return $data['address']['suburb'] . ', ' . $data['address']['city'] . ', ' . $data['address']['state'] . ', ' . $data['address']['postcode'] . ', ' . $data['address']['country'];
+        } else {
+            return "No address found.";
+        }
+    }
+
     public function processRequestAdd()
     {
         $apiStatus          = TRUE;
         $apiMessage         = '';
         $apiResponse        = [];
+        $address            = '';
         $this->isJSON(file_get_contents('php://input'));
         $requestData        = $this->extract_json(file_get_contents('php://input'));
         $requiredFields     = ['requestList', 'gps_image', 'collection_date', 'latitude', 'longitude', 'device_brand', 'device_model'];
         $headerData         = $this->request->headers();
+
         if (!$this->validateArray($requiredFields, $requestData)) {
             $apiStatus          = FALSE;
             $apiMessage         = 'All Data Are Not Present !!!';
@@ -2690,9 +2728,9 @@ class ApiController extends BaseController
                 $uId        = $getTokenValue['data'][1];
                 $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                 $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
-                $plat_location= $getUser->location.','.$getUser->state;
-                
-             
+                $plat_location = $getUser->location . ',' . $getUser->state;
+
+
                 if ($getUser) {
                     $plant_id       = $getUser->id;
                     $company_id     = $getUser->parent_id;
@@ -2732,13 +2770,18 @@ class ApiController extends BaseController
                             $success            = file_put_contents($file, $data);
                             $gps_tracking       = $fileName;
 
-
+                            // get address from lat long
+                            try {
+                                $address =  $this->getAddressFromLatLong($requestData['latitude'], $requestData['longitude']);
+                            } catch (\Exception $e) {
+                                throw $e->getMessage();
+                            }
                             // ___________ set water-mark ___________
                             $imagePath = $file;
                             $outputPath = $file;
                             $latitude = $requestData['latitude'];
                             $longitude = $requestData['longitude'];
-                            $locationName = $plat_location??'';
+                            $locationName = $address; # $plat_location ?? '';
                             $dateTime = date('Y-m-d H:i:s');
                             $this->addGpsDataToImage($imagePath, $outputPath, $latitude, $longitude, $locationName, $dateTime);
                             // ______________________________________
@@ -2766,8 +2809,9 @@ class ApiController extends BaseController
                         'device_model'              => $requestData['device_model'],
                         'created_by'                => $uId,
                     ];
-                   
-
+                    // echo '<pre>';
+                    // print_r($fields1);
+                    // die;
                     /* email notification */
                     $plantName                  = $getUser->plant_name;
                     $generalSetting             = $this->common_model->find_data('general_settings', 'row');
@@ -6807,14 +6851,14 @@ class ApiController extends BaseController
     // }
 
     // _________________
-    
+
     protected function addGpsDataToImage($imagePath, $outputPath, $latitude, $longitude, $locationName, $dateTime)
     {
         // Load the image
         $image = \Config\Services::image('gd')
             ->withFile($imagePath);
         $gdImage = $image->getResource();
-    
+
         // Prepare your lines
         $lines = [
             "Location: {$locationName}",
@@ -6822,17 +6866,17 @@ class ApiController extends BaseController
             "Lon: {$longitude}",
             "Date: {$dateTime}",
         ];
-    
+
         // Font settings
         $fontFile    = ROOTPATH . 'public/font/ariali.ttf';
         $fontSize    = 10;
         $lineSpacing = 1.5;    // multiplier
-    
+
         // Padding
         $bgPadding    = 5;
         $rightPadding = 20;
         $bottomPadding = 20;
-    
+
         // First, measure each line’s raw bbox and derive ascent/descent and "lineHeight"
         $metrics = [];
         foreach ($lines as $line) {
@@ -6842,18 +6886,18 @@ class ApiController extends BaseController
             $descent = abs($bbox[1]);                // distance from baseline down to bottom
             $height  = ($ascent + $descent) * $lineSpacing;
             $width   = $bbox[2] - $bbox[0];
-            $metrics[] = compact('bbox','ascent','descent','height','width');
+            $metrics[] = compact('bbox', 'ascent', 'descent', 'height', 'width');
         }
-    
+
         // Compute block width & total block height
         $blockWidth  = max(array_column($metrics, 'width'));
         $blockHeight = array_sum(array_column($metrics, 'height'));
-    
+
         // Decide starting X (baseline‐left for each line) and starting Y (we’ll compute baseline of first line)
         $imgW = imagesx($gdImage);
         $imgH = imagesy($gdImage);
         $startX = $imgW - $rightPadding - $blockWidth;
-    
+
         // We want the *bottom* of the multiline block (i.e. baseline of last line + its descent) 
         // to sit at imgH - bottomPadding.  So:
         $lastMetric    = end($metrics);
@@ -6865,16 +6909,18 @@ class ApiController extends BaseController
             $remaining += $m['height'];
         }
         $baselineFirstY = $baselineLastY - $remaining;
-    
+
         // Now compute the exact pixel‐extents for the background box by simulating each line’s bbox:
-        $minX = PHP_INT_MAX; $minY = PHP_INT_MAX;
-        $maxX = PHP_INT_MIN; $maxY = PHP_INT_MIN;
+        $minX = PHP_INT_MAX;
+        $minY = PHP_INT_MAX;
+        $maxX = PHP_INT_MIN;
+        $maxY = PHP_INT_MIN;
         $currentBaselineY = $baselineFirstY;
         foreach ($metrics as $m) {
             // each text‐line bbox offset by [$startX, $currentBaselineY]
             for ($i = 0; $i < 8; $i += 2) {
                 $px = $startX +  $m['bbox'][$i];
-                $py = $currentBaselineY + $m['bbox'][$i+1];
+                $py = $currentBaselineY + $m['bbox'][$i + 1];
                 $minX = min($minX, $px);
                 $minY = min($minY, $py);
                 $maxX = max($maxX, $px);
@@ -6883,37 +6929,47 @@ class ApiController extends BaseController
             // next baseline
             $currentBaselineY += $m['height'];
         }
-    
+
         // inflate by bgPadding
         $minX -= $bgPadding;
         $minY -= $bgPadding;
         $maxX += $bgPadding;
         $maxY += $bgPadding;
-    
+
         // allocate colors
         $bgColor     = imagecolorallocatealpha($gdImage, 0, 0, 0, 20);
         $textColor   = imagecolorallocate($gdImage, 255, 255, 255);
         $shadowColor = imagecolorallocate($gdImage, 0, 0, 0);
-    
+
         // draw background
         imagefilledrectangle($gdImage, $minX, $minY, $maxX, $maxY, $bgColor);
-    
+
         // draw each line (with 1px shadow)
         $currentBaselineY = $baselineFirstY;
         foreach ($lines as $idx => $line) {
             imagettftext(
-                $gdImage, $fontSize, 0,
-                $startX + 1, $currentBaselineY + 1,
-                $shadowColor, $fontFile, $line
+                $gdImage,
+                $fontSize,
+                0,
+                $startX + 1,
+                $currentBaselineY + 1,
+                $shadowColor,
+                $fontFile,
+                $line
             );
             imagettftext(
-                $gdImage, $fontSize, 0,
-                $startX, $currentBaselineY,
-                $textColor, $fontFile, $line
+                $gdImage,
+                $fontSize,
+                0,
+                $startX,
+                $currentBaselineY,
+                $textColor,
+                $fontFile,
+                $line
             );
             $currentBaselineY += $metrics[$idx]['height'];
         }
-    
+
         // save out and embed EXIF
         $image->save($outputPath, 100);
         $exifCmd = sprintf(
@@ -6924,7 +6980,7 @@ class ApiController extends BaseController
         );
         exec($exifCmd);
     }
-    
+
     #__________________________________________________________ END _________________________________________________________
 
 

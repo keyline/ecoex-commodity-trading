@@ -8,7 +8,7 @@
       <div class="col-md-4">
         <div class="form-group">
           <label for="ho_payable_amount">Invoice Amount</label>
-          <input type="text" class="form-control" name="ho_payable_amount[]" required>
+          <input type="text" class="form-control" name="ho_payable_amount[]" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/^0+(\d)/, '$1').replace(/(\..*)\./g, '$1');" required>
         </div>
       </div>
       <div class="col-md-5">
@@ -30,6 +30,3 @@
     <i class="fas fa-file-invoice"></i> Upload Invoice(s)
   </button>
 </form>
-
-
-
