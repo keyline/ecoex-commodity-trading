@@ -148,12 +148,52 @@
         background: #FF9800;
         color: #fff;
     }
+
+    .edit_request_item_name {
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .edit_request_item_name:hover {
+        /* text-decoration: underline; */
+        font-size:large;
+    }
+
+
+    /* item name edit */
+    .inline-popup {
+        position: absolute;
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 6px;
+        border-radius: 4px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        z-index: 1000;
+    }
+
+    .inline-popup .popup-input {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        padding: 4px 6px;
+        width: 150px;
+    }
+
+    .inline-popup .fa {
+        cursor: pointer;
+        font-size: 1.1em;
+    }
+
+    /* item name edit */
 </style>
 <?php
 $title              = $moduleDetail['title'];
 $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
 $userType           = $session->user_type;
+$userType           = 'MA';
 ?>
 <div class="pagetitle">
     <h1>
@@ -477,7 +517,7 @@ $userType           = $session->user_type;
                                                                 ?>
                                                             </td>
                                                             <td>
-                                                                <span class="fw-bold"><?= $productName ?></span><br>
+                                                                <span class="fw-bold <?= ($userType == 'MA' && $row->status == 1) ? 'edit_request_item_name' : '' ?>" data-product_id='<?= $enquiryProduct->product_id ?>' id="set_request_item_name<?= $enquiryProduct->product_id ?>"><?= $productName ?></span><br>
                                                                 <!-- <a data-bs-toggle="collapse" href="#viewQuotations<?= $enquiryProduct->id ?>" role="button" aria-expanded="false" aria-controls="viewQuotations<?= $enquiryProduct->id ?>" class="badge bg-primary"><i class="fa fa-list-alt"></i> Click To View The Quotations</a> -->
                                                                 <!-- quotaion list -->
                                                                 <!-- quotaion list -->
@@ -1022,7 +1062,7 @@ $userType           = $session->user_type;
                                                                             <div class="invoice_div mb-3" style="margin-bottom: 5px; border: 1px solid #ccc; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 300px; margin: auto; border-radius: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); background: #f9f9f9;">
                                                                                 <h5 style="margin-bottom: 10px;"><i class="fa fa-inr"></i> <?= $ho_payable_amount_arr[$i] ?></h5>
                                                                                 <a download href="<?= getenv('app.uploadsURL') . 'enquiry/' . $ho_invoice_file_arr[$i] ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');" style="padding: 8px 12px; text-decoration: none;">
-                                                                                    <i class="fas fa-download"></i> Download Invoice 
+                                                                                    <i class="fas fa-download"></i>
                                                                                 </a>
                                                                             </div>
 
@@ -1106,7 +1146,7 @@ $userType           = $session->user_type;
                                                                                 <div class="invoice_div mb-3" style="margin-bottom: 5px; border: 1px solid #ccc; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 300px; margin: auto; border-radius: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); background: #f9f9f9;">
                                                                                     <h5 style="margin-bottom: 10px;"><i class="fa fa-inr"></i> <?= $vendor_invoice_amount_arr[$i] ?></h5>
                                                                                     <a download href="<?= getenv('app.uploadsURL') . 'enquiry/' . $vendor_invoice_file_arr[$i] ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');" style="padding: 8px 12px; text-decoration: none;">
-                                                                                        <i class="fas fa-download"></i> Download Invoice From Ecoex
+                                                                                        <i class="fas fa-download"></i>
                                                                                     </a>
                                                                                 </div>
 
@@ -1677,4 +1717,92 @@ $userType           = $session->user_type;
             $('#ecoex_txn_screenshot').prop('required', true);
         }
     }
+
+
+
+    //  item name edit modal
+
+    $(function() {
+        // 1. Show popup on span click
+        $(document).on('click', '.edit_request_item_name', function() {
+            var $span = $(this);
+            var itemId = $span.data('product_id');
+            var offset = $span.offset();
+            var popup = $(`
+      <div class="inline-popup">
+        <input type="text" class="popup-input" placeholder="New name…">
+        <i class="fa fa-check popup-confirm" data-product-id="${itemId}" title="Save"></i>
+        <i class="fa fa-times popup-cancel" title="Cancel"></i>
+      </div>
+    `);
+
+            // Position below the span
+            popup.css({
+                top: offset.top + $span.outerHeight() + 5,
+                left: offset.left
+            });
+
+            // Remove any existing popups and append
+            $('.inline-popup').remove();
+            $('body').append(popup);
+            popup.find('.popup-input').focus();
+        });
+
+        //  remove popup only
+        $(document).on('click', '.popup-cancel', function() {
+            $(this).closest('.inline-popup').remove();
+        });
+
+        // save data
+        $(document).on('click', '.popup-confirm', function() {
+
+            var $popup = $(this).closest('.inline-popup');
+            var productId = $(this).data('product-id');
+
+            var $span = $("#set_request_item_name" + productId);
+
+            var newName = $popup.find('.popup-input').val().trim();
+
+
+
+            if (!newName) {
+                $popup.find('.popup-input').addClass('is-invalid');
+                return;
+            }
+
+            // spinner state
+            $(this)
+                .removeClass('fa-check')
+                .addClass('fa-spinner fa-spin')
+                .off('click');
+
+            var baseURL = '<?= base_url(); ?>';
+
+            $.ajax({
+                    url: baseURL + 'admin/api/items/rename',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {
+                        name: newName,
+                        itemid: productId
+                    }
+                })
+                .done(function(res) {
+                    if (res.status) {
+                        // update the original span’s text
+                        $span.text(res.data.item_name_ecoex); // safe text update :contentReference[oaicite:6]{index=6}
+                    } else {
+                        console.error('Update failed: ' + (res.message || 'Unknown error'));
+                    }
+                    $popup.remove();
+                })
+                .fail(function(jqXHR, textStatus) {
+                    console.error('AJAX error:', textStatus);
+                    alert('Error saving name');
+                    $popup.remove();
+                });
+        });
+
+    });
+    //  item name edit modal 
 </script>

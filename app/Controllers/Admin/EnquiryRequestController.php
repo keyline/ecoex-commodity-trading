@@ -1185,7 +1185,7 @@ class EnquiryRequestController extends BaseController
         $file_arr                   = [];
         $enq_id                     = decoded($this->request->getPost('enq_id'));
         $sub_enquiry_no             = decoded($this->request->getPost('sub_enquiry_no'));
-    
+
         $getEnquiry                 = $this->data['model']->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
         if ($getEnquiry) {
             /* ho invoice */
@@ -1221,7 +1221,7 @@ class EnquiryRequestController extends BaseController
 
             $file_arr = $this->common_model->commonFileArrayUpload('enquiry/', $files, 'pdf');
 
-         
+
             # upload multiple files
             /* ho invoice */
             $fields                     = [
@@ -2011,5 +2011,49 @@ class EnquiryRequestController extends BaseController
             $this->session->setFlashdata('success_message', 'Sub Enquiry Quited Successfully !!!');
             return redirect()->to('/admin/' . $this->data['controller_route'] . '/enquiry-details/' . encoded($enq_id));
         }
+    }
+
+
+
+    public function renameItemName()
+    {
+
+        $rules = [
+            'itemid' => 'required|is_natural_no_zero',
+            'name'  => 'required|string|min_length[1]|max_length[255]',
+        ];
+
+        if (! $this->validate($rules)) {
+            return $this->response->setStatusCode(422)
+                ->setJSON([
+                    'status'  => false,
+                    'errors'  => $this->validator->getErrors(),
+                ]);
+        }
+
+
+        $id   = (int) $this->request->getPost('itemid');
+        $name = $this->request->getPost('name');
+
+        $updated =  $this->db->table('ecomm_company_items')
+            ->where('id', $id)
+            ->update(['item_name_ecoex' => $name]);
+
+        if (! $updated) {
+            return $this->response->setStatusCode(500)
+                ->setJSON([
+                    'status'  => false,
+                    'message' => 'Could not update item name.',
+                ]);
+        }
+
+
+        return $this->response->setJSON([
+            'status' => true,
+            'data'   => [
+                'product_id'      => $id,
+                'item_name_ecoex' => $name,
+            ],
+        ]);
     }
 }

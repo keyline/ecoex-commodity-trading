@@ -185,6 +185,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 	$routes->match(['get', 'post'], "enquiry-requests/reject-vendor-quit/(:any)/(:any)", "EnquiryRequestController::rejectVendorQuit/$1/$2");
 
 	$routes->match(['get', 'post'], "enquiry-requests/enquiry-details/(:any)", "EnquiryRequestController::enquiryDetails/$1");
+	$routes->post('api/items/rename', 'EnquiryRequestController::renameItemName');
 
 	$routes->match(['get'], "enquiry-requests/process-request-list/(:any)", "EnquiryRequestController::processRequestList/$1");
 	$routes->match(['get'], "enquiry-requests/view-process-request-detail/(:any)", "EnquiryRequestController::viewProcessRequestDetail/$1");
