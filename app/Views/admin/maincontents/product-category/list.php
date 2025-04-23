@@ -36,7 +36,7 @@ $controller_route   = $moduleDetail['controller_route'];
                         <a href="<?=base_url('admin/' . $controller_route . '/add/')?>" class="btn btn-outline-success btn-sm">Add <?=$title?></a>
                     </h5>
                     <?php }?>
-                    <table id="simpletable" class="table table-striped table-bordered nowrap" style="width: 100%">
+                    <table id="simpletable" class="table globel_table nowrap" style="width: 100%">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>

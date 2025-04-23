@@ -732,9 +732,9 @@ h6 {
   align-items: center;
   font-size: 14px;
   font-weight: 600;
-  color: #4154f1;
+  color: #48974e !important;
   transition: 0.3;
-  background: #f6f9ff;
+  background: #f6fff7;
   padding: 10px 15px;
   border-radius: 4px;
 }
@@ -744,7 +744,7 @@ select.form-control {
 .sidebar-nav .nav-link i {
   font-size: 16px;
   margin-right: 10px;
-  color: #4154f1;
+  color: #48974e;
 }
 
 .sidebar-nav .nav-link.collapsed {
@@ -757,12 +757,12 @@ select.form-control {
 }
 
 .sidebar-nav .nav-link:hover {
-  color: #4154f1;
-  background: #f6f9ff;
+  color: #a8cf45 !important;
+  background: #f6fff7;
 }
 
 .sidebar-nav .nav-link:hover i {
-  color: #4154f1;
+  color: #a8cf45;
 }
 
 .sidebar-nav .nav-link .bi-chevron-down {
@@ -971,7 +971,7 @@ select.form-control {
 }
 
 .dashboard .recent-sales .table thead {
-  background: #f6f6fe;
+  background: #a8cf45;
 }
 
 .dashboard .recent-sales .table thead th {
@@ -1299,6 +1299,34 @@ select.form-control {
 }
 .table .badge {
   border-radius: 50px;
+}
+
+/* surajit css */
+.globel_table thead th{
+  background: #a8cf45;
+  color: #fff;
+  font-size: 14px;
+}
+.globel_table tbody tr{
+  border-bottom: 1px solid #a8cf4538;
+}
+.globel_table tbody tr:nth-child(even){
+  background: #fafff6;
+}
+.globel_table td{
+  padding: 10px !important;
+  font-size: 14px;
+}
+.globel_table hr{
+  margin: 0.5rem 0;
+}
+div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-paging .dt-paging-button.current:hover{
+  background: #fafff6 !important;
+  color: #fff !important;
+  border-color: #a8cf45 !important;
+}
+.recent-sales th a{
+  color: #48974e
 }
 
 @media (max-width: 767px) {

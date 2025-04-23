@@ -13,22 +13,28 @@ $userType           = $session->user_type;
 <!-- End Page Title -->
 <section class="section dashboard">
     <form method="GET" name="PostName" action="<?=base_url('admin/dashboard-filter')?>">
-        <div class="row mb-3" style="border:1px solid green; padding: 15px; border-radius: 10px;">
-            <div class="col-lg-6">
-                <label for="filter_keyword">Filter Parameteres</label>
-            </div>
-            <div class="col-lg-6">
-                <select class="form-control" id="filter_keyword" name="filter_keyword" onchange="PostName.submit()">
-                    <option value="" <?=(($filter_keyword == '')?'selected':'')?>>All Time</option>
-                    <option value="today" <?=(($filter_keyword == 'today')?'selected':'')?>>Today</option>
-                    <option value="yesterday" <?=(($filter_keyword == 'yesterday')?'selected':'')?>>Yesterday</option>
-                    <option value="this_month" <?=(($filter_keyword == 'this_month')?'selected':'')?>>This Month</option>
-                    <option value="last_month" <?=(($filter_keyword == 'last_month')?'selected':'')?>>Last Month</option>
-                    <option value="last_7_days" <?=(($filter_keyword == 'last_7_days')?'selected':'')?>>Last 7 Days</option>
-                    <option value="last_30_days" <?=(($filter_keyword == 'last_30_days')?'selected':'')?>>Last 30 Days</option>
-                    <option value="this_year" <?=(($filter_keyword == 'this_year')?'selected':'')?>>This Year</option>
-                    <option value="last_year" <?=(($filter_keyword == 'last_year')?'selected':'')?>>Last Year</option>
-                </select>
+        <div class="row mb-3">
+            <div class="col-12">
+                <div style="border:1px solid #a8cf45; padding: 10px 15px; border-radius: 5px;">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <label for="filter_keyword">Filter Parameteres</label>
+                    </div>
+                    <div class="col-lg-6">
+                        <select class="form-control" id="filter_keyword" name="filter_keyword" onchange="PostName.submit()">
+                            <option value="" <?=(($filter_keyword == '')?'selected':'')?>>All Time</option>
+                            <option value="today" <?=(($filter_keyword == 'today')?'selected':'')?>>Today</option>
+                            <option value="yesterday" <?=(($filter_keyword == 'yesterday')?'selected':'')?>>Yesterday</option>
+                            <option value="this_month" <?=(($filter_keyword == 'this_month')?'selected':'')?>>This Month</option>
+                            <option value="last_month" <?=(($filter_keyword == 'last_month')?'selected':'')?>>Last Month</option>
+                            <option value="last_7_days" <?=(($filter_keyword == 'last_7_days')?'selected':'')?>>Last 7 Days</option>
+                            <option value="last_30_days" <?=(($filter_keyword == 'last_30_days')?'selected':'')?>>Last 30 Days</option>
+                            <option value="this_year" <?=(($filter_keyword == 'this_year')?'selected':'')?>>This Year</option>
+                            <option value="last_year" <?=(($filter_keyword == 'last_year')?'selected':'')?>>Last Year</option>
+                        </select>
+                    </div>
+                </div>
+                </div>
             </div>
         </div>
     </form>
@@ -420,7 +426,7 @@ $userType           = $session->user_type;
             <div class="card recent-sales overflow-auto">
                 <div class="card-body">
                     <h5 class="card-title">Recent Enquires <span>| <?=$filter_keyword_text?></span></h5>
-                    <table class="table table-borderless datatable">
+                    <table class="table table-borderless datatable globel_table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -455,7 +461,7 @@ $userType           = $session->user_type;
                                         <?php
                                         if($recent_enquiry->status == 0){
                                             $enquiryStatus  = 'Request Submitted';
-                                            $bgcolor        =   '#4154f1';
+                                            $bgcolor        =   '#48974e';
                                         } elseif($recent_enquiry->status == 1){
                                             $enquiryStatus  = 'Accept Request';
                                             $bgcolor        =   '#4154f1';
@@ -476,7 +482,7 @@ $userType           = $session->user_type;
                                             $bgcolor        =   '#4154f1';
                                         } elseif($recent_enquiry->status == 7){
                                             $enquiryStatus  = 'Invoice from HO';
-                                            $bgcolor        =   '#4154f1';
+                                            $bgcolor        =   '#a8cf45';
                                         } elseif($recent_enquiry->status == 8){
                                             $enquiryStatus  = 'Invoice to Vendor';
                                             $bgcolor        =   '#4154f1';
