@@ -1,16 +1,19 @@
 <?php
 $user_type = session('user_type');
 ?>
-<div class="pagetitle">
-  <h1><?=$page_header?></h1>
-  <nav>
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="<?=base_url('admin/dashboard')?>">Home</a></li>
-      <li class="breadcrumb-item active"><?=$page_header?></li>
-    </ol>
-  </nav>
-</div><!-- End Page Title -->
+<div class="container-fluid">
+  <div class="pagetitle">
+    <h1><?=$page_header?></h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="<?=base_url('admin/dashboard')?>">Home</a></li>
+        <li class="breadcrumb-item active"><?=$page_header?></li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+</div>
 <section class="section profile">
+<div class="container-fluid">
   <div class="row">
     <div class="col-xl-12">
       <?php if(session('success_message')){?>
@@ -26,7 +29,7 @@ $user_type = session('user_type');
         </div>
       <?php }?>
     </div>
-    <div class="col-xl-2">
+    <div class="col-xl-3">
       <div class="card">
         <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
           <?php if($admin->profile_image != ''){?>
@@ -34,7 +37,7 @@ $user_type = session('user_type');
           <?php } else {?>
             <img src="<?=getenv('app.NO_IMAGE')?>" alt="<?=$admin->name?>" class="img-thumbnail" class="rounded-circle" style="width: 150px; height: 150px; margin-top: 10px;">
           <?php }?>
-          <h2><?=session('name')?></h2>
+          <h2 class="text-center"><?=session('name')?></h2>
           <h3><?=session('type')?></h3>
           <!-- <div class="social-links mt-2">
             <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
@@ -45,7 +48,7 @@ $user_type = session('user_type');
         </div>
       </div>
     </div>
-    <div class="col-xl-10">
+    <div class="col-xl-9">
       <div class="card">
         <div class="card-body pt-3">
           <!-- Bordered Tabs -->
@@ -713,6 +716,7 @@ $user_type = session('user_type');
       </div>
     </div>
   </div>
+</div>
 </section>
 <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
