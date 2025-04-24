@@ -43,7 +43,7 @@ h6 {
 --------------------------------------------------------------*/
 #main {
   margin-top: 60px;
-  padding: 20px 30px;
+  padding: 20px 15px;
   transition: all 0.3s;
 }
 
@@ -64,7 +64,7 @@ h6 {
   font-size: 24px;
   margin-bottom: 0;
   font-weight: 600;
-  color: #012970;
+  color: #a8cf45;
 }
 
 /*--------------------------------------------------------------
@@ -77,7 +77,7 @@ h6 {
   right: 15px;
   bottom: 15px;
   z-index: 99999;
-  background: #4154f1;
+  background: #48974e;
   width: 40px;
   height: 40px;
   border-radius: 4px;
@@ -233,10 +233,10 @@ h6 {
 }
 
 .card-title {
-  padding: 20px 0 15px 0;
+  padding: 0px 0 15px 0;
   font-size: 18px;
   font-weight: 500;
-  color: #012970;
+  color: #48974e ;
   font-family: "Poppins", sans-serif;
 }
 
@@ -248,7 +248,7 @@ h6 {
 
 .card-body {
   /* padding: 0 20px 20px 20px; */
-  padding: 20px 25px;
+  padding: 15px;
 }
 
 .card-img-overlay {
@@ -439,34 +439,12 @@ h6 {
   font-size: 32px;
   padding-left: 10px;
   cursor: pointer;
-  color: #012970;
+  color: #fff;
 }
 
 .header .search-bar {
   min-width: 360px;
   padding: 0 20px;
-}
-
-@media (max-width: 1199px) {
-  .header .search-bar {
-    position: fixed;
-    top: 50px;
-    left: 0;
-    right: 0;
-    padding: 20px;
-    box-shadow: 0px 0px 15px 0px rgba(1, 41, 112, 0.1);
-    background: white;
-    z-index: 9999;
-    transition: 0.3s;
-    visibility: hidden;
-    opacity: 0;
-  }
-
-  .header .search-bar-show {
-    top: 60px;
-    visibility: visible;
-    opacity: 1;
-  }
 }
 
 .header .search-form {
@@ -661,12 +639,6 @@ h6 {
   background-color: #fff;
 }
 
-@media (max-width: 1199px) {
-  .sidebar {
-    left: -300px;
-  }
-}
-
 .sidebar::-webkit-scrollbar {
   width: 5px;
   height: 8px;
@@ -677,31 +649,8 @@ h6 {
   background-color: #aab7cf;
 }
 
-@media (min-width: 1200px) {
 
-  #main,
-  #footer {
-    margin-left: 220px;
-  }
-}
 
-@media (max-width: 1199px) {
-  .toggle-sidebar .sidebar {
-    left: 0;
-  }
-}
-
-@media (min-width: 1200px) {
-
-  .toggle-sidebar #main,
-  .toggle-sidebar #footer {
-    margin-left: 0;
-  }
-
-  .toggle-sidebar .sidebar {
-    left: -300px;
-  }
-}
 
 .sidebar-nav {
   padding: 0;
@@ -734,9 +683,15 @@ h6 {
   font-weight: 600;
   color: #48974e !important;
   transition: 0.3;
-  background: #f6fff7;
   padding: 10px 15px;
   border-radius: 4px;
+}
+.sidebar-nav .nav-link.active {
+  color: #a8cf45 !important;
+  background: #f6fff7;
+}
+.sidebar-nav .nav-link.active i {
+  color: #a8cf45 !important;
 }
 select.form-control {
     height: 40px;
@@ -744,7 +699,8 @@ select.form-control {
 .sidebar-nav .nav-link i {
   font-size: 16px;
   margin-right: 10px;
-  color: #48974e;
+  color: #48974e !important;
+  transition: all 0.3s ease-in-out;
 }
 
 .sidebar-nav .nav-link.collapsed {
@@ -762,7 +718,7 @@ select.form-control {
 }
 
 .sidebar-nav .nav-link:hover i {
-  color: #a8cf45;
+  color: #a8cf45 !important;
 }
 
 .sidebar-nav .nav-link .bi-chevron-down {
@@ -785,7 +741,7 @@ select.form-control {
   align-items: center;
   font-size: 14px;
   font-weight: 600;
-  color: #012970;
+  color: #48974e;
   transition: 0.3;
   padding: 10px 0 10px 40px;
   transition: 0.3s;
@@ -800,11 +756,11 @@ select.form-control {
 
 .sidebar-nav .nav-content a:hover,
 .sidebar-nav .nav-content a.active {
-  color: #4154f1;
+  color: #a8cf45 !important;
 }
 
 .sidebar-nav .nav-content a.active i {
-  background-color: #4154f1;
+  background-color: #a8cf45 !important;
 }
 
 /*--------------------------------------------------------------
@@ -1254,17 +1210,12 @@ select.form-control {
   background: #3e4f6f;
 }
 
-@media (min-width: 992px) {
-  .error-404 img {
-    max-width: 50%;
-  }
-}
 
 /*--------------------------------------------------------------
 # Footer
 --------------------------------------------------------------*/
 .footer {
-  padding: 20px 0;
+  padding: 15px;
   font-size: 14px;
   transition: all 0.3s;
   border-top: 1px solid #cddfff;
@@ -1272,7 +1223,7 @@ select.form-control {
 
 .footer .copyright {
   text-align: center;
-  color: #012970;
+  color: #000;
 }
 
 .footer .credits {
@@ -1282,6 +1233,12 @@ select.form-control {
   color: #012970;
 }
 
+.footer .credits a{
+  padding-top: 5px;
+  text-align: center;
+  font-size: 13px;
+  color: #48974e;
+}
 
 .dt-buttons button{
   padding: 2px 20px;
@@ -1317,6 +1274,11 @@ select.form-control {
   padding: 10px !important;
   font-size: 14px;
 }
+.globel_table td h6,
+.dt-type-numeric,
+.globel_table td h5{
+  font-size: 14px;
+}
 .globel_table hr{
   margin: 0.5rem 0;
 }
@@ -1329,15 +1291,83 @@ div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-pagi
   color: #48974e
 }
 
+
+@media (min-width: 1200px) {
+
+  #main,
+  #footer {
+    margin-left: 220px;
+  }
+  .toggle-sidebar #main,
+  .toggle-sidebar #footer {
+    margin-left: 0;
+  }
+
+  .toggle-sidebar .sidebar {
+    left: -300px;
+  }
+}
+
+@media (min-width: 992px) {
+  .error-404 img {
+    max-width: 50%;
+  }
+}
+
+@media (max-width: 1199px) {
+  .header .search-bar {
+    position: fixed;
+    top: 50px;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    box-shadow: 0px 0px 15px 0px rgba(1, 41, 112, 0.1);
+    background: white;
+    z-index: 9999;
+    transition: 0.3s;
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .header .search-bar-show {
+    top: 60px;
+    visibility: visible;
+    opacity: 1;
+  }
+  .sidebar {
+    left: -300px;
+  }
+  .toggle-sidebar .sidebar {
+    left: 0;
+  }
+}
+
 @media (max-width: 767px) {
-.card-body{padding: 20px 5px;}	
-#main {padding: 20px 5px;}
+  .card-body{padding: 15px;}	
+  #main {padding: 20px 5px;}
+  .globel_table thead th,
+  .globel_table td,
+  .globel_table td h6, .dt-type-numeric{
+    font-size: 12px;
+  }
+  .recent-sales th a{
+    font-size: 12px;
+  }
+  .header .toggle-sidebar-btn{
+    padding-left: 0px;
+  }
+  .header{
+    padding-left: 15px;
+  }
 }
 @media (max-width: 480px) {
-body{font-size: 12px;}
-select.form-control {
-    font-size: 12px;
-}
+  body{font-size: 12px;}
+  select.form-control {
+      font-size: 12px;
+  }
+  .buttons-print{
+    margin-top: 5px
+  }
 }
 
 

@@ -1,13 +1,16 @@
-<div class="pagetitle">
-    <h1><?= $page_header ?></h1>
-    <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="<?= base_url('admin/dashboard') ?>">Home</a></li>
-            <li class="breadcrumb-item active"><?= $page_header ?></li>
-        </ol>
-    </nav>
+<div class="container-fluid">
+    <div class="pagetitle">
+        <h1><?= $page_header ?></h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="<?= base_url('admin/dashboard') ?>">Home</a></li>
+                <li class="breadcrumb-item active"><?= $page_header ?></li>
+            </ol>
+        </nav>
+    </div>
 </div>
 <section class="section">
+<div class="container-fluid">
     <div class="row">
         <div class="col-xl-12">
             <?php if (session('success_message')) { ?>
@@ -27,13 +30,13 @@
             <div class="card">
                 <div class="card-body">
                     <?php if ($common_model->checkModuleFunctionAccess(19, 92)) { ?>
-                        <h5 class="card-title">
+                        <h5 class="card-titles">
                             <a href="<?= base_url(route_to('functionalities.create')) ?>" class="btn btn-outline-success btn-sm">Add New</a>
                         </h5>
                     <?php } ?>
                     <?php if (!empty($rows)) { ?>
                         <div class="table-responsive">
-                        <table id="simpletable" class="table table-striped table-bordered nowrap" style="width: 100%">
+                        <table id="simpletable" class="table globel_table nowrap" style="width: 100%">
                         <?php  } else {  ?>
                             <table id="" class="table table-striped table-bordered nowrap" style="width: 100%">
                             <?php }  ?>
@@ -111,4 +114,5 @@
             </div>
         </div>
     </div>
+</div>
 </section>
