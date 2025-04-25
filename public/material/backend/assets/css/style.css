@@ -1290,8 +1290,65 @@ div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-pagi
 .recent-sales th a{
   color: #48974e
 }
+/* form css */
+.form-control{
+  border: 1px solid #48974e;
+  padding: 7px 15px;
+}
+.choices__inner,
+.choices__list--dropdown,
+.cke_chrome{
+  border: 1px solid #48974e !important;
+  min-height: 40px !important;
+  border-radius: 5px !important;
+  background: #fff !important;
+}
+.choices__input{
+  background: #fff !important;
+}
+.form-control:focus,
+.choices__inner:focus{
+  border: 1px solid #a8cf45 !important;
+  box-shadow: none;
+}
+.choices__inner{
+  padding: 0 !important;
+}
 
-
+.choices__list--dropdown .choices__item--selectable.is-highlighted{
+  background: #a8cf45 !important;
+  color: #fff !important;
+}
+.choices__list--multiple .choices__item{
+  margin: 2px !important;
+}
+.section.profile .form-check-input{
+  margin-left: 0 !important;
+  border: 1px solid #a8cf45 !important;
+}
+.section.profile .form-check-label{
+  margin-left: 5px;
+}
+.section.profile .form-check-input:checked,
+.notice_option .form-check-input:checked{
+  background-color: #a8cf45 !important;
+  border: 1px solid #a8cf45 !important;
+}
+.section.profile .form-check-input:focus,
+.notice_option .form-check-input:focus{
+  box-shadow: none;
+}
+.section.profile .nav-pills .nav-link.active, .section.profile .nav-pills .show>.nav-link{
+  background-color: #a8cf45 !important;
+  color: #fff !important;
+}
+.section.profile .nav-pills .nav-link{
+  color: #48974e;
+  font-size: 14px;
+}
+.cke_chrome{
+  overflow: hidden;
+}
 @media (min-width: 1200px) {
 
   #main,

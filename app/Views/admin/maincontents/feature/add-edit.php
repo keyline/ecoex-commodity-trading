@@ -3,18 +3,21 @@ $title              = $moduleDetail['title'];
 $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
 ?>
-<div class="pagetitle">
-    <h1><?=$page_header?></h1>
-    <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="<?=base_url('admin/dashboard')?>">Home</a></li>
-            <li class="breadcrumb-item active"><a href="<?=base_url('admin/' . $controller_route . '/list/')?>"><?=$title?> List</a></li>
-            <li class="breadcrumb-item active"><?=$page_header?></li>
-        </ol>
-    </nav>
+<div class="container-fluid">
+    <div class="pagetitle">
+        <h1><?=$page_header?></h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="<?=base_url('admin/dashboard')?>">Home</a></li>
+                <li class="breadcrumb-item active"><a href="<?=base_url('admin/' . $controller_route . '/list/')?>"><?=$title?> List</a></li>
+                <li class="breadcrumb-item active"><?=$page_header?></li>
+            </ol>
+        </nav>
+    </div>
 </div>
 <!-- End Page Title -->
 <section class="section profile">
+<div class="container-fluid">
     <div class="row">
         <div class="col-xl-12">
             <?php if(session('success_message')){?>
@@ -55,6 +58,7 @@ $controller_route   = $moduleDetail['controller_route'];
             </div>
         </div>
     </div>
+</div>
 </section>
 <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

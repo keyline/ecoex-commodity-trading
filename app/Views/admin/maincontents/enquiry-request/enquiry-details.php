@@ -573,9 +573,9 @@ $userType           = $session->user_type;
                                         <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                                             <div class="accordion-body">
                                                 <div class="table-responsive">
-                                                    <table class="table table-striped table-bordered">
+                                                    <table class="table globel_table">
                                                         <tr>
-                                                            <th rowspan="2" class="text-center" style="vertical-align: middle;width: 10%;background: #a8e7ae;">Items</th>
+                                                            <th rowspan="2" class="text-center" style="vertical-align: middle;width: 10%;background: #a8cf45; color: #fff;">Items</th>
                                                             <?php
                                                             if ($sharedVendors) {
                                                                 foreach ($sharedVendors as $sharedVendor) {
