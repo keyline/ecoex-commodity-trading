@@ -43,17 +43,17 @@ $controller_route   = $moduleDetail['controller_route'];
                             <table id="simpletable" class="table globel_table nowrap" style="width: 100%">
                                 <thead>
                                     <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">State</th>
-                                        <th scope="col">District</th>
-                                        <th scope="col">Created At<br>Created By<br>Updated At<br>Updated By</th>
-                                        <th scope="col">Action</th>
+                                        <th width="5%" class="text-center">#</th>
+                                        <th width="20%">State</th>
+                                        <th>District</th>
+                                        <th>Created At / Created By<br>Updated At / Updated By</th>
+                                        <th width="12%" class="text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if($rows){ $sl=1; foreach($rows as $row){?>
                                     <tr>
-                                        <th scope="row"><?=$sl++?></th>
+                                        <th scope="row" class="text-center"><?=$sl++?></th>
                                         <td>
                                             <?php
                                             $state = $common_model->find_data('ecomm_states', 'row', ['id' => $row->states_id]);
@@ -82,7 +82,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 <?php }?>
                                             </h6>
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             <?php if($common_model->checkModuleFunctionAccess(11,54)){?>
                                                 <a href="<?=base_url('admin/' . $controller_route . '/edit/'.encoded($row->$primary_key))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$title?>"><i class="fa fa-edit"></i></a>
                                             <?php }?>

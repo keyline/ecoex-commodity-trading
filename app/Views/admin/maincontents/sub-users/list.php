@@ -41,19 +41,19 @@ $controller_route   = $moduleDetail['controller_route'];
                             <table id="simpletable" class="table globel_table nowrap" style="width: 100%">
                                 <thead>
                                     <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">User Type / Role</th>
-                                        <th scope="col">Name / Employee No</th>
-                                        <th scope="col">Mobile / Email / Password</th>
-                                        <!-- <th scope="col">Present Address<br>Permanent Address</th>
-                                        <th scope="col">Team Members</th> -->
-                                        <th scope="col">Action</th>
+                                        <th width="5%" class="text-center">#</th>
+                                        <th>User Type / Role</th>
+                                        <th>Name / Employee No</th>
+                                        <th>Mobile / Email / Password</th>
+                                        <!-- <th>Present Address<br>Permanent Address</th>
+                                        <th>Team Members</th> -->
+                                        <th width="12%" class="text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if($rows){ $sl=1; foreach($rows as $row){?>
                                     <tr>
-                                        <th scope="row"><?=$sl++?></th>
+                                        <th scope="row" class="text-center"><?=$sl++?></th>
                                         <td>
                                             <!-- <?php if($row->user_type == 'U'){?>
                                             <span>Sub User</span>
@@ -91,7 +91,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                             echo implode(", ", $memberList);
                                             ?>
                                         </td> -->
-                                        <td>
+                                        <td class="text-center">
                                             <a href="<?=base_url('admin/' . $controller_route . '/edit/'.encoded($row->$primary_key))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$title?>"><i class="fa fa-edit"></i></a>
                                             <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i></a>
                                             <?php if($row->status){?>
@@ -100,7 +100,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-warning btn-sm" title="Deactivate <?=$title?>" onclick="return confirm('Do You Want To Activate This <?=$title?>');"><i class="fa fa-times"></i></a>
                                             <?php }?>
                                             <br>
-                                            <a href="<?=base_url('admin/' . $controller_route . '/send-credentials/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm mt-2" title="Send Credential <?=$title?>" onclick="return confirm('Do You Want To Send Signin Credentials To This <?=$title?>');"><i class="fa fa-envelope"></i> Send Credentials</a>
+                                            <a href="<?=base_url('admin/' . $controller_route . '/send-credentials/'.encoded($row->$primary_key))?>" class="btn btn-outline-success btn-sm mt-2" title="Send Credential <?=$title?>" onclick="return confirm('Do You Want To Send Signin Credentials To This <?=$title?>');"><i class="fa fa-envelope"></i> Send Credentials</a>
                                         </td>
                                     </tr>
                                     <?php } }?>

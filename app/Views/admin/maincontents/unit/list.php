@@ -43,20 +43,20 @@ $controller_route   = $moduleDetail['controller_route'];
                             <table id="simpletable" class="table globel_table nowrap" style="width: 100%">
                                 <thead>
                                     <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Created At<br>Created By<br>Updated At<br>Updated By</th>
-                                        <th scope="col">Action</th>
+                                        <th width="5%" class="text-center">#</th>
+                                        <th >Name</th>
+                                        <th >Created At / Created By<br>Updated At / Updated By</th>
+                                        <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if($rows){ $sl=1; foreach($rows as $row){?>
                                     <tr>
-                                        <th scope="row"><?=$sl++?></th>
+                                        <th scope="row" class="text-center"><?=$sl++?></th>
                                         <td><?=$row->name?></td>
                                         <td>
                                             <h6>
-                                                <?=(($row->created_at != '')?date_format(date_create($row->created_at), "M d, Y h:i A"):'')?><br>
+                                                <?=(($row->created_at != '')?date_format(date_create($row->created_at), "M d, Y h:i A"):'')?> /
                                                 <?php
                                                 if($row->created_by > 0){
                                                     $adminUser = $common_model->find_data('ecoex_admin_user', 'row', ['id' => $row->created_by], 'name');
@@ -66,7 +66,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 <hr>
                                             </h6>
                                             <h6>
-                                                <?=(($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):'')?><br>
+                                                <?=(($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):'')?> 
                                                 <?php
                                                 if($row->updated_by > 0){
                                                     $adminUser = $common_model->find_data('ecoex_admin_user', 'row', ['id' => $row->updated_by], 'name');
@@ -75,7 +75,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 <?php }?>
                                             </h6>
                                         </td>
-                                        <td>
+                                        <td class="text-center" width="12%">
                                             <?php if($common_model->checkModuleFunctionAccess(9,42)){?>
                                                 <a href="<?=base_url('admin/' . $controller_route . '/edit/'.encoded($row->$primary_key))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$title?>"><i class="fa fa-edit"></i></a>
                                             <?php }?>

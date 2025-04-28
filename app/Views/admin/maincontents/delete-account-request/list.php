@@ -41,20 +41,20 @@ $controller_route   = $moduleDetail['controller_route'];
                         <table id="simpletable" class="table globel_table nowrap" style="width: 100%">
                             <thead>
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Type</th>
-                                    <th scope="col">Entity Name</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Phone</th>
-                                    <th scope="col">Comments</th>
-                                    <th scope="col">Created At<br>Updated At</th>
-                                    <th scope="col">Action</th>
+                                    <th class="text-center" width="5%">#</th>
+                                    <th>Type</th>
+                                    <th>Entity Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Comments</th>
+                                    <th>Created At<br>Updated At</th>
+                                    <th class="text-center" width="12%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php if($rows){ $sl=1; foreach($rows as $row){?>
                                 <tr>
-                                    <th scope="row"><?=$sl++?></th>
+                                    <th scope="row" class="text-center"><?=$sl++?></th>
                                     <td><?=$row->user_type?></td>
                                     <td><?=$row->entity_name?></td>
                                     <td>
@@ -75,7 +75,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                             <?=(($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):'')?><br>
                                         </h6>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <?php if($row->status){?>
                                             <!-- <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-success btn-sm" title="Activate <?=$title?>" onclick="return confirm('Do You Want To Deactivate This <?=$title?>');"><i class="fa fa-check"></i></a> -->
                                             <?php if($common_model->checkModuleFunctionAccess(17,88)){?>

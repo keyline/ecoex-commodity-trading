@@ -38,20 +38,20 @@ $controller_route   = $moduleDetail['controller_route'];
                             <a href="<?=base_url('admin/' . $controller_route . '/add/')?>" class="btn btn-outline-success btn-sm">Add <?=$title?></a>
                         </h5>
                         <div class="table-responsive">
-                            <table id="simpletable" class="table nowrap globel_table" style="width: 100%">
+                            <table id="simpletable" class="table nowrap globel_table" style="width: 100%" valign="middle">
                                 <thead>
                                     <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Action</th>
+                                        <th class="text-center">#</th>
+                                        <th>Name</th>
+                                        <th class="text-center" width="12%">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if($rows){ $sl=1; foreach($rows as $row){?>
                                     <tr>
-                                        <th scope="row"><?=$sl++?></th>
+                                        <th class="text-center"><?=$sl++?></th>
                                         <td><?=$row->feature_name?></td>
-                                        <td>
+                                        <td class="text-center">
                                             <a href="<?=base_url('admin/' . $controller_route . '/edit/'.encoded($row->$primary_key))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$title?>"><i class="fa fa-edit"></i></a>
                                             <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i></a>
                                             <?php if($row->published){?>

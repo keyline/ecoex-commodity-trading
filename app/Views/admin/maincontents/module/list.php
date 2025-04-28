@@ -66,7 +66,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 if($moduleFunctions){ foreach($moduleFunctions as $moduleFunction){
                                                 ?>
                                                     <li>
-                                                        <h5 class="badge bg-success" style="margin-bottom: 0;"><?=$moduleFunction->function_name?></h5>
+                                                        <h5 class="badge bg-success custom-green-badge" style="margin-bottom: 0;"><?=$moduleFunction->function_name?></h5>
                                                     </li>
                                                 <?php } }?>
                                             </ul>

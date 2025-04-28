@@ -46,20 +46,20 @@ $company_id                 = $session->company_id;
                             <table id="simpletable" class="table globel_table nowrap" style="width: 100%">
                                 <thead>
                                     <tr>
-                                        <th scope="col">#</th>
-                                        <!-- <th scope="col">Type</th> -->
-                                        <th scope="col">GST No.<br>Company Name</th>
-                                        <th scope="col">Company Address<br>Location</th>
-                                        <th scope="col">Contact Person Name<br>Email<br>Phone</th>
-                                        <th scope="col">Contact Start<br>Contact End</th>
-                                        <th scope="col">Created At<br>Updated At</th>
-                                        <th scope="col">Action</th>
+                                        <th class="text-center" width="5%">#</th>
+                                        <!-- <th>Type</th> -->
+                                        <th>GST No.<br>Company Name</th>
+                                        <th>Company Address<br>Location</th>
+                                        <th>Contact Person Name<br>Email<br>Phone</th>
+                                        <th>Contact Start<br>Contact End</th>
+                                        <th>Created At<br>Updated At</th>
+                                        <th class="text-center" width="12%">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if($rows){ $sl=1; foreach($rows as $row){?>
                                     <tr>
-                                        <th scope="row"><?=$sl++?></th>
+                                        <th scope="row" class="text-center"><?=$sl++?></th>
                                         <!-- <td><?=$row->type?></td> -->
                                         <td><?=$row->gst_no?><br><b><?=$row->company_name?></b></td>
                                         <td><?=wordwrap($row->full_address,25,"<br>\n")?><br><?=$row->location?></td>
@@ -77,7 +77,7 @@ $company_id                 = $session->company_id;
                                                 <?=(($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):'')?>
                                             </h6>
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             <?php if($common_model->checkModuleFunctionAccess(14,71)){?>
                                                 <a href="<?=base_url('admin/' . $controller_route . '/edit/'.encoded($row->$primary_key))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$title?>"><i class="fa fa-edit"></i></a>
                                             <?php }?>
@@ -87,19 +87,17 @@ $company_id                 = $session->company_id;
                                             <?php //if($userType == 'MA'){?>
                                                 <?php if($common_model->checkModuleFunctionAccess(14,70)){?>
                                                     <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i></a>
-                                                    <br>
                                                 <?php }?>
                                                 <?php if($row->status){?>
                                                     <?php if($common_model->checkModuleFunctionAccess(14,69)){?>
-                                                        <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-success btn-sm mt-2" title="Deactivate <?=$title?>" onclick="return confirm('Do You Want To Deactivate This <?=$title?>');"><i class="fa fa-check"></i> Click To Disapprove</a>
+                                                        <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Deactivate <?=$title?>" onclick="return confirm('Do You Want To Deactivate This <?=$title?>');"><i class="fa fa-times"></i></a>
                                                     <?php }?>
                                                 <?php } else {?>
                                                     <?php if($common_model->checkModuleFunctionAccess(14,68)){?>
-                                                        <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm mt-2" title="Activate <?=$title?>" onclick="return confirm('Do You Want To Activate This <?=$title?>');"><i class="fa fa-times"></i> Click To Approve</a>
+                                                        <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm mt-2" title="Activate <?=$title?>" onclick="return confirm('Do You Want To Activate This <?=$title?>');"><i class="fa fa-check"></i></a>
                                                     <?php }?>
                                                 <?php }?>
-                                            <?php //}?>
-                                            <br>
+                                            <?php //}?><br>
                                             <?php
                                             $assignedCategoryCount = $common_model->find_data('ecomm_company_category', 'count', ['company_id' => $row->$primary_key, 'status!=' => 3]);
                                             if($assignedCategoryCount > 0){
@@ -115,17 +113,18 @@ $company_id                 = $session->company_id;
                                                 $assignItemText = '';
                                             }
                                             ?>
+                                            <?php if($common_model->checkModuleFunctionAccess(14,114)){?>
+                                                <a href="<?=base_url('admin/' . $controller_route . '/send-credentials/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm mt-1" title="Send Credential <?=$title?>" onclick="return confirm('Do You Want To Send Signin Credentials To This <?=$title?>');"><i class="fa fa-envelope"></i> Send Credentials</a>
+                                            <?php }?><br>
                                             <?php if($common_model->checkModuleFunctionAccess(14,73)){?>
-                                                <a href="<?=base_url('admin/' . $controller_route . '/assign-category/'.encoded($row->$primary_key))?>" class="btn btn-info btn-sm mt-2" title="Manage Item Category"><i class="fa fa-tasks"></i> Categories <?=$assignCategoryText?></a>
+                                                <a href="<?=base_url('admin/' . $controller_route . '/assign-category/'.encoded($row->$primary_key))?>" class="btn btn-info btn-sm mt-1" title="Manage Item Category"><i class="fa fa-tasks"></i> Categories <?=$assignCategoryText?></a>
                                                 <br>
                                             <?php }?>
                                             <?php if($common_model->checkModuleFunctionAccess(14,74)){?>
-                                                <a href="<?=base_url('admin/' . $controller_route . '/manage-item/'.encoded($row->$primary_key))?>" class="btn btn-info btn-sm mt-2" title="Manage Item"><i class="fa fa-tasks"></i> Items <?=$assignItemText?></a>
+                                                <a href="<?=base_url('admin/' . $controller_route . '/manage-item/'.encoded($row->$primary_key))?>" class="btn btn-info btn-sm mt-1" title="Manage Item"><i class="fa fa-tasks"></i> Items <?=$assignItemText?></a>
                                                 <br>
                                             <?php }?>
-                                            <?php if($common_model->checkModuleFunctionAccess(14,114)){?>
-                                                <a href="<?=base_url('admin/' . $controller_route . '/send-credentials/'.encoded($row->$primary_key))?>" class="btn btn-success btn-sm mt-2" title="Send Credential <?=$title?>" onclick="return confirm('Do You Want To Send Signin Credentials To This <?=$title?>');"><i class="fa fa-envelope"></i> Send Credentials</a>
-                                            <?php }?>
+                                            
                                         </td>
                                     </tr>
                                     <?php } }?>
