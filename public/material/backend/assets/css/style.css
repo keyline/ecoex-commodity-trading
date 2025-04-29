@@ -1427,6 +1427,19 @@ div.dt-container .dt-paging .dt-paging-button{
 .cke_chrome{
   overflow: hidden;
 }
+button[type="submit"]{
+  background: #a8cf45 !important;
+  color: #fff !important;
+  padding: 5px 20px !important;
+  border-radius: 50px !important;
+  border:2px solid #a8cf45 !important;
+  transition: all .3s ease-in-out;
+}
+button[type="submit"]:hover{
+  background: transparent !important;
+  color: #a8cf45 !important;
+  border:2px solid #a8cf45 !important;
+}
 @media (min-width: 1200px) {
 
   #main,
