@@ -1379,6 +1379,7 @@ div.dt-container .dt-paging .dt-paging-button{
 }
 .choices__inner{
   padding: 0 !important;
+  min-height: 35px !important;
 }
 
 .choices__list--dropdown .choices__item--selectable.is-highlighted{
