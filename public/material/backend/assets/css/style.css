@@ -1384,8 +1384,11 @@ div.dt-container .dt-paging .dt-paging-button{
 .choices__list--dropdown .choices__item--selectable.is-highlighted{
   background: #a8cf45 !important;
   color: #fff !important;
+  font-size: 12px !important;
+  padding: 5px 10px !important;
 }
-.choices__list--dropdown .choices__item{
+.choices__list--dropdown .choices__item {
+  position: relative;
   padding: 5px 10px !important;
   font-size: 12px !important;
 }
