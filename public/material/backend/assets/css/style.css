@@ -1356,6 +1356,7 @@ select.form-control {
   border: 1px solid #48974e;
   padding: 5px 10px;
   font-size: 13px;
+  min-height: 35px;
 }
 .choices__inner,
 .choices__list--dropdown,
