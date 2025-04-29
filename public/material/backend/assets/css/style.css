@@ -1336,10 +1336,13 @@ div.dt-container .dt-paging .dt-paging-button{
   font-size: 12px;
 }
 .custom-green-badge{
-  font-size: 11px !important;
+  font-size: 9px !important;
   font-weight: 600;
   padding: 4px 10px;
-  background: #006A67 !important;
+  background: #006a6729 !important;
+  border: 1px solid #006A67 !important;
+  text-transform: uppercase;
+  color: #000;
 }
 /* form css */
 .form-control{
