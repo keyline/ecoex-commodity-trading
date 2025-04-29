@@ -1315,17 +1315,6 @@ div.dt-container .dt-paging .dt-paging-button:hover{
   color: #fff !important;
   border-color: #a8cf45 !important;
 }
-label{
-  font-size: 13px !important;
-}
-select.form-control {
-  height: 35px;
-}
-.form-control {
-  border: 1px solid #48974e;
-  padding: 5px 10px;
-  font-size: 13px;
-}
 .recent-sales th a{
   color: #48974e
 }
@@ -1357,9 +1346,16 @@ div.dt-container .dt-paging .dt-paging-button{
   color: #000;
 }
 /* form css */
-.form-control{
+label{
+  font-size: 13px !important;
+}
+select.form-control {
+  height: 35px;
+}
+.form-control {
   border: 1px solid #48974e;
-  padding: 7px 15px;
+  padding: 5px 10px;
+  font-size: 13px;
 }
 .choices__inner,
 .choices__list--dropdown,
@@ -1422,7 +1418,7 @@ div.dt-container .dt-paging .dt-paging-button{
 }
 .section.profile .nav-pills .nav-link{
   color: #48974e;
-  font-size: 14px;
+  font-size: 12px;
 }
 .cke_chrome{
   overflow: hidden;
