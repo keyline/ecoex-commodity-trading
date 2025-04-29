@@ -1385,6 +1385,10 @@ div.dt-container .dt-paging .dt-paging-button{
   background: #a8cf45 !important;
   color: #fff !important;
 }
+.choices__list--dropdown .choices__item{
+  padding: 5px 10px !important;
+  font-size: 12px !important;
+}
 .choices__list--multiple .choices__item{
   margin: 2px !important;
   font-size: 12px !important;
