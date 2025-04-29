@@ -1309,8 +1309,9 @@ table.globel_table.dataTable>tbody>tr>td{
 .globel_table hr{
   margin: 0.5rem 0;
 }
-div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-paging .dt-paging-button.current:hover{
-  background: #fafff6 !important;
+div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-paging .dt-paging-button.current:hover,
+div.dt-container .dt-paging .dt-paging-button:hover{
+  background: #a8cf45 !important;
   color: #fff !important;
   border-color: #a8cf45 !important;
 }
