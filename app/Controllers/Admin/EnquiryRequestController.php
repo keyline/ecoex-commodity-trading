@@ -1768,7 +1768,6 @@ class EnquiryRequestController extends BaseController
 
     public function enquiryDetails($enq_id)
     {
-
         if (!$this->common_model->checkModuleFunctionAccess(23, 109)) {
             $data['action']             = 'Access Forbidden';
             $title                      = $data['action'] . ' ' . $this->data['title'];
@@ -1817,6 +1816,27 @@ class EnquiryRequestController extends BaseController
 
         $data['getEnquiry']         = $this->common_model->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
 
+
+        # @Shubha75 NEW CODE
+        $sql = "
+        SELECT 
+            ecomm_sub_enquires.enq_id,
+            ecomm_sub_enquires.material_weighing_edit_vendor,
+            ecomm_sub_enquires.vendor_id,
+            ecomm_sub_enquires.material_weighing_edit_vendor_attempts AS submitted_times,
+            ecomm_users.company_name
+        FROM ecomm_sub_enquires
+        INNER JOIN ecomm_users 
+            ON ecomm_sub_enquires.vendor_id = ecomm_users.id
+        WHERE ecomm_sub_enquires.enq_id = ?
+        GROUP BY ecomm_sub_enquires.vendor_id
+    ";
+
+        $query = $this->db->query($sql, [$enq_id]);
+
+        $data['vendors'] = $query->getResult();
+
+        # @Shubha75 NEW CODE
         if ($this->request->getMethod() == 'post') {
             if ($this->request->getPost('mode') == 'share_vendor') {
                 $enq_id         = $this->request->getPost('enq_id');
@@ -2055,5 +2075,91 @@ class EnquiryRequestController extends BaseController
                 'item_name_ecoex' => $name,
             ],
         ]);
+    }
+
+    public function weighted_access($enq_id, $vendor_id)
+    {
+        $enq_id                     = decoded($enq_id);
+        $vendor_id                  = decoded($vendor_id);
+
+        $getEnquiry                 = $this->data['model']->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enq_id, 'vendor_id' => $vendor_id]);
+        // echo "<pre>";
+        // print_r($getEnquiry);
+        // exit;
+
+
+        // $data['row']                = $this->data['model']->find_data('ecomm_enquiry_vendor_shares', 'row', ['enq_id' => $enq_id, 'vendor_id' => $vendor_id]);
+        if ($getEnquiry) {
+            $id = $getEnquiry->id;
+            //  $attempts= $getEnquiry->material_weighing_edit_vendor_attempts;
+            if ($getEnquiry->material_weighing_edit_vendor) {
+                $is_editable  = 0;
+                $msg        = 'Access Closed';
+            } else {
+                $is_editable  = 1;
+                $msg        = 'Access Opened';
+            }
+            // $postData = array(
+            //     'material_weighing_edit_vendor' => $is_editable
+            // );
+            // $updateData = $this->common_model->save_data('ecomm_sub_enquires', $postData, $id, 'id');
+
+            $this->db->table('ecomm_sub_enquires')
+                ->where('enq_id',$enq_id)
+                ->where('vendor_id', $vendor_id)
+                ->update(['material_weighing_edit_vendor' => $is_editable]);
+
+            $updateData = $this->db->affectedRows();
+
+            /* send push */
+            $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
+            if ($getDeviceTokens) {
+                foreach ($getDeviceTokens as $getDeviceToken) {
+                    $fcm_token          = $getDeviceToken->fcm_token;
+                    $messageData = [
+                        'title'     => 'Enquiry Request Material Weighing Edit ' . $msg,
+                        'body'      => 'Enquiry Request (' . (($getEnquiry) ? $getEnquiry->enquiry_no : "") . ') Material Weighing Edit ' . $msg . ' By EcoEx',
+                        'badge'     => 1,
+                        'sound'     => 'Default',
+                        'data'      => [],
+                    ];
+                    $this->pushNotification($fcm_token, $messageData);
+                    $users[]    = $getEnquiry->plant_id;
+                    $pushData   = [
+                        'source'            => 'FROM APP',
+                        'title'             => 'Enquiry Request Material Weighing Edit ' . $msg,
+                        'description'       => 'Enquiry Request (' . (($getEnquiry) ? $getEnquiry->enquiry_no : "") . ') Material Weighing Edit ' . $msg . ' By EcoEx',
+                        'user_type'         => 'VENDOR',
+                        'users'             => json_encode($users),
+                        'is_send'           => 1,
+                        'send_timestamp'    => date('Y-m-d H:i:s'),
+                        'status'            => 1,
+                    ];
+                    $this->common_model->save_data('notifications', $pushData, '', 'id');
+                }
+            }
+            /* send push */
+            /* send mail */
+            $fields = [
+                'enq_id'        => $enq_id,
+                'company_id'    => (($getEnquiry) ? $getEnquiry->company_id : 0),
+                'plant_id'      => (($getEnquiry) ? $getEnquiry->plant_id : 0),
+                'vendor_id'     => $vendor_id,
+                'msg'           => $msg,
+            ];
+            $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendor_id]);
+            $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+            $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+            $subject                    = $generalSetting->site_name . ' :: Enquiry Material Weighing Request Edit Access (' . (($getEnquiry) ? $getEnquiry->enquiry_no : '') . ') ';
+            $message                    = view('email-templates/enquiry-request-for-quotation-edit-access', $fields);
+            $this->sendMail($getVendor->email, $subject, $message);
+            /* send mail */
+
+            $this->session->setFlashdata('success_message', 'Vendor Material Weighing Edit ' . $msg . ' Successfully !!!');
+            return redirect()->to('/admin/' . $this->data['controller_route'] . '/enquiry-details/' . encoded($enq_id));
+        } else {
+            $this->session->setFlashdata('success_message', 'Enquiry Vendor Not Found !!!');
+            return redirect()->to('/admin/' . $this->data['controller_route'] . '/enquiry-details/' . encoded($enq_id));
+        }
     }
 }

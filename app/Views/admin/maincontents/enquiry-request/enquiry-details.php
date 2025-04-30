@@ -156,7 +156,7 @@
 
     .edit_request_item_name:hover {
         /* text-decoration: underline; */
-        font-size:large;
+        font-size: large;
     }
 
 
@@ -897,7 +897,7 @@ $userType           = $session->user_type;
                                                                                     <td><?= $vehicle['vehicle_no'] ?></td>
                                                                                     <td>
                                                                                         <div class="row">
-    
+
                                                                                             <?php if ($vehicle['vehicle_img']) {
                                                                                                 for ($v = 0; $v < count($vehicle['vehicle_img']); $v++) { ?>
                                                                                                     <div class="col-md-3 popup_gallery">
@@ -918,7 +918,9 @@ $userType           = $session->user_type;
                                                 </div>
                                             <?php } ?>
                                             <?php if ($common_model->checkModuleFunctionAccess(23, 123)) { ?>
-                                                <?php if ($row->status >= 5) { ?>
+                                                <?php if ($row->status >= 5) {
+
+                                                ?>
                                                     <div class="accordion-item">
                                                         <h2 class="accordion-header" id="headingFour">
                                                             <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour"> Material Weighted </button>
@@ -927,9 +929,40 @@ $userType           = $session->user_type;
                                                             <div class="accordion-body">
                                                                 <form method="POST" action="<?= base_url('admin/enquiry-requests/modify-approve-material-weight') ?>">
                                                                     <input type="hidden" name="sub_enquiry_no" value="<?= $sub_enquiry_no ?>">
+
                                                                     <div class="table-responsive">
+
                                                                         <table class="table globel_table">
                                                                             <thead>
+                                                                                <!-- @Shubha75  new code  -->
+                                                                                <tr class="text-center w-25">
+
+                                                                                    <th rowspan="<?= ceil(count($vendors) / 7) ?>" class="text-center" style="vertical-align: middle;width: 10%;background: #a8cf45; color: #fff;">
+                                                                                        Vendors
+                                                                                    </th>
+
+                                                                                    <?php foreach ($vendors as $index => $vendor): ?>
+                                                                                        <?php if ($index > 0 && $index % 7 == 0): ?>
+                                                                                </tr>
+                                                                                <tr class="text-center w-25">
+                                                                                <?php endif; ?>
+
+                                                                                <td class="key">
+                                                                                    <span><?= $vendor->company_name ?> (vendor)</span>
+
+                                                                                    <?php if ($vendor->material_weighing_edit_vendor == 1) { ?>
+                                                                                        <a href="<?= base_url('admin/enquiry-requests/material-weighted-access/' . encoded($enq_id) . '/' . encoded($vendor->vendor_id)) ?>" title="Access Open" onclick="return confirm('Do you want to access close of weighted info submit for this vendor ?');"><i class="fas fa-unlock text-success"></i></a>
+                                                                                    <?php } else { ?>
+                                                                                        <a href="<?= base_url('admin/enquiry-requests/material-weighted-access/' . encoded($enq_id) . '/' . encoded($vendor->vendor_id)) ?>" title="Access Close" onclick="return confirm('Do you want to access open weighted info submit for this vendor ?');"><i class="fas fa-lock text-danger"></i></a>
+                                                                                    <?php } ?>
+
+                                                                                    <p>
+                                                                                        <a class="badge bg-success"><small>Submitted : <?= $vendor->submitted_times ?> time(s)</small></a>
+                                                                                    </p>
+                                                                                </td>
+                                                                            <?php endforeach; ?>
+                                                                                </tr>
+                                                                                <!-- @Shubha75  new code end -->
                                                                                 <tr>
                                                                                     <th>#</th>
                                                                                     <th>Item Name<br>(Ecoex)</th>
@@ -939,19 +972,53 @@ $userType           = $session->user_type;
                                                                                     <th>Vendor Submitted Material Weight</th>
                                                                                     <th>Plant Submitted Material Weight</th>
                                                                                     <th>Weight Slips</th>
+
                                                                                 </tr>
                                                                             </thead>
                                                                             <tbody>
                                                                                 <?php
-                                                                                $materialWeights    = $common_model->find_data('ecomm_sub_enquires', 'array', ['sub_enquiry_no' => $sub_enquiry_no]);
+                                                                                ###########################
+                                                                                // $materialWeights = $common_model->find_data('ecomm_sub_enquires', 'array', ['sub_enquiry_no' => $sub_enquiry_no]);
+                                                                                $join = [
+                                                                                    [
+                                                                                        'table'               => 'ecomm_users',
+                                                                                        'table_master'        => 'ecomm_sub_enquires',
+                                                                                        'field'               => 'id',
+                                                                                        'field_table_master'  => 'vendor_id',
+                                                                                        'type'                => 'left'      // or 'inner' if you only want matching vendors
+                                                                                    ]
+                                                                                ];
+
+
+                                                                                $select = 'ecomm_sub_enquires.*, ecomm_users.company_name';
+
+
+                                                                                $where = ['sub_enquiry_no' => $sub_enquiry_no];
+
+
+                                                                                $materialWeights = $common_model->find_data(
+                                                                                    'ecomm_sub_enquires',   // main table
+                                                                                    'array',                // return type
+                                                                                    $where,                 // where
+                                                                                    $select,                // select
+                                                                                    $join                   // join
+                                                                                );
+                                                                                // echo "<pre>";
+                                                                                // print_r($materialWeights);die;
                                                                                 ?>
                                                                                 <?php if ($materialWeights) {
                                                                                     $sl = 1;
-                                                                                    foreach ($materialWeights as $materialWeight) { ?>
+                                                                                    foreach ($materialWeights as $materialWeight) {
+                                                                                ?>
                                                                                         <?php
+                                                                                        // var_dump($materialWeight->company_name);
+                                                                                        // var_dump($materialWeight->material_weighing_edit_vendor_attempts);
                                                                                         $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $materialWeight->item_id], 'item_name_ecoex,hsn,alias_name,billing_name');
                                                                                         ?>
+
+
                                                                                         <tr>
+
                                                                                             <td><?= $sl++ ?></td>
                                                                                             <td><?= (($getItem) ? $getItem->item_name_ecoex : '') ?></td>
                                                                                             <td><?= (($getItem) ? $getItem->alias_name : '') ?></td>
@@ -977,6 +1044,7 @@ $userType           = $session->user_type;
                                                                                                     } ?>
                                                                                                 </div>
                                                                                             </td>
+
                                                                                         </tr>
                                                                                 <?php }
                                                                                 } ?>
