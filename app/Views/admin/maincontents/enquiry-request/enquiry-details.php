@@ -187,12 +187,31 @@
     }
 
     /* item name edit */
+
+    .input-group-text {
+        width: 160px;
+        background-color: #fff;
+        border: none;
+    }
 </style>
+
 <?php
 $title              = $moduleDetail['title'];
 $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
 $userType           = $session->user_type;
+
+
+$request_edit_fields = [
+    'item_name' => 'Item Name',
+    'item_alias_name' => 'Alias Name (App)',
+    'item_billing_name' => 'Billing Name',
+    'item_hsn_code' => 'HSN Code',
+    'item_gst' => 'GST',
+    'item_rate' => 'Rate',
+    // 'item_qty' => 'Quantity',
+    // 'item_remarks' => 'Remarks'
+];
 ?>
 <div class="container-fluid">
     <div class="pagetitle">
@@ -481,6 +500,9 @@ $userType           = $session->user_type;
                                                         <th>Remarks</th>
                                                         <th>Images</th>
                                                         <th>Status</th>
+                                                        <?php if (($userType == 'MA' && $row->status == 1)): ?>
+                                                            <th></th>
+                                                        <?php endif ?>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -488,6 +510,8 @@ $userType           = $session->user_type;
                                                     if ($enquiryProducts) {
                                                         $slNo = 1;
                                                         foreach ($enquiryProducts as $enquiryProduct) {
+
+
                                                             if ($enquiryProduct->new_product) {
                                                                 $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $enquiryProduct->product_id], 'id,item_category,item_name_ecoex,alias_name,billing_name,item_images,hsn,gst,rate,unit');
                                                                 if ($getItem) {
@@ -504,11 +528,14 @@ $userType           = $session->user_type;
                                                                 $productHSNCode = (($getItem) ? $getItem->hsn : '');
                                                                 // $productImage   = (($getItem)?(($getItem->product_image != '')?getenv('app.uploadsURL').'enquiry/'.$getItem->product_image:$getItem->product_image):getenv('app.NO_IMG'));
                                                             }
+
+
                                                             if ($enquiryProduct->status) {
                                                                 $bgColor = '#0080001a';
                                                             } else {
                                                                 $bgColor = '#ff00001c';
                                                             }
+                                                            ### @Shubha75 ###
                                                     ?>
                                                             <tr style="background-color: <?= $bgColor ?>;">
                                                                 <th><?= $slNo++ ?></th>
@@ -520,25 +547,40 @@ $userType           = $session->user_type;
                                                                     }
                                                                     ?>
                                                                 </td>
-                                                                <td>
-                                                                    <span class="fw-bold <?= ($userType == 'MA' && $row->status == 1) ? 'edit_request_item_name' : '' ?>" data-product_id='<?= $enquiryProduct->product_id ?>' id="set_request_item_name<?= $enquiryProduct->product_id ?>"><?= $productName ?></span><br>
+                                                                <td id="set_request_item_name<?= $enquiryProduct->product_id ?>">
+                                                                    <?= $productName ?>
+                                                                    <!-- <span class="fw-bold <?= ($userType == 'MA' && $row->status == 1) ? 'edit_request_item_name' : '' ?>" data-product_id='<?= $enquiryProduct->product_id ?>' id="set_request_item_name<?= $enquiryProduct->product_id ?>"><?= $productName ?></span><br> -->
                                                                     <!-- <a data-bs-toggle="collapse" href="#viewQuotations<?= $enquiryProduct->id ?>" role="button" aria-expanded="false" aria-controls="viewQuotations<?= $enquiryProduct->id ?>" class="badge bg-primary"><i class="fa fa-list-alt"></i> Click To View The Quotations</a> -->
                                                                     <!-- quotaion list -->
                                                                     <!-- quotaion list -->
                                                                 </td>
-                                                                <td><?= (($getItem) ? $getItem->alias_name : '') ?></td>
-                                                                <td><?= (($getItem) ? $getItem->billing_name : '') ?></td>
-                                                                <td><?= $productHSNCode ?></td>
-                                                                <td><?= (($getItem) ? $getItem->gst : '') ?></td>
-                                                                <td><?= (($getItem) ? $getItem->rate : '') ?></td>
-                                                                <td><?= $enquiryProduct->qty ?></td>
+                                                                <td id="set_request_alias_name<?= $enquiryProduct->product_id ?>">
+                                                                    <?= (($getItem) ? $getItem->alias_name : '') ?>
+                                                                </td>
+                                                                <td id="set_request_billing_name<?= $enquiryProduct->product_id ?>">
+                                                                    <?= (($getItem) ? $getItem->billing_name : '') ?>
+                                                                </td>
+                                                                <td id="set_request_HSN_code<?= $enquiryProduct->product_id ?>">
+                                                                    <?= $productHSNCode ?>
+                                                                </td>
+                                                                <td id="set_request_gst<?= $enquiryProduct->product_id ?>">
+                                                                    <?= (($getItem) ? $getItem->gst : '') ?>
+                                                                </td>
+                                                                <td id="set_request_rate<?= $enquiryProduct->product_id ?>">
+                                                                    <?= (($getItem) ? $getItem->rate : '') ?>
+                                                                </td>
+                                                                <td id="set_request_qty<?= $enquiryProduct->product_id ?>">
+                                                                    <?= $enquiryProduct->qty ?>
+                                                                </td>
                                                                 <td>
                                                                     <?php
-                                                                    $unit               = $common_model->find_data('ecomm_units', 'row', ['id' => $enquiryProduct->unit], 'name');
+                                                                    $unit               = $common_model->find_data('ecomm_units', 'row', ['id' => $getItem->unit], 'name');
                                                                     echo (($unit) ? $unit->name : '');
                                                                     ?>
                                                                 </td>
-                                                                <td><?= $enquiryProduct->remarks ?></td>
+                                                                <td id="set_request_remarks<?= $enquiryProduct->product_id ?>">
+                                                                    <?= $enquiryProduct->remarks ?>
+                                                                </td>
                                                                 <td>
                                                                     <!-- <a href="" target="_blank"><img src="" class="img-thumbnail" style="width:100px; height: 100px;"></a> -->
                                                                     <!-- <p onclick="getImageModal(<?= $enquiryProduct->enq_id ?>);"><i class="fas fa-image"></i></p> -->
@@ -552,6 +594,17 @@ $userType           = $session->user_type;
                                                                             <span class="badge bg-danger" data-bs-toggle="modal" data-bs-target="#verticalycentered<?= $enquiryProduct->id ?>" data-backdrop="static" data-keyboard="false">CLICK TO APPROVED</span>
                                                                         <?php } ?>
                                                                     <?php } ?>
+                                                                </td>
+
+                                                                <td>
+                                                                    <?php if (($userType == 'MA' && $row->status == 1)): ?>
+                                                                        <span class="badge bg-warning  accepted_request_edit"
+                                                                            style="cursor:pointer"
+                                                                            data-product_id="<?= $enquiryProduct->product_id ?>"
+                                                                            data-category="<?= $getItem->item_category ?>"
+                                                                            data-unit="<?= $getItem->unit ?>">
+                                                                            <i class="fas fa-pencil-alt"></i> Edit</span>
+                                                                    <?php endif; ?>
                                                                 </td>
                                                             </tr>
                                                     <?php }
@@ -1453,6 +1506,69 @@ $userType           = $session->user_type;
     </div>
 </section>
 
+<!--  modal added by @Shubha75 for 'Enquiry Request Items'  -->
+
+
+<div class="modal fade" id="enquiry_request_edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><strong><?= $row->enquiry_no ?></strong></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form method="POST" id="enquiry_request_edit_form" action="<?= base_url('admin/api/items/rename') ?>">
+                <div class="modal-body">
+                    <input type="hidden" name="enquiry_request_product_id" value="0">
+
+
+
+                    <div class="input-group mb-1 input-group-sm">
+                        <span class="input-group-text">Categories</span>
+                        <select class="form-control" name="category_id" id="category_id" required>
+                            <option value="" disabled> Select </option>
+                            <?php foreach ($product_categories as $key => $category) { ?>
+                                <option value="<?= $category->id ?>"> <?= $category->name ?> </option>
+                            <?php }  ?>
+                        </select>
+                    </div>
+
+                    <div class="input-group mb-1 input-group-sm">
+                        <span class="input-group-text">Unit</span>
+                        <select class="form-control" name="unit_id" id="unit_id" required>
+                            <option value="" disabled> Select </option>
+                            <?php foreach ($product_units as $key => $unit) { ?>
+                                <option value="<?= $unit->id ?>"> <?= $unit->name ?> </option>
+                            <?php }  ?>
+                        </select>
+                    </div>
+
+                    <?php foreach ($request_edit_fields as $name => $label): ?>
+                        <div class="input-group mb-1 input-group-sm">
+                            <span class="input-group-text"><?= $label ?></span>
+                            <input type="text" name="<?= $name ?>" class="form-control" value="<?= htmlspecialchars($_POST[$name] ?? '') ?>" required>
+                        </div>
+                        <?php if (!empty($errors[$name])): ?>
+                            <span class="text-danger small d-block mb-2"><?= $errors[$name] ?></span>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+
+                </div>
+                <div class="modal-footer">
+                    <span id="status_message" class="me-auto hide-me text-success"></span>
+                    </span>
+                    <button type="submit" class="btn btn-success">Update</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- modal added by @Shubha75 'Enquiry Request Items' -->
+
+
 <!-- share to vendor modal -->
 <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -1801,87 +1917,199 @@ $userType           = $session->user_type;
 
     //  item name edit modal
 
-    $(function() {
-        // 1. Show popup on span click
-        $(document).on('click', '.edit_request_item_name', function() {
-            var $span = $(this);
-            var itemId = $span.data('product_id');
-            var offset = $span.offset();
-            var popup = $(`
-      <div class="inline-popup">
-        <input type="text" class="popup-input" placeholder="New name…">
-        <i class="fa fa-check popup-confirm" data-product-id="${itemId}" title="Save"></i>
-        <i class="fa fa-times popup-cancel" title="Cancel"></i>
-      </div>
-    `);
+    // $(function() {
+    //     // 1. Show popup on span click
+    //     $(document).on('click', '.edit_request_item_name', function() {
+    //         var $span = $(this);
+    //         var itemId = $span.data('product_id');
+    //         var offset = $span.offset();
+    //         var popup = $(`
+    //   <div class="inline-popup">
+    //     <input type="text" class="popup-input" placeholder="New name…">
+    //     <i class="fa fa-check popup-confirm" data-product-id="${itemId}" title="Save"></i>
+    //     <i class="fa fa-times popup-cancel" title="Cancel"></i>
+    //   </div>
+    // `);
 
-            // Position below the span
-            popup.css({
-                top: offset.top + $span.outerHeight() + 5,
-                left: offset.left
-            });
+    //         // Position below the span
+    //         popup.css({
+    //             top: offset.top + $span.outerHeight() + 5,
+    //             left: offset.left
+    //         });
 
-            // Remove any existing popups and append
-            $('.inline-popup').remove();
-            $('body').append(popup);
-            popup.find('.popup-input').focus();
-        });
+    //         // Remove any existing popups and append
+    //         $('.inline-popup').remove();
+    //         $('body').append(popup);
+    //         popup.find('.popup-input').focus();
+    //     });
 
-        //  remove popup only
-        $(document).on('click', '.popup-cancel', function() {
-            $(this).closest('.inline-popup').remove();
-        });
+    //     //  remove popup only
+    //     $(document).on('click', '.popup-cancel', function() {
+    //         $(this).closest('.inline-popup').remove();
+    //     });
 
-        // save data
-        $(document).on('click', '.popup-confirm', function() {
+    // save data
+    // $(document).on('click', '.popup-confirm', function() {
 
-            var $popup = $(this).closest('.inline-popup');
-            var productId = $(this).data('product-id');
+    //     var $popup = $(this).closest('.inline-popup');
+    //     var productId = $(this).data('product-id');
 
-            var $span = $("#set_request_item_name" + productId);
+    //     var $span = $("#set_request_item_name" + productId);
 
-            var newName = $popup.find('.popup-input').val().trim();
+    //     var newName = $popup.find('.popup-input').val().trim();
 
 
 
-            if (!newName) {
-                $popup.find('.popup-input').addClass('is-invalid');
-                return;
+    //     if (!newName) {
+    //         $popup.find('.popup-input').addClass('is-invalid');
+    //         return;
+    //     }
+
+    //     // spinner state
+    //     $(this)
+    //         .removeClass('fa-check')
+    //         .addClass('fa-spinner fa-spin')
+    //         .off('click');
+
+    //     var baseURL = '<?= base_url(); ?>';
+
+    //     $.ajax({
+    //             url: baseURL + 'admin/api/items/rename',
+    //             method: 'POST',
+    //             dataType: 'json',
+    //             data: {
+    //                 name: newName,
+    //                 itemid: productId
+    //             }
+    //         })
+    //         .done(function(res) {
+    //             if (res.status) {
+    //                 // update the original span’s text
+    //                 $span.text(res.data.item_name_ecoex); // safe text update :contentReference[oaicite:6]{index=6}
+    //             } else {
+    //                 console.error('Update failed: ' + (res.message || 'Unknown error'));
+    //             }
+    //             $popup.remove();
+    //         })
+    //         .fail(function(jqXHR, textStatus) {
+    //             console.error('AJAX error:', textStatus);
+    //             alert('Error saving name');
+    //             $popup.remove();
+    //         });
+    // });
+
+
+    function getRequestProductValues(productId, category_id, unit_id) {
+        const values = {
+            item_name: $(`#set_request_item_name${productId}`).text().trim(),
+            item_alias_name: $(`#set_request_alias_name${productId}`).text().trim(),
+            item_billing_name: $(`#set_request_billing_name${productId}`).text().trim(),
+            item_hsn_code: $(`#set_request_HSN_code${productId}`).text().trim(),
+            item_gst: $(`#set_request_gst${productId}`).text().trim(),
+            item_rate: $(`#set_request_rate${productId}`).text().trim(),
+            item_qty: $(`#set_request_qty${productId}`).text().trim(),
+            item_remarks: $(`#set_request_remarks${productId}`).text().trim(),
+        };
+
+        // Set the values to the select box fields
+        $(`select[name="category_id"]`).val(category_id);
+        $(`select[name="unit_id"]`).val(unit_id);
+
+        // Now set the values to input fields by name
+        for (const [name, value] of Object.entries(values)) {
+            $(`input[name="${name}"]`).val(value);
+        }
+
+        // Also set the hidden product_id input
+        $(`input[name="enquiry_request_product_id"]`).val(productId);
+
+        // Show modal
+        $('#enquiry_request_edit').modal('show');
+
+
+    }
+
+    // Validate input fields to allow only numbers and one decimal point
+    $(document).on('input', 'input[name="item_gst"], input[name="item_rate"], input[name="item_qty"]', function() {
+        let val = this.value;
+        // Allow only digits and 1 decimal
+        val = val.replace(/[^0-9.]/g, '');
+
+        // Prevent more than one dot
+        const parts = val.split('.');
+        if (parts.length > 2) {
+            val = parts[0] + '.' + parts.slice(1).join('');
+        }
+
+        // Prevent starting with dot
+        if (val.startsWith('.')) {
+            val = '0' + val;
+        }
+
+        this.value = val;
+    });
+
+    // set values & modal open
+    $(document).on('click', '.accepted_request_edit', function() {
+        let product_id = $(this).data('product_id');
+        let category = $(this).data('category');
+        let unit = $(this).data('unit');
+        getRequestProductValues(product_id, category, unit);
+    });
+
+    // form submit for item data edit
+    $(document).on('submit', '#enquiry_request_edit_form', function(e) {
+        e.preventDefault();
+        let $form = $(this);
+        let formData = $form.serialize(); // Serialize the form data
+        let actionUrl = $form.attr('action'); // Get the form's action attribute
+
+
+        $.ajax({
+            url: actionUrl,
+            method: 'POST',
+            dataType: 'json',
+            data: formData,
+            success: function(response) {
+                if (response.status) {
+                    // Hide the edit modal
+                
+                    // Show the success message
+                    $('#status_message').html('Item updated successfully!');
+
+                    setTimeout(function() {
+                        $('.hide-me').fadeOut('slow', function() {
+                            $(this).remove();
+                        });
+                        $('#enquiry_request_edit').modal('hide');
+                        location.reload();
+                    }, 1500); // 1.5 seconds delay
+
+                    // Update UI with new data
+                    // let productId = $(`input[name="enquiry_request_product_id"]`).val();
+                    // $(`#set_request_item_name${productId}`).text(response.data.item_name_ecoex);
+                    // $(`#set_request_alias_name${productId}`).text(response.data.item_alias_name);
+                    // $(`#set_request_billing_name${productId}`).text(response.data.item_billing_name);
+                    // $(`#set_request_HSN_code${productId}`).text(response.data.item_hsn_code);
+                    // $(`#set_request_gst${productId}`).text(response.data.item_gst);
+                    // $(`#set_request_rate${productId}`).text(response.data.item_rate);
+
+
+                    // $(`#set_request_qty${productId}`).text(response.data.item_qty);
+                    // $(`#set_request_remarks${productId}`).text(response.data.item_remarks);
+
+
+                } else {
+                    console.error('Error updating :', response.message);
+
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', error);
+                // alert('An error occurred while updating the item name.');
+
             }
-
-            // spinner state
-            $(this)
-                .removeClass('fa-check')
-                .addClass('fa-spinner fa-spin')
-                .off('click');
-
-            var baseURL = '<?= base_url(); ?>';
-
-            $.ajax({
-                    url: baseURL + 'admin/api/items/rename',
-                    method: 'POST',
-                    dataType: 'json',
-                    data: {
-                        name: newName,
-                        itemid: productId
-                    }
-                })
-                .done(function(res) {
-                    if (res.status) {
-                        // update the original span’s text
-                        $span.text(res.data.item_name_ecoex); // safe text update :contentReference[oaicite:6]{index=6}
-                    } else {
-                        console.error('Update failed: ' + (res.message || 'Unknown error'));
-                    }
-                    $popup.remove();
-                })
-                .fail(function(jqXHR, textStatus) {
-                    console.error('AJAX error:', textStatus);
-                    alert('Error saving name');
-                    $popup.remove();
-                });
         });
-
     });
     //  item name edit modal 
 </script>

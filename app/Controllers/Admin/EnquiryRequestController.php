@@ -1797,6 +1797,24 @@ class EnquiryRequestController extends BaseController
             ->get()
             ->getResult();
 
+        $data['product_categories'] = $this->db->table('ecomm_product_categories')
+            ->select('id, name')
+            ->where('status', 1)
+            ->orderBy('name', 'ASC')
+            ->get()
+            ->getResult();
+
+
+        $data['product_units'] = $this->db->table('ecomm_units')
+            ->select('id, name')
+            ->where('status', 1)
+            ->orderBy('name', 'ASC')
+            ->get()
+            ->getResult();
+
+
+
+
         # new code by shubha on 19/04/25
         $company_id                 = $data['row']->company_id;
         $orderBy[0]                 = ['field' => 'category_alias', 'type' => 'ASC'];
@@ -2039,8 +2057,19 @@ class EnquiryRequestController extends BaseController
     {
 
         $rules = [
-            'itemid' => 'required|is_natural_no_zero',
-            'name'  => 'required|string|min_length[1]|max_length[255]',
+            'enquiry_request_product_id'  => 'required|is_natural_no_zero',
+            'item_name'                   => 'required|string|min_length[1]|max_length[255]',
+            'item_alias_name'             => 'required|string|min_length[1]|max_length[255]',
+            'item_billing_name'           => 'required|string|min_length[1]|max_length[255]',
+            'item_hsn_code'               => 'required|string|min_length[1]|max_length[255]',
+            'item_gst'                    => 'required|string|min_length[1]|max_length[255]',
+            'item_rate'                   => 'required|string|min_length[1]|max_length[255]',
+
+            'category_id'                 => 'required|integer',
+            'unit_id'                     => 'required|integer',
+
+            // 'item_qty'                    => 'required|string|min_length[1]|max_length[255]',
+            // 'item_remarks'                => 'required|string|min_length[1]|max_length[255]',
         ];
 
         if (! $this->validate($rules)) {
@@ -2052,12 +2081,35 @@ class EnquiryRequestController extends BaseController
         }
 
 
-        $id   = (int) $this->request->getPost('itemid');
-        $name = $this->request->getPost('name');
+        $id   = (int) $this->request->getPost('enquiry_request_product_id');
+        $name = $this->request->getPost('item_name');
+        $alias_name = $this->request->getPost('item_alias_name');
+        $billing_name = $this->request->getPost('item_billing_name');
+        $hsn_code_name = $this->request->getPost('item_hsn_code');
+        $item_gst = $this->request->getPost('item_gst');
+        $item_rate = $this->request->getPost('item_rate');
+
+        $category_id = $this->request->getPost('category_id');
+        $unit_id = $this->request->getPost('unit_id');
+
+        // $item_qty = $this->request->getPost('item_qty');
+        // $item_remarks = $this->request->getPost('item_remarks');
+
+       
 
         $updated =  $this->db->table('ecomm_company_items')
             ->where('id', $id)
-            ->update(['item_name_ecoex' => $name]);
+            ->update([
+                'item_category' => $category_id,
+                'unit' => $unit_id,
+                'item_name_ecoex' => $name,
+                'alias_name' => $alias_name,
+                'billing_name' => $billing_name,
+                'hsn' => $hsn_code_name,
+                'gst' => $item_gst,
+                'rate' => $item_rate,
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
 
         if (! $updated) {
             return $this->response->setStatusCode(500)
@@ -2105,7 +2157,7 @@ class EnquiryRequestController extends BaseController
             // $updateData = $this->common_model->save_data('ecomm_sub_enquires', $postData, $id, 'id');
 
             $this->db->table('ecomm_sub_enquires')
-                ->where('enq_id',$enq_id)
+                ->where('enq_id', $enq_id)
                 ->where('vendor_id', $vendor_id)
                 ->update(['material_weighing_edit_vendor' => $is_editable]);
 
