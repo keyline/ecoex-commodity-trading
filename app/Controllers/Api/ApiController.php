@@ -16,6 +16,7 @@ use CodeIgniter\Database\Exceptions\DatabaseException;
 // use function imagejpeg;
 use CodeIgniter\Images\Image;
 
+use function PHPSTORM_META\type;
 
 class ApiController extends BaseController
 {
@@ -7011,7 +7012,6 @@ class ApiController extends BaseController
 
             if ($getTokenValue['status']) {
                 $uId        = $getTokenValue['data'][1];
-
                 $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                 $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                 if ($getUser) {
@@ -7019,14 +7019,26 @@ class ApiController extends BaseController
                     $vehicle_registration_nos   = [];
                     $vehicle_images             = [];
 
-                    // pr($getSubEnquiry->material_weighing_slips);
-                    // pr($getSubEnquiry->material_weighing_edit_vendor);
-                    // pr($getSubEnquiry->material_weighing_edit_vendor_attempts);
+
                     if (count($materials)) {
                         for ($v = 0; $v < count($materials); $v++) {
 
                             $item_id            = $materials[$v]['item_id'];
                             $actual_weight      = $materials[$v]['actual_weight'];
+                            $vehicle_img        = $materials[$v]['weighing_slip_img'];
+
+
+                            // ---  unlink loop, collect the incoming file names ---
+                            $incomingFilenames = [];
+                            if (!empty($vehicle_img)) {
+                                foreach ($vehicle_img as $imgItem) {
+
+                                    if (is_string($imgItem)) {
+                                        $incomingFilenames[] = basename($imgItem);
+                                    }
+                                }
+                            }
+
 
 
                             // Fetch existing record to unlink old images
@@ -7039,41 +7051,58 @@ class ApiController extends BaseController
 
 
 
-                            if (is_object($existing) && !empty($existing)) {
-                                if (!empty($existing->material_weighing_slips)) {
-                                    $oldFiles = json_decode($existing->material_weighing_slips, true);
-                                    foreach ($oldFiles as $oldFile) {
-                                        $path = FCPATH . 'public/uploads/enquiry/' . $oldFile;
-                                        if (file_exists($path)) {
-                                            @unlink($path);
-                                        }
+                            if (is_object($existing) && !empty($existing->material_weighing_slips)) {
+                                $oldFiles = json_decode($existing->material_weighing_slips, true);
+                                foreach ($oldFiles as $oldFile) {
+                                    // skip unlinking if this old file is in the incoming list
+                                   
+                                    if (in_array($oldFile, $incomingFilenames, true)) {
+                                        continue;
+                                    }
+
+                                    $path = FCPATH . 'public/uploads/enquiry/' . $oldFile;
+                                    if (file_exists($path)) {
+                                        @unlink($path);
                                     }
                                 }
                             }
+                         
                             // record to unlink old images done
 
 
 
                             /* vehicle image */
-                            $vehicle_img                = $materials[$v]['weighing_slip_img'];
+
                             $vehicle_imags              = [];
                             if (!empty($vehicle_img)) {
                                 for ($p = 0; $p < count($vehicle_img); $p++) {
-                                    $upload_type            = $vehicle_img[$p]['type'];
-                                    if ($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png') {
+
+                                    if (is_array($vehicle_img[$p])) {
+                                        $upload_type            = $vehicle_img[$p]['type'];
+                                        if ($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png') {
+                                            $apiStatus          = FALSE;
+                                            http_response_code(404);
+                                            $apiMessage         = 'Please Upload Material Weighing Slip Image !!!';
+                                            $apiExtraField      = 'response_code';
+                                            $apiExtraData       = http_response_code();
+                                        } else {
+                                            $upload_base64      = $vehicle_img[$p]['base64'];
+                                            $img                = $upload_base64;
+                                            $data               = base64_decode($img);
+                                            $fileName           = uniqid() . '.jpg';
+                                            $file               = 'public/uploads/enquiry/' . $fileName;
+                                            $success            = file_put_contents($file, $data);
+                                            $vehicle_imags[]   = $fileName;
+                                        }
+                                    } elseif (is_string($vehicle_img[$p])) {
+                                        $filename = basename($vehicle_img[$p]);
+                                        $vehicle_imags[] = $filename;
+                                    } else {
                                         $apiStatus          = FALSE;
                                         http_response_code(404);
-                                        $apiMessage         = 'Please Upload Material Weighing Slip Image !!!';
+                                        $apiMessage         = 'Unknown file type.';
                                         $apiExtraField      = 'response_code';
                                         $apiExtraData       = http_response_code();
-                                    } else {
-                                        $upload_base64      = $vehicle_img[$p]['base64'];
-                                        $img                = $upload_base64;
-                                        $data               = base64_decode($img);
-                                        $fileName           = uniqid() . '.jpg';
-                                        $file               = 'public/uploads/enquiry/' . $fileName;
-                                        $success            = file_put_contents($file, $data);
-                                        $vehicle_imags[]   = $fileName;
                                     }
                                 }
                             }
