@@ -511,7 +511,6 @@ $request_edit_fields = [
                                                         $slNo = 1;
                                                         foreach ($enquiryProducts as $enquiryProduct) {
 
-
                                                             if ($enquiryProduct->new_product) {
                                                                 $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $enquiryProduct->product_id], 'id,item_category,item_name_ecoex,alias_name,billing_name,item_images,hsn,gst,rate,unit');
                                                                 if ($getItem) {
@@ -595,17 +594,16 @@ $request_edit_fields = [
                                                                         <?php } ?>
                                                                     <?php } ?>
                                                                 </td>
-
-                                                                <td>
-                                                                    <?php if (($userType == 'MA' && $row->status == 1)): ?>
+                                                                <?php if (($userType == 'MA' && $row->status == 1)): ?>
+                                                                    <td>
                                                                         <span class="badge bg-warning  accepted_request_edit"
                                                                             style="cursor:pointer"
                                                                             data-product_id="<?= $enquiryProduct->product_id ?>"
                                                                             data-category="<?= $getItem->item_category ?>"
                                                                             data-unit="<?= $getItem->unit ?>">
                                                                             <i class="fas fa-pencil-alt"></i> Edit</span>
-                                                                    <?php endif; ?>
-                                                                </td>
+                                                                    </td>
+                                                                <?php endif; ?>
                                                             </tr>
                                                     <?php }
                                                     } ?>
@@ -2060,6 +2058,7 @@ $request_edit_fields = [
     // form submit for item data edit
     $(document).on('submit', '#enquiry_request_edit_form', function(e) {
         e.preventDefault();
+
         let $form = $(this);
         let formData = $form.serialize(); // Serialize the form data
         let actionUrl = $form.attr('action'); // Get the form's action attribute
@@ -2072,18 +2071,11 @@ $request_edit_fields = [
             data: formData,
             success: function(response) {
                 if (response.status) {
-                    // Hide the edit modal
-                
-                    // Show the success message
-                    $('#status_message').html('Item updated successfully!');
+                    $('#enquiry_request_edit').modal('hide');
+                    toastAlert('success', 'Item updated successfully!');
 
-                    setTimeout(function() {
-                        $('.hide-me').fadeOut('slow', function() {
-                            $(this).remove();
-                        });
-                        $('#enquiry_request_edit').modal('hide');
-                        location.reload();
-                    }, 1500); // 1.5 seconds delay
+                    location.reload();
+
 
                     // Update UI with new data
                     // let productId = $(`input[name="enquiry_request_product_id"]`).val();
@@ -2100,6 +2092,7 @@ $request_edit_fields = [
 
 
                 } else {
+                    toastAlert('error', response.message);
                     console.error('Error updating :', response.message);
 
                 }
