@@ -7055,7 +7055,7 @@ class ApiController extends BaseController
                                 $oldFiles = json_decode($existing->material_weighing_slips, true);
                                 foreach ($oldFiles as $oldFile) {
                                     // skip unlinking if this old file is in the incoming list
-                                   
+
                                     if (in_array($oldFile, $incomingFilenames, true)) {
                                         continue;
                                     }
@@ -7066,7 +7066,7 @@ class ApiController extends BaseController
                                     }
                                 }
                             }
-                         
+
                             // record to unlink old images done
 
 
@@ -7184,6 +7184,55 @@ class ApiController extends BaseController
                 // use a fresh builder for each update
                 $upd = $db
                     ->table('ecomm_sub_enquires')
+                    ->where('id', $row->id)
+                    ->update($payload);
+
+                if (! $upd) {
+                    $err = $db->error();
+                    throw new \Exception("Failed updating ID {$row->id}: {$err['message']}");
+                }
+            }
+
+
+            $db->transCommit();
+            echo 'Swap Sub Enquires Data: successfully migrated ' . count($records) . ' records.';
+        } catch (\Exception $e) {
+            $db->transRollback();
+            echo 'swapSubEnquiresData transaction failed: ' . $e->getMessage();
+        }
+    }
+
+    # Ho invoice data swap
+    public function swapHoInvoicedata()
+    {
+        
+        $db      = \Config\Database::connect();
+        $builder = $db->table('ecomm_enquires');
+
+        $records = $builder
+            ->select(['id', 'ho_payable_amount', 'invoice_file_from_ho'])
+            ->where('invoice_file_from_ho !=', '')
+            ->orderBy('id', 'ASC')
+            ->get()
+            ->getResult();
+
+        if (empty($records)) {
+            echo 'swapSubEnquiresData: no vendor‑invoice files to migrate.';
+        }
+
+
+        $db->transBegin();
+
+        try {
+            foreach ($records as $row) {
+                $payload = [
+                    'ho_payable_amount_arr' => json_encode([$row->ho_payable_amount]),
+                    'invoice_file_from_ho_arr' => json_encode([$row->invoice_file_from_ho]),
+                ];
+
+                // use a fresh builder for each update
+                $upd = $db
+                    ->table('ecomm_enquires')
                     ->where('id', $row->id)
                     ->update($payload);
 

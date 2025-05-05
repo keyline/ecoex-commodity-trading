@@ -343,5 +343,6 @@ $routes->group("api", ["namespace" => "App\Controllers\Api"], function ($routes)
 
 
 	$routes->match(['get'], "swap-sub-enquires-data", "ApiController::swapSubenquiresdata");
+	$routes->match(['get'], "swap-ho-invoice-data", "ApiController::swapHoInvoicedata");
 });
 /* API */

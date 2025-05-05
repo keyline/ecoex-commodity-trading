@@ -1178,7 +1178,7 @@ $request_edit_fields = [
                                                                         <?php } elseif ($getEnquiry->is_invoice_from_ho == 2) {
                                                                             $ho_payable_amount_arr = json_decode($getEnquiry->ho_payable_amount_arr, true);
                                                                             $ho_invoice_file_arr = json_decode($getEnquiry->invoice_file_from_ho_arr, true);
-                                                                            var_dump($ho_invoice_file_arr);
+                     
                                                                         ?>
                                                                             <h4 class="text-success fw-bold">Invoice Uploaded By HO Succesfully</h4>
 
