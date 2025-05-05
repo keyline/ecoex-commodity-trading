@@ -1178,6 +1178,7 @@ $request_edit_fields = [
                                                                         <?php } elseif ($getEnquiry->is_invoice_from_ho == 2) {
                                                                             $ho_payable_amount_arr = json_decode($getEnquiry->ho_payable_amount_arr, true);
                                                                             $ho_invoice_file_arr = json_decode($getEnquiry->invoice_file_from_ho_arr, true);
+                                                                            var_dump($ho_invoice_file_arr);
                                                                         ?>
                                                                             <h4 class="text-success fw-bold">Invoice Uploaded By HO Succesfully</h4>
 
@@ -1189,7 +1190,7 @@ $request_edit_fields = [
                                                                             <?php for ($i = 0; $i < count($ho_invoice_file_arr); $i++) { ?>
 
                                                                                 <div class="invoice_div mb-3" style="margin-bottom: 5px; border: 1px solid #ccc; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 300px; margin: auto; border-radius: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); background: #f9f9f9;">
-                                                                                    <h5 style="margin-bottom: 10px;"><i class="fa fa-inr"></i> <?= $ho_payable_amount_arr[$i] ?></h5>
+                                                                                    <h5 style="margin-bottom: 10px;"><i class="fa fa-inr"></i> <?= number_format($ho_payable_amount_arr[$i],2) ?></h5>
                                                                                     <a download href="<?= getenv('app.uploadsURL') . 'enquiry/' . $ho_invoice_file_arr[$i] ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');" style="padding: 8px 12px; text-decoration: none;">
                                                                                         <i class="fas fa-download"></i>
                                                                                     </a>
@@ -1273,7 +1274,7 @@ $request_edit_fields = [
                                                                                 <?php for ($i = 0; $i < count($vendor_invoice_file_arr); $i++) { ?>
 
                                                                                     <div class="invoice_div mb-3" style="margin-bottom: 5px; border: 1px solid #ccc; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 300px; margin: auto; border-radius: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); background: #f9f9f9;">
-                                                                                        <h5 style="margin-bottom: 10px;"><i class="fa fa-inr"></i> <?= $vendor_invoice_amount_arr[$i] ?></h5>
+                                                                                        <h5 style="margin-bottom: 10px;"><i class="fa fa-inr"></i> <?= number_format($vendor_invoice_amount_arr[$i],2) ?></h5>
                                                                                         <a download href="<?= getenv('app.uploadsURL') . 'enquiry/' . $vendor_invoice_file_arr[$i] ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');" style="padding: 8px 12px; text-decoration: none;">
                                                                                             <i class="fas fa-download"></i>
                                                                                         </a>
