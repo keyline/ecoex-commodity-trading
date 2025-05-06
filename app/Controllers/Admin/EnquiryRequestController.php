@@ -1182,6 +1182,8 @@ class EnquiryRequestController extends BaseController
     }
     public function uploadInvoiceByHO()
     {
+
+
         $file_arr                   = [];
         $enq_id                     = decoded($this->request->getPost('enq_id'));
         $sub_enquiry_no             = decoded($this->request->getPost('sub_enquiry_no'));
@@ -1193,6 +1195,11 @@ class EnquiryRequestController extends BaseController
                 // Cast to float, format with 2 decimals, dot as decimal separator, no thousands sep
                 return number_format((float)$val, 2, '.', '');
             },  $this->request->getPost('ho_payable_amount'));
+
+            $invoice_number = $this->request->getPost('ho_inv_number');
+
+            $invoice_date = $this->request->getPost('ho_inv_date');
+
             $files = $this->request->getFileMultiple('invoice_file_from_ho');
 
 
@@ -1229,8 +1236,10 @@ class EnquiryRequestController extends BaseController
                 'is_invoice_from_ho'                => 2,
                 // 'ho_payable_amount'                 => $this->request->getPost('ho_payable_amount'),
                 // 'invoice_file_from_ho'              => $invoice_file_from_ho,
+                'ho_invoice_number_arr'             => json_encode($invoice_number),
                 'ho_payable_amount_arr'             => json_encode($invoice_amount),
                 'invoice_file_from_ho_arr'          => json_encode($file_arr),
+                'ho_invoice_date_arr'              => json_encode($invoice_date),
                 'invoice_from_ho_date'              => date('Y-m-d H:i:s'),
             ];
             $this->common_model->save_data('ecomm_enquires', $fields, $enq_id, 'id');
@@ -1365,7 +1374,7 @@ class EnquiryRequestController extends BaseController
 
 
         // _________________________________________  Code update by shubha on :28/03/25   ______________________________________________
-
+  
         // Get post data and file upload from the request
         $postData = $this->request->getPost();
 
@@ -2095,7 +2104,7 @@ class EnquiryRequestController extends BaseController
         // $item_qty = $this->request->getPost('item_qty');
         // $item_remarks = $this->request->getPost('item_remarks');
 
-       
+
 
         $updated =  $this->db->table('ecomm_company_items')
             ->where('id', $id)

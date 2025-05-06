@@ -40,6 +40,7 @@
     <!-- Template Main JS File -->
     <script src="<?= getenv('app.adminAssetsURL') ?>assets/js/main.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.1/jquery-ui.min.js" integrity="sha512-MSOo1aY+3pXCOCdGAYoBZ6YGI0aragoQsg1mKKBHXCYPIWxamwOE7Drh+N5CPgGI5SA9IEKJiPjdfqWFWmZtRA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script src="<?= getenv('app.adminAssetsURL') ?>assets/js/pages/data-basic-custom.js"></script>
 
@@ -70,6 +71,12 @@
         <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script> -->
 
     <script type="text/javascript">
+        $(function() {
+            $(".datepicker").datepicker({
+                dateFormat: "dd-mm-yy"
+            });
+        });
+
         function toastAlert(type, message, redirectStatus = false, redirectUrl = '') {
             toastr.options = {
                 "closeButton": true,

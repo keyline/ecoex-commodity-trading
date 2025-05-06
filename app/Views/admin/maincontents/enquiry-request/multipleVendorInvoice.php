@@ -5,20 +5,35 @@
     <div id="invoiceItemsContainer">
         <!-- Initial row with add button -->
         <div class="row mb-3 invoiceItem" style="border: 2px solid darkseagreen;margin: 1px;border-radius: 5px;">
-            <div class="col-md-4">
+
+            <div class="col-3">
+                <label style="font-size:11px;">Inv No</label>
+                <input type="text"
+                    class="form-control form-control-sm"
+                    name="vendor_inv_number[]"
+                    required>
+            </div>
+            <div class="col-3">
+                <label style="font-size:11px;">Date</label>
+                <input type="date"
+                    class="form-control form-control-sm"
+                    name="vendor_inv_date[]"
+                    required>
+            </div>
+            <div class="col-2">
                 <div class="form-group">
-                    <label for="vendor_invoice_amount">Vendor Invoice Amount</label>
+                    <label for="vendor_invoice_amount">Amt</label>
                     <input type="text" class="form-control" name="vendor_invoice_amount[]" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/^0+(\d)/, '$1').replace(/(\..*)\./g, '$1');" required>
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-3">
                 <div class="form-group">
-                    <label for="vendor_invoice_file">Vendor Invoice File</label>
+                    <label for="vendor_invoice_file">PDF</label>
                     <input type="file" class="form-control" name="vendor_invoice_file[]" accept="application/pdf" required>
                     <small class="text-primary">Only PDF file allowed</small>
                 </div>
             </div>
-            <div class="col-md-3 d-flex align-items-center">
+            <div class="col-1 d-flex align-items-center">
                 <button type="button" class="btn btn-success btn-sm add-row">
                     <i class="fas fa-plus"></i>
                 </button>
