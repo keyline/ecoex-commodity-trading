@@ -1,13 +1,16 @@
-<div class="pagetitle">
-    <h1><?= $page_header ?></h1>
-    <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="<?= base_url('admin/dashboard') ?>">Home</a></li>
-            <li class="breadcrumb-item active"><?= $page_header ?></li>
-        </ol>
-    </nav>
+<div class="container-fluid">
+    <div class="pagetitle">
+        <h1><?= $page_header ?></h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="<?= base_url('admin/dashboard') ?>">Home</a></li>
+                <li class="breadcrumb-item active"><?= $page_header ?></li>
+            </ol>
+        </nav>
+    </div>
 </div>
 <section class="section">
+<div class="container-fluid">
     <div class="row">
         <div class="col-xl-12">
             <?php if (session('success_message')) { ?>
@@ -27,13 +30,13 @@
             <div class="card">
                 <div class="card-body">
                     <?php if ($common_model->checkModuleFunctionAccess(19, 92)) { ?>
-                        <h5 class="card-title">
+                        <h5 class="card-titles">
                             <a href="<?= base_url(route_to('functionalities.create')) ?>" class="btn btn-outline-success btn-sm">Add New</a>
                         </h5>
                     <?php } ?>
                     <?php if (!empty($rows)) { ?>
                         <div class="table-responsive">
-                        <table id="simpletable" class="table table-striped table-bordered nowrap" style="width: 100%">
+                        <table id="simpletable" class="table globel_table nowrap" style="width: 100%">
                         <?php  } else {  ?>
                             <table id="" class="table table-striped table-bordered nowrap" style="width: 100%">
                             <?php }  ?>
@@ -41,12 +44,12 @@
 
                             <thead>
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Functionality Name</th>
-                                    <th scope="col">Platform</th>
-                                    <th scope="col">Rank</th>
-                                    <th scope="col">Created At<br>Updated At</th>
-                                    <th scope="col">Action</th>
+                                    <th class="text-center" width="5%">#</th>
+                                    <th>Functionality Name</th>
+                                    <th>Platform</th>
+                                    <th>Rank</th>
+                                    <th>Created At<br>Updated At</th>
+                                    <th class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -55,10 +58,10 @@
                                 if (!empty($rows)): $sl = 0 ?>
                                     <?php foreach ($rows as $row): ?>
                                         <tr>
-                                            <th scope="row"><?= ++$sl ?></th>
+                                            <th class="text-center" scope="row"><?= ++$sl ?></th>
                                             <td style="max-width: 200ch; word-wrap: break-word; white-space: normal;"> <?= $row->fun_functionality_name ?> </td>
                                             <td> <?= ucwords(str_replace('_', ' ',  $row->fun_platform)) ?> </td>
-                                            <td> <?= $row->fun_rank ?> </td>
+                                            <td class="text-center"> <?= $row->fun_rank ?> </td>
                                             <td>
                                                 <h6>
                                                     <?= (($row->fun_created_at != '') ? date_format(date_create($row->fun_created_at), "M d, Y h:i A") : '') ?><br>
@@ -68,7 +71,7 @@
                                                     <?= (($row->fun_updated_at != '') ? date_format(date_create($row->fun_updated_at), "M d, Y h:i A") : '') ?>
                                                 </h6>
                                             </td>
-                                            <td>
+                                            <td class="text-center">
                                                 <?php if ($common_model->checkModuleFunctionAccess(19, 92)) { ?>
                                                     <a href="<?= base_url('admin/' . $controller_route . '/' . encoded($row->$primary_key) . '/edit') ?>" class="btn btn-outline-primary btn-sm" title="Edit <?= $title ?>"><i class="fa fa-edit"></i></a>
                                                 <?php } ?>
@@ -111,4 +114,5 @@
             </div>
         </div>
     </div>
+</div>
 </section>

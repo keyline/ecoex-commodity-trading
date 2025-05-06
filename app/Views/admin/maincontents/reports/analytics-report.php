@@ -4,244 +4,248 @@ $title              = $moduleDetail['title'];
 $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
 ?>
-<div class="pagetitle">
-  <h1><?=$page_header?></h1>
-  <nav>
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="<?=base_url('admin/dashboard')?>">Home</a></li>
-      <li class="breadcrumb-item active"><?=$page_header?></li>
-    </ol>
-  </nav>
-</div><!-- End Page Title -->
+<div class="container-fluid">
+  <div class="pagetitle">
+    <h1><?=$page_header?></h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="<?=base_url('admin/dashboard')?>">Home</a></li>
+        <li class="breadcrumb-item active"><?=$page_header?></li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+</div>
 <section class="section profile">
-  <div class="row">
-    <div class="col-xl-12">
-      <?php if(session('success_message')){?>
-        <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show hide-message" role="alert">
-          <?=session('success_message')?>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      <?php }?>
-      <?php if(session('error_message')){?>
-        <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show hide-message" role="alert">
-          <?=session('error_message')?>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      <?php }?>
-    </div>
-    <div class="col-xl-12">
-      <div class="card">
-        <div class="card-body pt-3">
-          <span class="text-danger">Star (*) marks fields are mandatory</span>
-          <form method="GET" action="" enctype="multipart/form-data">
-            <input type="hidden" name="mode" value="advance_search">
-            <div class="row mb-3 align-items-center">
-                <div class="col-md-2 col-lg-2">
-                  <label for="search_company_id">Company <span class="text-danger">*</span></label>
-                  <select name="search_company_id" class="form-control" id="search_company_id" required>
-                      <option value="" selected>Select Company</option>
-                      <hr>
-                      <?php if($companies){ foreach($companies as $row){?>
-                          <option value="<?=$row->id?>" <?=(($search_company_id == $row->id)?'selected':'')?>><?=$row->company_name?></option>
-                          <hr>
-                      <?php } }?>
-                  </select>
-                </div>
-                <div class="col-md-2 col-lg-2">
-                  <label for="search_unit_id">Unit <span class="text-danger">*</span></label>
-                  <select name="search_unit_id" class="form-control" id="search_unit_id" required>
-                      <option value="" selected>Select Unit</option>
-                      <hr>
-                      <?php if($units){ foreach($units as $row){?>
-                          <option value="<?=$row->name?>" <?=(($search_unit_id == $row->name)?'selected':'')?>><?=$row->name?></option>
-                          <hr>
-                      <?php } }?>
-                  </select>
-                </div>
-                <div class="col-md-2 col-lg-2">
-                  <label for="search_product_id">Item</label>
-                  <select name="search_product_id" class="form-control" id="search_product_id">
-                      
-                  </select>
-                </div>
-                <div class="col-md-2 col-lg-2" id="day_type_row" style="display: <?=(($is_date_range == 1)?'none':'block')?>;">
-                    <label for="search_day_id">Days</label>
-                    <select name="search_day_id" class="form-control" id="search_day_id" required>
-                        <!-- <option value="all" <?=(($search_day_id == 'all')?'selected':'')?>>All</option>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xl-12">
+        <?php if(session('success_message')){?>
+          <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show hide-message" role="alert">
+            <?=session('success_message')?>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        <?php }?>
+        <?php if(session('error_message')){?>
+          <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show hide-message" role="alert">
+            <?=session('error_message')?>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        <?php }?>
+      </div>
+      <div class="col-xl-12">
+        <div class="card">
+          <div class="card-body pt-3">
+            <span class="text-danger">Star (*) marks fields are mandatory</span>
+            <form method="GET" action="" enctype="multipart/form-data">
+              <input type="hidden" name="mode" value="advance_search">
+              <div class="row mb-3 align-items-center">
+                  <div class="col-md-2 col-lg-4 mb-2">
+                    <label for="search_company_id">Company <span class="text-danger">*</span></label>
+                    <select name="search_company_id" class="form-control" id="search_company_id" required>
+                        <option value="" selected>Select Company</option>
                         <hr>
-                        <option value="today" <?=(($search_day_id == 'today')?'selected':'')?>>Today</option>
-                        <hr>
-                        <option value="yesterday" <?=(($search_day_id == 'yesterday')?'selected':'')?>>Yesterday</option>
-                        <hr>
-                        <option value="this_week" <?=(($search_day_id == 'this_week')?'selected':'')?>>This Week</option>
-                        <hr>
-                        <option value="last_week" <?=(($search_day_id == 'last_week')?'selected':'')?>>Last Week</option>
-                        <hr> -->
-                        <option value="this_month" <?=(($search_day_id == 'this_month')?'selected':'')?>>This Month</option>
-                        <hr>
-                        <option value="last_month" <?=(($search_day_id == 'last_month')?'selected':'')?>>Last Month</option>
-                        <hr>
-                        <!-- <option value="last_7_days" <?=(($search_day_id == 'last_7_days')?'selected':'')?>>Last 7 Days</option>
-                        <hr>
-                        <option value="last_30_days" <?=(($search_day_id == 'last_30_days')?'selected':'')?>>Last 30 Days</option>
-                        <hr> -->
+                        <?php if($companies){ foreach($companies as $row){?>
+                            <option value="<?=$row->id?>" <?=(($search_company_id == $row->id)?'selected':'')?>><?=$row->company_name?></option>
+                            <hr>
+                        <?php } }?>
                     </select>
-                </div>
-                <div class="col-md-3 col-lg-3" style="margin-top: 18px;">
-                    <label for="is_date_range">Date Range</label>
-                    <input type="checkbox" id="is_date_range" name="is_date_range" <?=(($is_date_range == 1)?'checked':'')?>>
-                </div>
-                <div class="col-md-3 col-lg-3" id="day_range_row" style="display: <?=(($is_date_range == 1)?'block':'none')?>; margin-top: 18px;">
-                    <div class="input-group input-daterange">
-                        <input type="month" id="search_range_from" name="search_range_from" class="form-control" value="<?=$search_range_from?>" max="<?=date('Y-m')?>" style="height: 40px;">
-                        <span class="input-group-text">To</span>
-                        <input type="month" id="search_range_to" name="search_range_to" class="form-control" value="<?=$search_range_to?>" max="<?=date('Y-m')?>" style="height: 40px;">
-                    </div>
-                </div>
-            </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary"><i class="fa fa-paper-plane"></i> Generate</button>
-                <?php if(!empty($is_search)){?>
-                    <a href="<?=base_url('admin/reports/analytics-report')?>" class="btn btn-secondary"><i class="fa fa-refresh"></i> Reset</a>
-                <?php }?>
-            </div>
-          </form>
-          <?php
-          if($response){
-            $month_year_name  = array_column($response['records'], 'month_year_name');
-            $scrap_qty        = array_column($response['records'], 'scrap_qty');
-            $no_of_plant      = array_column($response['records'], 'no_of_plant');
-            $vehicle_count    = array_column($response['records'], 'vehicle_count');
-            $details_data     = $response['details_data'];
-          ?>
-            <div class="row mt-3">
-              <div class="col-lg-12 col-md-12">
-                <div class="card">
-                  <div class="card-body">
-                    <h5 class="card-title"><?=$response['graph_title']?> 
-                      <small class="text-danger" style="font-size: 12px;color: red !important;">( In graph scrap qty show in <?=$search_unit_id?> )</small>
-                    </h5>
-
-                    <!-- Column Chart -->
-                    <div id="columnChart1"></div>
-
-                    <script>
-                      var convertedUnit = '<?=$convertedUnit?>';
-                      document.addEventListener("DOMContentLoaded", () => {
-                        new ApexCharts(document.querySelector("#columnChart1"), {
-                          series: [{
-                            name: 'Scrap Qty',
-                            data: [<?=implode(', ', $scrap_qty);?>]
-                          }, {
-                            name: 'Number Of Plant',
-                            data: [<?=implode(', ', $no_of_plant);?>]
-                          }, {
-                            name: 'Vehicle Count',
-                            data: [<?=implode(', ', $vehicle_count);?>]
-                          }],
-                          chart: {
-                            type: 'bar',
-                            height: 550
-                          },
-                          plotOptions: {
-                            bar: {
-                              horizontal: false,
-                              columnWidth: '75%',
-                              endingShape: 'rounded'
-                            },
-                          },
-                          colors: [ // this array contains different color code for each data
-                            "#13d8aa",
-                            "#f48024",
-                            "#A5978B"
-                          ],
-                          dataLabels: {
-                            enabled: true
-                          },
-                          stroke: {
-                            show: true,
-                            width: 2,
-                            colors: ['transparent']
-                          },
-                          xaxis: {
-                            categories: [<?=implode(", ", $month_year_name);?>],
-                          },
-                          yaxis: {
-                            title: {
-                              text: 'Number'
-                            }
-                          },
-                          fill: {
-                            opacity: 1
-                          },
-                          tooltip: {
-                            y: {
-                              formatter: function(val) {
-                                // return "$ " + val + " thousands"
-                                // return val + " " + convertedUnit
-                                return val
-                              }
-                            }
-                          }
-                        }).render();
-                      });
-                    </script>
-                    <!-- End Column Chart -->
-
                   </div>
-                </div>
+                  <div class="col-md-2 col-lg-4 mb-2">
+                    <label for="search_unit_id">Unit <span class="text-danger">*</span></label>
+                    <select name="search_unit_id" class="form-control" id="search_unit_id" required>
+                        <option value="" selected>Select Unit</option>
+                        <hr>
+                        <?php if($units){ foreach($units as $row){?>
+                            <option value="<?=$row->name?>" <?=(($search_unit_id == $row->name)?'selected':'')?>><?=$row->name?></option>
+                            <hr>
+                        <?php } }?>
+                    </select>
+                  </div>
+                  <div class="col-md-2 col-lg-4 mb-2">
+                    <label for="search_product_id">Item</label>
+                    <select name="search_product_id" class="form-control" id="search_product_id">
+                        
+                    </select>
+                  </div>
+                  <div class="col-md-2 col-lg-4 mb-2" id="day_type_row" style="display: <?=(($is_date_range == 1)?'none':'block')?>;">
+                      <label for="search_day_id">Days</label>
+                      <select name="search_day_id" class="form-control" id="search_day_id" required>
+                          <!-- <option value="all" <?=(($search_day_id == 'all')?'selected':'')?>>All</option>
+                          <hr>
+                          <option value="today" <?=(($search_day_id == 'today')?'selected':'')?>>Today</option>
+                          <hr>
+                          <option value="yesterday" <?=(($search_day_id == 'yesterday')?'selected':'')?>>Yesterday</option>
+                          <hr>
+                          <option value="this_week" <?=(($search_day_id == 'this_week')?'selected':'')?>>This Week</option>
+                          <hr>
+                          <option value="last_week" <?=(($search_day_id == 'last_week')?'selected':'')?>>Last Week</option>
+                          <hr> -->
+                          <option value="this_month" <?=(($search_day_id == 'this_month')?'selected':'')?>>This Month</option>
+                          <hr>
+                          <option value="last_month" <?=(($search_day_id == 'last_month')?'selected':'')?>>Last Month</option>
+                          <hr>
+                          <!-- <option value="last_7_days" <?=(($search_day_id == 'last_7_days')?'selected':'')?>>Last 7 Days</option>
+                          <hr>
+                          <option value="last_30_days" <?=(($search_day_id == 'last_30_days')?'selected':'')?>>Last 30 Days</option>
+                          <hr> -->
+                      </select>
+                  </div>
+                  <div class="col-md-3 col-lg-3" style="margin-top: 18px;">
+                      <label for="is_date_range">Date Range</label>
+                      <input type="checkbox" id="is_date_range" name="is_date_range" <?=(($is_date_range == 1)?'checked':'')?>>
+                  </div>
+                  <div class="col-md-3 col-lg-3" id="day_range_row" style="display: <?=(($is_date_range == 1)?'block':'none')?>; margin-top: 18px;">
+                      <div class="input-group input-daterange">
+                          <input type="month" id="search_range_from" name="search_range_from" class="form-control" value="<?=$search_range_from?>" max="<?=date('Y-m')?>" style="height: 40px;">
+                          <span class="input-group-text">To</span>
+                          <input type="month" id="search_range_to" name="search_range_to" class="form-control" value="<?=$search_range_to?>" max="<?=date('Y-m')?>" style="height: 40px;">
+                      </div>
+                  </div>
               </div>
-            </div>
-            <?php if($details_data){ ?>
+              <div class="text-center">
+                  <button type="submit" class="btn btn-primary"><i class="fa fa-paper-plane"></i> Generate</button>
+                  <?php if(!empty($is_search)){?>
+                      <a href="<?=base_url('admin/reports/analytics-report')?>" class="btn btn-secondary"><i class="fa fa-refresh"></i> Reset</a>
+                  <?php }?>
+              </div>
+            </form>
+            <?php
+            if($response){
+              $month_year_name  = array_column($response['records'], 'month_year_name');
+              $scrap_qty        = array_column($response['records'], 'scrap_qty');
+              $no_of_plant      = array_column($response['records'], 'no_of_plant');
+              $vehicle_count    = array_column($response['records'], 'vehicle_count');
+              $details_data     = $response['details_data'];
+            ?>
               <div class="row mt-3">
                 <div class="col-lg-12 col-md-12">
                   <div class="card">
                     <div class="card-body">
-                      <h5 class="card-title">Details Data</h5>
-                      <table id="simpletable" class="table table-striped table-bordered nowrap" style="width: 100%">
-                        <thead>
-                          <tr>
-                            <th>#</th>
-                            <th>Enquiry No.</th>
-                            <th>Sub Enquiry No.</th>
-                            <th>Item Name</th>
-                            <th>Weighted Qty</th>
-                            <th>Weighted Unit</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <?php $sl_no = 1; $tot_weight_qty = 0; foreach($details_data as $details){?>
-                            <tr>
-                              <td><?=$sl_no++?></td>
-                              <td><a href="<?=base_url('admin/enquiry-requests/enquiry-details/'.encoded($details['enq_id']))?>" target="_blank"><?=$details['enquiry_no']?></a></td>
-                              <td><?=$details['sub_enquiry_no']?></td>
-                              <td><?=$details['item_name']?></td>
-                              <td><?=$details['weighted_qty']?></td>
-                              <td><?=$details['weighted_unit']?></td>
-                            </tr>
-                          <?php $tot_weight_qty += $details['weighted_qty']; } ?>
-                        </tbody>
-                        <tfoot>
-                          <tr>
-                            <th colspan="4" style="text-align: right;">Total</th>
-                            <th><?=number_format($tot_weight_qty, 3)?></th>
-                            <!-- <th><?=$convertedUnit?></th> -->
-                            <th>KG</th>
-                          </tr>
-                          <tr>
-                            <th colspan="4" style="text-align: right;">Total</th>
-                            <th><?=number_format(($tot_weight_qty / 1000), 3)?></th>
-                            <!-- <th><?=$convertedUnit?></th> -->
-                            <th>MT</th>
-                          </tr>
-                        </tfoot>
-                      </table>
+                      <h5 class="card-title"><?=$response['graph_title']?> 
+                        <small class="text-danger" style="font-size: 12px;color: red !important;">( In graph scrap qty show in <?=$search_unit_id?> )</small>
+                      </h5>
+  
+                      <!-- Column Chart -->
+                      <div id="columnChart1"></div>
+  
+                      <script>
+                        var convertedUnit = '<?=$convertedUnit?>';
+                        document.addEventListener("DOMContentLoaded", () => {
+                          new ApexCharts(document.querySelector("#columnChart1"), {
+                            series: [{
+                              name: 'Scrap Qty',
+                              data: [<?=implode(', ', $scrap_qty);?>]
+                            }, {
+                              name: 'Number Of Plant',
+                              data: [<?=implode(', ', $no_of_plant);?>]
+                            }, {
+                              name: 'Vehicle Count',
+                              data: [<?=implode(', ', $vehicle_count);?>]
+                            }],
+                            chart: {
+                              type: 'bar',
+                              height: 550
+                            },
+                            plotOptions: {
+                              bar: {
+                                horizontal: false,
+                                columnWidth: '75%',
+                                endingShape: 'rounded'
+                              },
+                            },
+                            colors: [ // this array contains different color code for each data
+                              "#13d8aa",
+                              "#f48024",
+                              "#A5978B"
+                            ],
+                            dataLabels: {
+                              enabled: true
+                            },
+                            stroke: {
+                              show: true,
+                              width: 2,
+                              colors: ['transparent']
+                            },
+                            xaxis: {
+                              categories: [<?=implode(", ", $month_year_name);?>],
+                            },
+                            yaxis: {
+                              title: {
+                                text: 'Number'
+                              }
+                            },
+                            fill: {
+                              opacity: 1
+                            },
+                            tooltip: {
+                              y: {
+                                formatter: function(val) {
+                                  // return "$ " + val + " thousands"
+                                  // return val + " " + convertedUnit
+                                  return val
+                                }
+                              }
+                            }
+                          }).render();
+                        });
+                      </script>
+                      <!-- End Column Chart -->
+  
                     </div>
                   </div>
                 </div>
               </div>
+              <?php if($details_data){ ?>
+                <div class="row mt-3">
+                  <div class="col-lg-12 col-md-12">
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="card-title">Details Data</h5>
+                        <table id="simpletable" class="table table-striped table-bordered nowrap" style="width: 100%">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Enquiry No.</th>
+                              <th>Sub Enquiry No.</th>
+                              <th>Item Name</th>
+                              <th>Weighted Qty</th>
+                              <th>Weighted Unit</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php $sl_no = 1; $tot_weight_qty = 0; foreach($details_data as $details){?>
+                              <tr>
+                                <td><?=$sl_no++?></td>
+                                <td><a href="<?=base_url('admin/enquiry-requests/enquiry-details/'.encoded($details['enq_id']))?>" target="_blank"><?=$details['enquiry_no']?></a></td>
+                                <td><?=$details['sub_enquiry_no']?></td>
+                                <td><?=$details['item_name']?></td>
+                                <td><?=$details['weighted_qty']?></td>
+                                <td><?=$details['weighted_unit']?></td>
+                              </tr>
+                            <?php $tot_weight_qty += $details['weighted_qty']; } ?>
+                          </tbody>
+                          <tfoot>
+                            <tr>
+                              <th colspan="4" style="text-align: right;">Total</th>
+                              <th><?=number_format($tot_weight_qty, 3)?></th>
+                              <!-- <th><?=$convertedUnit?></th> -->
+                              <th>KG</th>
+                            </tr>
+                            <tr>
+                              <th colspan="4" style="text-align: right;">Total</th>
+                              <th><?=number_format(($tot_weight_qty / 1000), 3)?></th>
+                              <!-- <th><?=$convertedUnit?></th> -->
+                              <th>MT</th>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <?php }?>
             <?php }?>
-          <?php }?>
+          </div>
         </div>
       </div>
     </div>

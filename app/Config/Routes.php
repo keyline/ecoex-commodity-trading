@@ -184,6 +184,8 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 	$routes->match(['get', 'post'], "enquiry-requests/approve-vendor-quit/(:any)/(:any)", "EnquiryRequestController::approveVendorQuit/$1/$2");
 	$routes->match(['get', 'post'], "enquiry-requests/reject-vendor-quit/(:any)/(:any)", "EnquiryRequestController::rejectVendorQuit/$1/$2");
 
+	$routes->match(['get', 'post'], "enquiry-requests/material-weighted-access/(:any)/(:any)", "EnquiryRequestController::weighted_access/$1/$2");
+
 	$routes->match(['get', 'post'], "enquiry-requests/enquiry-details/(:any)", "EnquiryRequestController::enquiryDetails/$1");
 	$routes->post('api/items/rename', 'EnquiryRequestController::renameItemName');
 
@@ -332,6 +334,7 @@ $routes->group("api", ["namespace" => "App\Controllers\Api"], function ($routes)
 	$routes->match(['post'], "vendor-process-request-pickup-scheduled", "ApiController::vendorProcessRequestPickupScheduled");
 	$routes->match(['post'], "vendor-process-request-vehicle-placed", "ApiController::vendorProcessRequestVehiclePlaced");
 	$routes->match(['post'], "vendor-process-request-material-weighted", "ApiController::vendorProcessRequestMaterialWeighted");
+	
 	$routes->match(['post'], "vendor-process-request-invoice-payment", "ApiController::vendorProcessRequestInvoicePayment");
 	$routes->match(['post'], "vendor-process-request-vehicle-despatch", "ApiController::vendorProcessRequestVehicleDespatch");
 	// assigned request
@@ -340,5 +343,6 @@ $routes->group("api", ["namespace" => "App\Controllers\Api"], function ($routes)
 
 
 	$routes->match(['get'], "swap-sub-enquires-data", "ApiController::swapSubenquiresdata");
+	$routes->match(['get'], "swap-ho-invoice-data", "ApiController::swapHoInvoicedata");
 });
 /* API */

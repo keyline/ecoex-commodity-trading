@@ -1,144 +1,148 @@
-<div class="pagetitle">
-    <h1><?= $page_header ?></h1>
-    <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="<?= base_url('admin/dashboard') ?>">Home</a></li>
-            <li class="breadcrumb-item active"><?= $page_header ?></li>
-        </ol>
-    </nav>
+<div class="container-fluid">
+    <div class="pagetitle">
+        <h1><?= $page_header ?></h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="<?= base_url('admin/dashboard') ?>">Home</a></li>
+                <li class="breadcrumb-item active"><?= $page_header ?></li>
+            </ol>
+        </nav>
+    </div>
 </div>
 <section class="section">
-    <div class="row">
-        <div class="col-xl-12">
-            <?php if (session('success_message')) { ?>
-                <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show hide-message" role="alert">
-                    <?= session('success_message') ?>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php } ?>
-            <?php if (session('error_message')) { ?>
-                <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show hide-message" role="alert">
-                    <?= session('error_message') ?>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php
-            } ?>
-        </div>
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-body">
-                    <form method="POST" action="<?= base_url('admin/' . $controller_route) ?>" enctype="multipart/form-data">
-                        <?php foreach ($functionality as $func) {
-                            $funId = $func->fun_id;
-                            $updateId = $func->mn_id ?? 0;
-                            $email = $func->mn_email ? json_decode($func->mn_email, true) : '';
-
-                            $mn_ecoex_admin_email = $func->mn_ecoex_admin_email ?? '';
-                            $mn_company_admin_email = $func->mn_company_admin_email ?? '';
-                            $mn_vendor_email = $func->mn_vendor_email ?? '';
-                            $mn_vendor_sms = $func->mn_vendor_sms ?? '';
-                            $mn_vendor_push = $func->mn_vendor_push ?? '';
-                            $mn_plant_email = $func->mn_plant_email ?? '';
-                            $mn_plant_sms = $func->mn_plant_sms ?? '';
-                            $mn_plant_push = $func->mn_plant_push ?? '';
-                        ?>
-
-                            <div class="row" style="border: 1px solid #ddd9d9;padding:3px;border-radius:5px;margin-top:15px">
-                                <input type="hidden" name="update_id[<?= $funId ?>]" value="<?= $updateId ?>">
-                                <div class="col-sm-3">
-                                    <div>
-                                        <label for="input-tags" class="col-form-label"> <strong><?= ucwords($func->fun_functionality_name) ?></strong> </label>
-                                        <input type="hidden" name="functionality[<?= $funId ?>]" value="<?= $funId ?>">
-                                        <div class="col-md-10 col-lg-10">
-                                            <?php if (session('errors.functionality')): ?>
-                                                <div class="text-danger"><?= session('errors.functionality') ?></div>
-                                            <?php endif; ?>
-                                        </div>
-                                        <div class="">
-                                            <small class="show-platform"><?= ucwords(str_replace('_', ' ', $func->fun_platform)) ?></small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4 email-container">
-                                    <!-- Email Input Tags -->
-                                    <div class="row mb-3">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <?php if (session('success_message')) { ?>
+                    <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show hide-message" role="alert">
+                        <?= session('success_message') ?>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php } ?>
+                <?php if (session('error_message')) { ?>
+                    <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show hide-message" role="alert">
+                        <?= session('error_message') ?>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php
+                } ?>
+            </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="POST" action="<?= base_url('admin/' . $controller_route) ?>" enctype="multipart/form-data">
+                            <?php foreach ($functionality as $func) {
+                                $funId = $func->fun_id;
+                                $updateId = $func->mn_id ?? 0;
+                                $email = $func->mn_email ? json_decode($func->mn_email, true) : '';
+    
+                                $mn_ecoex_admin_email = $func->mn_ecoex_admin_email ?? '';
+                                $mn_company_admin_email = $func->mn_company_admin_email ?? '';
+                                $mn_vendor_email = $func->mn_vendor_email ?? '';
+                                $mn_vendor_sms = $func->mn_vendor_sms ?? '';
+                                $mn_vendor_push = $func->mn_vendor_push ?? '';
+                                $mn_plant_email = $func->mn_plant_email ?? '';
+                                $mn_plant_sms = $func->mn_plant_sms ?? '';
+                                $mn_plant_push = $func->mn_plant_push ?? '';
+                            ?>
+    
+                                <div class="row" style="border: 1px solid #a8cf45;padding:15px;border-radius:5px;margin:0;">
+                                    <input type="hidden" name="update_id[<?= $funId ?>]" value="<?= $updateId ?>">
+                                    <div class="col-sm-3">
                                         <div>
-                                            <label class="col-form-label">Emails</label>
+                                            <label for="input-tags" class="col-form-label"> <strong><?= ucwords($func->fun_functionality_name) ?></strong> </label>
+                                            <input type="hidden" name="functionality[<?= $funId ?>]" value="<?= $funId ?>">
                                             <div class="col-md-10 col-lg-10">
-                                                <!-- Use classes instead of IDs -->
-                                                <input type="text" class="form-control input-tags" placeholder="Type emails and press comma" />
-                                                <div class="error-msg text-danger mt-1" style="display: none;">Invalid email format detected.</div>
-                                                <div class="badge-container mt-2"></div>
-                                                <input type="hidden" class="other_article_part_doi_no" name="mn_email[<?= $funId ?>]" value="<?= $email ?? '' ?>">
-                                                <?php if (session('errors.mn_email')): ?>
-                                                    <div class="text-danger"><?= session('errors.mn_email') ?></div>
+                                                <?php if (session('errors.functionality')): ?>
+                                                    <div class="text-danger"><?= session('errors.functionality') ?></div>
                                                 <?php endif; ?>
                                             </div>
+                                            <div class="">
+                                                <small class="show-platform"><?= ucwords(str_replace('_', ' ', $func->fun_platform)) ?></small>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="col-sm-5">
-                                    <div>
-                                        <!-- Notification Options -->
+    
+                                    <div class="col-sm-4 email-container">
+                                        <!-- Email Input Tags -->
                                         <div class="row mb-3">
-                                            <label class=" col-form-label">Notification Options:</label>
-                                            <div class="">
-                                                <!-- Email Options -->
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="mn_ecoex_admin_email[<?= $funId ?>]" value="1" <?= isset($mn_ecoex_admin_email) && $mn_ecoex_admin_email ? 'checked' : '' ?>>
-                                                    <label class="form-check-label" for="mn_ecoex_admin_email">Ecoex Admin Email</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="mn_company_admin_email[<?= $funId ?>]" value="1" <?= isset($mn_company_admin_email) && $mn_company_admin_email ? 'checked' : '' ?>>
-                                                    <label class="form-check-label" for="mn_company_admin_email">Company Admin Email</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="mn_vendor_email[<?= $funId ?>]" value="1" <?= isset($mn_vendor_email) && $mn_vendor_email ? 'checked' : '' ?>>
-                                                    <label class="form-check-label" for="mn_vendor_email">Vendor Email</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="mn_plant_email[<?= $funId ?>]" value="1" <?= isset($mn_plant_email) && $mn_plant_email ? 'checked' : '' ?>>
-                                                    <label class="form-check-label" for="mn_plant_email">Plant Email</label>
-                                                </div>
-
-                                                <!-- SMS Options -->
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="mn_vendor_sms[<?= $funId ?>]" value="1" <?= isset($mn_vendor_sms) && $mn_vendor_sms ? 'checked' : '' ?>>
-                                                    <label class="form-check-label" for="mn_vendor_sms">Vendor SMS</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="mn_plant_sms[<?= $funId ?>]" value="1" <?= isset($mn_plant_sms) && $mn_plant_sms ? 'checked' : '' ?>>
-                                                    <label class="form-check-label" for="mn_plant_sms">Plant SMS</label>
-                                                </div>
-
-                                                <!-- Push Notification Options -->
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="mn_vendor_push[<?= $funId ?>]" value="1" <?= isset($mn_vendor_push) && $mn_vendor_push ? 'checked' : '' ?>>
-                                                    <label class="form-check-label" for="mn_vendor_push">Vendor Push</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="mn_plant_push[<?= $funId ?>]" value="1" <?= isset($mn_plant_push) && $mn_plant_push ? 'checked' : '' ?>>
-                                                    <label class="form-check-label" for="mn_plant_push">Plant Push</label>
+                                            <div>
+                                                <label class="col-form-label">Emails</label>
+                                                <div class="col-md-10 col-lg-10">
+                                                    <!-- Use classes instead of IDs -->
+                                                    <input type="text" class="form-control input-tags" placeholder="Type emails and press comma" />
+                                                    <div class="error-msg text-danger mt-1" style="display: none;">Invalid email format detected.</div>
+                                                    <div class="badge-container mt-2"></div>
+                                                    <input type="hidden" class="other_article_part_doi_no" name="mn_email[<?= $funId ?>]" value="<?= $email ?? '' ?>">
+                                                    <?php if (session('errors.mn_email')): ?>
+                                                        <div class="text-danger"><?= session('errors.mn_email') ?></div>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+    
+                                    <div class="col-sm-5">
+                                        <div>
+                                            <!-- Notification Options -->
+                                            <div class="row mb-3">
+                                                <label class=" col-form-label">Notification Options:</label>
+                                                <div class="notice_option">
+                                                    <!-- Email Options -->
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" name="mn_ecoex_admin_email[<?= $funId ?>]" value="1" <?= isset($mn_ecoex_admin_email) && $mn_ecoex_admin_email ? 'checked' : '' ?>>
+                                                        <label class="form-check-label" for="mn_ecoex_admin_email">Ecoex Admin Email</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" name="mn_company_admin_email[<?= $funId ?>]" value="1" <?= isset($mn_company_admin_email) && $mn_company_admin_email ? 'checked' : '' ?>>
+                                                        <label class="form-check-label" for="mn_company_admin_email">Company Admin Email</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" name="mn_vendor_email[<?= $funId ?>]" value="1" <?= isset($mn_vendor_email) && $mn_vendor_email ? 'checked' : '' ?>>
+                                                        <label class="form-check-label" for="mn_vendor_email">Vendor Email</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" name="mn_plant_email[<?= $funId ?>]" value="1" <?= isset($mn_plant_email) && $mn_plant_email ? 'checked' : '' ?>>
+                                                        <label class="form-check-label" for="mn_plant_email">Plant Email</label>
+                                                    </div>
+    
+                                                    <!-- SMS Options -->
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" name="mn_vendor_sms[<?= $funId ?>]" value="1" <?= isset($mn_vendor_sms) && $mn_vendor_sms ? 'checked' : '' ?>>
+                                                        <label class="form-check-label" for="mn_vendor_sms">Vendor SMS</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" name="mn_plant_sms[<?= $funId ?>]" value="1" <?= isset($mn_plant_sms) && $mn_plant_sms ? 'checked' : '' ?>>
+                                                        <label class="form-check-label" for="mn_plant_sms">Plant SMS</label>
+                                                    </div>
+    
+                                                    <!-- Push Notification Options -->
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" name="mn_vendor_push[<?= $funId ?>]" value="1" <?= isset($mn_vendor_push) && $mn_vendor_push ? 'checked' : '' ?>>
+                                                        <label class="form-check-label" for="mn_vendor_push">Vendor Push</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" name="mn_plant_push[<?= $funId ?>]" value="1" <?= isset($mn_plant_push) && $mn_plant_push ? 'checked' : '' ?>>
+                                                        <label class="form-check-label" for="mn_plant_push">Plant Push</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php if (session('errors')['functionality_' . $funId] ?? false): ?>
+                                        <div class="text-danger text-center mt-1"><?= session('errors')['functionality_' . $funId] ?></div>
+                                    <?php endif; ?>
                                 </div>
-                                <?php if (session('errors')['functionality_' . $funId] ?? false): ?>
-                                    <div class="text-danger text-center mt-1"><?= session('errors')['functionality_' . $funId] ?></div>
-                                <?php endif; ?>
+    
+    
+                            <?php } ?>
+    
+    
+                            <div class="text-center mt-3">
+                                <button type="submit" class="btn btn-primary">Save</button>
                             </div>
-
-
-                        <?php } ?>
-
-
-                        <div class="text-center mt-3">
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

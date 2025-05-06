@@ -152,28 +152,30 @@ $company_id                 = $session->company_id;
         <!-- End Messages Nav -->
         <li class="nav-item dropdown pe-3">
             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="javascript:void(0);" data-bs-toggle="dropdown">
-                <?php if($general_settings->profile_image_show) {?>
-                    <?php if($userType == 'MA'){?>
-                        <?php if($admin->profile_image != ''){?>
-                            <img src="<?=getenv('app.uploadsURL').$admin->profile_image?>" alt="<?=$admin->name?>" class="rounded-circle">
+                <div>
+                    <?php if($general_settings->profile_image_show) {?>
+                        <?php if($userType == 'MA'){?>
+                            <?php if($admin->profile_image != ''){?>
+                                <img src="<?=getenv('app.uploadsURL').$admin->profile_image?>" alt="<?=$admin->name?>" class="rounded-circle">
+                            <?php } else {?>
+                                <img src="<?=getenv('app.NO_IMAGE')?>" alt="<?=$admin->name?>" class="rounded-circle">
+                            <?php }?>
                         <?php } else {?>
-                            <img src="<?=getenv('app.NO_IMAGE')?>" alt="<?=$admin->name?>" class="rounded-circle">
-                        <?php }?>
-                    <?php } else {?>
-                        <?php
-                        $getCompany = $common_model->find_data('ecoex_companies', 'row', ['id' => $company_id]);
-                        if($getCompany){
-                            if($getCompany->profile_image != ''){
-                        ?>
-                                <img src="<?=getenv('app.uploadsURL').'user/'.$getCompany->profile_image?>" alt="<?=$getCompany->company_name?>" class="rounded-circle">
+                            <?php
+                            $getCompany = $common_model->find_data('ecoex_companies', 'row', ['id' => $company_id]);
+                            if($getCompany){
+                                if($getCompany->profile_image != ''){
+                            ?>
+                                    <img src="<?=getenv('app.uploadsURL').'user/'.$getCompany->profile_image?>" alt="<?=$getCompany->company_name?>" class="rounded-circle">
+                                <?php } else {?>
+                                    <img src="<?=getenv('app.NO_IMAGE')?>" alt="<?=$session->name?>" class="rounded-circle">
+                                <?php } ?>
                             <?php } else {?>
                                 <img src="<?=getenv('app.NO_IMAGE')?>" alt="<?=$session->name?>" class="rounded-circle">
                             <?php } ?>
-                        <?php } else {?>
-                            <img src="<?=getenv('app.NO_IMAGE')?>" alt="<?=$session->name?>" class="rounded-circle">
-                        <?php } ?>
+                        <?php }?>
                     <?php }?>
-                <?php }?>
+                </div>
                 <span class="d-none d-md-block dropdown-toggle ps-2" style="font-size: <?=$general_settings->profile_name_font_size?>px;color: <?=$general_settings->profile_name_font_color?>;"><?=$session->name?></span>
             </a><!-- End Profile Iamge Icon -->
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
