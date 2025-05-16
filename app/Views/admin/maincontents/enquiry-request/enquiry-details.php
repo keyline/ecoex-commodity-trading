@@ -512,7 +512,9 @@ $request_edit_fields = [
                                                         foreach ($enquiryProducts as $enquiryProduct) {
 
                                                             if ($enquiryProduct->new_product) {
+
                                                                 $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $enquiryProduct->product_id], 'id,item_category,item_name_ecoex,alias_name,billing_name,item_images,hsn,gst,rate,unit');
+                                                      
                                                                 if ($getItem) {
                                                                     $productName    = (($getItem) ? $getItem->item_name_ecoex : '');
                                                                     $productHSNCode = (($getItem) ? $getItem->hsn : '');
@@ -573,6 +575,7 @@ $request_edit_fields = [
                                                                 </td>
                                                                 <td>
                                                                     <?php
+
                                                                     $unit               = $common_model->find_data('ecomm_units', 'row', ['id' => $getItem->unit], 'name');
                                                                     echo (($unit) ? $unit->name : '');
                                                                     ?>

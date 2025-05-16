@@ -7205,7 +7205,7 @@ class ApiController extends BaseController
     # Ho invoice data swap
     public function swapHoInvoicedata()
     {
-        
+
         $db      = \Config\Database::connect();
         $builder = $db->table('ecomm_enquires');
 
@@ -7248,6 +7248,111 @@ class ApiController extends BaseController
         } catch (\Exception $e) {
             $db->transRollback();
             echo 'swapSubEnquiresData transaction failed: ' . $e->getMessage();
+        }
+    }
+
+    # update Ho invoice date & number
+    public function updateHoInvoicedate()
+    {
+        $db      = \Config\Database::connect();
+        $builder = $db->table('ecomm_enquires');
+
+        $records = $builder
+            ->select(['id', 'invoice_from_ho_date'])
+            ->where('invoice_from_ho_date !=', '')
+            ->where('ho_invoice_date_arr =', '[]')
+            ->orderBy('id', 'ASC')
+            ->get()
+            ->getResult();
+
+        if (empty($records)) {
+            echo 'something is worng.';
+        }
+
+
+        $db->transBegin();
+
+        try {
+            foreach ($records as $row) {
+                $date = (new \DateTime($row->invoice_from_ho_date))->format('Y-m-d');
+                $number = 'SI' . (new \DateTime($date))->getTimestamp();
+
+                $payload = [
+                    'ho_invoice_date_arr' => json_encode([$date]),
+                    'ho_invoice_number_arr' => json_encode([$number]),
+                ];
+
+                // use a fresh builder for each update
+                $upd = $db
+                    ->table('ecomm_enquires')
+                    ->where('id', $row->id)
+                    ->update($payload);
+
+                if (! $upd) {
+                    $err = $db->error();
+                    throw new \Exception("Failed updating ID {$row->id}: {$err['message']}");
+                }
+            }
+
+
+            $db->transCommit();
+            echo 'data successfully migrated ' . count($records) . ' records.';
+        } catch (\Exception $e) {
+            $db->transRollback();
+            echo 'update transaction failed: ' . $e->getMessage();
+        }
+    }
+
+    # update vendor invoice date & number
+    public function updateVendorInvoicedate()
+    {
+        $db      = \Config\Database::connect();
+        $builder = $db->table('ecomm_sub_enquires');
+
+        $records = $builder
+            ->select(['id', 'invoice_to_vendor_date'])
+            ->where('invoice_to_vendor_date !=', '')
+            ->where('vendor_invoice_date_arr =', '[]')
+            ->orderBy('id', 'ASC')
+            ->get()
+            ->getResult();
+
+        if (empty($records)) {
+            echo 'something is worng.';
+        }
+
+
+        $db->transBegin();
+
+        try {
+            foreach ($records as $row) {
+                $date = (new \DateTime($row->invoice_to_vendor_date))->format('Y-m-d');
+                // KE-0044/25-26
+                $number = 'KE-00' . $row->id . '/25-26';
+
+                $payload = [
+                    'vendor_invoice_date_arr' => json_encode([$date]),
+                    'vendor_invoice_number_arr' => json_encode([$number]),
+                ];
+          
+                // use a fresh builder for each update
+                $upd = $db
+                    ->table('ecomm_sub_enquires')
+                    ->where('id', $row->id)
+                    ->update($payload);
+
+                if (! $upd) {
+                    $err = $db->error();
+                    throw new \Exception("Failed updating ID {$row->id}: {$err['message']}");
+                }
+            }
+
+
+            $db->transCommit();
+            echo 'data successfully migrated ' . count($records) . ' records.';
+        } catch (\Exception $e) {
+            $db->transRollback();
+            echo 'update transaction failed: ' . $e->getMessage();
         }
     }
 }
