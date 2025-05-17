@@ -28,6 +28,22 @@ class PlantReportService
         }
     }
 
+    protected function generateFormattedName($companyName, $fromDate, $toDate)
+    {
+        // Format dates to 'dmY'
+        $from = date('dmY', strtotime($fromDate));
+        $to = date('dmY', strtotime($toDate));
+
+        // Format the company name to lowercase with hyphens
+        $formattedCompanyName = strtolower(str_replace(' ', '-', $companyName));
+
+        // Generate a unique identifier
+        $uniqueId = uniqid();
+
+        // Concatenate the components
+        return "{$formattedCompanyName}-{$from}-to-{$to}-{$uniqueId}";
+    }
+
 
     /**
      * Build date range, is_date_range flag, and graph title
@@ -59,10 +75,9 @@ class PlantReportService
             $companyName = $company ? $company['company_name'] : '';
 
             $graph_title = "{$companyName} {$from} To {$to} {$search_range_from[2]}";
+            $file_title  = $this->generateFormattedName($companyName, $from_date, $to_date);
         } else {
-
             $dayId = $requestData['search_day_id'] ?? 'this_month';
-
 
             // then your logic stays the same:
             if ($dayId === 'this_month') {
@@ -70,7 +85,9 @@ class PlantReportService
                 $lastDay            = lastdayMonth($currentMonth);
                 $from_date          = date('Y') . '-' . date('m') . '-01';
                 $to_date            = date('Y') . '-' . date('m') . '-' . $lastDay;
+                $companyName = $company ? $company['company_name'] : '';
                 $graph_title        = (($company) ? $company['company_name'] : '') . " " . date('M') . "-" . date('Y');
+                $file_title  = $this->generateFormattedName($companyName, $from_date, $to_date);
             } elseif ($dayId === 'this_week') {
                 // Determine “today” and weekday (1 = Monday … 7 = Sunday)
                 $dayOfWeek   = date('N');
@@ -88,6 +105,7 @@ class PlantReportService
                 $year        = date('Y', strtotime($from_date));
 
                 $graph_title = "{$companyName} {$titleFrom}–{$titleTo} {$year}";
+                $file_title  = $this->generateFormattedName($companyName, $from_date, $to_date);
             }
 
             $is_date_range      = 0;
@@ -98,6 +116,7 @@ class PlantReportService
             'to_date'        => $to_date,
             'is_date_range'  => $is_date_range ? 1 : 0,
             'graph_title'    => $graph_title,
+            'file_title'     => $file_title,
         ];
     }
 

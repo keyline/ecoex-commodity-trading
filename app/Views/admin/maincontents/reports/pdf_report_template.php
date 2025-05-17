@@ -58,52 +58,86 @@
                 <th>Vehicle No.</th>
             </tr>
         </thead>
+
         <tbody>
             <?php $sr = 1;
             foreach ($response['details_data'] as $enq): ?>
                 <?php
-                // how many rows needed for this group
-                $rowCount = max(1, count($enq['items']));
                 // format main invoice date
                 $mainInvDate = date('d-m-Y', strtotime($enq['invoice_date']));
-                // combine all vendor-invoice dates/nos into HTML line breaks
-                $vendorDates = array_map(function ($inv) {
-                    return date('d-m-Y', strtotime($inv['date']));
-                }, $enq['invoices']);
-                $vendorNums  = array_map(function ($inv) {
-                    return esc($inv['number']);
-                }, $enq['invoices']);
-                $vendorDatesHtml = implode('<br>', $vendorDates);
-                $vendorNumsHtml  = implode('<br>', $vendorNums);
-                // vehicles
-                $vehicles = implode('<br>', array_map('esc', $enq['vehicles']));
+
+                // generate vendor invoice dates as line breaks
+                $vendorDatesHtml = '<ul style="margin:0; padding-left:1em;">';
+                $datesCount = count($enq['invoices']);
+                foreach ($enq['invoices'] as $index => $inv) {
+                    $lineBreak = ($index < $datesCount - 1) ? '<br>' : '';
+                    $vendorDatesHtml .= '<li style="display:inline;">' . date('d-m-Y', strtotime($inv['date'])) . $lineBreak . '</li>';
+                }
+                $vendorDatesHtml .= '</ul>';
+
+                // generate vendor invoice numbers as line breaks
+                $vendorNumsHtml = '<ul style="margin:0; padding-left:1em;">';
+                $numsCount = count($enq['invoices']);
+                foreach ($enq['invoices'] as $index => $inv) {
+                    $lineBreak = ($index < $numsCount - 1) ? '<br>' : '';
+                    $vendorNumsHtml .= '<li style="display:inline;">' . esc($inv['number']) . $lineBreak . '</li>';
+                }
+                $vendorNumsHtml .= '</ul>';
+
+                // generate vehicle numbers as line breaks
+                $vehiclesHtml = '<ul style="margin:0; padding-left:1em;">';
+                $vehCount = count($enq['vehicles']);
+                foreach ($enq['vehicles'] as $index => $veh) {
+                    $lineBreak = ($index < $vehCount - 1) ? '<br>' : '';
+                    $vehiclesHtml .= '<li style="display:inline;">' . esc($veh) . $lineBreak . '</li>';
+                }
+                $vehiclesHtml .= '</ul>';
                 ?>
-                <?php foreach ($enq['items'] as $idx => $item): ?>
-                    <tr class="no-break">
-                        <?php if ($idx === 0): ?>
-                            <td rowspan="<?= $rowCount ?>"><?= $sr++ ?></td>
-                            <td rowspan="<?= $rowCount ?>"><?= esc($enq['enquiry_no']) ?></td>
-                            <td rowspan="<?= $rowCount ?>"><?= esc($enq['plant_name']) ?></td>
-                            <td rowspan="<?= $rowCount ?>"><?= $mainInvDate ?></td>
-                            <td rowspan="<?= $rowCount ?>"><?= esc($enq['invoice_number']) ?></td>
-                            <td rowspan="<?= $rowCount ?>"><?= esc($enq['sub_enquiry_no']) ?></td>
-                            <td rowspan="<?= $rowCount ?>"><?= esc($enq['vendor_name']) ?></td>
-                            <td rowspan="<?= $rowCount ?>"><?= $vendorDatesHtml ?></td>
-                            <td rowspan="<?= $rowCount ?>"><?= $vendorNumsHtml ?></td>
-                        <?php endif; ?>
 
-                        <!-- item columns -->
-                        <td><?= esc($item['item_name']) ?></td>
-                        <td><?= esc($item['weighted_qty']) ?></td>
-                        <td><?= esc($item['weighted_unit']) ?></td>
+                <tr class="no-break">
+                    <!-- Primary details -->
+                    <td><?= $sr++ ?></td>
+                    <td><?= esc($enq['enquiry_no']) ?></td>
+                    <td><?= esc($enq['plant_name']) ?></td>
+                    <td><?= $mainInvDate ?></td>
+                    <td><?= esc($enq['invoice_number']) ?></td>
+                    <td><?= esc($enq['sub_enquiry_no']) ?></td>
+                    <td><?= esc($enq['vendor_name']) ?></td>
+                    <td><?= $vendorDatesHtml ?></td>
+                    <td><?= $vendorNumsHtml ?></td>
 
-                        <?php if ($idx === 0): ?>
-                            <td rowspan="<?= $rowCount ?>"><?= $vehicles ?></td>
-                        <?php endif; ?>
-                    </tr>
-                <?php endforeach; ?>
+                    <!-- Item columns -->
+                    <td>
+                        <ul style="margin:0; padding-left:1em;">
+                            <?php $itemCount = count($enq['items']);
+                            foreach ($enq['items'] as $idx => $item):
+                                $lineBreak = ($idx < $itemCount - 1) ? '<br>' : ''; ?>
+                                <li style="display:inline;"><?= esc($item['item_name']) . $lineBreak ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul style="margin:0; padding-left:1em;">
+                            <?php foreach ($enq['items'] as $idx => $item):
+                                $lineBreak = ($idx < $itemCount - 1) ? '<br>' : ''; ?>
+                                <li style="display:inline;"><?= esc($item['weighted_qty']) . $lineBreak ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul style="margin:0; padding-left:1em;">
+                            <?php foreach ($enq['items'] as $idx => $item):
+                                $lineBreak = ($idx < $itemCount - 1) ? '<br>' : ''; ?>
+                                <li style="display:inline;"><?= esc($item['weighted_unit']) . $lineBreak ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </td>
+                    <td><?= $vehiclesHtml ?></td>
+                </tr>
             <?php endforeach; ?>
         </tbody>
+
+
     </table>
 </body>
 

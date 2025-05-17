@@ -9,6 +9,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 class ReportController extends BaseController
 {
@@ -250,7 +251,7 @@ class ReportController extends BaseController
     }
 
 
-    // @@@@@@@@@@@@@@@@@@@@@@@
+    // @Shubha75
     public function companyReport()
     {
         // $data['moduleDetail']            = $this->data;
@@ -300,12 +301,13 @@ class ReportController extends BaseController
         $page_name              = 'Views/admin/maincontents/reports/pdf_report_template';
         $requestData            = $this->request->getGet();
         $search_company_id      = $requestData['search_company_id'];
-        $date_param             =  $this->plantService->buildReportParams($requestData);
+        $date_param             = $this->plantService->buildReportParams($requestData);
         $details_data           = $this->plantService->getEnquires($search_company_id, $date_param['from_date'], $date_param['to_date']);
         $response = [
             'graph_title'       => $date_param['graph_title'],
             'details_data'      => $details_data,
         ];
+
 
 
         $html = view($page_name, ['response' => $response]);
@@ -324,7 +326,7 @@ class ReportController extends BaseController
         $dompdf->render();
 
         // Output the PDF as a download
-        $dompdf->stream(time() . "report.pdf", ["Attachment" => 1]);
+        $dompdf->stream($date_param['file_title'] . ".pdf", ["Attachment" => 1]);
     }
 
     public function companyReportExportExcel()
@@ -361,52 +363,66 @@ class ReportController extends BaseController
             'Vehicle No.'
         ];
 
-        $col = 'A';
-        foreach ($headers as $header) {
-            $sheet->setCellValue($col . '1', $header);
-            $col++;
+
+        foreach ($headers as $colIndex => $header) {
+            $cell = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIndex + 1) . '1';
+            $sheet->setCellValue($cell, $header);
         }
 
         // Fill data rows
         $row = 2;
-        $sr = 1;
+        $serialNum  = 1;
 
-        foreach ($response['details_data'] as $enq) {
-            foreach ($enq['items'] as $idx => $item) {
-                // Main row data
+        foreach ($response['details_data'] as $enquiry) {
+            foreach ($enquiry['items'] as $idx => $item) {
                 if ($idx === 0) {
-                    $sheet->setCellValue("A{$row}", $sr++);
-                    $sheet->setCellValue("B{$row}", esc($enq['enquiry_no']));
-                    $sheet->setCellValue("C{$row}", esc($enq['plant_name']));
-                    $sheet->setCellValue("D{$row}", date('d-m-Y', strtotime($enq['invoice_date'])));
-                    $sheet->setCellValue("E{$row}", esc($enq['invoice_number']));
-                    $sheet->setCellValue("F{$row}", esc($enq['sub_enquiry_no']));
-                    $sheet->setCellValue("G{$row}", esc($enq['vendor_name']));
+                    // Main enquiry-level columns
+                    $sheet->setCellValue("A{$row}", $serialNum++);
+                    $sheet->setCellValue("B{$row}", $enquiry['enquiry_no']);
+                    $sheet->setCellValue("C{$row}", $enquiry['plant_name']);
+                    $sheet->setCellValue("D{$row}", date('d-m-Y', strtotime($enquiry['invoice_date'])));
+                    $sheet->setCellValue("E{$row}", $enquiry['invoice_number']);
+                    $sheet->setCellValue("F{$row}", $enquiry['sub_enquiry_no']);
+                    $sheet->setCellValue("G{$row}", $enquiry['vendor_name']);
 
-                    // Combine vendor dates and numbers
-                    $vendorDates = array_map(function ($inv) {
-                        return date('d-m-Y', strtotime($inv['date']));
-                    }, $enq['invoices']);
-                    $vendorNums = array_map(function ($inv) {
-                        return $inv['number'];
-                    }, $enq['invoices']);
+                    // Combine vendor invoice dates & numbers
+                    $vendorDates = array_map(fn($inv) => date('d-m-Y', strtotime($inv['date'])), $enquiry['invoices']);
+                    $vendorNums  = array_map(fn($inv) => $inv['number'],                        $enquiry['invoices']);
 
                     $sheet->setCellValue("H{$row}", implode(", ", $vendorDates));
                     $sheet->setCellValue("I{$row}", implode(", ", $vendorNums));
-                    $sheet->setCellValue("M{$row}", implode(", ", $enq['vehicles']));
+
+                    // Vehicles concatenated in column M
+                    $sheet->setCellValue("M{$row}", implode(", ", $enquiry['vehicles']));
                 }
 
-                // Item data
-                $sheet->setCellValue("J{$row}", esc($item['item_name']));
-                $sheet->setCellValue("K{$row}", esc($item['weighted_qty']));
-                $sheet->setCellValue("L{$row}", esc($item['weighted_unit']));
+                // Item-level columns
+                $sheet->setCellValue("J{$row}", $item['item_name']);
+                $sheet->setCellValue("K{$row}", $item['weighted_qty']);
+                $sheet->setCellValue("L{$row}", $item['weighted_unit']);
 
                 $row++;
             }
         }
 
+        //Apply thin black border around every cell in A1:M<lastRow>
+        $lastRow    = $row - 1;
+        $fullRange  = "A1:M{$lastRow}";
+        $borderStyle = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color'       => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        // true = advanced borders (each cell individually) :contentReference[oaicite:0]{index=0}
+        $sheet->getStyle($fullRange)
+            ->applyFromArray($borderStyle, /*$isSupervisor=*/ false);
+
         // Set filename and send as response
-        $filename = time() . 'report.xlsx';
+        $filename = $date_param['file_title'] . '.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header("Content-Disposition: attachment; filename=\"{$filename}\"");
         header('Cache-Control: max-age=0');
