@@ -5,15 +5,17 @@
     <title>Report PDF</title>
     <style>
         table {
-            width: 100%;
+            width: 80%;
             border-collapse: collapse;
         }
 
         th,
         td {
-            padding: 8px;
+            padding: 1px;
             border: 1px solid #000;
             text-align: center;
+            /* font-size: 12px; */
+            vertical-align: top;
         }
 
         th {
@@ -33,6 +35,11 @@
         tbody tr {
             page-break-inside: avoid;
             page-break-after: auto;
+        }
+
+
+        .date_td {
+            width: 95px;
         }
     </style>
 
@@ -99,11 +106,11 @@
                     <td><?= $sr++ ?></td>
                     <td><?= esc($enq['enquiry_no']) ?></td>
                     <td><?= esc($enq['plant_name']) ?></td>
-                    <td><?= $mainInvDate ?></td>
+                    <td class="date_td"><?= $mainInvDate ?></td>
                     <td><?= esc($enq['invoice_number']) ?></td>
                     <td><?= esc($enq['sub_enquiry_no']) ?></td>
                     <td><?= esc($enq['vendor_name']) ?></td>
-                    <td><?= $vendorDatesHtml ?></td>
+                    <td class="date_td"><?= $vendorDatesHtml ?></td>
                     <td><?= $vendorNumsHtml ?></td>
 
                     <!-- Item columns -->
@@ -112,23 +119,23 @@
                             <?php $itemCount = count($enq['items']);
                             foreach ($enq['items'] as $idx => $item):
                                 $lineBreak = ($idx < $itemCount - 1) ? '<br>' : ''; ?>
-                                <li style="display:inline;"><?= esc($item['item_name']) . $lineBreak ?></li>
+                                <li style="display:inline;height:max-content"><?= esc($item['item_name']) . $lineBreak ?></li>
                             <?php endforeach; ?>
                         </ul>
                     </td>
-                    <td>
+                    <td style="vertical-align:top;">
                         <ul style="margin:0; padding-left:1em;">
                             <?php foreach ($enq['items'] as $idx => $item):
                                 $lineBreak = ($idx < $itemCount - 1) ? '<br>' : ''; ?>
-                                <li style="display:inline;"><?= esc($item['weighted_qty']) . $lineBreak ?></li>
+                                <li style="display:inline;height:max-content"><?= esc($item['weighted_qty']) . $lineBreak ?></li>
                             <?php endforeach; ?>
                         </ul>
                     </td>
-                    <td>
+                    <td style="vertical-align:top;">
                         <ul style="margin:0; padding-left:1em;">
                             <?php foreach ($enq['items'] as $idx => $item):
                                 $lineBreak = ($idx < $itemCount - 1) ? '<br>' : ''; ?>
-                                <li style="display:inline;"><?= esc($item['weighted_unit']) . $lineBreak ?></li>
+                                <li style="display:inline;height:max-content"><?= esc($item['weighted_unit']) . $lineBreak ?></li>
                             <?php endforeach; ?>
                         </ul>
                     </td>
