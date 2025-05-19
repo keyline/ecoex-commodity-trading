@@ -15,11 +15,16 @@
             border: 1px solid #000;
             text-align: center;
             /* font-size: 12px; */
-            vertical-align: top;
         }
 
         th {
             background-color: #f2f2f2;
+            vertical-align: middle;
+
+        }
+
+        td {
+            vertical-align: top;
         }
 
         h5 {
@@ -59,9 +64,9 @@
                 <th>Vendor</th>
                 <th>Vendor Invoice Date</th>
                 <th>Vendor Invoice No</th>
-                <th>Item</th>
-                <th>Weight</th>
-                <th>Unit</th>
+                <th style="width: 100px;">Item | Weight | Unit</th>
+                <!-- <th>Weight</th>
+                <th>Unit</th> -->
                 <th>Vehicle No.</th>
             </tr>
         </thead>
@@ -114,31 +119,53 @@
                     <td><?= $vendorNumsHtml ?></td>
 
                     <!-- Item columns -->
-                    <td>
-                        <ul style="margin:0; padding-left:1em;">
+                    <td style="padding: 0;">
+                        <!-- <ul style="margin:0; padding-left:1em;">
                             <?php $itemCount = count($enq['items']);
                             foreach ($enq['items'] as $idx => $item):
                                 $lineBreak = ($idx < $itemCount - 1) ? '<br>' : ''; ?>
                                 <li style="display:inline;height:max-content"><?= esc($item['item_name']) . $lineBreak ?></li>
                             <?php endforeach; ?>
-                        </ul>
+                        </ul> -->
+                        <table border-colslapse="collapse" style="width:100%; margin:0; border: none;">
+                            
+                            <?php $itemCount = count($enq['items']);
+                            foreach ($enq['items'] as $idx => $item):
+                                $lineBreak = ($idx < $itemCount - 1) ? '<br>' : ''; ?>
+                                <tr>
+                                    <td style="padding: 0 12px; border: none; border-bottom: 1px solid #000; border-right: 1px solid #000;"><?= esc($item['item_name']) . $lineBreak ?></td>
+                                    <td style="padding: 0 12px; border: none; border-bottom: 1px solid #000; border-right: 1px solid #000;"><?= esc($item['weighted_qty']) . $lineBreak ?></td>
+                                    <td style="padding: 0 12px; border: none; border-bottom: 1px solid #000; border-right: none" ; border-left: none"><?= esc($item['weighted_unit']) . $lineBreak ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            <!-- <tr>
+                                <td style="padding: 0 15px; border: none; border-bottom: 1px solid #000; border-right: 1px solid #000;">item1 item item</td>
+                                <td style="padding: 0 15px; border: none; border-bottom: 1px solid #000; border-right: 1px solid #000;">220</td>
+                                <td style="padding: 0 15px; border: none; border-bottom: 1px solid #000;">KG</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0 15px; border: none; border-bottom: 1px solid #000; border-right: 1px solid #000;">item1 item item</td>
+                                <td style="padding: 0 15px; border: none; border-bottom: 1px solid #000; border-right: 1px solid #000;">220</td>
+                                <td style="padding: 0 15px; border: none; border-bottom: 1px solid #000; border-right: none">KG</td>
+                            </tr> -->
+                        </table>
                     </td>
-                    <td style="vertical-align:top;">
+                    <!-- <td style="vertical-align:top;">
                         <ul style="margin:0; padding-left:1em;">
                             <?php foreach ($enq['items'] as $idx => $item):
                                 $lineBreak = ($idx < $itemCount - 1) ? '<br>' : ''; ?>
                                 <li style="display:inline;height:max-content"><?= esc($item['weighted_qty']) . $lineBreak ?></li>
                             <?php endforeach; ?>
                         </ul>
-                    </td>
-                    <td style="vertical-align:top;">
+                    </td> -->
+                    <!-- <td style="vertical-align:top;">
                         <ul style="margin:0; padding-left:1em;">
                             <?php foreach ($enq['items'] as $idx => $item):
                                 $lineBreak = ($idx < $itemCount - 1) ? '<br>' : ''; ?>
                                 <li style="display:inline;height:max-content"><?= esc($item['weighted_unit']) . $lineBreak ?></li>
                             <?php endforeach; ?>
                         </ul>
-                    </td>
+                    </td> -->
                     <td><?= $vehiclesHtml ?></td>
                 </tr>
             <?php endforeach; ?>

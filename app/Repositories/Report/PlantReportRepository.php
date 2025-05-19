@@ -114,7 +114,6 @@ class PlantReportRepository
 
     public function filterEnqueryBy(int $companyId, string $fromDate, string $toDate)
     {
-      
         $builder = $this->db->table('view_ho_invoices AS enq');
         $builder->select([
             'enq.enq_id',
