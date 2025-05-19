@@ -1135,9 +1135,7 @@ $request_edit_fields = [
                                             <?php } ?>
                                         <?php } ?>
                                         <?php if ($common_model->checkModuleFunctionAccess(23, 134)) { ?>
-                                            <?php
-                                                var_dump($is_plant_ecoex_confirm);
-                                                if ($row->status >= 6 && $is_plant_ecoex_confirm) { ?>
+                                            <?php if ($row->status >= 6 && $is_plant_ecoex_confirm) { ?>
                                                 <div class="accordion-item">
                                                     <h2 class="accordion-header" id="headingFive">
                                                         <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive"> Invoice From HO </button>
