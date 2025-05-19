@@ -1785,7 +1785,7 @@ class EnquiryRequestController extends BaseController
     {
         foreach ($items as $item) {
             // if property doesn't exist or value differs, bail out
-            if (!isset($item->$prop) || $item->$prop !== $matchVal) {
+            if (!isset($item->$prop) || $item->$prop != $matchVal) {
                 return false;
             }
         }
