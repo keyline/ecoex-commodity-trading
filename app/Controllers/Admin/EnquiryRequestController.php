@@ -1374,7 +1374,7 @@ class EnquiryRequestController extends BaseController
 
 
         // _________________________________________  Code update by shubha on :28/03/25   ______________________________________________
-  
+
         // Get post data and file upload from the request
         $postData = $this->request->getPost();
 
@@ -1775,6 +1775,23 @@ class EnquiryRequestController extends BaseController
         }
     }
 
+    /**
+     * @param object[] $items    List of stdClass (or any) objects
+     * @param string   $prop     Name of the property to test
+     * @param mixed    $matchVal The value you want every item’s property to equal
+     * @return bool              True if EVERY object has $object->$prop === $matchVal
+     */
+    function allItemsMatch(array $items, string $prop, $matchVal): bool
+    {
+        foreach ($items as $item) {
+            // if property doesn't exist or value differs, bail out
+            if (!isset($item->$prop) || $item->$prop !== $matchVal) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public function enquiryDetails($enq_id)
     {
         if (!$this->common_model->checkModuleFunctionAccess(23, 109)) {
@@ -1944,9 +1961,10 @@ class EnquiryRequestController extends BaseController
 
         $groupBy[0]                 = 'sub_enquiry_no';
         $data['subenquires']        = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enq_id], '', '', $groupBy);
-
+        $data['is_plant_ecoex_confirm'] = $this->allItemsMatch($data['subenquires'], 'is_plant_ecoex_confirm', 2);
         $title                      = 'View Enquiry Details Of ' . $data['row']->enquiry_no;
         $page_name                  = 'enquiry-request/enquiry-details';
+       
         echo $this->layout_after_login($title, $page_name, $data);
     }
 

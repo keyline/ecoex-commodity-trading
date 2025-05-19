@@ -514,7 +514,7 @@ $request_edit_fields = [
                                                             if ($enquiryProduct->new_product) {
 
                                                                 $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $enquiryProduct->product_id], 'id,item_category,item_name_ecoex,alias_name,billing_name,item_images,hsn,gst,rate,unit');
-                                                      
+
                                                                 if ($getItem) {
                                                                     $productName    = (($getItem) ? $getItem->item_name_ecoex : '');
                                                                     $productHSNCode = (($getItem) ? $getItem->hsn : '');
@@ -1135,7 +1135,7 @@ $request_edit_fields = [
                                             <?php } ?>
                                         <?php } ?>
                                         <?php if ($common_model->checkModuleFunctionAccess(23, 134)) { ?>
-                                            <?php if ($row->status >= 6) { ?>
+                                            <?php if ($row->status >= 6 && $is_plant_ecoex_confirm) { ?>
                                                 <div class="accordion-item">
                                                     <h2 class="accordion-header" id="headingFive">
                                                         <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive"> Invoice From HO </button>
@@ -1146,6 +1146,7 @@ $request_edit_fields = [
                                                             <?php if ($getEnquiry) { ?>
                                                                 <div class="row mt-3">
                                                                     <div class="col-md-6 text-center">
+                                                                        <!-- @Shubha75  -->
                                                                         <?php if ($getEnquiry->is_invoice_from_ho == 0) { ?>
                                                                             <?php if ($userType == 'MA') { ?>
                                                                                 <a href="<?= base_url('admin/enquiry-requests/request-invoice-to-HO-from-ecoex/' . encoded($getEnquiry->id) . '/' . encoded($sub_enquiry_no)) ?>" class="btn btn-warning btn-sm" onclick="return confirm('Do you want to sent request for invoice to HO ?');"><i class="fa-solid fa-code-pull-request"></i> Request For Invoice To HO</a>
