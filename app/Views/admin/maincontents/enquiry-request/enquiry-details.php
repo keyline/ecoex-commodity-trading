@@ -449,7 +449,7 @@ $request_edit_fields = [
                                 <h5 class="fw-bold text-success">Longitude</h5>
                                 <h6><?= $row->longitude ?></h6>
                             </div>
-                            
+
                             <div class="col-md-6">
                                 <h5 class="fw-bold text-success">Device Model</h5>
                                 <h6><?= $row->device_model ?></h6>
@@ -1337,7 +1337,6 @@ $request_edit_fields = [
                                                         </h2>
                                                         <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#accordionExample">
                                                             <div class="accordion-body">
-
                                                                 <?php
                                                                 if ($subenquiry) { ?>
                                                                     <div class="row mt-3">
@@ -1363,7 +1362,9 @@ $request_edit_fields = [
                                                                         </div>
                                                                         <div class="col-md-6 text-center">
                                                                             <?php if ($subenquiry->payment_amount > 0) { ?>
-                                                                                <?php if ($subenquiry->is_approve_vendor_payment == 0) { ?>
+
+                                                                                <?php
+                                                                                if ($subenquiry->is_approve_vendor_payment == 0) { ?>
                                                                                     <a href="<?= base_url('admin/enquiry-requests/vendor-payment-approve/' . encoded($sub_enquiry_no)) ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to approve vendor payment ?');"><i class="fas fa-check"></i> Approve Vendor Payment</a>
                                                                                 <?php } else { ?>
                                                                                     <h4 class="text-success fw-bold">Vendor Payment Approved Successfully By Ecoex</h4>

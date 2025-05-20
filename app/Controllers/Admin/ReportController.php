@@ -7,6 +7,7 @@ use App\Models\CommonModel;
 use App\Services\Report\PlantReportService;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Dompdf\Exception as DompdfException;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -314,19 +315,29 @@ class ReportController extends BaseController
         $html .= '<style>tr, td { page-break-inside: avoid; }</style>';
         // pr($html);
 
+        try {
+            // Initialize Dompdf
+            $options = new Options();
+            $options->set('isHtml5ParserEnabled', true);
+            $options->set('isRemoteEnabled', true);
 
-        // Initialize Dompdf
-        $options = new Options();
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('isRemoteEnabled', true);
 
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render();
+            $dompdf = new Dompdf($options);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'landscape');
+            $dompdf->render();
 
-        // Output the PDF as a download
-        $dompdf->stream($date_param['file_title'] . ".pdf", ["Attachment" => 1]);
+            // Output the PDF as a download
+            $dompdf->stream($date_param['file_title'] . ".pdf", ["Attachment" => 0]); # 1 = download, 0 = view in browser
+        } catch (DompdfException $e) {
+            // Dompdf-specific problems (fonts, parsing, layout…)
+            log_message('error', 'PDF generation failed: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            // Any other PHP-level error
+            log_message('critical', 'Unexpected error in PDF export: ' . $e->getMessage());
+        
+        
+        }
     }
 
     public function companyReportExportExcel()
