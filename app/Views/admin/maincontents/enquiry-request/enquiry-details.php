@@ -449,6 +449,7 @@ $request_edit_fields = [
                                 <h5 class="fw-bold text-success">Longitude</h5>
                                 <h6><?= $row->longitude ?></h6>
                             </div>
+                            
                             <div class="col-md-6">
                                 <h5 class="fw-bold text-success">Device Model</h5>
                                 <h6><?= $row->device_model ?></h6>
