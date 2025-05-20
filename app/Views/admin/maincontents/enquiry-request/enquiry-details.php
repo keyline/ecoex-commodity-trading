@@ -1159,7 +1159,9 @@ $request_edit_fields = [
                                                                     <div class="col-md-6 text-center">
                                                                         <?php if ($getEnquiry->is_invoice_from_ho == 1) { ?>
                                                                             <h4 class="text-warning fw-bold">HO Still Not Uploaded Invoice</h4>
-                                                                            <?php if ($userType == 'COMPANY') {
+                                                                            <?php
+
+                                                                            if ($userType == 'COMPANY') {
                                                                                 include_once('./app/Views/admin/maincontents/enquiry-request/multipleHoInvoice.php');
                                                                             ?>
                                                                                 <!-- old code 21_4_25 -->
@@ -1250,7 +1252,7 @@ $request_edit_fields = [
 
                                                                             <?php
                                                                             if (!count($vendor_invoice_file_arr)) {
-                                                                                include_once('./app/Views/admin/maincontents/enquiry-request/multipleVendorInvoice.php');
+                                                                                include('./app/Views/admin/maincontents/enquiry-request/multipleVendorInvoice.php');
                                                                             ?>
 
                                                                                 <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
@@ -1839,7 +1841,7 @@ $request_edit_fields = [
 
         // Ho multi invoice
         $(function() {
-            var hoMaxItems = 10; // max rows allowed
+            var hoMaxItems = 1; // max rows allowed
 
             // Add new HO row
             $('#hoInvoiceItemsContainer').on('click', '.add-ho-row', function() {
@@ -1875,41 +1877,92 @@ $request_edit_fields = [
             });
         });
 
+        // #########################################################
         // vendor multi invoice
 
-        var maxItems = 10; // Maximum number of invoice items allowed
+        // var maxItems = 10; // Maximum number of invoice items allowed
 
         // Add new row
-        $('#invoiceItemsContainer').on('click', '.add-row', function() {
-            var container = $('#invoiceItemsContainer');
-            var itemCount = container.find('.invoiceItem').length;
+        // $('#invoiceItemsContainer').on('click', '.add-row', function() {
+        //     var container = $('#invoiceItemsContainer');
+        //     var itemCount = container.find('.invoiceItem').length;
 
-            if (itemCount < maxItems) {
-                var newRow = $(this).closest('.invoiceItem').clone();
-                newRow.find('input').val(''); // Clear inputs
-                // Change add button to remove button
-                newRow.find('.add-row')
-                    .removeClass('btn-success')
-                    .addClass('btn-danger')
-                    .html('<i class="fas fa-minus"></i>')
-                    .removeClass('add-row')
-                    .addClass('remove-row');
-                container.append(newRow);
-            } else {
-                alert('Maximum of ' + maxItems + ' invoice items allowed.');
-            }
+        //     if (itemCount < maxItems) {
+        //         var newRow = $(this).closest('.invoiceItem').clone();
+        //         newRow.find('input').val(''); // Clear inputs
+        //         // Change add button to remove button
+        //         newRow.find('.add-row')
+        //             .removeClass('btn-success')
+        //             .addClass('btn-danger')
+        //             .html('<i class="fas fa-minus"></i>')
+        //             .removeClass('add-row')
+        //             .addClass('remove-row');
+        //         container.append(newRow);
+        //     } else {
+        //         alert('Maximum of ' + maxItems + ' invoice items allowed.');
+        //     }
+        // });
+
+        $(function() {
+            var maxItems = 10;
+
+            // delegate on any .invoiceItemsContainer
+            $('.invoiceItemsContainer')
+                .on('click', '.add-row', function() {
+                    var $container = $(this).closest('.invoiceItemsContainer');
+                    var count = $container.find('.invoiceItem').length;
+
+                    if (count < maxItems) {
+                        var $newRow = $(this).closest('.invoiceItem').clone();
+                        $newRow.find('input').val(''); // clear values
+
+                        // switch + to – button
+                        $newRow.find('.add-row')
+                            .removeClass('btn-success add-row')
+                            .addClass('btn-danger remove-row')
+                            .html('<i class="fas fa-minus"></i>');
+
+                        $container.append($newRow);
+                    } else {
+                        alert('Maximum of ' + maxItems + ' invoice items allowed.');
+                    }
+                })
+                .on('click', '.remove-row', function() {
+                    var $container = $(this).closest('.invoiceItemsContainer');
+                    if ($container.find('.invoiceItem').length > 1) {
+                        $(this).closest('.invoiceItem').remove();
+                    } else {
+                        alert('At least one invoice item is required.');
+                    }
+                });
         });
 
         // Remove row
-        $('#invoiceItemsContainer').on('click', '.remove-row', function() {
-            if ($('#invoiceItemsContainer .invoiceItem').length > 1) {
+        // $('#invoiceItemsContainer').on('click', '.remove-row', function() {
+        //     if ($('#invoiceItemsContainer .invoiceItem').length > 1) {
+        //         $(this).closest('.invoiceItem').remove();
+        //     } else {
+        //         alert('At least one invoice item is required.');
+        //     }
+        // });
+
+
+        $('.invoiceItemsContainer').on('click', '.remove-row', function() {
+            // find the specific container this button lives in
+            var $container = $(this).closest('.invoiceItemsContainer');
+
+            // only remove if more than one row remains in this container
+            if ($container.find('.invoiceItem').length > 1) {
                 $(this).closest('.invoiceItem').remove();
             } else {
                 alert('At least one invoice item is required.');
             }
         });
 
+
+
         // vendor multi invoice
+        // #########################################################
 
     });
 </script>
