@@ -329,30 +329,12 @@ class ReportController extends BaseController
 
 
             // Output the PDF as a download
-            $dompdf->stream($date_param['file_title'] . ".pdf", ["Attachment" => 0]); # 1 = download, 0 = view in browser
+            $dompdf->stream($date_param['file_title'] . ".pdf", ["Attachment" => 1]); # 1 = download, 0 = view in browser
             exit; // important — prevents CI4 from appending its own HTML wrapper
-            /*
-            // alternative Output the PDF as a download
-            // 3. Clear any existing output buffers
-            while (ob_get_level() > 0) {
-                ob_end_clean();
-            }
 
-            // 4. Capture the PDF binary
-            $pdfOutput = $dompdf->output();
-
-            // 5. Return a CI4 Response with proper headers
-            return service('response')
-                ->setContentType('application/pdf')
-                ->setHeader('Content-Disposition', 'inline; filename="company_report.pdf"')
-                ->setBody($pdfOutput);
-
-            */
         } catch (DompdfException $e) {
-            // Dompdf-specific problems (fonts, parsing, layout…)
             log_message('error', 'PDF generation failed: ' . $e->getMessage());
         } catch (\Throwable $e) {
-            // Any other PHP-level error
             log_message('critical', 'Unexpected error in PDF export: ' . $e->getMessage());
         }
     }
