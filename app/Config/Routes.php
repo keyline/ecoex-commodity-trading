@@ -241,6 +241,9 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 	// reports
 	$routes->match(['get', 'post'], "reports/analytics-report", "ReportController::analyticsReport");
 	$routes->match(['get', 'post'], "reports/get-company-product", "ReportController::getCompanyProduct");
+	$routes->match(['get', 'post'], "company-report", "ReportController::companyReport");
+	$routes->get('company-report-export/pdf',   'ReportController::companyReportExportPdf');
+	$routes->get('company-report-export/excel', 'ReportController::companyReportExportExcel');
 	// reports
 });
 /* ADMIN PANEL */
@@ -334,7 +337,7 @@ $routes->group("api", ["namespace" => "App\Controllers\Api"], function ($routes)
 	$routes->match(['post'], "vendor-process-request-pickup-scheduled", "ApiController::vendorProcessRequestPickupScheduled");
 	$routes->match(['post'], "vendor-process-request-vehicle-placed", "ApiController::vendorProcessRequestVehiclePlaced");
 	$routes->match(['post'], "vendor-process-request-material-weighted", "ApiController::vendorProcessRequestMaterialWeighted");
-	
+
 	$routes->match(['post'], "vendor-process-request-invoice-payment", "ApiController::vendorProcessRequestInvoicePayment");
 	$routes->match(['post'], "vendor-process-request-vehicle-despatch", "ApiController::vendorProcessRequestVehicleDespatch");
 	// assigned request
@@ -344,5 +347,7 @@ $routes->group("api", ["namespace" => "App\Controllers\Api"], function ($routes)
 
 	$routes->match(['get'], "swap-sub-enquires-data", "ApiController::swapSubenquiresdata");
 	$routes->match(['get'], "swap-ho-invoice-data", "ApiController::swapHoInvoicedata");
+	$routes->match(['get'], "update-ho-invoice-date", "ApiController::updateHoInvoicedate");
+	$routes->match(['get'], "update-vendor-invoice-date", "ApiController::updateVendorInvoicedate");
 });
 /* API */

@@ -33,7 +33,8 @@ class VendorInvoiceService
             // Cast to float, format with 2 decimals, dot as decimal separator, no thousands sep
             return number_format((float)$val, 2, '.', '');
         },  $postData['vendor_invoice_amount']);
-        
+        $invoice_number             = $postData['vendor_inv_number'];
+        $invoice_date               = $postData['vendor_inv_date'];
         $vendor_invoice_file        = [];
       
 
@@ -59,6 +60,8 @@ class VendorInvoiceService
                     'status'                           => 8.8,
                     'vendor_invoice_amount_arr'        => json_encode($invoice_amount),
                     'vendor_invoice_file_arr'          => json_encode($vendor_invoice_file),
+                    'vendor_invoice_number_arr'        => json_encode($invoice_number),
+                    'vendor_invoice_date_arr'          => json_encode($invoice_date),
                     'invoice_to_vendor_date'           => date('Y-m-d H:i:s'),
                 ];
 

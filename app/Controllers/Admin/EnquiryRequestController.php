@@ -1182,6 +1182,8 @@ class EnquiryRequestController extends BaseController
     }
     public function uploadInvoiceByHO()
     {
+
+
         $file_arr                   = [];
         $enq_id                     = decoded($this->request->getPost('enq_id'));
         $sub_enquiry_no             = decoded($this->request->getPost('sub_enquiry_no'));
@@ -1193,6 +1195,11 @@ class EnquiryRequestController extends BaseController
                 // Cast to float, format with 2 decimals, dot as decimal separator, no thousands sep
                 return number_format((float)$val, 2, '.', '');
             },  $this->request->getPost('ho_payable_amount'));
+
+            $invoice_number = $this->request->getPost('ho_inv_number');
+
+            $invoice_date = $this->request->getPost('ho_inv_date');
+
             $files = $this->request->getFileMultiple('invoice_file_from_ho');
 
 
@@ -1229,8 +1236,10 @@ class EnquiryRequestController extends BaseController
                 'is_invoice_from_ho'                => 2,
                 // 'ho_payable_amount'                 => $this->request->getPost('ho_payable_amount'),
                 // 'invoice_file_from_ho'              => $invoice_file_from_ho,
+                'ho_invoice_number_arr'             => json_encode($invoice_number),
                 'ho_payable_amount_arr'             => json_encode($invoice_amount),
                 'invoice_file_from_ho_arr'          => json_encode($file_arr),
+                'ho_invoice_date_arr'              => json_encode($invoice_date),
                 'invoice_from_ho_date'              => date('Y-m-d H:i:s'),
             ];
             $this->common_model->save_data('ecomm_enquires', $fields, $enq_id, 'id');
@@ -1766,6 +1775,23 @@ class EnquiryRequestController extends BaseController
         }
     }
 
+    /**
+     * @param object[] $items    List of stdClass (or any) objects
+     * @param string   $prop     Name of the property to test
+     * @param mixed    $matchVal The value you want every item’s property to equal
+     * @return bool              True if EVERY object has $object->$prop === $matchVal
+     */
+    function allItemsMatch(array $items, string $prop, $matchVal): bool
+    {
+        foreach ($items as $item) {
+            // if property doesn't exist or value differs, bail out
+            if (!isset($item->$prop) || $item->$prop != $matchVal) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public function enquiryDetails($enq_id)
     {
         if (!$this->common_model->checkModuleFunctionAccess(23, 109)) {
@@ -1935,9 +1961,10 @@ class EnquiryRequestController extends BaseController
 
         $groupBy[0]                 = 'sub_enquiry_no';
         $data['subenquires']        = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enq_id], '', '', $groupBy);
-
+        $data['is_plant_ecoex_confirm'] = $this->allItemsMatch($data['subenquires'], 'is_plant_ecoex_confirm', 2);
         $title                      = 'View Enquiry Details Of ' . $data['row']->enquiry_no;
         $page_name                  = 'enquiry-request/enquiry-details';
+       
         echo $this->layout_after_login($title, $page_name, $data);
     }
 
@@ -2095,7 +2122,7 @@ class EnquiryRequestController extends BaseController
         // $item_qty = $this->request->getPost('item_qty');
         // $item_remarks = $this->request->getPost('item_remarks');
 
-       
+
 
         $updated =  $this->db->table('ecomm_company_items')
             ->where('id', $id)

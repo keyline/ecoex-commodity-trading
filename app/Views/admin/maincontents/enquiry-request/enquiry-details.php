@@ -453,6 +453,7 @@ $request_edit_fields = [
                                 <h5 class="fw-bold text-success">Longitude</h5>
                                 <h6><?= $row->longitude ?></h6>
                             </div>
+
                             <div class="col-md-6">
                                 <h5 class="fw-bold text-success">Device Model</h5>
                                 <h6><?= $row->device_model ?></h6>
@@ -516,7 +517,9 @@ $request_edit_fields = [
                                                         foreach ($enquiryProducts as $enquiryProduct) {
 
                                                             if ($enquiryProduct->new_product) {
+
                                                                 $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $enquiryProduct->product_id], 'id,item_category,item_name_ecoex,alias_name,billing_name,item_images,hsn,gst,rate,unit');
+
                                                                 if ($getItem) {
                                                                     $productName    = (($getItem) ? $getItem->item_name_ecoex : '');
                                                                     $productHSNCode = (($getItem) ? $getItem->hsn : '');
@@ -577,6 +580,7 @@ $request_edit_fields = [
                                                                 </td>
                                                                 <td>
                                                                     <?php
+
                                                                     $unit               = $common_model->find_data('ecomm_units', 'row', ['id' => $getItem->unit], 'name');
                                                                     echo (($unit) ? $unit->name : '');
                                                                     ?>
@@ -1136,7 +1140,7 @@ $request_edit_fields = [
                                             <?php } ?>
                                         <?php } ?>
                                         <?php if ($common_model->checkModuleFunctionAccess(23, 134)) { ?>
-                                            <?php if ($row->status >= 6) { ?>
+                                            <?php if ($row->status >= 6 && $is_plant_ecoex_confirm) { ?>
                                                 <div class="accordion-item">
                                                     <h2 class="accordion-header" id="headingFive">
                                                         <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive"> Invoice From HO </button>
@@ -1147,6 +1151,7 @@ $request_edit_fields = [
                                                             <?php if ($getEnquiry) { ?>
                                                                 <div class="row mt-3">
                                                                     <div class="col-md-6 text-center">
+                                                                        <!-- @Shubha75  -->
                                                                         <?php if ($getEnquiry->is_invoice_from_ho == 0) { ?>
                                                                             <?php if ($userType == 'MA') { ?>
                                                                                 <a href="<?= base_url('admin/enquiry-requests/request-invoice-to-HO-from-ecoex/' . encoded($getEnquiry->id) . '/' . encoded($sub_enquiry_no)) ?>" class="btn btn-warning btn-sm" onclick="return confirm('Do you want to sent request for invoice to HO ?');"><i class="fa-solid fa-code-pull-request"></i> Request For Invoice To HO</a>
@@ -1159,7 +1164,9 @@ $request_edit_fields = [
                                                                     <div class="col-md-6 text-center">
                                                                         <?php if ($getEnquiry->is_invoice_from_ho == 1) { ?>
                                                                             <h4 class="text-warning fw-bold">HO Still Not Uploaded Invoice</h4>
-                                                                            <?php if ($userType == 'COMPANY') {
+                                                                            <?php
+
+                                                                            if ($userType == 'COMPANY') {
                                                                                 include_once('./app/Views/admin/maincontents/enquiry-request/multipleHoInvoice.php');
                                                                             ?>
                                                                                 <!-- old code 21_4_25 -->
@@ -1182,6 +1189,8 @@ $request_edit_fields = [
                                                                         <?php } elseif ($getEnquiry->is_invoice_from_ho == 2) {
                                                                             $ho_payable_amount_arr = json_decode($getEnquiry->ho_payable_amount_arr, true);
                                                                             $ho_invoice_file_arr = json_decode($getEnquiry->invoice_file_from_ho_arr, true);
+                                                                            $ho_invoice_number_arr = json_decode($getEnquiry->ho_invoice_number_arr, true);
+                                                                            $ho_invoice_date_arr = json_decode($getEnquiry->ho_invoice_date_arr, true);
 
                                                                         ?>
                                                                             <h4 class="text-success fw-bold">Invoice Uploaded By HO Succesfully</h4>
@@ -1193,12 +1202,27 @@ $request_edit_fields = [
 
                                                                             <?php for ($i = 0; $i < count($ho_invoice_file_arr); $i++) { ?>
 
-                                                                                <div class="invoice_div mb-3" style="margin-bottom: 5px; border: 1px solid #ccc; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 300px; margin: auto; border-radius: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); background: #f9f9f9;">
+                                                                                <!-- <div class="invoice_div mb-3" style="margin-bottom: 5px; border: 1px solid #ccc; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 300px; margin: auto; border-radius: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); background: #f9f9f9;">
                                                                                     <h5 style="margin-bottom: 10px;"><i class="fa fa-inr"></i> <?= number_format($ho_payable_amount_arr[$i], 2) ?></h5>
                                                                                     <a download href="<?= getenv('app.uploadsURL') . 'enquiry/' . $ho_invoice_file_arr[$i] ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');" style="padding: 8px 12px; text-decoration: none;">
                                                                                         <i class="fas fa-download"></i>
                                                                                     </a>
+                                                                                </div> -->
+
+                                                                                <div class="invoice_div mb-3" style="margin-bottom: 5px; border: 1px solid #ccc; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 300px; margin: auto; border-radius: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); background: #f9f9f9;">
+                                                                                    <?php if (count($ho_invoice_number_arr)): ?>
+                                                                                        <span style="margin-bottom: 10px;"> <b>Inv Num:</b> <?= $ho_invoice_number_arr[$i] ?></span>
+                                                                                    <?php endif; ?>
+                                                                                    <h5 style="margin-bottom: 10px;"><i class="fa fa-inr"></i> <?= number_format($ho_payable_amount_arr[$i], 2) ?></h5>
+                                                                                    <?php if (count($ho_invoice_date_arr)): ?>
+                                                                                        <span style="margin-bottom: 10px;"> <b>Date:</b> <?= date_format(date_create($ho_invoice_date_arr[$i]), 'd-m-Y')
+                                                                                                                                            ?></span>
+                                                                                    <?php endif; ?>
+                                                                                    <a download href="<?= getenv('app.uploadsURL') . 'enquiry/' . $ho_invoice_file_arr[$i] ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');" style="padding: 8px 12px; text-decoration: none;">
+                                                                                        <i class="fas fa-download"></i>
+                                                                                    </a>
                                                                                 </div>
+
 
                                                                             <?php } ?>
                                                                             <h5><?= date_format(date_create($getEnquiry->invoice_from_ho_date), "M d, Y h:i A") ?></h5>
@@ -1224,13 +1248,16 @@ $request_edit_fields = [
                                                                 <?php if ($subenquiry) {
                                                                     $vendor_invoice_file_arr = json_decode($subenquiry->vendor_invoice_file_arr, true);
                                                                     $vendor_invoice_amount_arr = json_decode($subenquiry->vendor_invoice_amount_arr, true);
+                                                                    $vendor_invoice_number_arr = json_decode($subenquiry->vendor_invoice_number_arr, true);
+                                                                    $vendor_invoice_date_arr = json_decode($subenquiry->vendor_invoice_date_arr, true);
+
                                                                 ?>
                                                                     <div class="row mt-3">
                                                                         <div class="col-md-8 text-center">
 
                                                                             <?php
                                                                             if (!count($vendor_invoice_file_arr)) {
-                                                                                include_once('./app/Views/admin/maincontents/enquiry-request/multipleVendorInvoice.php');
+                                                                                include('./app/Views/admin/maincontents/enquiry-request/multipleVendorInvoice.php');
                                                                             ?>
 
                                                                                 <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
@@ -1278,7 +1305,13 @@ $request_edit_fields = [
                                                                                 <?php for ($i = 0; $i < count($vendor_invoice_file_arr); $i++) { ?>
 
                                                                                     <div class="invoice_div mb-3" style="margin-bottom: 5px; border: 1px solid #ccc; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 300px; margin: auto; border-radius: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); background: #f9f9f9;">
+                                                                                        <?php if (count($vendor_invoice_number_arr)): ?>
+                                                                                            <span style="margin-bottom: 10px;"> <b>Inv Num:</b> <?= $vendor_invoice_number_arr[$i] ?></span>
+                                                                                        <?php endif; ?>
                                                                                         <h5 style="margin-bottom: 10px;"><i class="fa fa-inr"></i> <?= number_format($vendor_invoice_amount_arr[$i], 2) ?></h5>
+                                                                                        <?php if (count($vendor_invoice_date_arr)): ?>
+                                                                                            <span style="margin-bottom: 10px;"> <b>Date:</b> <?= date_format(date_create($vendor_invoice_date_arr[$i]), 'd-m-Y') ?></span>
+                                                                                        <?php endif; ?>
                                                                                         <a download href="<?= getenv('app.uploadsURL') . 'enquiry/' . $vendor_invoice_file_arr[$i] ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');" style="padding: 8px 12px; text-decoration: none;">
                                                                                             <i class="fas fa-download"></i>
                                                                                         </a>
@@ -1308,7 +1341,6 @@ $request_edit_fields = [
                                                         </h2>
                                                         <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#accordionExample">
                                                             <div class="accordion-body">
-
                                                                 <?php
                                                                 if ($subenquiry) { ?>
                                                                     <div class="row mt-3">
@@ -1334,7 +1366,9 @@ $request_edit_fields = [
                                                                         </div>
                                                                         <div class="col-md-6 text-center">
                                                                             <?php if ($subenquiry->payment_amount > 0) { ?>
-                                                                                <?php if ($subenquiry->is_approve_vendor_payment == 0) { ?>
+
+                                                                                <?php
+                                                                                if ($subenquiry->is_approve_vendor_payment == 0) { ?>
                                                                                     <a href="<?= base_url('admin/enquiry-requests/vendor-payment-approve/' . encoded($sub_enquiry_no)) ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to approve vendor payment ?');"><i class="fas fa-check"></i> Approve Vendor Payment</a>
                                                                                 <?php } else { ?>
                                                                                     <h4 class="text-success fw-bold">Vendor Payment Approved Successfully By Ecoex</h4>
@@ -1813,7 +1847,7 @@ $request_edit_fields = [
 
         // Ho multi invoice
         $(function() {
-            var hoMaxItems = 10; // max rows allowed
+            var hoMaxItems = 1; // max rows allowed
 
             // Add new HO row
             $('#hoInvoiceItemsContainer').on('click', '.add-ho-row', function() {
@@ -1849,41 +1883,92 @@ $request_edit_fields = [
             });
         });
 
+        // #########################################################
         // vendor multi invoice
 
-        var maxItems = 10; // Maximum number of invoice items allowed
+        // var maxItems = 10; // Maximum number of invoice items allowed
 
         // Add new row
-        $('#invoiceItemsContainer').on('click', '.add-row', function() {
-            var container = $('#invoiceItemsContainer');
-            var itemCount = container.find('.invoiceItem').length;
+        // $('#invoiceItemsContainer').on('click', '.add-row', function() {
+        //     var container = $('#invoiceItemsContainer');
+        //     var itemCount = container.find('.invoiceItem').length;
 
-            if (itemCount < maxItems) {
-                var newRow = $(this).closest('.invoiceItem').clone();
-                newRow.find('input').val(''); // Clear inputs
-                // Change add button to remove button
-                newRow.find('.add-row')
-                    .removeClass('btn-success')
-                    .addClass('btn-danger')
-                    .html('<i class="fas fa-minus"></i>')
-                    .removeClass('add-row')
-                    .addClass('remove-row');
-                container.append(newRow);
-            } else {
-                alert('Maximum of ' + maxItems + ' invoice items allowed.');
-            }
+        //     if (itemCount < maxItems) {
+        //         var newRow = $(this).closest('.invoiceItem').clone();
+        //         newRow.find('input').val(''); // Clear inputs
+        //         // Change add button to remove button
+        //         newRow.find('.add-row')
+        //             .removeClass('btn-success')
+        //             .addClass('btn-danger')
+        //             .html('<i class="fas fa-minus"></i>')
+        //             .removeClass('add-row')
+        //             .addClass('remove-row');
+        //         container.append(newRow);
+        //     } else {
+        //         alert('Maximum of ' + maxItems + ' invoice items allowed.');
+        //     }
+        // });
+
+        $(function() {
+            var maxItems = 10;
+
+            // delegate on any .invoiceItemsContainer
+            $('.invoiceItemsContainer')
+                .on('click', '.add-row', function() {
+                    var $container = $(this).closest('.invoiceItemsContainer');
+                    var count = $container.find('.invoiceItem').length;
+
+                    if (count < maxItems) {
+                        var $newRow = $(this).closest('.invoiceItem').clone();
+                        $newRow.find('input').val(''); // clear values
+
+                        // switch + to – button
+                        $newRow.find('.add-row')
+                            .removeClass('btn-success add-row')
+                            .addClass('btn-danger remove-row')
+                            .html('<i class="fas fa-minus"></i>');
+
+                        $container.append($newRow);
+                    } else {
+                        alert('Maximum of ' + maxItems + ' invoice items allowed.');
+                    }
+                })
+                .on('click', '.remove-row', function() {
+                    var $container = $(this).closest('.invoiceItemsContainer');
+                    if ($container.find('.invoiceItem').length > 1) {
+                        $(this).closest('.invoiceItem').remove();
+                    } else {
+                        alert('At least one invoice item is required.');
+                    }
+                });
         });
 
         // Remove row
-        $('#invoiceItemsContainer').on('click', '.remove-row', function() {
-            if ($('#invoiceItemsContainer .invoiceItem').length > 1) {
+        // $('#invoiceItemsContainer').on('click', '.remove-row', function() {
+        //     if ($('#invoiceItemsContainer .invoiceItem').length > 1) {
+        //         $(this).closest('.invoiceItem').remove();
+        //     } else {
+        //         alert('At least one invoice item is required.');
+        //     }
+        // });
+
+
+        $('.invoiceItemsContainer').on('click', '.remove-row', function() {
+            // find the specific container this button lives in
+            var $container = $(this).closest('.invoiceItemsContainer');
+
+            // only remove if more than one row remains in this container
+            if ($container.find('.invoiceItem').length > 1) {
                 $(this).closest('.invoiceItem').remove();
             } else {
                 alert('At least one invoice item is required.');
             }
         });
 
+
+
         // vendor multi invoice
+        // #########################################################
 
     });
 </script>
