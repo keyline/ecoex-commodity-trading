@@ -81,7 +81,7 @@
               <div class="text-center">
                 <button type="submit" class="btn btn-primary"><i class="fa fa-paper-plane"></i> Generate</button>
                 <?php if (!empty($is_search)) { ?>
-                  <a href="<?= base_url('admin/plant-report') ?>" class="btn btn-secondary"><i class="fa fa-refresh"></i> Reset</a>
+                  <a href="<?= base_url('admin/company-report') ?>" class="btn btn-secondary"><i class="fa fa-refresh"></i> Reset</a>
                 <?php } ?>
               </div>
             </form>
