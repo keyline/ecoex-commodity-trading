@@ -1189,8 +1189,8 @@ $request_edit_fields = [
                                                                         <?php } elseif ($getEnquiry->is_invoice_from_ho == 2) {
                                                                             $ho_payable_amount_arr = json_decode($getEnquiry->ho_payable_amount_arr, true);
                                                                             $ho_invoice_file_arr = json_decode($getEnquiry->invoice_file_from_ho_arr, true);
-                                                                            $ho_invoice_number_arr = json_decode($getEnquiry->ho_invoice_number_arr, true);
-                                                                            $ho_invoice_date_arr = json_decode($getEnquiry->ho_invoice_date_arr, true);
+                                                                            $ho_invoice_number_arr = json_decode($getEnquiry->ho_invoice_number_arr, true) ?? [];
+                                                                            $ho_invoice_date_arr = json_decode($getEnquiry->ho_invoice_date_arr, true) ?? [];
 
                                                                         ?>
                                                                             <h4 class="text-success fw-bold">Invoice Uploaded By HO Succesfully</h4>
@@ -1210,11 +1210,11 @@ $request_edit_fields = [
                                                                                 </div> -->
 
                                                                                 <div class="invoice_div mb-3" style="margin-bottom: 5px; border: 1px solid #ccc; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 300px; margin: auto; border-radius: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); background: #f9f9f9;">
-                                                                                    <?php if (count($ho_invoice_number_arr)): ?>
+                                                                                    <?php if (!is_null($ho_invoice_number_arr) && count($ho_invoice_number_arr)): ?>
                                                                                         <span style="margin-bottom: 10px;"> <b>Inv Num:</b> <?= $ho_invoice_number_arr[$i] ?></span>
                                                                                     <?php endif; ?>
                                                                                     <h5 style="margin-bottom: 10px;"><i class="fa fa-inr"></i> <?= number_format($ho_payable_amount_arr[$i], 2) ?></h5>
-                                                                                    <?php if (count($ho_invoice_date_arr)): ?>
+                                                                                    <?php if (!is_null($ho_invoice_date_arr) && count($ho_invoice_date_arr)): ?>
                                                                                         <span style="margin-bottom: 10px;"> <b>Date:</b> <?= date_format(date_create($ho_invoice_date_arr[$i]), 'd-m-Y')
                                                                                                                                             ?></span>
                                                                                     <?php endif; ?>
