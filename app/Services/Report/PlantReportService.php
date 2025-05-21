@@ -206,9 +206,8 @@ class PlantReportService
     public function getEnquires($companyId, $fromDate, $toDate)
     {
         try {
-
             $enquires = $this->repository->filterEnqueryBy($companyId, $fromDate, $toDate);
-
+            // pr($enquires);
             $transformed = $this->transformEnquiryData($enquires);
             // pr($transformed);
 

@@ -276,7 +276,7 @@ class ReportController extends BaseController
             $details_data           = [];
             $requestData            = $this->request->getGet();
             $search_company_id      = $requestData['search_company_id'];
-            $date_param             =  $this->plantService->buildReportParams($requestData);
+            $date_param             = $this->plantService->buildReportParams($requestData);
             $details_data           = $this->plantService->getEnquires($search_company_id, $date_param['from_date'], $date_param['to_date']);
 
 
