@@ -352,11 +352,11 @@ if ($userType == 'MA') {
 
                     <!-- new plant report -->
                   
-                    <!-- <li>
+                    <li>
                         <a class="<?= (($pageSegment == 'company-report') ? 'active' : '') ?>" href="<?= base_url('admin/company-report') ?>">
                             <i class="fa fa-arrow-right"></i><span>Company Report</span>
                         </a>
-                    </li> -->
+                    </li>
                     <!-- plant report end -->
                 <?php } ?>
             </ul>

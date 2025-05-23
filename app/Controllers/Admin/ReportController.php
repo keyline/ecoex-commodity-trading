@@ -8,6 +8,7 @@ use App\Services\Report\PlantReportService;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Dompdf\Exception as DompdfException;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -279,6 +280,7 @@ class ReportController extends BaseController
             $date_param             = $this->plantService->buildReportParams($requestData);
             $details_data           = $this->plantService->getEnquires($search_company_id, $date_param['from_date'], $date_param['to_date']);
 
+            // pr($details_data);
 
             $response = [
                 'graph_title'       => $date_param['graph_title'],
@@ -356,7 +358,7 @@ class ReportController extends BaseController
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Set the header row
+        // the header row
         $headers = [
             'Sr. No.',
             'Enquiry No.',
@@ -372,52 +374,63 @@ class ReportController extends BaseController
             'Unit',
             'Vehicle No.'
         ];
-
-
         foreach ($headers as $colIndex => $header) {
-            $cell = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIndex + 1) . '1';
+            $cell = Coordinate::stringFromColumnIndex($colIndex + 1) . '1';
             $sheet->setCellValue($cell, $header);
         }
 
         // Fill data rows
-        $row = 2;
-        $serialNum  = 1;
+        $row       = 2;
+        $serialNum = 1;
 
         foreach ($response['details_data'] as $enquiry) {
-            foreach ($enquiry['items'] as $idx => $item) {
-                if ($idx === 0) {
-                    // Main enquiry-level columns
-                    $sheet->setCellValue("A{$row}", $serialNum++);
-                    $sheet->setCellValue("B{$row}", $enquiry['enquiry_no']);
-                    $sheet->setCellValue("C{$row}", $enquiry['plant_name']);
-                    $sheet->setCellValue("D{$row}", date('d-m-Y', strtotime($enquiry['invoice_date'])));
-                    $sheet->setCellValue("E{$row}", $enquiry['invoice_number']);
-                    $sheet->setCellValue("F{$row}", $enquiry['sub_enquiry_no']);
-                    $sheet->setCellValue("G{$row}", $enquiry['vendor_name']);
+            // Prepare main-level values
+            $mainInvDate = date('d-m-Y', strtotime($enquiry['invoice_date']));
+            $mainInvNums = implode(', ', array_map('esc', json_decode($enquiry['invoice_numbers'], true)));
 
-                    // Combine vendor invoice dates & numbers
-                    $vendorDates = array_map(fn($inv) => date('d-m-Y', strtotime($inv['date'])), $enquiry['invoices']);
-                    $vendorNums  = array_map(fn($inv) => $inv['number'],                        $enquiry['invoices']);
+            foreach ($enquiry['sub_enquires'] as $subIdx => $sub) {
+                // Prepare sub-enquiry–level values
+                $vendorDates = array_map(function ($inv) {
+                    return date('d-m-Y', strtotime($inv['date']));
+                }, $sub['invoice']);
+                $vendorNums  = array_map(fn($inv) => esc($inv['number']), $sub['invoice']);
+                $vehicles    = implode(', ', array_map('esc', $sub['vehicles']));
 
-                    $sheet->setCellValue("H{$row}", implode(", ", $vendorDates));
-                    $sheet->setCellValue("I{$row}", implode(", ", $vendorNums));
+                $vendorDatesStr = implode(', ', $vendorDates);
+                $vendorNumsStr  = implode(', ', $vendorNums);
 
-                    // Vehicles concatenated in column M
-                    $sheet->setCellValue("M{$row}", implode(", ", $enquiry['vehicles']));
+                foreach ($sub['items'] as $itemIdx => $item) {
+                    // Main enquiry columns (A–E) only once per enquiry (first sub, first item)
+                    if ($subIdx === 0 && $itemIdx === 0) {
+                        $sheet->setCellValue("A{$row}", $serialNum++);
+                        $sheet->setCellValue("B{$row}", $enquiry['enquiry_no']);
+                        $sheet->setCellValue("C{$row}", $enquiry['plant_name']);
+                        $sheet->setCellValue("D{$row}", $mainInvDate);
+                        $sheet->setCellValue("E{$row}", $mainInvNums);
+                    }
+
+                    // Sub-enquiry columns (F–I, M) once per sub-enquiry
+                    if ($itemIdx === 0) {
+                        $sheet->setCellValue("F{$row}", $sub['sub_enquiry_no']);
+                        $sheet->setCellValue("G{$row}", $sub['vendor_name']);
+                        $sheet->setCellValue("H{$row}", $vendorDatesStr);
+                        $sheet->setCellValue("I{$row}", $vendorNumsStr);
+                        $sheet->setCellValue("M{$row}", $vehicles);
+                    }
+
+                    // Item columns (J–L)
+                    $sheet->setCellValue("J{$row}", $item['item_name']);
+                    $sheet->setCellValue("K{$row}", $item['weighted_qty']);
+                    $sheet->setCellValue("L{$row}", $item['weighted_unit']);
+
+                    $row++;
                 }
-
-                // Item-level columns
-                $sheet->setCellValue("J{$row}", $item['item_name']);
-                $sheet->setCellValue("K{$row}", $item['weighted_qty']);
-                $sheet->setCellValue("L{$row}", $item['weighted_unit']);
-
-                $row++;
             }
         }
 
-        //Apply thin black border around every cell in A1:M<lastRow>
-        $lastRow    = $row - 1;
-        $fullRange  = "A1:M{$lastRow}";
+        // Apply thin black border around every cell in A1:M<lastRow>
+        $lastRow   = $row - 1;
+        $fullRange = "A1:M{$lastRow}";
         $borderStyle = [
             'borders' => [
                 'allBorders' => [
@@ -426,12 +439,10 @@ class ReportController extends BaseController
                 ],
             ],
         ];
-
-        // true = advanced borders (each cell individually) :contentReference[oaicite:0]{index=0}
         $sheet->getStyle($fullRange)
-            ->applyFromArray($borderStyle, /*$isSupervisor=*/ false);
+            ->applyFromArray($borderStyle, false);
 
-        // Set filename and send as response
+        // Output to browser
         $filename = $date_param['file_title'] . '.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header("Content-Disposition: attachment; filename=\"{$filename}\"");

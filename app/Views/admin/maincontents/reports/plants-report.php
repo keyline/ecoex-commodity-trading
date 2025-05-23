@@ -118,6 +118,7 @@
                       <h5 class="card-title"><?= $response['graph_title'] ?? 'Report' ?></h5>
 
                       <div class="table-responsive">
+
                         <table id="" class="table globel_table nowrap" style="width: 100%">
                           <thead>
                             <tr>
@@ -136,125 +137,72 @@
                               <th>Vehicle No.</th>
                             </tr>
                           </thead>
-                          <!--use ul li-->
-                          <!-- <tbody>
+                          <tbody>
                             <?php $sr = 1; ?>
                             <?php foreach ($response['details_data'] as $enq): ?>
-                              <tr>
-                                <td><?= $sr++ ?></td>
-                                <td><?= esc($enq['enquiry_no']) ?></td>
-                                <td><?= esc($enq['plant_name']) ?></td>
-                                <td><?= date('d-m-Y', strtotime($enq['invoice_date'])) ?></td>
-                                <td><?= esc($enq['invoice_number']) ?></td>
-                                <td><?= esc($enq['sub_enquiry_no']) ?></td>
-                                <td><?= esc($enq['vendor_name']) ?></td>
-
-                             
-                                <td>
-                                  <ul style="margin:0; padding-left:1em; list-style:disc;">
-                                    <?php foreach ($enq['invoices'] as $inv): ?>
-                                      <li><?= date('d-m-Y', strtotime($inv['date'])) ?></li>
-                                    <?php endforeach; ?>
-                                  </ul>
-                                </td>
-
-                             
-                                <td>
-                                  <ul style="margin:0; padding-left:1em; list-style:disc;">
-                                    <?php foreach ($enq['invoices'] as $inv): ?>
-                                      <li><?= esc($inv['number']) ?></li>
-                                    <?php endforeach; ?>
-                                  </ul>
-                                </td>
-
-                             
-                                <td>
-                                  <ul style="margin:0; padding-left:1em; list-style:disc;">
-                                    <?php foreach ($enq['items'] as $item): ?>
-                                      <li><?= esc($item['item_name']) ?></li>
-                                    <?php endforeach; ?>
-                                  </ul>
-                                </td>
-
-                               
-                                <td>
-                                  <ul style="margin:0; padding-left:1em; list-style:disc;">
-                                    <?php foreach ($enq['items'] as $item): ?>
-                                      <li><?= esc($item['weighted_qty']) ?></li>
-                                    <?php endforeach; ?>
-                                  </ul>
-                                </td>
-
-                              
-                                <td>
-                                  <ul style="margin:0; padding-left:1em; list-style:disc;">
-                                    <?php foreach ($enq['items'] as $item): ?>
-                                      <li><?= esc($item['weighted_unit']) ?></li>
-                                    <?php endforeach; ?>
-                                  </ul>
-                                </td>
-
-                                
-                                <td>
-                                  <ul style="margin:0; padding-left:1em; list-style:disc;">
-                                    <?php foreach ($enq['vehicles'] as $veh): ?>
-                                      <li><?= esc($veh) ?></li>
-                                    <?php endforeach; ?>
-                                  </ul>
-                                </td>
-                              </tr>
-                            <?php endforeach; ?>
-                          </tbody> -->
-
-                          <tbody>
-
-                            <?php $sr = 1;
-                            foreach ($response['details_data'] as $enq): ?>
                               <?php
-                              // how many rows needed for this group
-                              $rowCount = max(1, count($enq['items']));
-                              // format main invoice date
+                              // total rows needed across all sub-enquiries
+                              $mainRowCount = 0;
+                              foreach ($enq['sub_enquires'] as $sub) {
+                                $cnt = max(1, count($sub['items']));
+                                $mainRowCount += $cnt;
+                              }
+                              // main invoice date & numbers
                               $mainInvDate = date('d-m-Y', strtotime($enq['invoice_date']));
-                              // combine all vendor-invoice dates/nos into HTML line breaks
-                              $vendorDates = array_map(function ($inv) {
-                                return date('d-m-Y', strtotime($inv['date']));
-                              }, $enq['invoices']);
-                              $vendorNums  = array_map(function ($inv) {
-                                return esc($inv['number']);
-                              }, $enq['invoices']);
-                              $vendorDatesHtml = implode('<br>', $vendorDates);
-                              $vendorNumsHtml  = implode('<br>', $vendorNums);
-                              // vehicles
-                              $vehicles = implode('<br>', array_map('esc', $enq['vehicles']));
+                              $mainInvNums = implode('<br>', array_map('esc', json_decode($enq['invoice_numbers'], true)));
                               ?>
-                              <?php foreach ($enq['items'] as $idx => $item): ?>
-                                <tr>
-                                  <?php if ($idx === 0): ?>
-                                    <td rowspan="<?= $rowCount ?>"><?= $sr++ ?></td>
-                                    <td rowspan="<?= $rowCount ?>"><?= esc($enq['enquiry_no']) ?></td>
-                                    <td rowspan="<?= $rowCount ?>"><?= esc($enq['plant_name']) ?></td>
-                                    <td rowspan="<?= $rowCount ?>"><?= $mainInvDate ?></td>
-                                    <td rowspan="<?= $rowCount ?>"><?= esc($enq['invoice_number']) ?></td>
-                                    <td rowspan="<?= $rowCount ?>"><?= esc($enq['sub_enquiry_no']) ?></td>
-                                    <td rowspan="<?= $rowCount ?>"><?= esc($enq['vendor_name']) ?></td>
-                                    <td rowspan="<?= $rowCount ?>"><?= $vendorDatesHtml ?></td>
-                                    <td rowspan="<?= $rowCount ?>"><?= $vendorNumsHtml ?></td>
-                                  <?php endif; ?>
+                              <?php foreach ($enq['sub_enquires'] as $subIdx => $sub): ?>
+                                <?php
+                                // rows for this sub-enquiry
+                                $subRowCount = max(1, count($sub['items']));
+                                // vendor invoices dates & numbers
+                                $vendorDates = array_map(function ($inv) {
+                                  return date('d-m-Y', strtotime($inv['date']));
+                                }, $sub['invoice']);
+                                $vendorNums  = array_map(function ($inv) {
+                                  return esc($inv['number']);
+                                }, $sub['invoice']);
+                                $vendorDatesHtml = implode('<br>', $vendorDates);
+                                $vendorNumsHtml  = implode('<br>', $vendorNums);
+                                // vehicles
+                                $vehiclesHtml = implode('<br>', array_map('esc', $sub['vehicles']));
+                                ?>
+                                <?php foreach ($sub['items'] as $itemIdx => $item): ?>
+                                  <tr>
+                                    <!-- main enquiry cells -->
+                                    <?php if ($subIdx === 0 && $itemIdx === 0): ?>
+                                      <td rowspan="<?= $mainRowCount ?>"><?= $sr++ ?></td>
+                                      <td rowspan="<?= $mainRowCount ?>"><?= esc($enq['enquiry_no']) ?></td>
+                                      <td rowspan="<?= $mainRowCount ?>"><?= esc($enq['plant_name']) ?></td>
+                                      <td rowspan="<?= $mainRowCount ?>"><?= $mainInvDate ?></td>
+                                      <td rowspan="<?= $mainRowCount ?>"><?= $mainInvNums ?></td>
+                                    <?php endif; ?>
 
-                                  <!-- item columns -->
-                                  <td><?= esc($item['item_name']) ?></td>
-                                  <td><?= esc($item['weighted_qty']) ?></td>
-                                  <td><?= esc($item['weighted_unit']) ?></td>
+                                    <!-- sub-enquiry cells -->
+                                    <?php if ($itemIdx === 0): ?>
+                                      <td rowspan="<?= $subRowCount ?>"><?= esc($sub['sub_enquiry_no']) ?></td>
+                                      <td rowspan="<?= $subRowCount ?>"><?= esc($sub['vendor_name']) ?></td>
+                                      <td rowspan="<?= $subRowCount ?>"><?= $vendorDatesHtml ?></td>
+                                      <td rowspan="<?= $subRowCount ?>"><?= $vendorNumsHtml ?></td>
+                                    <?php endif; ?>
 
-                                  <?php if ($idx === 0): ?>
-                                    <td rowspan="<?= $rowCount ?>"><?= $vehicles ?></td>
-                                  <?php endif; ?>
-                                </tr>
+                                    <!-- item columns -->
+                                    <td><?= esc($item['item_name']) ?></td>
+                                    <td><?= esc($item['weighted_qty']) ?></td>
+                                    <td><?= esc($item['weighted_unit']) ?></td>
+
+                                    <!-- vehicles -->
+                                    <?php if ($itemIdx === 0): ?>
+                                      <td rowspan="<?= $subRowCount ?>"><?= $vehiclesHtml ?></td>
+                                    <?php endif; ?>
+                                  </tr>
+                                <?php endforeach; ?>
                               <?php endforeach; ?>
                             <?php endforeach; ?>
                           </tbody>
-
                         </table>
+
+
                       </div>
                     </div>
                   </div>

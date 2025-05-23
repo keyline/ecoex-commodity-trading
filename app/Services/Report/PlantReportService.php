@@ -131,21 +131,14 @@ class PlantReportService
      * - Standardize date strings (optional DateTime conversion).
      * - Group items under the same enq_id & vendor_id.
      */
-
-    protected function transformEnquiryData(array $rawData): array
+    protected function groupSubEnquiriesByVendor(array $subEnquiries): array
     {
         $grouped = [];
 
-        foreach ($rawData as $entry) {
-            // Keys for grouping
-            $enqId    = (int)$entry['enq_id'];
+        foreach ($subEnquiries as $entry) {
             $vendorId = (int)$entry['vendor_id'];
-            $key      = "$enqId|$vendorId";
 
             // Decode JSON arrays
-            $vehicles   = isset($entry['vehicle_registration_nos'])
-                ? json_decode($entry['vehicle_registration_nos'], true)
-                : [];
             $invNumbers = isset($entry['vendor_invoice_number_arr'])
                 ? json_decode($entry['vendor_invoice_number_arr'], true)
                 : [];
@@ -167,51 +160,64 @@ class PlantReportService
                 ];
             }
 
-            // Prepare item info
-            $item = [
-                'item_id'         => (int)$entry['item_id'],
-                'item_name'       => $entry['item_name_ecoex'],
-                'weighted_qty'    => (float)$entry['weighted_qty'],
-                'weighted_unit'   => $entry['weighted_unit'],
-            ];
-
-            // Base record for group
-            if (!isset($grouped[$key])) {
-                $grouped[$key] = [
-                    'enq_id'           => $enqId,
-                    'enquiry_no'       => $entry['enquiry_no'],
-                    'plant_id'         => (int)$entry['plant_id'],
-                    'plant_name'       => $entry['plant_name'],
-                    'sub_enq_id'       => (int)$entry['sub_enq_id'],
-                    'sub_enquiry_no'   => $entry['sub_enquiry_no'],
-                    'vendor_id'        => $vendorId,
-                    'vendor_name'      => $entry['vendor_name'],
-                    'invoice_number'   => $entry['invoice_number'],
-                    'invoice_date'     => $entry['invoice_date'],
-                    'payable_amount'   => (float)$entry['payable_amount'],
-                    'vehicles'         => $vehicles,
-                    'invoices'         => $invoices,
-                    'items'            => [],
+            if (!isset($grouped[$vendorId])) {
+                $grouped[$vendorId] = [
+                    // 'sub_enq_id'   => (int)$entry['sub_enq_id'],
+                    'sub_enquiry_no' => $entry['sub_enquiry_no'],
+                    'vendor_id'   => $vendorId,
+                    'vendor_name' => $entry['vendor_name'],
+                    'invoice' => $invoices,
+                    'items' => [],
+                    'vehicles'    => [],
                 ];
             }
 
-            // Append item info to group
-            $grouped[$key]['items'][] = $item;
+            // Add item details under sub_enquiries
+            $grouped[$vendorId]['items'][] = [
+                'item_id'      => (int)$entry['item_id'],
+                'item_name'    => $entry['item_name_ecoex'],
+                'weighted_qty' => (float)$entry['weighted_qty'],
+                'weighted_unit' => $entry['weighted_unit'],
+            ];
+
+            // Merge vehicle registration numbers
+            $grouped[$vendorId]['vehicles'] = array_unique(array_merge(
+                $grouped[$vendorId]['vehicles'],
+                json_decode($entry['vehicle_registration_nos'], true) ?? []
+            ));
         }
 
-        // Reset keys to indexed array
+        // Reset keys
         return array_values($grouped);
     }
+
 
     public function getEnquires($companyId, $fromDate, $toDate)
     {
         try {
-            $enquires = $this->repository->filterEnqueryBy($companyId, $fromDate, $toDate);
-            // pr($enquires);
-            $transformed = $this->transformEnquiryData($enquires);
-            // pr($transformed);
+            $enquires =  $this->repository->hoInvoices($companyId, $fromDate, $toDate);
+        
 
-            return $transformed;
+            if (!empty($enquires)) {
+                foreach ($enquires as $key => $enq) {
+                    $enquires[$key]['enq_id'] = $enq['enq_id'];
+                    $enquires[$key]['invoice_date'] = date('d-m-Y', strtotime($enq['invoice_date']));
+                    $enquires[$key]['enquiry_no'] = $enq['enquiry_no'];
+                    $enquires[$key]['plant_name'] = $enq['plant_name'];
+                    $enquires[$key]['invoice_numbers'] = $enq['invoice_numbers'];
+
+                    // Initialize $sub_enquires for each enquiry to avoid data mixing
+     
+                    $sub_enq = $this->repository->subInvoices($enq['enq_id']);
+
+                    if (!empty($sub_enq)) {
+                        $enquires[$key]['sub_enquires'] =  $this->groupSubEnquiriesByVendor($sub_enq);
+                    }
+                }
+            }
+            // pr($enquires);
+            return $enquires;
+
         } catch (\Exception $e) {
             log_message('error', 'Error fetching enquiries: ' . $e->getMessage());
             return null;
