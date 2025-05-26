@@ -120,9 +120,6 @@ class PlantReportService
         ];
     }
 
-
-
-
     /**
      * Clean, normalize, and group the raw enquiry data array by enq_id and vendor_id.
      *

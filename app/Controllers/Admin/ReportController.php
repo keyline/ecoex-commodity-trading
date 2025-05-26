@@ -400,7 +400,7 @@ class ReportController extends BaseController
                 $vendorNumsStr  = implode(', ', $vendorNums);
 
                 foreach ($sub['items'] as $itemIdx => $item) {
-                    // Main enquiry columns (A–E) only once per enquiry (first sub, first item)
+                    // Main enquiry columns only once per enquiry (first sub, first item)
                     if ($subIdx === 0 && $itemIdx === 0) {
                         $sheet->setCellValue("A{$row}", $serialNum++);
                         $sheet->setCellValue("B{$row}", $enquiry['enquiry_no']);
@@ -409,7 +409,7 @@ class ReportController extends BaseController
                         $sheet->setCellValue("E{$row}", $mainInvNums);
                     }
 
-                    // Sub-enquiry columns (F–I, M) once per sub-enquiry
+                    // Sub-enquiry columns once per sub-enquiry
                     if ($itemIdx === 0) {
                         $sheet->setCellValue("F{$row}", $sub['sub_enquiry_no']);
                         $sheet->setCellValue("G{$row}", $sub['vendor_name']);
@@ -418,7 +418,7 @@ class ReportController extends BaseController
                         $sheet->setCellValue("M{$row}", $vehicles);
                     }
 
-                    // Item columns (J–L)
+                    // Item columns
                     $sheet->setCellValue("J{$row}", $item['item_name']);
                     $sheet->setCellValue("K{$row}", $item['weighted_qty']);
                     $sheet->setCellValue("L{$row}", $item['weighted_unit']);
