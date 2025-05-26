@@ -47,7 +47,7 @@ class SendUpcomingCollections extends BaseCommand
                         'days_until' => $row['days_until'],
                     ])
                 );
-                // log_message('debug', 'smtp mail Data: ' . print_r($status, true));
+                log_message('debug', 'smtp mail Data: ' . var_dump($mailSent, true));
                 if ($mailSent) {
                     CLI::write("Email sent for enquiry #{$row['enquiry_no']}", 'green');
                 } else {
