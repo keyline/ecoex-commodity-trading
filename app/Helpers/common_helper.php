@@ -482,7 +482,7 @@ if (!function_exists('sendEcoexMail')) {
     $emailSetting->SMTPUser = $siteSetting->smtp_username;
     $emailSetting->SMTPPass = $siteSetting->smtp_password;
     $emailSetting->SMTPPort = $siteSetting->smtp_port;
-    $emailSetting->protocol = 'sendmail';
+    $emailSetting->protocol = 'smtp'; //'sendmail';
     $emailSetting->setFrom($from_email, $from_name);
     $emailSetting->setTo($to_email);
     $emailSetting->setSubject($email_subject);
