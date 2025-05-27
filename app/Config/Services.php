@@ -29,4 +29,13 @@ class Services extends BaseService
      *     return new \CodeIgniter\Example();
      * }
      */
+
+    // configure the MailerService @Shubha75
+    public static function mailer(bool $getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('mailer');
+        }
+        return new \App\Services\MailerService();
+    }
 }

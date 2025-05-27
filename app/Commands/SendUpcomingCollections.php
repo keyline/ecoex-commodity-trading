@@ -38,15 +38,14 @@ class SendUpcomingCollections extends BaseCommand
             // $queue->push('emails', 'send-upcoming', $row);
             // CLI::write("Queued enquiry #{$row['enquiry_no']}", 'cyan');
             try {
+                $to = 'shubhadip.sinha@keylines.net'; // Replace with the actual recipient email address
+                $subject = 'Upcoming Collection Reminder';
+                $message = view('email-templates/upcoming_collection', [
+                    'enquiry'    => (object) $row,
+                    'days_until' => $row['days_until'],
+                ]);
 
-                $mailSent = sendEcoexMail(
-                    '',
-                    'Upcoming Collection Reminder',
-                    view('email-templates/upcoming_collection', [
-                        'enquiry'    => (object) $row,
-                        'days_until' => $row['days_until'],
-                    ])
-                );
+                $mailSent = send_mail($to, $subject, $message);
                 // log_message('debug', 'smtp mail Data: ' . var_dump($mailSent, true));
                 if ($mailSent) {
                     CLI::write("Email sent for enquiry #{$row['enquiry_no']}", 'green');

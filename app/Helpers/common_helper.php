@@ -2,6 +2,11 @@
 
 use Config\Services;
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+
 function pr($data = array(), $mode = TRUE)
 {
   echo "<pre>";
@@ -466,31 +471,10 @@ if (! function_exists('test_method')) {
 }
 
 
-
-if (!function_exists('sendEcoexMail')) {
-  function sendEcoexMail($email_subject, $mailbody, $to_email = '', $attachment = '')
+// code added to send mail using service @Shubha75
+if (!function_exists('send_mail')) {
+  function send_mail($to, $subj, $body, $alt = '', $atts = [])
   {
-    $common_model = new \App\Models\CommonModel();
-    $siteSetting  = $common_model->find_data('general_settings', 'row');
-    $emailSetting = Services::email();
-
-    $from_email = $siteSetting->from_email;
-    $from_name  = $siteSetting->from_name;
-    $to_email   = $to_email != '' ? $to_email : 'shubhasinha77@gmail.com'; //$siteSetting->system_email;
-
-    $emailSetting->SMTPHost = $siteSetting->smtp_host;
-    $emailSetting->SMTPUser = $siteSetting->smtp_username;
-    $emailSetting->SMTPPass = $siteSetting->smtp_password;
-    $emailSetting->SMTPPort = $siteSetting->smtp_port;
-    $emailSetting->protocol = 'smtp'; //'sendmail';
-    $emailSetting->setFrom($from_email, $from_name);
-    $emailSetting->setTo($to_email);
-    $emailSetting->setSubject($email_subject);
-    $emailSetting->setMessage($mailbody);
-
-    if ($attachment != '') {
-      $emailSetting->attach($attachment);
-    }
-    return $emailSetting->send();
+    return service('mailer')->send($to, $subj, $body, $alt, $atts);
   }
 }
