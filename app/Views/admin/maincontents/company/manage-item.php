@@ -18,208 +18,212 @@ $userType           = $session->user_type;
         margin-bottom: 10px;
     }
 </style>
-<div class="pagetitle">
-    <h1><?=$page_header?></h1>
-    <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="<?=base_url('admin/dashboard')?>">Home</a></li>
-            <li class="breadcrumb-item active"><a href="<?=base_url('admin/' . $controller_route . '/list/')?>"><?=$title?> List</a></li>
-            <li class="breadcrumb-item active"><?=$page_header?></li>
-        </ol>
-    </nav>
+<div class="container-fluid">
+    <div class="pagetitle">
+        <h1><?=$page_header?></h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="<?=base_url('admin/dashboard')?>">Home</a></li>
+                <li class="breadcrumb-item active"><a href="<?=base_url('admin/' . $controller_route . '/list/')?>"><?=$title?> List</a></li>
+                <li class="breadcrumb-item active"><?=$page_header?></li>
+            </ol>
+        </nav>
+    </div>
 </div>
+
 <!-- End Page Title -->
 <section class="section profile">
-    <div class="row">
-        <div class="col-xl-12">
-            <?php if(session('success_message')){?>
-            <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show hide-message" role="alert">
-                <?=session('success_message')?>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <?php if(session('success_message')){?>
+                <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show hide-message" role="alert">
+                    <?=session('success_message')?>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <?php }?>
+                <?php if(session('error_message')){?>
+                <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show hide-message" role="alert">
+                    <?=session('error_message')?>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <?php }?>
             </div>
-            <?php }?>
-            <?php if(session('error_message')){?>
-            <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show hide-message" role="alert">
-                <?=session('error_message')?>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <?php }?>
-        </div>
-        
-        <div class="col-xl-12">
-            <div class="card">
-                <div class="card-body pt-3">
-                    <!-- <form method="POST" action="" enctype="multipart/form-data"> -->
+            
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body pt-3">
+                        <!-- <form method="POST" action="" enctype="multipart/form-data"> -->
 
-                        <div class="row">
-                            <div class="col-md-1">
-                                <h6 class="fw-bold">Item<br>Category</h6>
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <h6 class="text-success fw-bold">Item<br>Category</h6>
+                                </div>
+                                <div class="col-md-2">
+                                    <h6 class="text-success fw-bold">Item Name<br>(Ecoex)</h6>
+                                </div>
+                                <div class="col-md-2">
+                                    <h6 class="text-success fw-bold">Alias<br>(App)</h6>
+                                </div>
+                                <div class="col-md-2">
+                                    <h6 class="text-success fw-bold">Billing<br>Name</h6>
+                                </div>
+                                <div class="col-md-1">
+                                    <h6 class="text-success fw-bold">HSN</h6>
+                                </div>
+                                <div class="col-md-1">
+                                    <h6 class="text-success fw-bold">GST</h6>
+                                </div>
+                                <div class="col-md-1">
+                                    <h6 class="text-success fw-bold">Rate</h6>
+                                </div>
+                                <div class="col-md-1">
+                                    <h6 class="text-success fw-bold">Unit</h6>
+                                </div>
+                                <div class="col-md-1">
+                                    <h6 class="text-success fw-bold">Action</h6>
+                                </div>
                             </div>
-                            <div class="col-md-2">
-                                <h6 class="fw-bold">Item Name<br>(Ecoex)</h6>
-                            </div>
-                            <div class="col-md-2">
-                                <h6 class="fw-bold">Alias<br>(App)</h6>
-                            </div>
-                            <div class="col-md-2">
-                                <h6 class="fw-bold">Billing<br>Name</h6>
-                            </div>
-                            <div class="col-md-1">
-                                <h6 class="fw-bold">HSN</h6>
-                            </div>
-                            <div class="col-md-1">
-                                <h6 class="fw-bold">GST</h6>
-                            </div>
-                            <div class="col-md-1">
-                                <h6 class="fw-bold">Rate</h6>
-                            </div>
-                            <div class="col-md-1">
-                                <h6 class="fw-bold">Unit</h6>
-                            </div>
-                            <div class="col-md-1">
-                                <h6 class="fw-bold">Action</h6>
-                            </div>
-                        </div>
-                        <div class="field_wrapper">
-                            <?php if($assignItems){ foreach($assignItems as $assignItem){?>
-                                <?php
-                                if($userType == 'MA'){
-                                    $display = '';
-                                } else {
-                                    if($assignItem->status){
+                            <div class="field_wrapper">
+                                <?php if($assignItems){ foreach($assignItems as $assignItem){?>
+                                    <?php
+                                    if($userType == 'MA'){
                                         $display = '';
                                     } else {
-                                        $display = 'none';
+                                        if($assignItem->status){
+                                            $display = '';
+                                        } else {
+                                            $display = 'none';
+                                        }
                                     }
-                                }
-                                ?>
-                                <form method="POST" action="<?=base_url('admin/companies/approve-item')?>" style="display: <?=$display?>;">
-                                    <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">
-                                    <input type="hidden" name="id" value="<?=encoded($assignItem->id)?>">
-                                    <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">
-                                    <div class="row item-cover">
-                                        <div class="col-md-1">
-                                            <select class="form-control" name="item_category[]">
-                                                <option value="" selected>Select</option>
-                                                <?php if($cats){ foreach($cats as $cat){?>
-                                                <option value="<?=$cat->category_id?>" <?=(($cat->category_id == $assignItem->item_category)?'selected':'')?>><?=$cat->category_alias?></option>
-                                                <?php } }?>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex" value="<?=$assignItem->item_name_ecoex?>">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name" value="<?=$assignItem->alias_name?>">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name" value="<?=$assignItem->billing_name?>">
-                                        </div>
-                                        <div class="col-md-1">
-                                            <input type="text" name="hsn[]" class="form-control" placeholder="HSN" value="<?=$assignItem->hsn?>">
-                                        </div>
-                                        <div class="col-md-1">
-                                            <select class="form-control" name="gst[]">
-                                                <option value="" selected>Select</option>
-                                                <option value="0" <?=(($assignItem->gst == 0)?'selected':'')?>>0 %</option>
-                                                <option value="5" <?=(($assignItem->gst == 5)?'selected':'')?>>5 %</option>
-                                                <option value="12" <?=(($assignItem->gst == 12)?'selected':'')?>>12 %</option>
-                                                <option value="18" <?=(($assignItem->gst == 18)?'selected':'')?>>18 %</option>
-                                                <option value="28" <?=(($assignItem->gst == 28)?'selected':'')?>>28 %</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-1">
-                                            <input type="text" name="rate[]" class="form-control" placeholder="Rate" value="<?=$assignItem->rate?>">
-                                        </div>
-                                        <div class="col-md-1">
-                                            <select class="form-control" name="unit[]">
-                                                <option value="" selected>Select</option>
-                                                <?php if($units){ foreach($units as $unit){?>
-                                                <option value="<?=$unit->id?>" <?=(($unit->id == $assignItem->unit)?'selected':'')?>><?=$unit->name?></option>
-                                                <?php } }?>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-1">
-                                            <?php if($assignItem->status){?>
-                                                <p><span class="badge bg-success"><i class="fa fa-check-circle"></i> APPROVED</span></p>
-                                                <?php if($userType == 'MA'){?>
-                                                    <button type="submit" onclick="return confirm('Do You Want To Approve This Item ?');" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Update</button>
+                                    ?>
+                                    <form method="POST" action="<?=base_url('admin/companies/approve-item')?>" style="display: <?=$display?>;">
+                                        <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">
+                                        <input type="hidden" name="id" value="<?=encoded($assignItem->id)?>">
+                                        <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">
+                                        <div class="row item-cover" style="margin-left: 0; margin-right: 0;">
+                                            <div class="col-md-1 mb-3 mb-md-0">
+                                                <select class="form-control" name="item_category[]">
+                                                    <option value="" selected>Select</option>
+                                                    <?php if($cats){ foreach($cats as $cat){?>
+                                                    <option value="<?=$cat->category_id?>" <?=(($cat->category_id == $assignItem->item_category)?'selected':'')?>><?=$cat->category_alias?></option>
+                                                    <?php } }?>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2 mb-3 mb-md-0">
+                                                <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex" value="<?=$assignItem->item_name_ecoex?>">
+                                            </div>
+                                            <div class="col-md-2 mb-3 mb-md-0">
+                                                <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name" value="<?=$assignItem->alias_name?>">
+                                            </div>
+                                            <div class="col-md-2 mb-3 mb-md-0">
+                                                <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name" value="<?=$assignItem->billing_name?>">
+                                            </div>
+                                            <div class="col-md-1 mb-3 mb-md-0">
+                                                <input type="text" name="hsn[]" class="form-control" placeholder="HSN" value="<?=$assignItem->hsn?>">
+                                            </div>
+                                            <div class="col-md-1 mb-3 mb-md-0">
+                                                <select class="form-control" name="gst[]">
+                                                    <option value="" selected>Select</option>
+                                                    <option value="0" <?=(($assignItem->gst == 0)?'selected':'')?>>0 %</option>
+                                                    <option value="5" <?=(($assignItem->gst == 5)?'selected':'')?>>5 %</option>
+                                                    <option value="12" <?=(($assignItem->gst == 12)?'selected':'')?>>12 %</option>
+                                                    <option value="18" <?=(($assignItem->gst == 18)?'selected':'')?>>18 %</option>
+                                                    <option value="28" <?=(($assignItem->gst == 28)?'selected':'')?>>28 %</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-1 mb-3 mb-md-0">
+                                                <input type="text" name="rate[]" class="form-control" placeholder="Rate" value="<?=$assignItem->rate?>">
+                                            </div>
+                                            <div class="col-md-1 mb-3 mb-md-0">
+                                                <select class="form-control" name="unit[]">
+                                                    <option value="" selected>Select</option>
+                                                    <?php if($units){ foreach($units as $unit){?>
+                                                    <option value="<?=$unit->id?>" <?=(($unit->id == $assignItem->unit)?'selected':'')?>><?=$unit->name?></option>
+                                                    <?php } }?>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-1 mb-3 mb-md-0">
+                                                <?php if($assignItem->status){?>
+                                                    <p style="margin-bottom: 5px;"><span class="badge rounded-pill bg-success w-100" style="font-size: 9px; padding: 8px;"><i class="fa fa-check-circle"></i> APPROVED</span></p>
+                                                    <?php if($userType == 'MA'){?>
+                                                        <button type="submit" onclick="return confirm('Do You Want To Approve This Item ?');" class="btn btn-primary w-100 btn-sm p-2" style="font-size: 11px; padding: 8px !important; margin-bottom: 5px;"><i class="fa fa-edit"></i> Update</button>
+                                                    <?php }?>
+                                                <?php } else {?>
+                                                    <?php if($userType == 'MA'){?>
+                                                        <button type="submit" onclick="return confirm('Do You Want To Approve This Item ?');" class="btn btn-warning w-100" style="font-size: 11px; padding: 8px !important;margin-bottom: 5px;"><i class="fa fa-times-circle"></i> Click To Approve</button>
+                                                    <?php }?>
                                                 <?php }?>
-                                            <?php } else {?>
                                                 <?php if($userType == 'MA'){?>
-                                                    <button type="submit" onclick="return confirm('Do You Want To Approve This Item ?');" class="btn btn-warning btn-sm"><i class="fa fa-times-circle"></i> Click To Approve</button>
+                                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm w-100 remove_button ms-auto" title="Remove Item"><i class="fa fa-trash"></i> Remove</a>
                                                 <?php }?>
-                                            <?php }?>
-                                            <?php if($userType == 'MA'){?>
-                                                <br><br>
-                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm remove_button" title="Remove Item"><i class="fa fa-trash"></i> Remove</a>
-                                            <?php }?>
+                                            </div>
                                         </div>
-                                    </div>
-                                </form>
-                            <?php } }?>
-                            <?php if($userType == 'MA'){?>
-                                <form method="POST" action="">
-                                    <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">
-                                    <input type="hidden" name="id" value="<?=encoded($company_id)?>">
-                                    <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">
-                                    <div class="row item-cover">
-                                        <div class="col-md-1">
-                                            <select class="form-control" name="item_category[]">
-                                                <option value="" selected>Select</option>
-                                                <?php if($cats){ foreach($cats as $cat){?>
-                                                <option value="<?=$cat->category_id?>"><?=$cat->category_alias?></option>
-                                                <?php } }?>
-                                            </select>
+                                    </form>
+                                <?php } }?>
+                                <?php if($userType == 'MA'){?>
+                                    <form method="POST" action="">
+                                        <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">
+                                        <input type="hidden" name="id" value="<?=encoded($company_id)?>">
+                                        <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">
+                                        <div class="row item-cover" style="margin-left: 0; margin-right: 0;">
+                                            <div class="col-md-1 mb-3 mb-md-0">
+                                                <select class="form-control" name="item_category[]">
+                                                    <option value="" selected>Select</option>
+                                                    <?php if($cats){ foreach($cats as $cat){?>
+                                                    <option value="<?=$cat->category_id?>"><?=$cat->category_alias?></option>
+                                                    <?php } }?>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2 mb-3 mb-md-0">
+                                                <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex">
+                                            </div>
+                                            <div class="col-md-2 mb-3 mb-md-0">
+                                                <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name">
+                                            </div>
+                                            <div class="col-md-2 mb-3 mb-md-0">
+                                                <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name">
+                                            </div>
+                                            <div class="col-md-1 mb-3 mb-md-0">
+                                                <input type="text" name="hsn[]" class="form-control" placeholder="HSN">
+                                            </div>
+                                            <div class="col-md-1 mb-3 mb-md-0">
+                                                <select class="form-control" name="gst[]">
+                                                    <option value="" selected>Select</option>
+                                                    <option value="0">0 %</option>
+                                                    <option value="5">5 %</option>
+                                                    <option value="12">12 %</option>
+                                                    <option value="18">18 %</option>
+                                                    <option value="28">28 %</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-1 mb-3 mb-md-0">
+                                                <input type="text" name="rate[]" class="form-control" placeholder="Rate">
+                                            </div>
+                                            <div class="col-md-1 mb-3 mb-md-0">
+                                                <select class="form-control" name="unit[]">
+                                                    <option value="" selected>Select</option>
+                                                    <?php if($units){ foreach($units as $unit){?>
+                                                    <option value="<?=$unit->id?>"><?=$unit->name?></option>
+                                                    <?php } }?>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-1 mb-3 mb-md-0">
+                                                <?php if($userType == 'MA'){?>
+                                                    <button type="submit" onclick="return confirm('Do You Want To Add This Item ?');" class="btn btn-success btn-sm" style="font-size: 11px; padding: 8px !important;"><i class="fa fa-check-circle"></i> Click To Add</button>
+                                                <?php }?>
+                                            </div>
                                         </div>
-                                        <div class="col-md-2">
-                                            <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name">
-                                        </div>
-                                        <div class="col-md-1">
-                                            <input type="text" name="hsn[]" class="form-control" placeholder="HSN">
-                                        </div>
-                                        <div class="col-md-1">
-                                            <select class="form-control" name="gst[]">
-                                                <option value="" selected>Select</option>
-                                                <option value="0">0 %</option>
-                                                <option value="5">5 %</option>
-                                                <option value="12">12 %</option>
-                                                <option value="18">18 %</option>
-                                                <option value="28">28 %</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-1">
-                                            <input type="text" name="rate[]" class="form-control" placeholder="Rate">
-                                        </div>
-                                        <div class="col-md-1">
-                                            <select class="form-control" name="unit[]">
-                                                <option value="" selected>Select</option>
-                                                <?php if($units){ foreach($units as $unit){?>
-                                                <option value="<?=$unit->id?>"><?=$unit->name?></option>
-                                                <?php } }?>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-1">
-                                            <?php if($userType == 'MA'){?>
-                                                <button type="submit" onclick="return confirm('Do You Want To Add This Item ?');" class="btn btn-success btn-sm"><i class="fa fa-check-circle"></i> Click To Add</button>
-                                            <?php }?>
-                                        </div>
-                                    </div>
-                                </form>
-                            <?php }?>
-                        </div>
+                                    </form>
+                                <?php }?>
+                            </div>
 
-                        <!-- <div class="text-center">
-                            <a href="javascript:void(0);" class="btn btn-success btn-sm add_button" title="Add New Item"><i class="fa fa-plus-circle"></i> Add More Items</a>
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </div> -->
-                    </form>
+                            <!-- <div class="text-center">
+                                <a href="javascript:void(0);" class="btn btn-success btn-sm add_button" title="Add New Item"><i class="fa fa-plus-circle"></i> Add More Items</a>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div> -->
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -253,8 +257,8 @@ $userType           = $session->user_type;
         var fieldHTML = '<form method="POST" action="<?=base_url('admin/companies/approve-item')?>">\
                             <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">\
                             <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">\
-                            <div class="row item-cover">\
-                                <div class="col-md-1">\
+                            <div class="row item-cover" style="margin-left: 0; margin-right: 0;">\
+                                <div class="col-md-1 mb-3 mb-md-0">\
                                     <select class="form-control" name="item_category[]">\
                                         <option value="" selected>Select</option>\
                                         <?php if($cats){ foreach($cats as $cat){?>
@@ -262,19 +266,19 @@ $userType           = $session->user_type;
                                         <?php } }?>
                                     </select>\
                                 </div>\
-                                <div class="col-md-2">\
+                                <div class="col-md-2 mb-3 mb-md-0">\
                                     <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex">\
                                 </div>\
-                                <div class="col-md-2">\
+                                <div class="col-md-2 mb-3 mb-md-0">\
                                     <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name">\
                                 </div>\
-                                <div class="col-md-2">\
+                                <div class="col-md-2 mb-3 mb-md-0">\
                                     <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name">\
                                 </div>\
-                                <div class="col-md-1">\
+                                <div class="col-md-1 mb-3 mb-md-0">\
                                     <input type="text" name="hsn[]" class="form-control" placeholder="HSN">\
                                 </div>\
-                                <div class="col-md-1">\
+                                <div class="col-md-1 mb-3 mb-md-0">\
                                     <select class="form-control" name="gst[]">\
                                         <option value="" selected>Select</option>\
                                         <option value="0">0 %</option>\
@@ -284,10 +288,10 @@ $userType           = $session->user_type;
                                         <option value="28">28 %</option>\
                                     </select>\
                                 </div>\
-                                <div class="col-md-1">\
+                                <div class="col-md-1 mb-3 mb-md-0">\
                                     <input type="text" name="rate[]" class="form-control" placeholder="Rate">\
                                 </div>\
-                                <div class="col-md-1">\
+                                <div class="col-md-1 mb-3 mb-md-0">\
                                     <select class="form-control" name="unit[]">\
                                         <option value="" selected>Select</option>\
                                         <?php if($units){ foreach($units as $unit){?>
@@ -295,7 +299,7 @@ $userType           = $session->user_type;
                                         <?php } }?>
                                     </select>\
                                 </div>\
-                                <div class="col-md-1">\
+                                <div class="col-md-1 mb-3 mb-md-0">\
                                     <a href="javascript:void(0);" class="btn btn-danger btn-sm remove_button" title="Remove Item"><i class="fa fa-trash"></i> Remove</a>\
                                 </div>\
                             </div>\

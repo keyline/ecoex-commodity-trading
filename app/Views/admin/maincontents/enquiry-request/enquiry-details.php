@@ -1329,7 +1329,7 @@ $request_edit_fields = [
                                                                                     </a>
                                                                                 </div> -->
 
-                                                                                <div class="invoice_div mb-3" style="margin-bottom: 5px; border: 1px solid #ccc; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 300px; margin: auto; border-radius: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); background: #f9f9f9;">
+                                                                                <div class="invoice_div mb-3" style="margin-bottom: 5px; border: 1px solid #ccc; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; max-width: 300px; margin: auto; border-radius: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); background: #f9f9f9;">
                                                                                     <?php if (!is_null($ho_invoice_number_arr) && count($ho_invoice_number_arr)): ?>
                                                                                         <span style="margin-bottom: 10px;"> <b>Inv Num:</b> <?= $ho_invoice_number_arr[$i] ?></span>
                                                                                     <?php endif; ?>
@@ -1424,7 +1424,7 @@ $request_edit_fields = [
                                                                                 <!-- new code update by shubha on 28/03/25 -->
                                                                                 <?php for ($i = 0; $i < count($vendor_invoice_file_arr); $i++) { ?>
 
-                                                                                    <div class="invoice_div mb-3" style="margin-bottom: 5px; border: 1px solid #ccc; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 300px; margin: auto; border-radius: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); background: #f9f9f9;">
+                                                                                    <div class="invoice_div mb-3" style="margin-bottom: 5px; border: 1px solid #ccc; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; max-width: 300px; margin: auto; border-radius: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); background: #f9f9f9;">
                                                                                         <?php if (count($vendor_invoice_number_arr)): ?>
                                                                                             <span style="margin-bottom: 10px;"> <b>Inv Num:</b> <?= $vendor_invoice_number_arr[$i] ?></span>
                                                                                         <?php endif; ?>

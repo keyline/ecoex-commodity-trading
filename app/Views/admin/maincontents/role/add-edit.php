@@ -63,15 +63,15 @@ $controller_route   = $moduleDetail['controller_route'];
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body role-access-tab">
                         <h5 class="card-title">Module Wise Access</h5>
                         <div class="d-flex align-items-start">
-                            <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="width: 20%;">
+                            <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                                 <?php if($parentModules){ $sl=1; foreach($parentModules as $parentModule){?>
                                     <button class="nav-link <?=(($sl == 1)?'active':'')?>" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-<?=$parentModule->id?>" type="button" role="tab" aria-controls="v-pills-<?=$parentModule->id?>" aria-selected="<?=(($sl == 1)?'true':'false')?>"><?=$parentModule->module_name?></button>
                                 <?php $sl++; } }?>
                             </div>
-                            <div class="tab-content" id="v-pills-tabContent" style="width: 80%;">
+                            <div class="tab-content" id="v-pills-tabContent">
                                 <?php if($parentModules){ $sl=1; foreach($parentModules as $parentModule){?>
                                     <div class="tab-pane fade <?=(($sl == 1)?'show active':'')?>" id="v-pills-<?=$parentModule->id?>" role="tabpanel" aria-labelledby="v-pills-<?=$parentModule->id?>-tab">
                                         <div class="row">
