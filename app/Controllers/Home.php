@@ -2,11 +2,13 @@
 
 namespace App\Controllers;
 
+use App\Services\UpcomingCollections\UpcomingCollectionService;
+
 class Home extends BaseController
 {
     public function index()
     {
-        $data['general_settings']   = $this->common_model->find_data('general_settings','row');
+        $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
         $data['title']              = $data['general_settings']->site_name;
         $data['page_header']        = $data['general_settings']->site_name;
         $data['page_content']       = $this->common_model->find_data('ecomm_pages', 'row', ['id' => 3]);
@@ -16,19 +18,19 @@ class Home extends BaseController
     // enquiry request for whatsapp share
     public function enquiryRequest($id)
     {
-        $data['general_settings']   = $this->common_model->find_data('general_settings','row');
+        $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
         $id                         = decoded($id);
         $data['enquiry']            = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $id]);
         return view('enquiry-request-details', $data);
     }
     public function deleteAccountRequest()
     {
-        $data['general_settings']   = $this->common_model->find_data('general_settings','row');
+        $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
         $data['title']              = $data['general_settings']->site_name;
         $data['page_header']        = $data['general_settings']->site_name;
         $data['page_content']       = $this->common_model->find_data('ecomm_pages', 'row', ['id' => 3]);
 
-        if($this->request->getMethod() == 'post') {
+        if ($this->request->getMethod() == 'post') {
             $postData   = array(
                 'user_type'             => $this->request->getPost('user_type'),
                 'entity_name'           => $this->request->getPost('entity_name'),
@@ -39,46 +41,47 @@ class Home extends BaseController
                 'comments'              => $this->request->getPost('comments'),
             );
             // pr($postData);
-            $this->common_model->save_data('ecomm_delete_account_requests', $postData, '', 'id');            
+            $this->common_model->save_data('ecomm_delete_account_requests', $postData, '', 'id');
             $this->session->setFlashdata('success_message', 'Delete Account Request Submitted Successfully. We Will Update You Shortly !!!');
             return redirect()->to(current_url());
         }
-        
+
         return view('delete-account-request', $data);
     }
-    public function getEmailOTP(){
+    public function getEmailOTP()
+    {
         $apiStatus          = TRUE;
         $apiMessage         = '';
         $apiResponse        = [];
         $requestData        = $this->request->getPost();
         $user_type          = $requestData['user_type'];
         $email              = $requestData['email'];
-        if($user_type == 'COMPANY'){
+        if ($user_type == 'COMPANY') {
             $tableName = 'ecoex_companies';
         } else {
             $tableName = 'ecomm_users';
         }
         $getEntity          = $this->common_model->find_data($tableName, 'row', ['email' => $email]);
-        if($getEntity){
-            $remember_token = rand(100000,999999);
+        if ($getEntity) {
+            $remember_token = rand(100000, 999999);
             /* send email */
-                $mailData                   = [
-                    'id'            => $getEntity->id,
-                    'email'         => $getEntity->email,
-                    'phone'         => $getEntity->phone,
-                    'otp'           => $remember_token,
-                ];
-                $generalSetting             = $this->common_model->find_data('general_settings', 'row');
-                $subject                    = $generalSetting->site_name.' :: Email Verify OTP For Signup';
-                $message                    = view('email-templates/otp',$mailData);
-                $this->sendMail($email, $subject, $message);
+            $mailData                   = [
+                'id'            => $getEntity->id,
+                'email'         => $getEntity->email,
+                'phone'         => $getEntity->phone,
+                'otp'           => $remember_token,
+            ];
+            $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+            $subject                    = $generalSetting->site_name . ' :: Email Verify OTP For Signup';
+            $message                    = view('email-templates/otp', $mailData);
+            $this->sendMail($email, $subject, $message);
 
-                $apiResponse        = [
-                    'email_otp'     => $remember_token,
-                    'entity_name'   => (($getEntity)?$getEntity->company_name:''),
-                ];
-                $apiStatus          = TRUE;
-                $apiMessage         = 'OTP Sent To Email Successfully !!!';
+            $apiResponse        = [
+                'email_otp'     => $remember_token,
+                'entity_name'   => (($getEntity) ? $getEntity->company_name : ''),
+            ];
+            $apiStatus          = TRUE;
+            $apiMessage         = 'OTP Sent To Email Successfully !!!';
             /* send email */
         } else {
             $apiStatus          = FALSE;
@@ -86,32 +89,33 @@ class Home extends BaseController
         }
         $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
     }
-    public function getPhoneOTP(){
+    public function getPhoneOTP()
+    {
         $apiStatus          = TRUE;
         $apiMessage         = '';
         $apiResponse        = [];
         $requestData        = $this->request->getPost();
         $user_type          = $requestData['user_type'];
         $phone              = $requestData['phone'];
-        if($user_type == 'COMPANY'){
+        if ($user_type == 'COMPANY') {
             $tableName = 'ecoex_companies';
         } else {
             $tableName = 'ecomm_users';
         }
         $getEntity          = $this->common_model->find_data($tableName, 'row', ['phone' => $phone]);
-        if($getEntity){
-            $mobile_otp = rand(100000,999999);
+        if ($getEntity) {
+            $mobile_otp = rand(100000, 999999);
             /* send sms */
-                $message = "Dear ".$user_type.", ".$mobile_otp." is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
-                $mobileNo = $phone;
-                $this->sendSMS($mobileNo,$message);
+            $message = "Dear " . $user_type . ", " . $mobile_otp . " is your verification OTP for registration at ECOEX PORTAL. Do not share this OTP with anyone for security reasons.";
+            $mobileNo = $phone;
+            $this->sendSMS($mobileNo, $message);
 
-                $apiResponse        = [
-                    'phone_otp'     => $mobile_otp,
-                    'entity_name'   => (($getEntity)?$getEntity->company_name:''),
-                ];
-                $apiStatus          = TRUE;
-                $apiMessage         = 'OTP Sent To Phone Successfully !!!';
+            $apiResponse        = [
+                'phone_otp'     => $mobile_otp,
+                'entity_name'   => (($getEntity) ? $getEntity->company_name : ''),
+            ];
+            $apiStatus          = TRUE;
+            $apiMessage         = 'OTP Sent To Phone Successfully !!!';
             /* send sms */
         } else {
             $apiStatus          = FALSE;
@@ -121,30 +125,42 @@ class Home extends BaseController
     }
     public function enquiryCron()
     {
-        $data['general_settings']           = $this->common_model->find_data('general_settings','row');
+        $data['general_settings']           = $this->common_model->find_data('general_settings', 'row');
         $data['filter_keyword']             = 'yesterday';
-        $data['f_date']                     = date('Y-m-d',strtotime("-1 days"));
-        $data['t_date']                     = date('Y-m-d',strtotime("-1 days"));
-        $data['filter_keyword_text']        = date('M d, Y l',strtotime("-1 days"));
-        $yesterday                          = date('Y-m-d',strtotime("-1 days"));
-        $data['request_submit_count']       = $this->common_model->find_data('ecomm_enquires','count', ['created_at LIKE' => '%' . $yesterday . '%']);
-        $data['request_accept_count']       = $this->common_model->find_data('ecomm_enquires','count', ['accepted_date LIKE' => '%' . $yesterday . '%']);
-        $data['request_complete_count']     = $this->common_model->find_data('ecomm_enquires','count', ['order_complete_date LIKE' => '%' . $yesterday . '%']);
+        $data['f_date']                     = date('Y-m-d', strtotime("-1 days"));
+        $data['t_date']                     = date('Y-m-d', strtotime("-1 days"));
+        $data['filter_keyword_text']        = date('M d, Y l', strtotime("-1 days"));
+        $yesterday                          = date('Y-m-d', strtotime("-1 days"));
+        $data['request_submit_count']       = $this->common_model->find_data('ecomm_enquires', 'count', ['created_at LIKE' => '%' . $yesterday . '%']);
+        $data['request_accept_count']       = $this->common_model->find_data('ecomm_enquires', 'count', ['accepted_date LIKE' => '%' . $yesterday . '%']);
+        $data['request_complete_count']     = $this->common_model->find_data('ecomm_enquires', 'count', ['order_complete_date LIKE' => '%' . $yesterday . '%']);
 
         $html = view('enquiry-cron', $data);
         /* mail functionality */
-            $subject                    = $data['general_settings']->site_name.' :: Enquiry Report on '.$data['filter_keyword_text'];
-            $message                    = $html;
-            $this->sendMail($data['general_settings']->site_mail, $subject, $message);
+        $subject                    = $data['general_settings']->site_name . ' :: Enquiry Report on ' . $data['filter_keyword_text'];
+        $message                    = $html;
+        $this->sendMail($data['general_settings']->site_mail, $subject, $message);
         /* mail functionality */
         /* email log save */
-            $postData2 = [
-                'name'                  => $data['general_settings']->site_name,
-                'email'                 => $data['general_settings']->site_mail,
-                'subject'               => $subject,
-                'message'               => $message
-            ];
-            $this->common_model->save_data('email_logs', $postData2, '', 'id');
+        $postData2 = [
+            'name'                  => $data['general_settings']->site_name,
+            'email'                 => $data['general_settings']->site_mail,
+            'subject'               => $subject,
+            'message'               => $message
+        ];
+        $this->common_model->save_data('email_logs', $postData2, '', 'id');
         /* email log save */
+    }
+
+    public function upcomingCollectionCron()
+    {
+        $upcomingCollection =  new UpcomingCollectionService();
+
+        try {
+            $upcomingCollection->sendReminderEmail();
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            throw $e->getMessage();
+        }
     }
 }

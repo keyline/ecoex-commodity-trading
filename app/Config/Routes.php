@@ -12,6 +12,7 @@ $routes->post('/delete-account-request', 'Home::deleteAccountRequest');
 $routes->post('/get-email-otp', 'Home::getEmailOTP');
 $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 $routes->get('/enquiry-cron', 'Home::enquiryCron');
+$routes->get('/upcoming-collection', 'Home::upcomingCollectionCron');
 /* ADMIN PANEL */
 $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($routes) {
 	// authentication

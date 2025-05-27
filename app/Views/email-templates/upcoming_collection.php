@@ -81,57 +81,49 @@
 
 <body>
   <table class="email-container" cellspacing="0" cellpadding="0" role="presentation">
-    <!-- <tr>
-      <td class="header">
-        <strong>Your Company Name</strong>
-      </td>
-    </tr> -->
     <tr>
       <td class="content">
         <p>Hello, Mr Barua,</p>
-        <p>
-          Your enquiry <strong><?= esc($enquiry->enquiry_no) ?></strong>
-          is due in <strong><?= esc($days_until) ?></strong> day(s),
-          on <strong><?= date('F j, Y', strtotime($enquiry->tentative_collection_date)) ?></strong>.
-        </p>
+        <p>Below are the upcoming enquiries:</p>
 
-        <?php $subs = json_decode($enquiry->sub_enquiries); ?>
-        <?php if (! empty($subs)): ?>
-          <p><strong>Enquiry Details:</strong></p>
-          <table class="details-table" role="presentation">
-            <thead>
-              <tr>
-                <th>Vendor</th>
-                <th>Company</th>
-                <th>Item</th>
-                <th>Qty</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php foreach ($subs as $sub): ?>
+        <?php foreach ($data as $enquiry): ?>
+          <p style="margin-top: 30px;">
+            <strong>Enquiry No:</strong> <?= esc($enquiry['enquiry_no']) ?><br>
+            <strong>Due In:</strong> <?= esc($enquiry['days_until']) ?> day(s)<br>
+            <strong>Collection Date:</strong> <?= date('F j, Y', strtotime($enquiry['tentative_collection_date'])) ?><br>
+            <strong>Plant:</strong> <?= esc($enquiry['plant_name']) ?><br>
+            <!-- <strong>Company:</strong> <?// esc($enquiry['company_name']) ?> -->
+          </p>
+
+          <?php $subs = json_decode($enquiry['sub_enquiries']); ?>
+          <?php if (!empty($subs)): ?>
+            <table class="details-table" role="presentation">
+              <thead>
                 <tr>
-                  <td><?= esc($sub->vendor_name) ?></td>
-                  <td><?= esc($sub->vendor_company) ?></td>
-                  <td><?= esc($sub->item_name) ?></td>
-                  <td>
-                    <?= esc(number_format($sub->weighted_qty, 2)) ?>
-                    <?= esc($sub->weighted_unit) ?>
-                  </td>
+                  <th>Vendor</th>
+                  <th>Company</th>
+                  <th>Item</th>
+                  <th>Qty</th>
                 </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
-        <?php endif; ?>
+              </thead>
+              <tbody>
+                <?php foreach ($subs as $sub): ?>
+                  <tr>
+                    <td><?= esc($sub->vendor_name) ?></td>
+                    <td><?= esc($sub->vendor_company) ?></td>
+                    <td><?= esc($sub->item_name) ?></td>
+                    <td><?= esc(number_format($sub->weighted_qty, 2)) ?> <?= esc($sub->weighted_unit) ?></td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          <?php endif; ?>
+          <hr>
+        <?php endforeach; ?>
 
-        <!-- <p>
-          <a href="#" class="button">View Enquiry</a>
-        </p> -->
+        <p style="margin-top: 30px;">Thank you,<br><strong>Ecoex team</strong></p>
       </td>
     </tr>
-    <!-- <tr>
-      <td class="footer">
-        &copy; <?= date('Y') ?> Your Company. All rights reserved.
-      </td>
-    </tr> -->
   </table>
 </body>
+
