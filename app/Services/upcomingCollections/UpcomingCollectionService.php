@@ -95,7 +95,6 @@ class UpcomingCollectionService
             $message = view('email-templates/upcoming_collection', [
                 'data'    => $results,
             ]);
-
             // pr($message);
             $mailSent = send_mail($send_to, $subject, $message);
 

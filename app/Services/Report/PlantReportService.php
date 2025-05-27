@@ -91,7 +91,6 @@ class PlantReportService
             } elseif ($dayId === 'this_week') {
                 // Determine “today” and weekday (1 = Monday … 7 = Sunday)
                 $dayOfWeek   = date('N');
-
                 // Calculate Monday (start) and Sunday (end) of current week
                 $from_date   = date('Y-m-d', strtotime('-' . ($dayOfWeek - 1) . ' days'));
                 $to_date     = date('Y-m-d', strtotime('+' . (7 - $dayOfWeek) . ' days'));
