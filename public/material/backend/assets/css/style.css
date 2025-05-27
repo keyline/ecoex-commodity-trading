@@ -1437,6 +1437,12 @@ button[type="submit"]:hover{
   color: #a8cf45 !important;
   border:1px solid #a8cf45 !important;
 }
+.role-access-tab #v-pills-tab{
+  width: 20%;
+}
+.role-access-tab #v-pills-tabContent{
+  width: 80%;
+}
 @media (min-width: 1200px) {
 
   #main,
@@ -1504,6 +1510,24 @@ button[type="submit"]:hover{
   .header{
     padding-left: 15px;
   }
+  .view_enquiry_details h5{
+    font-size: 15px;
+  }
+  .view_enquiry_details h6{
+    font-size: 14px;
+  }
+  .view_enquiry_details .material_accordion_section button.accordion-button {
+    font-size: 15px !important;
+  }
+}
+
+@media (max-width: 575px) {
+  .role-access-tab #v-pills-tab{
+    width: 30%;
+  }
+  .role-access-tab #v-pills-tabContent{
+    width: 70%;
+  }
 }
 @media (max-width: 480px) {
   body{font-size: 12px;}
@@ -1512,6 +1536,12 @@ button[type="submit"]:hover{
   }
   .buttons-print{
     margin-top: 5px
+  }
+  .role-access-tab #v-pills-tab{
+    width: 35%;
+  }
+  .role-access-tab #v-pills-tabContent{
+    width: 65%;
   }
 }
 
