@@ -11,7 +11,8 @@ $controller_route   = $moduleDetail['controller_route'];
         border: 1px solid #48974e;
     }
 </style>
-<div class="pagetitle">
+<div class="container-fluid">
+    <div class="pagetitle">
     <h1><?=$page_header?></h1>
     <nav>
         <ol class="breadcrumb">
@@ -21,9 +22,12 @@ $controller_route   = $moduleDetail['controller_route'];
         </ol>
     </nav>
 </div>
+</div>
+
 <!-- End Page Title -->
 <section class="section profile">
-    <div class="row">
+    <div class="container-fluid">
+        <div class="row">
         <div class="col-xl-12">
             <?php if(session('success_message')){?>
             <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show hide-message" role="alert">
@@ -122,6 +126,8 @@ $controller_route   = $moduleDetail['controller_route'];
             </form>
         </div>
     </div>
+    </div>
+    
 </section>
 <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
