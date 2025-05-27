@@ -201,44 +201,46 @@ $controller_route   = $moduleDetail['controller_route'];
                     <div class="card">
                       <div class="card-body">
                         <h5 class="card-title">Details Data</h5>
-                        <table id="simpletable" class="table table-striped table-bordered nowrap" style="width: 100%">
-                          <thead>
-                            <tr>
-                              <th>#</th>
-                              <th>Enquiry No.</th>
-                              <th>Sub Enquiry No.</th>
-                              <th>Item Name</th>
-                              <th>Weighted Qty</th>
-                              <th>Weighted Unit</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <?php $sl_no = 1; $tot_weight_qty = 0; foreach($details_data as $details){?>
+                        <div class="table-responsive">
+                          <table id="simpletable" class="table globel_table nowrap" style="width: 100%">
+                            <thead>
                               <tr>
-                                <td><?=$sl_no++?></td>
-                                <td><a href="<?=base_url('admin/enquiry-requests/enquiry-details/'.encoded($details['enq_id']))?>" target="_blank"><?=$details['enquiry_no']?></a></td>
-                                <td><?=$details['sub_enquiry_no']?></td>
-                                <td><?=$details['item_name']?></td>
-                                <td><?=$details['weighted_qty']?></td>
-                                <td><?=$details['weighted_unit']?></td>
+                                <th>#</th>
+                                <th>Enquiry No.</th>
+                                <th>Sub Enquiry No.</th>
+                                <th>Item Name</th>
+                                <th>Weighted Qty</th>
+                                <th>Weighted Unit</th>
                               </tr>
-                            <?php $tot_weight_qty += $details['weighted_qty']; } ?>
-                          </tbody>
-                          <tfoot>
-                            <tr>
-                              <th colspan="4" style="text-align: right;">Total</th>
-                              <th><?=number_format($tot_weight_qty, 3)?></th>
-                              <!-- <th><?=$convertedUnit?></th> -->
-                              <th>KG</th>
-                            </tr>
-                            <tr>
-                              <th colspan="4" style="text-align: right;">Total</th>
-                              <th><?=number_format(($tot_weight_qty / 1000), 3)?></th>
-                              <!-- <th><?=$convertedUnit?></th> -->
-                              <th>MT</th>
-                            </tr>
-                          </tfoot>
-                        </table>
+                            </thead>
+                            <tbody>
+                              <?php $sl_no = 1; $tot_weight_qty = 0; foreach($details_data as $details){?>
+                                <tr>
+                                  <td><?=$sl_no++?></td>
+                                  <td><a href="<?=base_url('admin/enquiry-requests/enquiry-details/'.encoded($details['enq_id']))?>" target="_blank"><?=$details['enquiry_no']?></a></td>
+                                  <td><?=$details['sub_enquiry_no']?></td>
+                                  <td><?=$details['item_name']?></td>
+                                  <td><?=$details['weighted_qty']?></td>
+                                  <td><?=$details['weighted_unit']?></td>
+                                </tr>
+                              <?php $tot_weight_qty += $details['weighted_qty']; } ?>
+                            </tbody>
+                            <tfoot>
+                              <tr>
+                                <th colspan="4" style="text-align: right; font-size: 13px;">Total</th>
+                                <th><?=number_format($tot_weight_qty, 3)?></th>
+                                <!-- <th><?=$convertedUnit?></th> -->
+                                <th style="font-size: 12px;">KG</th>
+                              </tr>
+                              <tr>
+                                <th colspan="4" style="text-align: right; font-size: 13px;">Total</th>
+                                <th><?=number_format(($tot_weight_qty / 1000), 3)?></th>
+                                <!-- <th><?=$convertedUnit?></th> -->
+                                <th style="font-size: 12px;">MT</th>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        </div>
                       </div>
                     </div>
                   </div>

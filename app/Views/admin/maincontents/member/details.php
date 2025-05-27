@@ -38,31 +38,31 @@ $controller_route   = $moduleDetail['controller_route'];
                         <div class="table-responsive">
                             <table class="table globel_table">
                                 <tr>
-                                    <td>GST No.</td>
+                                    <th>GST No.</th>
                                     <td><?=$row->gst_no?></td>
                                 </tr>
                                 <tr>
-                                    <td>Company Name</td>
+                                    <th>Company Name</th>
                                     <td><?=$row->company_name?></td>
                                 </tr>
                                 <tr>
-                                    <td>Full Address</td>
+                                    <th>Full Address</th>
                                     <td><?=$row->full_address?></td>
                                 </tr>
                                 <tr>
-                                    <td>Street</td>
+                                    <th>Street</th>
                                     <td><?=$row->street?></td>
                                 </tr>
                                 <tr>
-                                    <td>District</td>
+                                    <th>District</th>
                                     <td><?=$row->district?></td>
                                 </tr>
                                 <tr>
-                                    <td>State</td>
+                                    <th>State</th>
                                     <td><?=$row->state?></td>
                                 </tr>
                                 <tr>
-                                    <td>Pincode</td>
+                                    <th>Pincode</th>
                                     <td><?=$row->pincode?></td>
                                 </tr>
                                 <!-- <tr>
@@ -70,35 +70,35 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <td><?=$row->location?></td>
                                 </tr> -->
                                 <tr>
-                                    <td>Email</td>
+                                    <th>Email</th>
                                     <td><?=$row->email?></td>
                                 </tr>
                                 <tr>
-                                    <td>Email Verify</td>
+                                    <th>Email Verify</th>
                                     <td><span class="badge <?=(($row->email_verify)?'bg-success':'bg-danger')?>"><?=(($row->email_verify)?'YES':'NO')?></span></td>
                                 </tr>
                                 <tr>
-                                    <td>Email Verify At</td>
+                                    <th>Email Verify At</th>
                                     <td><?=(($row->email_verified_at != '')?date_format(date_create($row->email_verified_at), "M d Y h:i A"):'')?></td>
                                 </tr>
                                 <tr>
-                                    <td>Phone</td>
+                                    <th>Phone</th>
                                     <td><?=$row->phone?></td>
                                 </tr>
                                 <tr>
-                                    <td>Phone Verify</td>
+                                    <th>Phone Verify</th>
                                     <td><span class="badge <?=(($row->phone_verify)?'bg-success':'bg-danger')?>"><?=(($row->phone_verify)?'YES':'NO')?></span></td>
                                 </tr>
                                 <tr>
-                                    <td>Phone Verify At</td>
+                                    <th>Phone Verify At</th>
                                     <td><?=(($row->phone_verified_at != '')?date_format(date_create($row->phone_verified_at), "M d Y h:i A"):'')?></td>
                                 </tr>
                                 <tr>
-                                    <td>Profile Image</td>
+                                    <th>Profile Image</th>
                                     <td><img src="<?=(($row->profile_image != '')?getenv('app.uploadsURL').'user/'.$row->profile_image:getenv('app.NO_IMAGE'))?>" class="img-thumbnail" style="width: 250px; height: auto;"></td>
                                 </tr>
                                 <tr>
-                                    <td>Member Type</td>
+                                    <th>Member Type</th>
                                     <td>
                                         <?php 
                                         $memberType = $common_model->find_data('ecomm_member_types', 'row', ['id' => $row->member_type], 'id,name');
@@ -109,7 +109,7 @@ $controller_route   = $moduleDetail['controller_route'];
         
         
                                 <tr>
-                                    <td>GST Certificate</td>
+                                    <th>GST Certificate</th>
                                     <td>
                                         <?php if($row->gst_certificate != ''){?>
                                             <a href="<?=getenv('app.uploadsURL').'user/'.$row->gst_certificate?>" class="badge bg-primary" target="_blank">View Document</a>
@@ -117,15 +117,15 @@ $controller_route   = $moduleDetail['controller_route'];
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Proprietor Name</td>
+                                    <th>Proprietor Name</th>
                                     <td><?=$row->contact_person_name?></td>
                                 </tr>
                                 <tr>
-                                    <td>Proprietor Designation</td>
+                                    <th>Proprietor Designation</th>
                                     <td><?=$row->contact_person_designation?></td>
                                 </tr>
                                 <tr>
-                                    <td>Proprietor PAN Card</td>
+                                    <th>Proprietor PAN Card</th>
                                     <td>
                                         <?php if($row->contact_person_document != ''){?>
                                             <a href="<?=getenv('app.uploadsURL').'user/'.$row->contact_person_document?>" class="badge bg-primary" target="_blank">View Document</a>
@@ -134,11 +134,11 @@ $controller_route   = $moduleDetail['controller_route'];
                                 </tr>
                                 
                                 <tr>
-                                    <td>Created At</td>
+                                    <th>Created At</th>
                                     <td><?=date_format(date_create($row->created_at), "M d Y h:i A")?></td>
                                 </tr>
                                 <tr>
-                                    <td>Updated At</td>
+                                    <th>Updated At</th>
                                     <td><?=(($row->updated_at != '')?date_format(date_create($row->updated_at), "M d Y h:i A"):'')?></td>
                                 </tr>
                             </table>

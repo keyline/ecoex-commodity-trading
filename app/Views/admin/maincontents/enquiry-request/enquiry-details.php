@@ -193,6 +193,11 @@
         background-color: #fff;
         border: none;
     }
+    .view_enquiry_details .card-header,
+    .view_enquiry_details .accordion-button{
+        padding: 10px 15px;
+        font-size: 18px;
+    }
 </style>
 
 <?php
@@ -228,7 +233,7 @@ $request_edit_fields = [
         </nav>
     </div>
 </div>
-<section class="section">
+<section class="section view_enquiry_details">
     <div class="container-fluid">
         <div class="row">
             <div class="col-xl-12">
@@ -324,7 +329,7 @@ $request_edit_fields = [
                                             <div class="collapse" id="sharedVendor">
                                                 <div class="card">
                                                     <div class="card-header bg-success text-light">
-                                                        <h5>Enquiry Quotation Request Invited Vendors</h5>
+                                                        <h6 class="mb-0">Enquiry Quotation Request Invited Vendors</h6>
                                                     </div>
                                                     <div class="card-body">
                                                         <div class="table-responsive">
@@ -406,8 +411,8 @@ $request_edit_fields = [
                                     <?php } ?>
                                 </div>
                             <?php } ?>
-
-                            <div class="col-md-6">
+                            <!-- surajit comment -->
+                            <!-- <div class="col-md-6">
                                 <h5 class="fw-bold text-success">Company Name</h5>
                                 <h6>
                                     <?php
@@ -473,7 +478,77 @@ $request_edit_fields = [
                                         ?>
                                     </h6>
                                 </div>
-                            <?php } ?>
+                            <?php } ?> -->
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table globel_table">
+                                        <thead>
+                                            <tr>
+                                                <th>Company Name</th>
+                                                <th>Plant Name</th>
+                                                <th>GPS Tracking Image</th>
+                                                <th>Tentative Collection Date</th>
+                                                <th>Latitude</th>
+                                                <th>Device Brand</th>
+                                                <th>Longitude</th>
+                                                <th>Device Model</th>
+                                                <th>Assigned Date</th>
+                                                <th>Pickup Scheduled Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <?php
+                                                    $getCompany = $common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id], 'company_name');
+                                                    echo (($getCompany) ? $getCompany->company_name : '');
+                                                    ?>
+                                                </td>
+                                                <td>
+                                                    <?php
+                                                    $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
+                                                    echo (($getPlant) ? $getPlant->plant_name : '');
+                                                    ?>
+                                                </td>
+                                                <td>
+                                                    <div class="popup_gallery">
+                                                        <?php if ($row->gps_tracking_image != '') { ?>
+                                                            <a href="<?= getenv('app.uploadsURL') . 'enquiry/' . $row->gps_tracking_image ?>" target="_blank"><img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $row->gps_tracking_image ?>" alt="<?= $row->enquiry_no ?>" class="img-thumbnail" style="width: 250px; height: 250px; margin-top: 10px;"></a>
+                                                        <?php } else { ?>
+                                                            <img src="<?= getenv('app.NO_IMAGE') ?>" alt="<?= $row->enquiry_no ?>" class="img-thumbnail" style="width: 250px; height: 250px; margin-top: 10px;">
+                                                        <?php } ?>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <?= date_format(date_create($row->tentative_collection_date), "M d, Y") ?>
+                                                </td>
+                                                <td>
+                                                    <?= $row->latitude ?>
+                                                </td>
+                                                <td>
+                                                    <?= $row->device_brand ?>
+                                                </td>
+                                                <td><?= $row->longitude ?></td>
+                                                <td><?= $row->device_model ?></td>
+                                                <td>
+                                                    <?php
+                                                    if ($subenquires && $subenquires[0]->is_pickup_final) {
+                                                        echo date_format(date_create($subenquires[0]->assigned_date), "M d, Y h:i A");
+                                                    }
+                                                    ?>
+                                                </td>
+                                                <td>
+                                                    <?php
+                                                    if ($subenquires && $subenquires[0]->is_pickup_final) {
+                                                        echo date_format(date_create($subenquires[0]->pickup_scheduled_date), "M d, Y h:i A");
+                                                    }
+                                                    ?>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -788,7 +863,36 @@ $request_edit_fields = [
                                 <div class="tab-pane fade <?= (($i == 1) ? 'show active' : '') ?>" id="subenquiry-<?= $subenquiry->id ?>" role="tabpanel" aria-labelledby="subenquiry-tab">
                                     <div class="row">
                                         <?php if ($userType == 'MA') { ?>
-                                            <div class="col-md-3">
+                                            <div class="col-12">
+                                                <div class="table-responsive">
+                                                    <table class="table globel_table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Company</th>
+                                                                <th>Plant</th>
+                                                                <th>Vendor</th>
+                                                                <th>Is Quit</th>
+                                                            </tr>                                                            
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td><?= (($getCompany) ? $getCompany->company_name : '') ?></td>
+                                                                <td><?= (($getPlant) ? $getPlant->plant_name : '') ?></td>
+                                                                <td><?= (($getVendor) ? $getVendor->company_name : '') ?></td>
+                                                                <td>
+                                                                    <?php if ($subenquiry->is_vendor_quit) { ?>
+                                                                        <a href="<?= base_url('admin/enquiry-requests/sub-enquiry-quit/' . $subenquiry->is_vendor_quit . '/' . $subenquiry->sub_enquiry_no . '/' . $subenquiry->enq_id) ?>" class="badge bg-danger">Click to cancel quit</a>
+                                                                        <h6><?= date_format(date_create($subenquiry->vendor_quit_timestamp), "M d, Y h:i A") ?></h6>
+                                                                    <?php } else { ?>
+                                                                        <a href="<?= base_url('admin/enquiry-requests/sub-enquiry-quit/' . $subenquiry->is_vendor_quit . '/' . $subenquiry->sub_enquiry_no . '/' . $subenquiry->enq_id) ?>" class="btn btn-outline-danger btn-sm">Click to quit</a>
+                                                                    <?php } ?>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <!-- <div class="col-md-3">
                                                 <h5 class="fw-bold text-success">Company</h5>
                                                 <h6>
                                                     <?= (($getCompany) ? $getCompany->company_name : '') ?>
@@ -816,9 +920,25 @@ $request_edit_fields = [
                                                         <a href="<?= base_url('admin/enquiry-requests/sub-enquiry-quit/' . $subenquiry->is_vendor_quit . '/' . $subenquiry->sub_enquiry_no . '/' . $subenquiry->enq_id) ?>" class="badge bg-success">Click to quit</a>
                                                     <?php } ?>
                                                 </h6>
-                                            </div>
+                                            </div> -->
                                         <?php } else { ?>
-                                            <div class="col-md-6">
+                                            <div class="table-responsive">
+                                                <table class="table globel_table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Company</th>
+                                                            <th>Plant</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><?= (($getCompany) ? $getCompany->company_name : '') ?></td>
+                                                            <td><?= (($getPlant) ? $getPlant->plant_name : '') ?></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- <div class="col-md-6">
                                                 <h5 class="fw-bold text-success">Company</h5>
                                                 <h6>
                                                     <?= (($getCompany) ? $getCompany->company_name : '') ?>
@@ -829,7 +949,7 @@ $request_edit_fields = [
                                                 <h6>
                                                     <?= (($getPlant) ? $getPlant->plant_name : '') ?>
                                                 </h6>
-                                            </div>
+                                            </div> -->
                                         <?php } ?>
                                     </div>
                                     <div class="accordion" id="accordionExample">
@@ -1157,14 +1277,14 @@ $request_edit_fields = [
                                                                                 <a href="<?= base_url('admin/enquiry-requests/request-invoice-to-HO-from-ecoex/' . encoded($getEnquiry->id) . '/' . encoded($sub_enquiry_no)) ?>" class="btn btn-warning btn-sm" onclick="return confirm('Do you want to sent request for invoice to HO ?');"><i class="fa-solid fa-code-pull-request"></i> Request For Invoice To HO</a>
                                                                             <?php } ?>
                                                                         <?php } elseif ($getEnquiry->is_invoice_from_ho >= 1) { ?>
-                                                                            <h4 class="text-success fw-bold">Invoice Request Sent To HO Succesfully</h4>
-                                                                            <h5><?= date_format(date_create($getEnquiry->invoice_from_ho_request_date), "M d, Y h:i A") ?></h5>
+                                                                            <h5 class="text-success fw-bold">Invoice Request Sent To HO Succesfully</h5>
+                                                                            <h6><?= date_format(date_create($getEnquiry->invoice_from_ho_request_date), "M d, Y h:i A") ?></h6>
                                                                         <?php } ?>
                                                                     </div>
                                                                     <div class="col-md-6 text-center">
                                                                         <!-- @Shubha75 ############ -->
                                                                         <?php if ($getEnquiry->is_invoice_from_ho == 1) { ?>
-                                                                            <h4 class="text-warning fw-bold">HO Still Not Uploaded Invoice</h4>
+                                                                            <h5 class="text-warning fw-bold">HO Still Not Uploaded Invoice</h5>
                                                                             <?php
                                                                             if ($userType == 'COMPANY') {
                                                                                 include('./app/Views/admin/maincontents/enquiry-request/multipleHoInvoice.php');
@@ -1193,7 +1313,7 @@ $request_edit_fields = [
                                                                             $ho_invoice_date_arr = json_decode($getEnquiry->ho_invoice_date_arr, true) ?? [];
 
                                                                         ?>
-                                                                            <h4 class="text-success fw-bold">Invoice Uploaded By HO Succesfully</h4>
+                                                                            <h5 class="text-success fw-bold">Invoice Uploaded By HO Succesfully</h5>
 
                                                                             <!-- <a download href="<?= getenv('app.uploadsURL') . 'enquiry/' . $getEnquiry->invoice_file_from_ho ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');"><i class="fas fa-download"></i> Download Invoice From HO</a>
                                                                             <h5><i class="fa fa-inr"></i> <?= $getEnquiry->ho_payable_amount ?></h5> -->
@@ -1225,7 +1345,7 @@ $request_edit_fields = [
 
 
                                                                             <?php } ?>
-                                                                            <h5><?= date_format(date_create($getEnquiry->invoice_from_ho_date), "M d, Y h:i A") ?></h5>
+                                                                            <h6><?= date_format(date_create($getEnquiry->invoice_from_ho_date), "M d, Y h:i A") ?></h6>
                                                                         <?php } ?>
                                                                     </div>
                                                                 </div>
@@ -1290,14 +1410,14 @@ $request_edit_fields = [
 
 
                                                                             <?php } else { ?>
-                                                                                <h4 class="text-success fw-bold">Invoice Uploaded For Vendor Succesfully</h4>
+                                                                                <h5 class="text-success fw-bold">Invoice Uploaded For Vendor Succesfully</h5>
                                                                                 <h6><?= date_format(date_create($subenquiry->invoice_to_vendor_date), "M d, Y h:i A") ?></h6>
                                                                             <?php } ?>
                                                                         </div>
                                                                         <div class="col-md-4 text-center">
                                                                             <?php
                                                                             if (count($vendor_invoice_file_arr)) { ?>
-                                                                                <h4 class="text-success fw-bold">Invoice Uploaded By Ecoex Succesfully</h4>
+                                                                                <h5 class="text-success fw-bold">Invoice Uploaded By Ecoex Succesfully</h5>
                                                                                 <!-- old code -->
                                                                                 <!-- <a download href="<?= getenv('app.uploadsURL') . 'enquiry/' . $subenquiry->vendor_invoice_file ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to open invoice ?');"><i class="fas fa-download"></i> Download Invoice From Vendor</a>
                                                                                 <h5><i class="fa fa-inr"></i> <?= $subenquiry->vendor_invoice_amount ?></h5> -->
@@ -1346,9 +1466,9 @@ $request_edit_fields = [
                                                                     <div class="row mt-3">
                                                                         <div class="col-md-6 text-center">
                                                                             <?php if ($subenquiry->payment_amount <= 0) { ?>
-                                                                                <h4 class="text-warning fw-bold">Payment Info Still Not Uploaded By Vendor</h4>
+                                                                                <h5 class="text-warning fw-bold">Payment Info Still Not Uploaded By Vendor</h5>
                                                                             <?php } else { ?>
-                                                                                <h4 class="text-success fw-bold">Payment Info Uploaded By Vendor Succesfully</h4>
+                                                                                <h5 class="text-success fw-bold">Payment Info Uploaded By Vendor Succesfully</h5>
                                                                                 <h5>Payment Amount : <?= $subenquiry->payment_amount ?></h5>
                                                                                 <h6>Payment Date/Time : <?= date_format(date_create($subenquiry->payment_date), "M d, Y h:i A") ?></h6>
                                                                                 <h6>Payment Mode : <?= $subenquiry->payment_mode ?></h6>
@@ -1371,7 +1491,7 @@ $request_edit_fields = [
                                                                                 if ($subenquiry->is_approve_vendor_payment == 0) { ?>
                                                                                     <a href="<?= base_url('admin/enquiry-requests/vendor-payment-approve/' . encoded($sub_enquiry_no)) ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to approve vendor payment ?');"><i class="fas fa-check"></i> Approve Vendor Payment</a>
                                                                                 <?php } else { ?>
-                                                                                    <h4 class="text-success fw-bold">Vendor Payment Approved Successfully By Ecoex</h4>
+                                                                                    <h5 class="text-success fw-bold">Vendor Payment Approved Successfully By Ecoex</h5>
                                                                                     <h5><i class="fa fa-inr"></i> <?= $subenquiry->payment_amount ?></h5>
                                                                                     <h6><?= date_format(date_create($subenquiry->vendor_payment_received_date), "M d, Y h:i A") ?></h6>
                                                                                 <?php } ?>
@@ -1399,7 +1519,7 @@ $request_edit_fields = [
                                                                     <div class="row mt-3">
                                                                         <div class="col-md-6 text-center">
                                                                             <?php if ($subenquiry->vehicle_dispatched_date != '') { ?>
-                                                                                <h4 class="text-success fw-bold">Vehicle Despatched By Vendor</h4>
+                                                                                <h5 class="text-success fw-bold">Vehicle Despatched By Vendor</h5>
                                                                             <?php } ?>
                                                                         </div>
                                                                         <div class="col-md-6 text-center">
@@ -1422,24 +1542,24 @@ $request_edit_fields = [
                                                     <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine" data-bs-parent="#accordionExample">
                                                         <div class="accordion-body">
                                                             <?php if ($getEnquiry) { ?>
-                                                                <div class="row mt-3">
+                                                                <div class="row">
                                                                     <div class="col-md-6 text-center">
                                                                         <?php if ($getEnquiry->ecoex_submitted_date == '') { ?>
-                                                                            <h4 class="text-warning fw-bold">Ecoex Still Not Payment To HO</h4>
+                                                                            <h5 class="text-warning fw-bold">Ecoex Still Not Payment To HO</h5>
                                                                             <?php if ($userType == 'MA') { ?>
-                                                                                <form method="POST" action="<?= base_url('admin/enquiry-requests/upload-payment-by-ecoex-for-ho') ?>" enctype="multipart/form-data" style="border: 1px solid #0080006e;border-radius: 10px;padding: 10px;">
+                                                                                <form method="POST" action="<?= base_url('admin/enquiry-requests/upload-payment-by-ecoex-for-ho') ?>" enctype="multipart/form-data" style="border: 1px solid #0080006e;border-radius: 10px;padding: 15px;">
                                                                                     <input type="hidden" name="enq_id" value="<?= encoded($getEnquiry->id) ?>">
                                                                                     <input type="hidden" name="sub_enquiry_no" value="<?= encoded($sub_enquiry_no) ?>">
-                                                                                    <div class="form-group">
-                                                                                        <label for="ecoex_payment_amount" style="float: left; font-weight:bold;">Payment Amount</label>
+                                                                                    <div class="form-group" style="margin-bottom: 10px;">
+                                                                                        <label for="ecoex_payment_amount" style="float: left; font-weight:bold;margin-bottom: 5px;">Payment Amount</label>
                                                                                         <input type="text" class="form-control" name="ecoex_payment_amount" id="ecoex_payment_amount" required>
                                                                                     </div>
-                                                                                    <div class="form-group">
-                                                                                        <label for="ecoex_payment_date" style="float: left; font-weight:bold;">Payment Date/Time</label>
+                                                                                    <div class="form-group" style="margin-bottom: 10px;">
+                                                                                        <label for="ecoex_payment_date" style="float: left; font-weight:bold;margin-bottom: 5px;">Payment Date/Time</label>
                                                                                         <input type="datetime-local" class="form-control" name="ecoex_payment_date" id="ecoex_payment_date" required>
                                                                                     </div>
                                                                                     <div class="form-group mb-3">
-                                                                                        <label for="ecoex_payment_mode" style="float: left; font-weight:bold;">Payment Mode</label>
+                                                                                        <label for="ecoex_payment_mode" style="float: left; font-weight:bold;margin-bottom: 5px;">Payment Mode</label>
                                                                                         <select class="form-control" name="ecoex_payment_mode" id="ecoex_payment_mode" required onchange="getPaymentMode(this.value);">
                                                                                             <option value="" selected>Select Payment Mode</option>
                                                                                             <option value="CASH">CASH</option>
@@ -1460,7 +1580,7 @@ $request_edit_fields = [
                                                                                 </form>
                                                                             <?php } ?>
                                                                         <?php } else { ?>
-                                                                            <h4 class="text-success fw-bold">Payment Info Uploaded By Ecoex Succesfully</h4>
+                                                                            <h5 class="text-success fw-bold">Payment Info Uploaded By Ecoex Succesfully</h5>
                                                                             <h5>Payment Amount : <span class="text-success"><?= number_format($getEnquiry->ecoex_payment_amount, 2) ?></span></h5>
                                                                             <h5>Due Amount : <span class="text-danger"><?= number_format($getEnquiry->ecoex_due_amount, 2) ?></span></h5>
                                                                             <h6>Payment Date/Time : <?= date_format(date_create($getEnquiry->ecoex_payment_date), "M d, Y h:i A") ?></h6>
@@ -1481,12 +1601,12 @@ $request_edit_fields = [
                                                                     <div class="col-md-6 text-center">
                                                                         <?php if ($getEnquiry->ecoex_submitted_date != '') { ?>
                                                                             <?php if (!$getEnquiry->is_ho_approve_ecoex_payment) { ?>
-                                                                                <h4 class="text-warning fw-bold">Ecoex Payment Still Not Approved By HO</h4>
+                                                                                <h5 class="text-warning fw-bold">Ecoex Payment Still Not Approved By HO</h5>
                                                                                 <?php if ($userType == 'COMPANY') { ?>
                                                                                     <a href="<?= base_url('admin/enquiry-requests/approve-ecoex-payment-by-ho/' . encoded($getEnquiry->id) . '/' . encoded($sub_enquiry_no)) ?>" class="btn btn-success btn-sm" onclick="return confirm('Do you want to approve ecoex payment ?');"><i class="fas fa-check"></i> Approve Ecoex Payment</a>
                                                                                 <?php } ?>
                                                                             <?php } else { ?>
-                                                                                <h4 class="text-success fw-bold">Ecoex Payment Approved By HO</h4>
+                                                                                <h5 class="text-success fw-bold">Ecoex Payment Approved By HO</h5>
                                                                                 <h6><?= date_format(date_create($getEnquiry->ho_approve_date), "M d, Y h:i A") ?></h6>
                                                                             <?php } ?>
                                                                         <?php } ?>
@@ -1510,9 +1630,9 @@ $request_edit_fields = [
                                                                 <div class="row mt-3">
                                                                     <div class="col-md-6 text-center">
                                                                         <?php if ($row->order_complete_date != '') { ?>
-                                                                            <h4 class="text-success fw-bold">Enquiry Completed By Ecoex</h4>
+                                                                            <h5 class="text-success fw-bold">Enquiry Completed By Ecoex</h5>
                                                                         <?php } else { ?>
-                                                                            <h4 class="text-warning fw-bold">Enquiry Yet Not Completed By Ecoex</h4>
+                                                                            <h5 class="text-warning fw-bold">Enquiry Yet Not Completed By Ecoex</h5>
                                                                             <?php if ($userType == 'MA') { ?>
                                                                                 <a href="<?= base_url('admin/' . $controller_route . '/order-complete/' . encoded($row->$primary_key)) ?>" class="btn btn-success btn-sm" title="Complete <?= $title ?>" onclick="return confirm('Do You Want To Complete This <?= $title ?>');"><i class="fa-solid fa-flag-checkered"></i> Click To Complete Enquiry</a>
                                                                             <?php } ?>

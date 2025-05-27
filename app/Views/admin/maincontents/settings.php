@@ -92,7 +92,7 @@ $user_type = session('user_type');
             <?php }?>
           </ul>
           <div class="tab-content pt-2">
-            <div class="tab-pane fade show active profile-overview" id="tab1">
+            <div class="tab-pane fade show active profile-overview pt-3" id="tab1">
               <!-- profile settings Form -->
               <form method="POST" action="<?=base_url('admin/profile-settings')?>" enctype="multipart/form-data">
                 <div class="row mb-3">
@@ -333,8 +333,8 @@ $user_type = session('user_type');
                 </div>
               </form><!-- End change password Form -->
             </div>
-            <div class="tab-pane fade pt-3" id="tab4">
-              <h3>Email Configuration</h3>
+            <div class="tab-pane fade pt-2" id="tab4">
+              <h5>Email Configuration</h5>
               <!-- email settings Form -->
               <form method="POST" action="<?=base_url('admin/email-settings')?>" enctype="multipart/form-data">
                 <div class="row mb-3">
@@ -378,7 +378,7 @@ $user_type = session('user_type');
                 </div>
               </form><!-- End email settings Form -->
 
-              <h3>Test Email</h3>
+              <h5>Test Email</h5>
               <a href="<?=base_url('admin/test-email')?>" class="btn btn-success"><i class="fa fa-envelope"></i> Click To Send Test Email</a>
             </div>
             <div class="tab-pane fade pt-3" id="tab5">
