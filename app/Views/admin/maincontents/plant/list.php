@@ -8,11 +8,11 @@ $company_id                 = $session->company_id;
 ?>
 <div class="container-fluid">
     <div class="pagetitle">
-        <h1><?=$page_header?></h1>
+        <h1><?= $page_header ?></h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="<?=base_url('admin/dashboard')?>">Home</a></li>
-                <li class="breadcrumb-item active"><?=$page_header?></li>
+                <li class="breadcrumb-item"><a href="<?= base_url('admin/dashboard') ?>">Home</a></li>
+                <li class="breadcrumb-item active"><?= $page_header ?></li>
             </ol>
         </nav>
     </div>
@@ -21,34 +21,37 @@ $company_id                 = $session->company_id;
     <div class="container-fluid">
         <div class="row">
             <div class="col-xl-12">
-                <?php if(session('success_message')){?>
+                <?php if (session('success_message')) { ?>
                     <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show hide-message" role="alert">
-                        <?=session('success_message')?>
+                        <?= session('success_message') ?>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                <?php }?>
-                <?php if(session('error_message')){?>
+                <?php } ?>
+                <?php if (session('error_message')) { ?>
                     <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show hide-message" role="alert">
-                        <?=session('error_message')?>
+                        <?= session('error_message') ?>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                <?php }?>
+                <?php } ?>
             </div>
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <?php if($common_model->checkModuleFunctionAccess(15,115)){?>
+                        <?php if ($common_model->checkModuleFunctionAccess(15, 115)) { ?>
                             <h5 class="card-titles">
-                                <a href="<?=base_url('admin/' . $controller_route . '/add/')?>" class="btn btn-outline-success btn-sm">Add <?=$title?></a>
+                                <a href="<?= base_url('admin/' . $controller_route . '/add/') ?>" class="btn btn-outline-success btn-sm">Add <?= $title ?></a>
                             </h5>
-                        <?php }?>
+                        <?php } ?>
                         <div class="table-responsive">
                             <table id="simpletable" class="table globel_table nowrap" style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th class="text-center" width="5%">#</th>
-                                        <th>Company Name<br>Plant Name<br>GST No.</th>
-                                        <th>Plant Address<br>Location</th>
+                                        <th>Company Name</th>
+                                        <th>Plant Name</th>
+                                        <th>GST No.</th>
+                                        <th>Plant Address</th>
+                                        <th>Location</th>
                                         <th>Email</th>
                                         <th>Phone</th>
                                         <th>Created At<br>Updated At</th>
@@ -56,52 +59,61 @@ $company_id                 = $session->company_id;
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if($rows){ $sl=1; foreach($rows as $row){?>
-                                    <tr>
-                                        <th class="text-center" scope="row"><?=$sl++?></th>
-                                        <td>
-                                            <strong>
-                                            <?php
-                                            $company = $common_model->find_data('ecoex_companies', 'row', ['id' => $row->parent_id], 'company_name');
-                                            echo (($company)?$company->company_name:'');
-                                            ?></strong><br>
-                                            <strong><?=$row->plant_name?></strong><br>
-                                            <?=$row->gst_no?>
-                                        </td>
-                                        <td><?=wordwrap($row->full_address,25,"<br>\n")?><br><?=$row->location?></td>
-                                        <td><?=$row->email?></td>
-                                        <td><?=$row->phone?></td>
-                                        <td>
-                                            <h6>
-                                                <?=(($row->created_at != '')?date_format(date_create($row->created_at), "M d, Y h:i A"):'')?>
-                                                <hr>
-                                            </h6>
-                                            <h6>
-                                                <?=(($row->updated_at != '')?date_format(date_create($row->updated_at), "M d, Y h:i A"):'')?>
-                                            </h6>
-                                        </td>
-                                        <td class="text-center">
-                                            <?php if($common_model->checkModuleFunctionAccess(15,79)){?>
-                                                <a href="<?=base_url('admin/' . $controller_route . '/edit/'.encoded($row->$primary_key))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$title?>"><i class="fa fa-edit"></i></a>
-                                            <?php }?>
-                                            <?php if($common_model->checkModuleFunctionAccess(15,80)){?>
-                                                <a target="_blank" href="<?=base_url('admin/' . $controller_route . '/view/'.encoded($row->$primary_key))?>" class="btn btn-outline-info btn-sm" title="View <?=$title?>"><i class="fa fa-info-circle"></i></a>
-                                            <?php }?>
-                                            <?php if($common_model->checkModuleFunctionAccess(15,78)){?>
-                                                <a href="<?=base_url('admin/' . $controller_route . '/delete/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$title?>" onclick="return confirm('Do You Want To Delete This <?=$title?>');"><i class="fa fa-trash"></i></a>
-                                            <?php }?>
-                                            <?php if($row->status){?>
-                                                <?php if($common_model->checkModuleFunctionAccess(15,77)){?>
-                                                    <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm" title="Deactivate <?=$title?>" onclick="return confirm('Do You Want To Deactivate This <?=$title?>');"><i class="fa fa-times"></i></a>
-                                                <?php }?>
-                                            <?php } else {?>
-                                                <?php if($common_model->checkModuleFunctionAccess(15,76)){?>
-                                                    <a href="<?=base_url('admin/' . $controller_route . '/change-status/'.encoded($row->$primary_key))?>" class="btn btn-outline-danger btn-sm mt-2" title="Activate <?=$title?>" onclick="return confirm('Do You Want To Activate This <?=$title?>');"><i class="fa fa-check"></i></a>
-                                                <?php }?>
-                                            <?php }?>
-                                        </td>
-                                    </tr>
-                                    <?php } }?>
+                                    <?php if ($rows) {
+                                        $sl = 1;
+                                        foreach ($rows as $row) { ?>
+                                            <tr>
+                                                <th class="text-center" scope="row"><?= $sl++ ?></th>
+                                                <td>
+                                                    <strong>
+                                                        <?php
+                                                        $company = $common_model->find_data('ecoex_companies', 'row', ['id' => $row->parent_id], 'company_name');
+                                                        echo (($company) ? $company->company_name : '');
+                                                        ?>
+                                                    </strong>
+                                                </td>
+                                                <td>
+                                                    <strong><?= $row->plant_name ?></strong>
+                                                </td>
+                                                <td>
+                                                    <?= $row->gst_no ?>
+                                                </td>
+                                                <td><?= wordwrap($row->full_address, 25, "<br>\n") ?></td>
+                                                <td><?= $row->location ?></td>
+                                                <td><?= $row->email ?></td>
+                                                <td><?= $row->phone ?></td>
+                                                <td>
+                                                    <h6>
+                                                        <?= (($row->created_at != '') ? date_format(date_create($row->created_at), "M d, Y h:i A") : '') ?>
+                                                        <hr>
+                                                    </h6>
+                                                    <h6>
+                                                        <?= (($row->updated_at != '') ? date_format(date_create($row->updated_at), "M d, Y h:i A") : '') ?>
+                                                    </h6>
+                                                </td>
+                                                <td class="text-center">
+                                                    <?php if ($common_model->checkModuleFunctionAccess(15, 79)) { ?>
+                                                        <a href="<?= base_url('admin/' . $controller_route . '/edit/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-primary btn-sm" title="Edit <?= $title ?>"><i class="fa fa-edit"></i></a>
+                                                    <?php } ?>
+                                                    <?php if ($common_model->checkModuleFunctionAccess(15, 80)) { ?>
+                                                        <a target="_blank" href="<?= base_url('admin/' . $controller_route . '/view/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-info btn-sm" title="View <?= $title ?>"><i class="fa fa-info-circle"></i></a>
+                                                    <?php } ?>
+                                                    <?php if ($common_model->checkModuleFunctionAccess(15, 78)) { ?>
+                                                        <a href="<?= base_url('admin/' . $controller_route . '/delete/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-danger btn-sm" title="Delete <?= $title ?>" onclick="return confirm('Do You Want To Delete This <?= $title ?>');"><i class="fa fa-trash"></i></a>
+                                                    <?php } ?>
+                                                    <?php if ($row->status) { ?>
+                                                        <?php if ($common_model->checkModuleFunctionAccess(15, 77)) { ?>
+                                                            <a href="<?= base_url('admin/' . $controller_route . '/change-status/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-danger btn-sm" title="Deactivate <?= $title ?>" onclick="return confirm('Do You Want To Deactivate This <?= $title ?>');"><i class="fa fa-times"></i></a>
+                                                        <?php } ?>
+                                                    <?php } else { ?>
+                                                        <?php if ($common_model->checkModuleFunctionAccess(15, 76)) { ?>
+                                                            <a href="<?= base_url('admin/' . $controller_route . '/change-status/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-danger btn-sm mt-2" title="Activate <?= $title ?>" onclick="return confirm('Do You Want To Activate This <?= $title ?>');"><i class="fa fa-check"></i></a>
+                                                        <?php } ?>
+                                                    <?php } ?>
+                                                </td>
+                                            </tr>
+                                    <?php }
+                                    } ?>
                                 </tbody>
                             </table>
                         </div>
