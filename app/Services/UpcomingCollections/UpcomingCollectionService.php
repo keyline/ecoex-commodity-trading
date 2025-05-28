@@ -87,9 +87,17 @@ class UpcomingCollectionService
         $send_to = $gen->site_mail;
 
         // pr($results);
+        if (empty($results)) {
+            log_message('info', 'No upcoming collections found.');
+            return; // No upcoming collections to process
+        }
+        if (empty($send_to)) {
+            log_message('error', 'No email address found in general settings.');
+            return; // No email address to send to
+        }
 
         try {
-            // $send_to = 'shubhadip.sinha@keylines.net'; // Replace with the actual recipient email address or comment out for testing
+            $send_to = 'shubhadip.sinha@keylines.net'; // Replace with the actual recipient email address or comment out for testing
 
             $subject = 'Upcoming Collection Reminder';
             $message = view('email-templates/upcoming_collection', [
