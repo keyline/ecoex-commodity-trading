@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Services\UpcomingCollections\UpcomingCollectionService;
 
+
+
 class Home extends BaseController
 {
     public function index()
