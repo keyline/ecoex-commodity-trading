@@ -108,7 +108,7 @@ class UpcomingCollectionService
 
             if ($mailSent) {
                 echo "Email sent for enquiry " . $send_to;
-                log_message('success', "Email sent for enquiry upcoming collection " . $send_to);
+                // log_message('success', "Email sent for enquiry upcoming collection " . $send_to);
             } else {
                 echo "Failed to send email for enquiry " . $send_to;
                 log_message('error', "Failed to send email for enquiry upcoming collection " . $send_to);
