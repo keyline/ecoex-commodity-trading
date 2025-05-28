@@ -88,10 +88,12 @@ class UpcomingCollectionService
 
         // pr($results);
         if (empty($results)) {
+            echo "No upcoming collections found.";
             log_message('info', 'No upcoming collections found.');
             return; // No upcoming collections to process
         }
         if (empty($send_to)) {
+            echo "No upcoming collections found.";
             log_message('error', 'No email address found in general settings.');
             return; // No email address to send to
         }
