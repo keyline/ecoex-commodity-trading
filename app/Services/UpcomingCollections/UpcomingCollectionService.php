@@ -114,7 +114,7 @@ class UpcomingCollectionService
                 log_message('error', "Failed to send email for enquiry upcoming collection " . $send_to);
             }
         } catch (\Exception $e) {
-            echo "Error sending email: " . $e->getMessage();
+            echo "\nError sending email: " . $e->getMessage();
             log_message('error', 'Email not send: ' . $e->getMessage());
         }
     }
