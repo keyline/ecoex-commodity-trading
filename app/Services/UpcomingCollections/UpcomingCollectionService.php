@@ -89,7 +89,7 @@ class UpcomingCollectionService
         // pr($results);
 
         try {
-            $send_to = 'shubhadip.sinha@keylines.net'; // Replace with the actual recipient email address or comment out for testing
+            // $send_to = 'shubhadip.sinha@keylines.net'; // Replace with the actual recipient email address or comment out for testing
 
             $subject = 'Upcoming Collection Reminder';
             $message = view('email-templates/upcoming_collection', [
@@ -99,9 +99,11 @@ class UpcomingCollectionService
             $mailSent = send_mail($send_to, $subject, $message);
 
             if ($mailSent) {
-                echo "Email sent for enquiry " . $send_to;
+                // echo "Email sent for enquiry " . $send_to;
+                log_message('success', "Email sent for enquiry upcoming collection " . $send_to);
             } else {
-                echo "Failed to send email for enquiry " . $send_to;
+                // echo "Failed to send email for enquiry " . $send_to;
+                log_message('error', "Failed to send email for enquiry upcoming collection " . $send_to);
             }
         } catch (\Exception $e) {
             log_message('error', 'Email not send: ' . $e->getMessage());
