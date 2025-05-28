@@ -107,13 +107,14 @@ class UpcomingCollectionService
             $mailSent = send_mail($send_to, $subject, $message);
 
             if ($mailSent) {
-                // echo "Email sent for enquiry " . $send_to;
+                echo "Email sent for enquiry " . $send_to;
                 log_message('success', "Email sent for enquiry upcoming collection " . $send_to);
             } else {
-                // echo "Failed to send email for enquiry " . $send_to;
+                echo "Failed to send email for enquiry " . $send_to;
                 log_message('error', "Failed to send email for enquiry upcoming collection " . $send_to);
             }
         } catch (\Exception $e) {
+            echo "Error sending email: " . $e->getMessage();
             log_message('error', 'Email not send: ' . $e->getMessage());
         }
     }
