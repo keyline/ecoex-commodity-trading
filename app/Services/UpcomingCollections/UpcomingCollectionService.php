@@ -84,7 +84,7 @@ class UpcomingCollectionService
         helper('common');
         $gen     = $this->getGeneralSettings();
         $results = $this->getUpcomingEnquiries();
-        $send_to = $gen->site_mail;
+        $send_to = $gen->system_email; //site_mail;     # site_mail recipients failed: info@ecoex.market: No Such User  
 
         // pr($results);
         if (empty($results)) {
@@ -99,7 +99,7 @@ class UpcomingCollectionService
         }
 
         try {
-            $send_to = 'shubhadip.sinha@keylines.net'; // Replace with the actual recipient email address or comment out for testing
+            // $send_to = 'shubhadip.sinha@keylines.net'; // Replace with the actual recipient email address or comment out for testing
 
             $subject = 'Upcoming Collection Reminder';
             $message = view('email-templates/upcoming_collection', [
