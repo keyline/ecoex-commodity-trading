@@ -99,7 +99,7 @@ class UpcomingCollectionService
         }
 
         try {
-           // $send_to = 'shubhadip.sinha@keylines.net'; // Replace with the actual recipient email address or comment out for testing
+            $send_to = 'shubhadip.sinha@keylines.net'; // Replace with the actual recipient email address or comment out for testing
 
             $subject = 'Upcoming Collection Reminder';
             $message = view('email-templates/upcoming_collection', [
