@@ -6,6 +6,22 @@
 </head>
 
 <body>
+
+
+    <!-- ________________ loader ______________ -->
+    <div class="loader" id="loader">
+        <!-- <span class="element"></span>
+        <span class="element"></span>
+        <span class="element"></span> -->
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border" style="color: #a8cf45; width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div>
+    <!-- ________________ loader ______________ -->
+
+
     <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center" style="background-color: <?= $general_settings->headerbar_bgcolor ?>;">
         <?= $header ?>
@@ -16,7 +32,7 @@
         <?= $sidebar ?>
     </aside>
     <!-- End Sidebar-->
-    <main id="main" class="main">
+    <main id="main" class="main" style="display: none;">
         <?= $maincontent ?>
     </main>
     <!-- End #main -->
@@ -26,6 +42,13 @@
     </footer>
     <!-- End Footer -->
     <a href="javascript:void(0);" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    <!-- <script
+        type="module"
+        src="<? // base_url('public/assets/loader/navigation.js') 
+                ?>"></script> -->
+    <!-- 4.3 Import loader.js as an ES6 module -->
+    <script src="<?= base_url('public/assets/loader/loader.js') ?>"></script>
     <!-- Vendor JS Files -->
     <script src="<?= getenv('app.adminAssetsURL') ?>assets/vendor/apexcharts/apexcharts.min.js"></script>
     <script src="<?= getenv('app.adminAssetsURL') ?>assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

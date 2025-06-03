@@ -193,8 +193,9 @@
         background-color: #fff;
         border: none;
     }
+
     .view_enquiry_details .card-header,
-    .view_enquiry_details .accordion-button{
+    .view_enquiry_details .accordion-button {
         padding: 10px 15px;
         font-size: 18px;
     }
@@ -412,7 +413,7 @@ $request_edit_fields = [
                                 </div>
                             <?php } ?>
                             <!-- surajit comment -->
-                            <!-- <div class="col-md-6">
+                            <div class="col-md-6">
                                 <h5 class="fw-bold text-success">Company Name</h5>
                                 <h6>
                                     <?php
@@ -478,8 +479,10 @@ $request_edit_fields = [
                                         ?>
                                     </h6>
                                 </div>
-                            <?php } ?> -->
-                            <div class="col-md-12">
+                            <?php } ?>
+                            
+                            <!-- comented by @Shubha75 on 3/6/25 -->
+                            <!-- <div class="col-md-12">
                                 <div class="table-responsive">
                                     <table class="table globel_table">
                                         <thead>
@@ -548,7 +551,7 @@ $request_edit_fields = [
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -872,7 +875,7 @@ $request_edit_fields = [
                                                                 <th>Plant</th>
                                                                 <th>Vendor</th>
                                                                 <th>Is Quit</th>
-                                                            </tr>                                                            
+                                                            </tr>
                                                         </thead>
                                                         <tbody>
                                                             <tr>
