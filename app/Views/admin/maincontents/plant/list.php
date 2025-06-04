@@ -6,6 +6,7 @@ $controller_route   = $moduleDetail['controller_route'];
 $userType                   = $session->user_type;
 $company_id                 = $session->company_id;
 ?>
+
 <div class="container-fluid">
     <div class="pagetitle">
         <h1><?= $page_header ?></h1>
@@ -47,7 +48,7 @@ $company_id                 = $session->company_id;
                                 <thead>
                                     <tr>
                                         <th class="text-center" width="5%">#</th>
-                                        <th>Company Name</th>
+                                        <th width="5%">Company Name</th>
                                         <th>Plant Name</th>
                                         <th>GST No.</th>
                                         <th>Plant Address</th>

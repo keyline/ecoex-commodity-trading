@@ -296,6 +296,7 @@ class User extends BaseController
             $orderBy[0]                         =  ['field' => 'id', 'type' => 'DESC'];
             $data['recent_enquiries']           = $this->common_model->find_data('ecomm_enquires', 'array', ['status!=' => 14, 'company_id' => $company_id], '', '', '', $orderBy, 10);
         }
+
         echo $this->layout_after_login($title, $page_name, $data);
     }
     public function dashboardFilter()
@@ -361,6 +362,14 @@ class User extends BaseController
         $data['company']                    = $this->common_model->find_data('ecoex_companies', 'count', ['status!=' => 3, 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
         $data['vendor']                     = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'VENDOR', 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
         $data['itemCategory']               = $this->common_model->find_data('ecomm_product_categories', 'count', ['status' => 1, 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
+
+
+        // code added by @Shubha75 on 06-04-2025
+        $data['itemCats']                   = $this->common_model->find_data('ecomm_product_categories', 'array', ['status' => 1], 'id,name');
+        $join[0]                            = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_company_items', 'field_table_master' => 'company_id', 'type' => 'INNER'];
+        $data['companyCats']                = $this->common_model->find_data('ecomm_company_items', 'count', ['ecomm_company_items.status!=' => 3, 'ecoex_companies.status' => 2], '', $join);
+        // code added end
+
 
         if ($userType == 'MA') {
             $data['plant']                      = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'PLANT', 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
