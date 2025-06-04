@@ -45,16 +45,16 @@ $userType           = $session->user_type;
                             <table id="simpletable" class="table globel_table nowrap" style="width: 100%">
                                 <thead>
                                     <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Enquiry No.</th>
-                                        <th scope="col">Company</th>
-                                        <th scope="col">Plant</th>
-                                        <th scope="col">Tentative Collection Date</th>
-                                        <th scope="col">Created At<br>Created By<br>Updated At<br>Updated By</th>
+                                        <th>#</th>
+                                        <th style="width: 5%;">Enquiry No.</th>
+                                        <th style="width: 5%;">Company</th>
+                                        <th style="width: 5%;">Plant</th>
+                                        <th>Tentative Collection Date</th>
+                                        <th>Created At<br>Created By<br>Updated At<br>Updated By</th>
                                         <?php if ($rows) {
-                                            if ($rows[0]->status >= 11 && $rows[0]->status <= 12) { ?><th scope="col">Ecoex Payment<br>Approve Status<br>HO Approve<br>Enquiry Complete</th><?php }
+                                            if ($rows[0]->status >= 11 && $rows[0]->status <= 12) { ?><th>Ecoex Payment<br>Approve Status<br>HO Approve<br>Enquiry Complete</th><?php }
                                                                                                                                                                                                 } ?>
-                                        <th scope="col">Action</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
