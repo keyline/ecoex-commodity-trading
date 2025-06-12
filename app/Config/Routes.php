@@ -236,6 +236,16 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 	$routes->get('functionalities/status/(:segment)/(:segment)', 'FunctionalitiesController::updateStatus/$1/$2', ['as' => 'functionalities.status']); // Toggle status
 	// manage functionalities
 
+	// Manage Recycler Categorys
+	$routes->get('recycler-category', 'RecyclerCategorysController::index', ['as' => 'recycler_category.index']); // List view
+	$routes->get('recycler-category/new', 'RecyclerCategorysController::create', ['as' => 'recycler_category.create']); // Show create form
+	$routes->post('recycler-category', 'RecyclerCategorysController::store', ['as' => 'recycler_category.store']); // Store new record
+	$routes->get('recycler-category/(:segment)/edit', 'RecyclerCategorysController::edit/$1', ['as' => 'recycler_category.edit']); // Show edit form
+	$routes->post('recycler-category/(:segment)', 'RecyclerCategorysController::update/$1', ['as' => 'recycler_category.update']); // Update record
+	$routes->delete('recycler-category/(:segment)', 'RecyclerCategorysController::delete/$1', ['as' => 'recycler_category.delete']); // Delete record
+	$routes->get('recycler-category/status/(:segment)/(:segment)', 'RecyclerCategorysController::updateStatus/$1/$2', ['as' => 'recycler_category.status']); // Toggle status
+	// Manage Recycler Categorys
+
 
 
 

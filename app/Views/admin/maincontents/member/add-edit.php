@@ -5,12 +5,12 @@ $controller_route   = $moduleDetail['controller_route'];
 ?>
 <div class="container-fluid">
     <div class="pagetitle">
-        <h1><?=$page_header?></h1>
+        <h1><?= $page_header ?></h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="<?=base_url('admin/dashboard')?>">Home</a></li>
-                <li class="breadcrumb-item active"><a href="<?=base_url('admin/' . $controller_route . '/list/')?>"><?=$title?> List</a></li>
-                <li class="breadcrumb-item active"><?=$page_header?></li>
+                <li class="breadcrumb-item"><a href="<?= base_url('admin/dashboard') ?>">Home</a></li>
+                <li class="breadcrumb-item active"><a href="<?= base_url('admin/' . $controller_route . '/list/') ?>"><?= $title ?> List</a></li>
+                <li class="breadcrumb-item active"><?= $page_header ?></li>
             </ol>
         </nav>
     </div>
@@ -20,138 +20,140 @@ $controller_route   = $moduleDetail['controller_route'];
     <div class="container-fluid">
         <div class="row">
             <div class="col-xl-12">
-                <?php if(session('success_message')){?>
-                <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show hide-message" role="alert">
-                    <?=session('success_message')?>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php }?>
-                <?php if(session('error_message')){?>
-                <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show hide-message" role="alert">
-                    <?=session('error_message')?>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php }?>
+                <?php if (session('success_message')) { ?>
+                    <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show hide-message" role="alert">
+                        <?= session('success_message') ?>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php } ?>
+                <?php if (session('error_message')) { ?>
+                    <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show hide-message" role="alert">
+                        <?= session('error_message') ?>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php } ?>
             </div>
             <?php
-                if($row){
-                  $gst_no           = $row->gst_no;
-                  $gst_certificate  = $row->gst_certificate;
-                  $company_name     = $row->company_name;
-                  $full_address     = $row->full_address;
-                  $holding_no       = $row->holding_no;
-                  $street           = $row->street;
-                  $district         = $row->district;
-                  $state            = $row->state;
-                  $pincode          = $row->pincode;
-                  $location         = $row->location;
-                  $email            = $row->email;
-                  $phone            = $row->phone;
-                  $password         = $row->password;
-                  $profile_image    = $row->profile_image;
-                  $member_type      = $row->member_type;
-                  $contact_person_name                  = $row->contact_person_name;
-                  $contact_person_designation           = $row->contact_person_designation;
-                  $contact_person_document              = $row->contact_person_document;
-                } else {
-                  $gst_no           = '';
-                  $gst_certificate  = '';
-                  $company_name     = '';
-                  $full_address     = '';
-                  $holding_no       = '';
-                  $street           = '';
-                  $district         = '';
-                  $state            = '';
-                  $pincode          = '';
-                  $location         = '';
-                  $email            = '';
-                  $phone            = '';
-                  $password         = '';
-                  $profile_image    = '';
-                  $member_type      = '';
-                  $contact_person_name              = '';
-                  $contact_person_designation       = '';
-                  $contact_person_document          = '';
-                }
-                ?>
+            if ($row) {
+                $gst_no           = $row->gst_no;
+                $gst_certificate  = $row->gst_certificate;
+                $company_name     = $row->company_name;
+                $full_address     = $row->full_address;
+                $holding_no       = $row->holding_no;
+                $street           = $row->street;
+                $district         = $row->district;
+                $state            = $row->state;
+                $pincode          = $row->pincode;
+                $location         = $row->location;
+                $email            = $row->email;
+                $phone            = $row->phone;
+                $password         = $row->password;
+                $profile_image    = $row->profile_image;
+                $member_type      = $row->member_type;
+                $selected_recyclercategory = $row->recycler_category_id;
+                $contact_person_name                  = $row->contact_person_name;
+                $contact_person_designation           = $row->contact_person_designation;
+                $contact_person_document              = $row->contact_person_document;
+            } else {
+                $gst_no           = '';
+                $gst_certificate  = '';
+                $company_name     = '';
+                $full_address     = '';
+                $holding_no       = '';
+                $street           = '';
+                $district         = '';
+                $state            = '';
+                $pincode          = '';
+                $location         = '';
+                $email            = '';
+                $phone            = '';
+                $password         = '';
+                $profile_image    = '';
+                $member_type      = '';
+                $selected_recyclercategory = '';
+                $contact_person_name              = '';
+                $contact_person_designation       = '';
+                $contact_person_document          = '';
+            }
+            ?>
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-body pt-3">
                         <small class="text-danger mb-0 mb-md-2 d-block">* (star) marks fields are mandatory</small>
                         <form method="POST" action="" enctype="multipart/form-data">
-                            <input type="hidden" name="holding_no" id="holding_no" value="<?=$holding_no?>">
-                            <input type="hidden" name="location" id="location" value="<?=$location?>">
+                            <input type="hidden" name="holding_no" id="holding_no" value="<?= $holding_no ?>">
+                            <input type="hidden" name="location" id="location" value="<?= $location ?>">
                             <div class="row mb-3">
                                 <label for="gst_no" class="col-md-2 col-lg-2 col-form-label">GST No. <span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
-                                    <input type="text" name="gst_no" class="form-control" id="gst_no" value="<?=$gst_no?>" required>
+                                    <input type="text" name="gst_no" class="form-control" id="gst_no" value="<?= $gst_no ?>" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="gst_certificate" class="col-md-2 col-lg-2 col-form-label">GST Certificate <span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
-                                    <input type="file" name="gst_certificate" class="form-control" id="gst_certificate" <?=(($row)?'':'required')?>>
+                                    <input type="file" name="gst_certificate" class="form-control" id="gst_certificate" <?= (($row) ? '' : 'required') ?>>
                                     <small class="text-info">* Only pdf files are allowed</small><br>
-                                    <?php if($gst_certificate != ''){?>
-                                        <a href="<?=getenv('app.uploadsURL').'user/'.$gst_certificate?>" class="badge bg-primary" target="_blank" title="<?=$company_name?>">View Document</a>
-                                    <?php }?>
+                                    <?php if ($gst_certificate != '') { ?>
+                                        <a href="<?= getenv('app.uploadsURL') . 'user/' . $gst_certificate ?>" class="badge bg-primary" target="_blank" title="<?= $company_name ?>">View Document</a>
+                                    <?php } ?>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="company_name" class="col-md-2 col-lg-2 col-form-label">Vendor Name <span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
-                                    <input type="text" name="company_name" class="form-control" id="company_name" value="<?=$company_name?>" required>
+                                    <input type="text" name="company_name" class="form-control" id="company_name" value="<?= $company_name ?>" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="full_address" class="col-md-2 col-lg-2 col-form-label">Vendor Address <span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
-                                    <textarea name="full_address" class="form-control" id="full_address" required><?=$full_address?></textarea>
+                                    <textarea name="full_address" class="form-control" id="full_address" required><?= $full_address ?></textarea>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="street" class="col-md-2 col-lg-2 col-form-label">Street <span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
-                                    <input type="text" name="street" class="form-control" id="street" value="<?=$street?>" required>
+                                    <input type="text" name="street" class="form-control" id="street" value="<?= $street ?>" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="district" class="col-md-2 col-lg-2 col-form-label">District <span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
-                                    <input type="text" name="district" class="form-control" id="district" value="<?=$district?>" required>
+                                    <input type="text" name="district" class="form-control" id="district" value="<?= $district ?>" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="state" class="col-md-2 col-lg-2 col-form-label">State <span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
-                                    <input type="text" name="state" class="form-control" id="state" value="<?=$state?>" required>
+                                    <input type="text" name="state" class="form-control" id="state" value="<?= $state ?>" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="pincode" class="col-md-2 col-lg-2 col-form-label">Pincode <span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
-                                    <input type="text" name="pincode" class="form-control" id="pincode" onkeypress="return isNumber(event)" maxlength="6" minlength="6" value="<?=$location?>" required>
+                                    <input type="text" name="pincode" class="form-control" id="pincode" onkeypress="return isNumber(event)" maxlength="6" minlength="6" value="<?= $location ?>" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="vendor_email" class="col-md-2 col-lg-2 col-form-label">Email <span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
-                                    <input type="email" name="email" class="form-control" id="vendor_email" value="<?=$email?>" required>
+                                    <input type="email" name="email" class="form-control" id="vendor_email" value="<?= $email ?>" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="vendor_phone" class="col-md-2 col-lg-2 col-form-label">Phone <span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
-                                    <input type="text" name="phone" class="form-control" id="vendor_phone" value="<?=$phone?>" onkeypress="return isNumber(event)" maxlength="10" minlength="10" required>
+                                    <input type="text" name="phone" class="form-control" id="vendor_phone" value="<?= $phone ?>" onkeypress="return isNumber(event)" maxlength="10" minlength="10" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="password" class="col-md-2 col-lg-2 col-form-label">Password <span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
-                                    <input type="text" name="password" class="form-control" id="password" onkeypress="return isNumber(event)" maxlength="15" minlength="8" <?=(($row)?'':'required')?>>
-                                    <?php if($row){?>
+                                    <input type="text" name="password" class="form-control" id="password" onkeypress="return isNumber(event)" maxlength="15" minlength="8" <?= (($row) ? '' : 'required') ?>>
+                                    <?php if ($row) { ?>
                                         <small class="text-info">* Please leave blank when you dont want to change password</small><br>
-                                    <?php }?>
+                                    <?php } ?>
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -159,11 +161,11 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <div class="col-md-10 col-lg-10">
                                     <input type="file" name="profile_image" class="form-control" id="profile_image">
                                     <small class="text-info">* Only JPG, JPEG, ICO, SVG, PNG files are allowed</small><br>
-                                    <?php if($profile_image != ''){?>
-                                      <img src="<?=getenv('app.uploadsURL').'user/'.$profile_image?>" alt="<?=$company_name?>" class="img-thumbnail" style="width: 130px; height: auto; margin-top: 10px;">
-                                    <?php } else {?>
-                                      <img src="<?=getenv('app.NO_IMAGE')?>" alt="<?=$company_name?>" class="img-thumbnail" style="width: 130px; height: auto; margin-top: 10px;">
-                                    <?php }?>
+                                    <?php if ($profile_image != '') { ?>
+                                        <img src="<?= getenv('app.uploadsURL') . 'user/' . $profile_image ?>" alt="<?= $company_name ?>" class="img-thumbnail" style="width: 130px; height: auto; margin-top: 10px;">
+                                    <?php } else { ?>
+                                        <img src="<?= getenv('app.NO_IMAGE') ?>" alt="<?= $company_name ?>" class="img-thumbnail" style="width: 130px; height: auto; margin-top: 10px;">
+                                    <?php } ?>
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -171,38 +173,58 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <div class="col-md-10 col-lg-10">
                                     <select class="form-control" name="member_type" id="member_type" required>
                                         <option value="" selected>Select Member Type</option>
-                                        <?php if($memberTypes){ foreach($memberTypes as $memberType){?>
-                                        <option value="<?=$memberType->id?>" <?=(($memberType->id == $member_type)?'selected':'')?>><?=$memberType->name?></option>
-                                        <?php } }?>
+                                        <?php if ($memberTypes) {
+                                            foreach ($memberTypes as $memberType) { ?>
+                                                <option value="<?= $memberType->id ?>" <?= (($memberType->id == $member_type) ? 'selected' : '') ?>><?= $memberType->name ?></option>
+                                        <?php }
+                                        } ?>
                                     </select>
                                 </div>
                             </div>
-    
+
+
+                            <!-- code added by @Shubha75 on 12/6/25 -->
+                            <div class="row mb-3" id="recycler_category_div" style="<?= $member_type == 1 ? '' : 'display: none;' ?>">
+                                <label for="recycler_category" class="col-md-2 col-lg-2 col-form-label">Recycler Category<span class="text-danger">*</span></label>
+                                <div class="col-md-10 col-lg-10">
+                                    <select class="form-control" name="recycler_category">
+                                        <option value="" selected disabled>Select</option>
+                                        <?php if ($recycler_category) {
+                                            foreach ($recycler_category as $row) { ?>
+                                                <option value="<?= $row->id ?>" <?= (($row->id == $selected_recyclercategory) ? 'selected' : '') ?>><?= $row->category_name ?></option>
+                                        <?php }
+                                        } ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- code added -->
+
                             <div class="row mb-3">
                                 <label for="contact_person_name" class="col-md-2 col-lg-2 col-form-label">Proprietor Name <span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
-                                    <input type="text" name="contact_person_name" class="form-control" id="contact_person_name" value="<?=$contact_person_name?>" required>
+                                    <input type="text" name="contact_person_name" class="form-control" id="contact_person_name" value="<?= $contact_person_name ?>" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="contact_person_designation" class="col-md-2 col-lg-2 col-form-label">Proprietor Designation <span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
-                                    <input type="text" name="contact_person_designation" class="form-control" id="contact_person_designation" value="<?=$contact_person_designation?>" required>
+                                    <input type="text" name="contact_person_designation" class="form-control" id="contact_person_designation" value="<?= $contact_person_designation ?>" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="contact_person_document" class="col-md-2 col-lg-2 col-form-label">Proprietor PAN Card </label>
                                 <div class="col-md-10 col-lg-10">
-                                    <input type="file" name="contact_person_document" class="form-control" id="contact_person_document" <?=(($row)?'':'')?>>
+                                    <input type="file" name="contact_person_document" class="form-control" id="contact_person_document" <?= (($row) ? '' : '') ?>>
                                     <br>
-                                    <?php if($contact_person_document != ''){?>
-                                        <a href="<?=getenv('app.uploadsURL').'user/'.$contact_person_document?>" class="badge bg-primary" target="_blank" title="<?=$company_name?>">View Document</a>
-                                    <?php }?>
+                                    <?php if ($contact_person_document != '') { ?>
+                                        <a href="<?= getenv('app.uploadsURL') . 'user/' . $contact_person_document ?>" class="badge bg-primary" target="_blank" title="<?= $company_name ?>">View Document</a>
+                                    <?php } ?>
                                 </div>
                             </div>
-    
+
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary"><?=(($row)?'Save':'Add')?></button>
+                                <button type="submit" class="btn btn-primary"><?= (($row) ? 'Save' : 'Add') ?></button>
                             </div>
                         </form>
                     </div>
@@ -214,30 +236,30 @@ $controller_route   = $moduleDetail['controller_route'];
 <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script type="text/javascript">
-    $(function(){
-        $('#gst_no').on('blur', function(){
+    $(function() {
+        $('#gst_no').on('blur', function() {
             let gst_no = $('#gst_no').val();
-            let url = '<?=base_url()?>';
+            let url = '<?= base_url() ?>';
             var settings = {
-              "url": url + "api/get-company-details2",
-              "method": "POST",
-              "timeout": 0,
-              "headers": {
-                "key": "4e1c3ee6861ac425437fa8b662651cde",
-                "source": "ANDROID",
-                "Content-Type": "application/json",
-                "Cookie": "ci_session=f3meuemlu90ugrr16h69p1fbd5nhlker"
-              },
-              "data": JSON.stringify({
-                "gst_no": gst_no
-              }),
+                "url": url + "api/get-company-details2",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "key": "4e1c3ee6861ac425437fa8b662651cde",
+                    "source": "ANDROID",
+                    "Content-Type": "application/json",
+                    "Cookie": "ci_session=f3meuemlu90ugrr16h69p1fbd5nhlker"
+                },
+                "data": JSON.stringify({
+                    "gst_no": gst_no
+                }),
             };
 
-            $.ajax(settings).done(function (response) {
+            $.ajax(settings).done(function(response) {
                 response = $.parseJSON(response);
                 console.log(response.success);
                 console.log(response.data.trade_name);
-                if(response.success){
+                if (response.success) {
                     $('#company_name').val(response.data.trade_name);
                     $('#full_address').val(response.data.address);
                     $('#holding_no').val(response.data.holding_no);
@@ -260,4 +282,18 @@ $controller_route   = $moduleDetail['controller_route'];
         }
         return true;
     }
+
+    // code added by @Shubha75 on 12/6/25
+
+    $(document).ready(function() {
+        $('#member_type').on('change', function() {
+            var selectedId = $(this).val();
+
+            if (selectedId == 1) {
+                $('#recycler_category_div').show().attr('required', true); // Show the dropdown
+            } else {
+                $('#recycler_category_div').hide().removeAttr('required'); // Hide the dropdown
+            }
+        });
+    });
 </script>
