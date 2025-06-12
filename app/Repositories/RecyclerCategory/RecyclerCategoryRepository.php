@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Repositories\Functionality;
+namespace App\Repositories\RecyclerCategory;
 
 use CodeIgniter\Database\Exceptions\DatabaseException;
 
-class FunctionalityRepository
+class RecyclerCategoryRepository
 {
     protected $db, $tabel, $primaryKey;
 
     public function __construct()
     {
         $this->db = \Config\Database::connect();
-        $this->tabel = $this->db->table('functionalities');
-        $this->primaryKey = 'fun_id';
+        $this->tabel = $this->db->table('recycler_member_categorys');
+        $this->primaryKey = 'id';
     }
-
 
     public function create(array $data)
     {
@@ -72,8 +71,8 @@ class FunctionalityRepository
         try {
             // Fetch all records from the table
             return $this->tabel
-                ->where('fun_status !=', 3)
-                ->orderBy('fun_rank', 'ASC')
+                ->where('status !=', 3)
+                ->orderBy('id', 'DESC')
                 ->get()
                 ->getResult();
         } catch (DatabaseException $e) {
@@ -102,26 +101,10 @@ class FunctionalityRepository
         try {
             return $this->tabel
                 ->where($this->primaryKey, $id)
-                ->set('fun_status', $status)
+                ->set('status', $status)
                 ->update();
         } catch (DatabaseException $e) {
             log_message('error', 'Database error while updating status: ' . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
-            throw $e;
-        }
-    }
-
-    public function isRankUnique($rank, $excludeId = null): bool
-    {
-        try {
-            $this->tabel->where('fun_rank', $rank);
-
-            if (!is_null($excludeId)) {
-                $this->tabel->where($this->primaryKey . ' !=', $excludeId);
-            }
-
-            return ($this->tabel->countAllResults() === 0);
-        } catch (DatabaseException $e) {
-            log_message('error', 'Database error : ' . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
             throw $e;
         }
     }

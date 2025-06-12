@@ -63,10 +63,22 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 <td>
                                                     <strong>
                                                         <?php
+
                                                         $memberType = $common_model->find_data('ecomm_member_types', 'row', ['id' => $row->member_type], 'name');
                                                         echo (($memberType) ? $memberType->name : '');
+
+
                                                         ?>
                                                     </strong>
+                                                    <br>
+                                                    <small>
+                                                        <?php
+                                                        if ($row->recycler_category_id) {
+                                                            $rec_category = $common_model->find_data('recycler_member_categorys', 'row', ['id' => $row->recycler_category_id], 'category_name');
+                                                            echo (($rec_category) ? $rec_category->category_name : '');
+                                                        }
+                                                        ?>
+                                                    </small>
                                                 </td>
                                                 <td><?= $row->gst_no ?></td>
                                                 <td><?= $row->company_name ?></td>
