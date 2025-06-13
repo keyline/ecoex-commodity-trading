@@ -53,7 +53,7 @@ $userType           = $session->user_type;
                                         <th>Created At<br>Created By<br>Updated At<br>Updated By</th>
                                         <?php if ($rows) {
                                             if ($rows[0]->status >= 11 && $rows[0]->status <= 12) { ?><th>Ecoex Payment<br>Approve Status<br>HO Approve<br>Enquiry Complete</th><?php }
-                                                                                                                                                                                                } ?>
+                                                                                                                                                                        } ?>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -76,10 +76,14 @@ $userType           = $session->user_type;
                                                     <h6 class="badge bg-danger"><?= $disapproveProductCount ?> pending approval</h6>
                                                 </td>
                                                 <td>
-                                                    <h5><?= (($company) ? $company->company_name : '') ?></h5>
+                                                    <h5><?= ($company) ? nl2br(wordwrap($company->company_name, 15, "\n", false)) : '' ?>
+                                                    </h5>
                                                 </td>
                                                 <td>
-                                                    <h6><?= (($plant) ? $plant->plant_name : '') ?></h6>
+                                                    <!-- <h6><? // (($plant) ? $plant->plant_name : '') 
+                                                                ?></h6> -->
+                                                    <h5><?= ($plant) ? nl2br(wordwrap($plant->plant_name, 15, "\n", false)) : '' ?>
+                                                    </h5>
                                                 </td>
                                                 <td><?= date_format(date_create($row->tentative_collection_date), "M d, Y") ?></td>
                                                 <td>
@@ -89,7 +93,8 @@ $userType           = $session->user_type;
                                                         if ($row->created_by > 0) {
                                                             $actionUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->created_by], 'plant_name');
                                                         ?>
-                                                            <small><?= (($actionUser) ? $actionUser->plant_name : '') ?></small>
+                                                            <small><?= ($actionUser) ? nl2br(wordwrap($actionUser->plant_name, 15, "\n", false)) : '' ?>
+                                                            </small>
                                                         <?php } ?>
                                                         <hr>
                                                     </h6>
@@ -99,7 +104,8 @@ $userType           = $session->user_type;
                                                         if ($row->updated_by > 0) {
                                                             $actionUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->updated_by], 'plant_name');
                                                         ?>
-                                                            <small><?= (($actionUser) ? $actionUser->plant_name : '') ?></small>
+                                                            <small><?= ($actionUser) ? nl2br(wordwrap($actionUser->plant_name, 15, "\n", false)) : '' ?>
+                                                            </small>
                                                         <?php } ?>
                                                     </h6>
                                                 </td>

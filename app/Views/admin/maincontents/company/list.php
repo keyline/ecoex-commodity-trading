@@ -68,7 +68,11 @@ $company_id                 = $session->company_id;
                                                 <th scope="row" class="text-center"><?= $sl++ ?></th>
                                                 <!-- <td><?= $row->type ?></td> -->
                                                 <td><?= $row->gst_no ?></td>
-                                                <td><b><?= $row->company_name ?></b></td>
+                                                <td><b>
+                                                        <?= !empty($row->company_name)
+                                                            ? nl2br(wordwrap($row->company_name, 15, "\n", false))
+                                                            : '' ?>
+                                                    </b></td>
                                                 <td><?= wordwrap($row->full_address, 25, "<br>\n") ?></td>
                                                 <td><?= $row->location ?></td>
                                                 <td><?= $row->ho_contact_person_name ?></td>

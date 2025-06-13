@@ -69,18 +69,23 @@ $company_id                 = $session->company_id;
                                                     <strong>
                                                         <?php
                                                         $company = $common_model->find_data('ecoex_companies', 'row', ['id' => $row->parent_id], 'company_name');
-                                                        echo (($company) ? $company->company_name : '');
+
+                                                        echo ($company) ? nl2br(wordwrap($company->company_name, 20, "\n", false)) : '';
+
                                                         ?>
                                                     </strong>
                                                 </td>
                                                 <td>
-                                                    <strong><?= $row->plant_name ?></strong>
+
+                                                    <strong><?= !empty($row->plant_name) ? nl2br(wordwrap($row->plant_name, 20, "\n", false)) : '' ?></strong>
+
                                                 </td>
                                                 <td>
                                                     <?= $row->gst_no ?>
                                                 </td>
                                                 <td><?= wordwrap($row->full_address, 25, "<br>\n") ?></td>
-                                                <td><?= $row->location ?></td>
+                                                <td><?= !empty($row->location) ? nl2br(wordwrap($row->location, 20, "\n", false)) : '' ?></td>
+
                                                 <td><?= $row->email ?></td>
                                                 <td><?= $row->phone ?></td>
                                                 <td>
