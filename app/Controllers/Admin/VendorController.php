@@ -57,7 +57,7 @@ class VendorController extends BaseController
         $page_name                  = 'member/add-edit';
         $data['row']                = [];
         $data['memberTypes']        = $this->data['model']->find_data('ecomm_member_types', 'array', ['status' => 1]);
-
+        $data['recycler_category']  = $this->data['model']->find_data('recycler_member_categorys', 'array', ['status' => 1]);
         if ($this->request->getMethod() == 'post') {
             /* profile image */
             $file = $this->request->getFile('profile_image');
