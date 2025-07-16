@@ -413,7 +413,7 @@ $user_type = session('user_type');
                 <div class="row mb-3">
                   <label for="footer_text" class="col-md-4 col-lg-3 col-form-label">Footer Text</label>
                   <div class="col-md-8 col-lg-9">
-                    <textarea type="text" name="footer_text" class="form-control ckeditor" id="footer_text" rows="5"><?=$setting->footer_text?></textarea>
+                    <textarea type="text" name="footer_text" class="form-control" id="footer_text" rows="5"><?=$setting->footer_text?></textarea>
                   </div>
                 </div>
 
@@ -718,7 +718,6 @@ $user_type = session('user_type');
   </div>
 </div>
 </section>
-<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){        
