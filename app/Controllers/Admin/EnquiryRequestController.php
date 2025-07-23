@@ -1819,7 +1819,8 @@ class EnquiryRequestController extends BaseController
 
         // Use the compiled subquery in the JOIN manually
         $data['enquiryProducts'] = $this->db->table('ecomm_enquiry_products ep')
-            ->join("($subQuery) AS sub", 'ep.id = sub.id')
+            // ->join("($subQuery) AS sub", 'ep.id = sub.id')
+            ->where('enq_id', $enq_id)
             ->get()
             ->getResult();
 
@@ -1837,9 +1838,6 @@ class EnquiryRequestController extends BaseController
             ->orderBy('name', 'ASC')
             ->get()
             ->getResult();
-
-
-
 
         # new code by shubha on 19/04/25
         $company_id                 = $data['row']->company_id;
