@@ -1814,7 +1814,7 @@ class EnquiryRequestController extends BaseController
         $subQuery = $this->db->table('ecomm_enquiry_products')
             ->select('MAX(id) as id')
             ->where('enq_id', $enq_id)
-            ->groupBy('product_id')
+            // ->groupBy('product_id')
             ->getCompiledSelect();
 
         // Use the compiled subquery in the JOIN manually
