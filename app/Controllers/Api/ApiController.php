@@ -313,6 +313,7 @@ class ApiController extends BaseController
                                 'item_avg_qty'      => $item['item_avg_qty'],
                                 'item_unit'         => $item['item_unit'],
                             ];
+                            $sl++;
                         }
                     }
                 } else {
