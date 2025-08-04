@@ -258,7 +258,7 @@ class ApiController extends BaseController
                             }
 
                             $join4['0']  = ['table' => 'ecomm_units', 'field' => 'id', 'table_master' => 'ecomm_company_items', 'field_table_master' => 'unit', 'type' => 'INNER'];
-                            $getUnit = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $getSubEnquiryItem->item_id], 'ecomm_units.name as unit_name', $join4);
+                            $getUnit = $this->common_model->find_data('ecomm_company_items', 'row', ['ecomm_company_items.id' => $getSubEnquiryItem->item_id], 'ecomm_units.name as unit_name', $join4);
 
                             $total_win_price_array[] = [
                                 // 'item_id'               => $getSubEnquiryItem->item_id,
