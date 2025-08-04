@@ -45,6 +45,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <tr>
                                         <th width="5%" class="text-center">#</th>
                                         <th>Name</th>
+                                        <th>Icon</th>
                                         <th>Created At / Created By<br>Updated At / Updated By</th>
                                         <th class="text-center">Action</th>
                                     </tr>
@@ -54,6 +55,13 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <tr>
                                         <th class="text-center" scope="row"><?=$sl++?></th>
                                         <td><?=$row->name?></td>
+                                        <td>
+                                            <?php if ($row->icon != '') { ?>
+                                                <img src="<?= getenv('app.uploadsURL') . 'product/' . $row->icon ?>" alt="<?= $row->name ?>" class="img-thumbnail" style="width: 100px; height: auto; margin-top: 10px;">
+                                            <?php } else { ?>
+                                                <img src="<?= getenv('app.NO_IMAGE') ?>" alt="<?= $row->name ?>" class="img-thumbnail" style="width: 100px; height: auto; margin-top: 10px;">
+                                            <?php } ?>
+                                        </td>
                                         <td>
                                             <h6>
                                                 <?=(($row->created_at != '')?date_format(date_create($row->created_at), "M d, Y h:i A"):'')?> /

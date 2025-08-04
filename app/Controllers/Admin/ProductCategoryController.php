@@ -53,8 +53,24 @@ class ProductCategoryController extends BaseController {
         $page_name                  = 'product-category/add-edit';        
         $data['row']                = [];
         if($this->request->getMethod() == 'post') {
+            /* icon */
+                $file = $this->request->getFile('icon');
+                $originalName = $file->getClientName();
+                $fieldName = 'icon';
+                if ($file != '') {
+                    $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'product', 'image');
+                    if ($upload_array['status']) {
+                        $icon = $upload_array['newFilename'];
+                    } else {
+                        $icon = '';
+                    }
+                } else {
+                    $icon = '';
+                }
+            /* icon */
             $postData   = array(
                 'name'          => $this->request->getPost('name'),
+                'icon'          => $icon,
                 'created_by'    => $this->session->get('user_id'),
             );
             $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);            
@@ -81,8 +97,24 @@ class ProductCategoryController extends BaseController {
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
 
         if($this->request->getMethod() == 'post') {
+            /* icon */
+                $file = $this->request->getFile('icon');
+                $originalName = $file->getClientName();
+                $fieldName = 'icon';
+                if ($file != '') {
+                    $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'product', 'image');
+                    if ($upload_array['status']) {
+                        $icon = $upload_array['newFilename'];
+                    } else {
+                        $icon = '';
+                    }
+                } else {
+                    $icon = $data['row']->icon;
+                }
+            /* icon */
             $postData   = array(
                 'name'          => $this->request->getPost('name'),
+                'icon'          => $icon,
                 'updated_by'    => $this->session->get('user_id'),
             );
             $record = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);

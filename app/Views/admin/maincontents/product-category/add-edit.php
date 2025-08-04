@@ -35,9 +35,11 @@ $controller_route   = $moduleDetail['controller_route'];
             </div>
             <?php
                 if($row){
-                $name     = $row->name;
+                    $name     = $row->name;
+                    $icon     = $row->icon;
                 } else {
-                $name     = '';
+                    $name     = '';
+                    $icon     = '';
                 }
                 ?>
             <div class="col-xl-12">
@@ -48,6 +50,18 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <label for="name" class="col-md-2 col-lg-2 col-form-label"><?=$title?> Name</label>
                                 <div class="col-md-10 col-lg-10">
                                     <input type="text" name="name" class="form-control" id="name" value="<?=$name?>" required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="icon" class="col-md-2 col-lg-2 col-form-label">Icon</label>
+                                <div class="col-md-10 col-lg-10">
+                                    <input type="file" name="icon" class="form-control" id="icon">
+                                    <small class="text-info">* Only JPG, JPEG, ICO, SVG, PNG files are allowed</small><br>
+                                    <?php if ($icon != '') { ?>
+                                        <img src="<?= getenv('app.uploadsURL') . 'product/' . $icon ?>" alt="<?= $name ?>" class="img-thumbnail" style="width: 130px; height: auto; margin-top: 10px;">
+                                    <?php } else { ?>
+                                        <img src="<?= getenv('app.NO_IMAGE') ?>" alt="<?= $name ?>" class="img-thumbnail" style="width: 130px; height: auto; margin-top: 10px;">
+                                    <?php } ?>
                                 </div>
                             </div>
                             <div class="text-center">
