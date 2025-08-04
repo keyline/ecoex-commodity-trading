@@ -227,8 +227,9 @@ class ApiController extends BaseController
                 $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));                
 
                 if($state == 'all'){
-                    $groupBy[0] = 'product_id';
-                    $getEnquiries = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['created_at>=' => $startOfLastWeek, 'created_at<=' => $endOfLastWeek], 'sl_no,product_id', '', $groupBy);
+                    $groupBy[0] = 'ecomm_enquiry_products.product_id';
+                    $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'type' => 'INNER'];
+                    $getEnquiries = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.product_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
                     pr($getEnquiries);
                 } else {
 
