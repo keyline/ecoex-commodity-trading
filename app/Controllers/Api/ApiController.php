@@ -250,7 +250,7 @@ class ApiController extends BaseController
                                     $getTotalQty        = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek, 'ecomm_enquiry_products.product_id' => $product_id, 'ecoex_companies.state' => $state_name], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.qty, ecomm_enquiry_products.unit', $join);
                                     
                                     $this->db = \Config\Database::connect();
-                                    echo $this->db->getLastQuery();die;
+                                    echo $this->db->getLastQuery();
                                     pr($getTotalQty);
                                 }
                             }
