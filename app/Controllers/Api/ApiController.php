@@ -202,7 +202,7 @@ class ApiController extends BaseController
             }
             $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
         }
-        public function getStaticPages()
+        public function buyerDashboard()
         {
             $apiStatus          = TRUE;
             $apiMessage         = '';
