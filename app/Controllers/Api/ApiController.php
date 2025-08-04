@@ -269,6 +269,13 @@ class ApiController extends BaseController
                                         ];
                                     }
                                     
+                                    // Assume your array is in a variable called $items
+                                    usort($state_wise_item, function($a, $b) {
+                                        return $b['item_avg_qty'] <=> $a['item_avg_qty'];
+                                    });
+
+                                    // Optional: Print the sorted array
+                                    pr($state_wise_item);
                                 }
                             }
                         }
