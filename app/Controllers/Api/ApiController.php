@@ -300,6 +300,20 @@ class ApiController extends BaseController
                     usort($state_wise_item, function($a, $b) {
                         return $b['item_avg_qty'] <=> $a['item_avg_qty'];
                     });
+
+                    $sl=1;
+                    if($state_wise_item){
+                        foreach($state_wise_item as $item){
+                            $state_wise_item[] = [
+                                'name'              => 'Transaction ' . $sl,
+                                'icon'              => $item['icon'],
+                                'state_name'        => $item['state_name'],
+                                'item_name'         => $item['item_name'],
+                                'item_avg_qty'      => $item['item_avg_qty'],
+                                'item_unit'         => $item['item_unit'],
+                            ];
+                        }
+                    }
                     // pr($state_wise_item);
                 } else {
 
