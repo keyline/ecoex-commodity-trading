@@ -229,12 +229,15 @@ class ApiController extends BaseController
                 $top_prices         = [];
 
                 if($state == 'all'){
+                    $groupBy[0] = 'enq_id';
+                    echo $enquiryCount = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['assigned_date>=' => $startOfLastWeek, 'assigned_date<=' => $endOfLastWeek], '', '', $groupBy);
+
                     $groupBy[0] = 'ecomm_sub_enquires.item_id';
                     $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
                     $getEnquiryItems = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek], 'ecomm_sub_enquires.sub_enquiry_no, ecomm_sub_enquires.item_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
                     pr($getEnquiryItems);
 
-
+                    
 
 
                 } else {
