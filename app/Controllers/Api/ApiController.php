@@ -245,17 +245,32 @@ class ApiController extends BaseController
                             if($getEnquiryItems){
                                 foreach($getEnquiryItems as $getEnquiryItem){
                                     $product_id         = $getEnquiryItem->product_id;
+                                    $item_name_ecoex    = $getEnquiryItem->item_name_ecoex;
 
                                     $join['0']          = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'company_id', 'type' => 'INNER'];
                                     $getTotalQty        = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek, 'ecomm_enquiry_products.product_id' => $product_id, 'ecoex_companies.state' => $state_name], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.qty, ecomm_enquiry_products.unit', $join);
                                     
-                                    $this->db = \Config\Database::connect();
-                                    echo $this->db->getLastQuery();
-                                    pr($getTotalQty);
+                                    $getUnit = [];
+                                    if($getTotalQty){
+                                        $getUnit = $this->common_model->find_data('ecomm_enquiry_products', 'row', ['id' => $getTotalQty[0]->unit], 'name');
+                                    }
+
+                                    $totalQty = 0;
+                                    foreach ($getTotalQty as $totqty) {
+                                        $totalQty += $totqty->qty;
+                                    }
+
+                                    $state_wise_item[] = [
+                                        'state_name'        => $state_name,
+                                        'item_name'         => $item_name_ecoex,
+                                        'item_avg_qty'      => $totalQty,
+                                        'item_unit'         => (($getUnit)?$getUnit->name:''),
+                                    ];
                                 }
                             }
                         }
                     }
+                    pr($state_wise_item);
                 } else {
 
                 }
