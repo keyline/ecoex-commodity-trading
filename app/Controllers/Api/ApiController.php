@@ -250,9 +250,9 @@ class ApiController extends BaseController
                                     $join['0']          = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'company_id', 'type' => 'INNER'];
                                     $getTotalQty        = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek, 'ecomm_enquiry_products.product_id' => $product_id, 'ecoex_companies.state' => $state_name], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.qty, ecomm_enquiry_products.unit', $join);
 
-                                    $this->db = \Config\Database::connect();
-                                    echo $this->db->getLastQuery();
-                                    echo '<br><br>';
+                                    // $this->db = \Config\Database::connect();
+                                    // echo $this->db->getLastQuery();
+                                    // echo '<br><br>';
                                     
                                     $getUnit = [];
                                     if($getTotalQty){
@@ -272,16 +272,14 @@ class ApiController extends BaseController
                                                 $totalQty += $totqty->qty;
                                             }
                                         }
-                                    }
 
-                                    if($totalQty > 0){
                                         $state_wise_item[] = [
                                             'state_name'        => $state_name,
                                             'item_name'         => $item_name_ecoex,
                                             'item_avg_qty'      => $totalQty,
                                             'item_unit'         => (($getUnit)?$getUnit->name:''),
                                         ];
-                                    }
+                                    }                                    
                                 }
                             }
                         }
