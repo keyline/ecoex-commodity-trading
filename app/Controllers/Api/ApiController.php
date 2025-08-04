@@ -249,7 +249,7 @@ class ApiController extends BaseController
                                     $getProductCategory = $this->common_model->find_data('ecomm_product_categories', 'row', ['id' => (($getProductItem)?$getProductItem->item_category:'')], 'icon');
 
                                     if($getProductCategory){
-                                        if ($row->icon != '') {
+                                        if ($getProductCategory->icon != '') {
                                             $icon = getenv('app.uploadsURL') . 'product/' . $getProductCategory->icon;
                                         } else {
                                             $icon = getenv('app.NOIMAGE');
