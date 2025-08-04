@@ -302,9 +302,10 @@ class ApiController extends BaseController
                     });
 
                     $sl=1;
+                    $top_qty = [];
                     if($state_wise_item){
                         foreach($state_wise_item as $item){
-                            $state_wise_item[] = [
+                            $top_qty[] = [
                                 'name'              => 'Transaction ' . $sl,
                                 'icon'              => $item['icon'],
                                 'state_name'        => $item['state_name'],
@@ -314,14 +315,13 @@ class ApiController extends BaseController
                             ];
                         }
                     }
-                    // pr($state_wise_item);
                 } else {
 
                 }
 
                 $apiResponse = [
                     'top_prices'    => '',
-                    'top_qty'       => $state_wise_item,
+                    'top_qty'       => $top_qty,
                 ];
 
                 http_response_code(200);
