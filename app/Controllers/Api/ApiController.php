@@ -230,7 +230,7 @@ class ApiController extends BaseController
 
                 if($state == 'all'){
                     $groupBy[0] = 'enq_id';
-                    echo $enquiryCount = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['assigned_date>=' => $startOfLastWeek, 'assigned_date<=' => $endOfLastWeek], '', '', $groupBy);
+                    echo $enquiryCount = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['assigned_date>=' => $startOfLastWeek, 'assigned_date<=' => $endOfLastWeek], '', '', $groupBy);
 
                     $groupBy[0] = 'ecomm_sub_enquires.item_id';
                     $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
