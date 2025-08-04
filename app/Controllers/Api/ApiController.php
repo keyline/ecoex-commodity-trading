@@ -229,8 +229,13 @@ class ApiController extends BaseController
                 if($state == 'all'){
                     $groupBy[0] = 'ecomm_enquiry_products.product_id';
                     $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'type' => 'INNER'];
-                    $getEnquiries = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.product_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
-                    pr($getEnquiries);
+                    $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.product_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
+                    pr($getEnquiryItems,0);
+
+                    $groupBy[0] = 'ecoex_companies.state';
+                    $join['0']  = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'company_id', 'type' => 'INNER'];
+                    $getEnquiryStates = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.company_id, ecoex_companies.state', $join, $groupBy);
+                    pr($getEnquiryStates);
                 } else {
 
                 }
