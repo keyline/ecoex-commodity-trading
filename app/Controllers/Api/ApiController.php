@@ -227,7 +227,7 @@ class ApiController extends BaseController
                 $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));                
 
                 if($state == 'all'){
-                    $getEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['created_at>=' => $startOfLastWeek, 'created_at<=' => $endOfLastWeek], 'id,plant_id,company_id,sl_no,enquiry_no');
+                    $getEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['created_at>=' => $startOfLastWeek, 'created_at<=' => $endOfLastWeek], 'id,plant_id,company_id,sl_no,enquiry_no,created_at');
                     pr($getEnquiries);
                 } else {
 
