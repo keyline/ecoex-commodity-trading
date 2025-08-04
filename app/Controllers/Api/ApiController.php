@@ -238,7 +238,7 @@ class ApiController extends BaseController
                     } else {
                         $groupBy[0] = 'ecomm_sub_enquires.enq_id';
                         $join['0']  = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'company_id', 'type' => 'INNER'];
-                        $enquiryCount = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek, 'ecoex_companies.state' => $state], '', '', $groupBy);
+                        $enquiryCount = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek, 'ecoex_companies.state' => $state], '', $join, $groupBy);
 
                         $groupBy[0] = 'ecomm_sub_enquires.item_id';
                         $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
