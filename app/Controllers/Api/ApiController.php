@@ -21,154 +21,187 @@ use function PHPSTORM_META\type;
 class ApiController extends BaseController
 {
     /* before login */
-    public function getAppSetting()
-    {
-        $apiStatus          = TRUE;
-        $apiMessage         = '';
-        $apiResponse        = [];
-        $apiExtraField      = '';
-        $apiExtraData       = '';
-        $headerData            = $this->request->headers();
-        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-            $generalSetting = $this->common_model->find_data('general_settings', 'row');
-            if ($generalSetting) {
-                $apiResponse = [
-                    'site_name'                 => $generalSetting->site_name,
-                    'site_phone'                => $generalSetting->site_phone,
-                    'site_mail'                 => $generalSetting->site_mail,
-                    'site_url'                  => $generalSetting->site_url,
-                    'firebase_server_key'       => $generalSetting->firebase_server_key,
-                    'gst_api_code'              => $generalSetting->gst_api_code,
-                    'theme_color'               => $generalSetting->theme_color,
-                    'font_color'                => $generalSetting->font_color,
-                    'site_logo'                 => getenv('app.uploadsURL') . $generalSetting->site_logo,
-                ];
-            }
-            http_response_code(200);
+        public function getAppSetting()
+        {
             $apiStatus          = TRUE;
-            $apiMessage         = 'Data Available !!!';
-            $apiExtraField      = 'response_code';
-            $apiExtraData       = http_response_code();
-        } else {
-            http_response_code(400);
-            $apiStatus          = FALSE;
-            $apiMessage         = $this->getResponseCode(http_response_code());
-            $apiExtraField      = 'response_code';
-            $apiExtraData       = http_response_code();
-        }
-        $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
-    }
-    public function getStaticPages()
-    {
-        $apiStatus          = TRUE;
-        $apiMessage         = '';
-        $apiResponse        = [];
-        $apiExtraField      = '';
-        $apiExtraData       = '';
-        $this->isJSON(file_get_contents('php://input'));
-        $requestData        = $this->extract_json(file_get_contents('php://input'));
-        $requiredFields     = ['page_slug'];
-        $headerData         = $this->request->headers();
-        if (!$this->validateArray($requiredFields, $requestData)) {
-            http_response_code(406);
-            $apiStatus          = FALSE;
-            $apiMessage         = $this->getResponseCode(http_response_code());
-            $apiExtraField      = 'response_code';
-            $apiExtraData       = http_response_code();
-        }
-        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-            $page = $this->common_model->find_data('ecomm_pages', 'row', ['slug' => $requestData['page_slug']]);
-            if ($page) {
-                $apiResponse = [
-                    'page_title'                => $page->page_title,
-                    'slug'                      => $page->slug,
-                    'short_description'         => $page->short_description,
-                    'long_description'          => $page->long_description,
-                    'meta_title'                => $page->meta_title,
-                    'meta_description'          => $page->meta_description,
-                    'meta_keywords'             => $page->meta_keywords,
-                ];
-            }
-            http_response_code(200);
-            $apiStatus          = TRUE;
-            $apiMessage         = 'Data Available !!!';
-            $apiExtraField      = 'response_code';
-            $apiExtraData       = http_response_code();
-        } else {
-            http_response_code(400);
-            $apiStatus          = FALSE;
-            $apiMessage         = $this->getResponseCode(http_response_code());
-            $apiExtraField      = 'response_code';
-            $apiExtraData       = http_response_code();
-        }
-        $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
-    }
-    public function getProductCategory()
-    {
-        $apiStatus          = TRUE;
-        $apiMessage         = '';
-        $apiResponse        = [];
-        $apiExtraField      = '';
-        $apiExtraData       = '';
-        $headerData            = $this->request->headers();
-        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-            $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
-            $rows           = $this->common_model->find_data('ecomm_product_categories', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
-            if ($rows) {
-                foreach ($rows as $row) {
-                    $apiResponse[] = [
-                        'id'                => $row->id,
-                        'name'              => $row->name
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $apiExtraField      = '';
+            $apiExtraData       = '';
+            $headerData            = $this->request->headers();
+            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+                $generalSetting = $this->common_model->find_data('general_settings', 'row');
+                if ($generalSetting) {
+                    $apiResponse = [
+                        'site_name'                 => $generalSetting->site_name,
+                        'site_phone'                => $generalSetting->site_phone,
+                        'site_mail'                 => $generalSetting->site_mail,
+                        'site_url'                  => $generalSetting->site_url,
+                        'firebase_server_key'       => $generalSetting->firebase_server_key,
+                        'gst_api_code'              => $generalSetting->gst_api_code,
+                        'theme_color'               => $generalSetting->theme_color,
+                        'font_color'                => $generalSetting->font_color,
+                        'site_logo'                 => getenv('app.uploadsURL') . $generalSetting->site_logo,
                     ];
                 }
+                http_response_code(200);
+                $apiStatus          = TRUE;
+                $apiMessage         = 'Data Available !!!';
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
             }
-            http_response_code(200);
-            $apiStatus          = TRUE;
-            $apiMessage         = 'Data Available !!!';
-            $apiExtraField      = 'response_code';
-            $apiExtraData       = http_response_code();
-        } else {
-            http_response_code(400);
-            $apiStatus          = FALSE;
-            $apiMessage         = $this->getResponseCode(http_response_code());
-            $apiExtraField      = 'response_code';
-            $apiExtraData       = http_response_code();
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
         }
-        $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
-    }
-    public function getMemberType()
-    {
-        $apiStatus          = TRUE;
-        $apiMessage         = '';
-        $apiResponse        = [];
-        $apiExtraField      = '';
-        $apiExtraData       = '';
-        $headerData            = $this->request->headers();
-        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-            $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
-            $rows           = $this->common_model->find_data('ecomm_member_types', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
-            if ($rows) {
-                foreach ($rows as $row) {
-                    $apiResponse[] = [
-                        'id'                => $row->id,
-                        'name'              => $row->name
+        public function getStaticPages()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $apiExtraField      = '';
+            $apiExtraData       = '';
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));
+            $requiredFields     = ['page_slug'];
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)) {
+                http_response_code(406);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+                $page = $this->common_model->find_data('ecomm_pages', 'row', ['slug' => $requestData['page_slug']]);
+                if ($page) {
+                    $apiResponse = [
+                        'page_title'                => $page->page_title,
+                        'slug'                      => $page->slug,
+                        'short_description'         => $page->short_description,
+                        'long_description'          => $page->long_description,
+                        'meta_title'                => $page->meta_title,
+                        'meta_description'          => $page->meta_description,
+                        'meta_keywords'             => $page->meta_keywords,
                     ];
                 }
+                http_response_code(200);
+                $apiStatus          = TRUE;
+                $apiMessage         = 'Data Available !!!';
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
             }
-            http_response_code(200);
-            $apiStatus          = TRUE;
-            $apiMessage         = 'Data Available !!!';
-            $apiExtraField      = 'response_code';
-            $apiExtraData       = http_response_code();
-        } else {
-            http_response_code(400);
-            $apiStatus          = FALSE;
-            $apiMessage         = $this->getResponseCode(http_response_code());
-            $apiExtraField      = 'response_code';
-            $apiExtraData       = http_response_code();
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
         }
-        $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
-    }
+        public function getProductCategory()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $apiExtraField      = '';
+            $apiExtraData       = '';
+            $headerData            = $this->request->headers();
+            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+                $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
+                $rows           = $this->common_model->find_data('ecomm_product_categories', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
+                if ($rows) {
+                    foreach ($rows as $row) {
+                        $apiResponse[] = [
+                            'id'                => $row->id,
+                            'name'              => $row->name
+                        ];
+                    }
+                }
+                http_response_code(200);
+                $apiStatus          = TRUE;
+                $apiMessage         = 'Data Available !!!';
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+        }
+        public function getMemberType()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $apiExtraField      = '';
+            $apiExtraData       = '';
+            $headerData            = $this->request->headers();
+            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+                $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
+                $rows           = $this->common_model->find_data('ecomm_member_types', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
+                if ($rows) {
+                    foreach ($rows as $row) {
+                        $apiResponse[] = [
+                            'id'                => $row->id,
+                            'name'              => $row->name
+                        ];
+                    }
+                }
+                http_response_code(200);
+                $apiStatus          = TRUE;
+                $apiMessage         = 'Data Available !!!';
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+        }
+        public function getState()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $apiExtraField      = '';
+            $apiExtraData       = '';
+            $headerData            = $this->request->headers();
+            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+                $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
+                $rows           = $this->common_model->find_data('ecomm_states', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
+                if ($rows) {
+                    foreach ($rows as $row) {
+                        $apiResponse[] = [
+                            'id'                => $row->id,
+                            'name'              => $row->name
+                        ];
+                    }
+                }
+                http_response_code(200);
+                $apiStatus          = TRUE;
+                $apiMessage         = 'Data Available !!!';
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+        }
     /* before login */
     /* authentication */
     // signup
