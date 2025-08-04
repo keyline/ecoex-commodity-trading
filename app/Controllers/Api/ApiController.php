@@ -253,11 +253,17 @@ class ApiController extends BaseController
                                     $getUnit = [];
                                     if($getTotalQty){
                                         $getUnit = $this->common_model->find_data('ecomm_units', 'row', ['id' => $getTotalQty[0]->unit], 'name');
-                                    }
 
-                                    $totalQty = 0;
-                                    foreach ($getTotalQty as $totqty) {
-                                        $totalQty += $totqty->qty;
+                                        $totalQty = 0;
+                                        if($getTotalQty[0]->unit != 3){
+                                            foreach ($getTotalQty as $totqty) {
+                                                $totalQty += $totqty->qty;
+                                            }
+                                        } else {
+                                            foreach ($getTotalQty as $totqty) {
+                                                $totalQty += ($totqty->qty / 1000);
+                                            }
+                                        }
                                     }
 
                                     if($totalQty > 0){
@@ -276,10 +282,15 @@ class ApiController extends BaseController
                     usort($state_wise_item, function($a, $b) {
                         return $b['item_avg_qty'] <=> $a['item_avg_qty'];
                     });
-                    pr($state_wise_item);
+                    
                 } else {
 
                 }
+
+                $apiResponse = [
+                    'top_prices'    => '',
+                    'top_qty'       => $state_wise_item,
+                ];
 
                 http_response_code(200);
                 $apiStatus          = TRUE;
