@@ -288,7 +288,7 @@ class ApiController extends BaseController
                     usort($state_wise_item, function($a, $b) {
                         return $b['item_avg_qty'] <=> $a['item_avg_qty'];
                     });
-                    pr($state_wise_item);
+                    // pr($state_wise_item);
                 } else {
 
                 }
