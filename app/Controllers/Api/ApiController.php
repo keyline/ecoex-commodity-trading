@@ -276,7 +276,7 @@ class ApiController extends BaseController
                                         $state_wise_item[] = [
                                             'state_name'        => $state_name,
                                             'item_name'         => $item_name_ecoex,
-                                            'item_avg_qty'      => $totalQty,
+                                            'item_avg_qty'      => number_format($totalQty,2),
                                             'item_unit'         => $item_unit,
                                         ];
                                     }                                    
