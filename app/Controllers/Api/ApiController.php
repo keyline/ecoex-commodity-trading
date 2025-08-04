@@ -250,7 +250,7 @@ class ApiController extends BaseController
 
                                     if($getProductCategory){
                                         if ($row->icon != '') {
-                                            $icon = getenv('app.uploadsURL') . 'product/' . $row->icon;
+                                            $icon = getenv('app.uploadsURL') . 'product/' . $getProductCategory->icon;
                                         } else {
                                             $icon = getenv('app.NOIMAGE');
                                         }
