@@ -252,14 +252,13 @@ class ApiController extends BaseController
                             }
 
                             $total_win_price_array[] = [
-                                'item_id'               => $getSubEnquiryItem->item_id,
+                                // 'item_id'               => $getSubEnquiryItem->item_id,
                                 'item_name'             => $getSubEnquiryItem->item_name_ecoex,
-                                'tot_item_win_price'    => ($tot_item_win_price / $enquiryCount),
+                                'tot_item_win_price'    => number_format(($tot_item_win_price / $enquiryCount),2),
                             ];
                         }
                     }
-
-                    pr($total_win_price_array);
+                    $top_prices         = $total_win_price_array;
                 } else {
 
                 }
