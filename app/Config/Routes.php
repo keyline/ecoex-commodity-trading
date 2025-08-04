@@ -266,7 +266,7 @@ $routes->group("api", ["namespace" => "App\Controllers\Api"], function ($routes)
 	$routes->match(['post'], "get-product-category", "ApiController::getProductCategory");
 	$routes->match(['post'], "get-member-type", "ApiController::getMemberType");
 	$routes->match(['get'], "get-state", "ApiController::getState");
-	$routes->match(['post'], "buyer-dashboard", "ApiController::buyerDashboard");
+	$routes->match(['post'], "price-list", "ApiController::priceList");
 	// before login
 	// authentication
 	$routes->match(['post'], "get-company-details", "ApiController::getCompanyDetails");
