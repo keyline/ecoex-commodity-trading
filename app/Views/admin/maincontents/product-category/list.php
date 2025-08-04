@@ -59,7 +59,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                             <?php if ($row->icon != '') { ?>
                                                 <img src="<?= getenv('app.uploadsURL') . 'product/' . $row->icon ?>" alt="<?= $row->name ?>" class="img-thumbnail" style="width: 100px; height: auto; margin-top: 10px;">
                                             <?php } else { ?>
-                                                <img src="<?= getenv('app.NO_IMAGE') ?>" alt="<?= $row->name ?>" class="img-thumbnail" style="width: 100px; height: auto; margin-top: 10px;">
+                                                <img src="<?= getenv('app.NOIMAGE') ?>" alt="<?= $row->name ?>" class="img-thumbnail" style="width: 100px; height: auto; margin-top: 10px;">
                                             <?php } ?>
                                         </td>
                                         <td>
