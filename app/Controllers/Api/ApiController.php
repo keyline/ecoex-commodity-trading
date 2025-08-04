@@ -202,6 +202,54 @@ class ApiController extends BaseController
             }
             $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
         }
+        public function getStaticPages()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $apiExtraField      = '';
+            $apiExtraData       = '';
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));
+            $requiredFields     = ['state'];
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)) {
+                http_response_code(406);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+                $state              = $requestData['state'];
+                $current_date       = date('Y-m-d');
+                $startOfLastWeek    = date('Y-m-d', strtotime('monday last week'));
+                $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));
+                echo $startOfLastWeek.' || '.$endOfLastWeek;die;
+
+                if($state == 'all'){
+
+                } else {
+
+                }
+                $page = $this->common_model->find_data('ecomm_pages', 'row', ['slug' => $requestData['page_slug']]);
+                
+
+
+                http_response_code(200);
+                $apiStatus          = TRUE;
+                $apiMessage         = 'Data Available !!!';
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+        }
     /* before login */
     /* authentication */
     // signup
