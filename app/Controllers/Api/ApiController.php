@@ -260,12 +260,15 @@ class ApiController extends BaseController
                                         $totalQty += $totqty->qty;
                                     }
 
-                                    $state_wise_item[] = [
-                                        'state_name'        => $state_name,
-                                        'item_name'         => $item_name_ecoex,
-                                        'item_avg_qty'      => $totalQty,
-                                        'item_unit'         => (($getUnit)?$getUnit->name:''),
-                                    ];
+                                    if($totalQty > 0){
+                                        $state_wise_item[] = [
+                                            'state_name'        => $state_name,
+                                            'item_name'         => $item_name_ecoex,
+                                            'item_avg_qty'      => $totalQty,
+                                            'item_unit'         => (($getUnit)?$getUnit->name:''),
+                                        ];
+                                    }
+                                    
                                 }
                             }
                         }
