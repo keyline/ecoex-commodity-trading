@@ -227,97 +227,99 @@ class ApiController extends BaseController
                 $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));                
 
                 if($state == 'all'){
-                    $groupBy[0] = 'ecomm_enquiry_products.product_id';
-                    $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'type' => 'INNER'];
-                    $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.product_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
                     
-                    $groupBy[0] = 'ecoex_companies.state';
-                    $join['0']  = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'company_id', 'type' => 'INNER'];
-                    $getEnquiryStates = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.company_id, ecoex_companies.state', $join, $groupBy);
-                    
-                    $state_wise_item = [];
-                    if($getEnquiryStates){
-                        foreach($getEnquiryStates as $getEnquiryState){
-                            $state_name = $getEnquiryState->state;
+                } else {
 
-                            if($getEnquiryItems){
-                                foreach($getEnquiryItems as $getEnquiryItem){
-                                    $product_id         = $getEnquiryItem->product_id;
-                                    $item_name_ecoex    = $getEnquiryItem->item_name_ecoex;
+                }
 
-                                    $getProductItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $product_id], 'item_category');
-                                    $getProductCategory = $this->common_model->find_data('ecomm_product_categories', 'row', ['id' => (($getProductItem)?$getProductItem->item_category:'')], 'icon');
+                $groupBy[0] = 'ecomm_enquiry_products.product_id';
+                $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'type' => 'INNER'];
+                $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.product_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
+                
+                $groupBy[0] = 'ecoex_companies.state';
+                $join['0']  = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'company_id', 'type' => 'INNER'];
+                $getEnquiryStates = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.company_id, ecoex_companies.state', $join, $groupBy);
+                
+                $state_wise_item = [];
+                if($getEnquiryStates){
+                    foreach($getEnquiryStates as $getEnquiryState){
+                        $state_name = $getEnquiryState->state;
 
-                                    if($getProductCategory){
-                                        if ($getProductCategory->icon != '') {
-                                            $icon = getenv('app.uploadsURL') . 'product/' . $getProductCategory->icon;
-                                        } else {
-                                            $icon = getenv('app.NOIMAGE');
-                                        }
+                        if($getEnquiryItems){
+                            foreach($getEnquiryItems as $getEnquiryItem){
+                                $product_id         = $getEnquiryItem->product_id;
+                                $item_name_ecoex    = $getEnquiryItem->item_name_ecoex;
+
+                                $getProductItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $product_id], 'item_category');
+                                $getProductCategory = $this->common_model->find_data('ecomm_product_categories', 'row', ['id' => (($getProductItem)?$getProductItem->item_category:'')], 'icon');
+
+                                if($getProductCategory){
+                                    if ($getProductCategory->icon != '') {
+                                        $icon = getenv('app.uploadsURL') . 'product/' . $getProductCategory->icon;
                                     } else {
                                         $icon = getenv('app.NOIMAGE');
                                     }
+                                } else {
+                                    $icon = getenv('app.NOIMAGE');
+                                }
 
-                                    $join['0']          = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'company_id', 'type' => 'INNER'];
-                                    $getTotalQty        = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek, 'ecomm_enquiry_products.product_id' => $product_id, 'ecoex_companies.state' => $state_name], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.qty, ecomm_enquiry_products.unit', $join);
+                                $join['0']          = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'company_id', 'type' => 'INNER'];
+                                $getTotalQty        = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek, 'ecomm_enquiry_products.product_id' => $product_id, 'ecoex_companies.state' => $state_name], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.qty, ecomm_enquiry_products.unit', $join);
 
-                                    // $this->db = \Config\Database::connect();
-                                    // echo $this->db->getLastQuery();
-                                    // echo '<br><br>';
-                                    
-                                    if($getTotalQty){
-                                        $totalQty = 0;
-                                        if($getTotalQty[0]->unit == 1){ //PCS
-                                            foreach ($getTotalQty as $totqty) {
-                                                $totalQty += $totqty->qty;
-                                            }
-                                            $item_unit = 'PCS';
-                                        } elseif($getTotalQty[0]->unit == 3){ //KG
-                                            foreach ($getTotalQty as $totqty) {
-                                                $totalQty += ($totqty->qty /1000);
-                                            }
-                                            $item_unit = 'MT';
-                                        } elseif($getTotalQty[0]->unit == 5){ //MT
-                                            foreach ($getTotalQty as $totqty) {
-                                                $totalQty += $totqty->qty;
-                                            }
-                                            $item_unit = 'MT';
+                                // $this->db = \Config\Database::connect();
+                                // echo $this->db->getLastQuery();
+                                // echo '<br><br>';
+                                
+                                if($getTotalQty){
+                                    $totalQty = 0;
+                                    if($getTotalQty[0]->unit == 1){ //PCS
+                                        foreach ($getTotalQty as $totqty) {
+                                            $totalQty += $totqty->qty;
                                         }
-
-                                        $state_wise_item[] = [
-                                            'icon'              => $icon,
-                                            'state_name'        => $state_name,
-                                            'item_name'         => $item_name_ecoex,
-                                            'item_avg_qty'      => number_format($totalQty,2),
-                                            'item_unit'         => $item_unit,
-                                        ];
+                                        $item_unit = 'PCS';
+                                    } elseif($getTotalQty[0]->unit == 3){ //KG
+                                        foreach ($getTotalQty as $totqty) {
+                                            $totalQty += ($totqty->qty /1000);
+                                        }
+                                        $item_unit = 'MT';
+                                    } elseif($getTotalQty[0]->unit == 5){ //MT
+                                        foreach ($getTotalQty as $totqty) {
+                                            $totalQty += $totqty->qty;
+                                        }
+                                        $item_unit = 'MT';
                                     }
+
+                                    $state_wise_item[] = [
+                                        'icon'              => $icon,
+                                        'state_name'        => $state_name,
+                                        'item_name'         => $item_name_ecoex,
+                                        'item_avg_qty'      => number_format($totalQty,2),
+                                        'item_unit'         => $item_unit,
+                                    ];
                                 }
                             }
                         }
                     }
-                    // Assume your array is in a variable called $items
-                    usort($state_wise_item, function($a, $b) {
-                        return $b['item_avg_qty'] <=> $a['item_avg_qty'];
-                    });
+                }
+                // Assume your array is in a variable called $items
+                usort($state_wise_item, function($a, $b) {
+                    return $b['item_avg_qty'] <=> $a['item_avg_qty'];
+                });
 
-                    $sl=1;
-                    $top_qty = [];
-                    if($state_wise_item){
-                        foreach($state_wise_item as $item){
-                            $top_qty[] = [
-                                'name'              => 'Transaction ' . $sl,
-                                'icon'              => $item['icon'],
-                                'state_name'        => $item['state_name'],
-                                'item_name'         => $item['item_name'],
-                                'item_avg_qty'      => $item['item_avg_qty'],
-                                'item_unit'         => $item['item_unit'],
-                            ];
-                            $sl++;
-                        }
+                $sl=1;
+                $top_qty = [];
+                if($state_wise_item){
+                    foreach($state_wise_item as $item){
+                        $top_qty[] = [
+                            'name'              => 'Transaction ' . $sl,
+                            'icon'              => $item['icon'],
+                            'state_name'        => $item['state_name'],
+                            'item_name'         => $item['item_name'],
+                            'item_avg_qty'      => $item['item_avg_qty'],
+                            'item_unit'         => $item['item_unit'],
+                        ];
+                        $sl++;
                     }
-                } else {
-
                 }
 
                 $apiResponse = [
