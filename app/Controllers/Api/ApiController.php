@@ -249,19 +249,27 @@ class ApiController extends BaseController
 
                                     $join['0']          = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'company_id', 'type' => 'INNER'];
                                     $getTotalQty        = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek, 'ecomm_enquiry_products.product_id' => $product_id, 'ecoex_companies.state' => $state_name], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.qty, ecomm_enquiry_products.unit', $join);
+
+                                    $this->db = \Config\Database::connect();
+                                    echo $this->db->getLastQuery();
+                                    echo '<br><br>';
                                     
                                     $getUnit = [];
                                     if($getTotalQty){
                                         $getUnit = $this->common_model->find_data('ecomm_units', 'row', ['id' => $getTotalQty[0]->unit], 'name');
 
                                         $totalQty = 0;
-                                        if($getTotalQty[0]->unit != 3){
+                                        if($getTotalQty[0]->unit == 1){ //PCS
                                             foreach ($getTotalQty as $totqty) {
                                                 $totalQty += $totqty->qty;
                                             }
-                                        } else {
+                                        } elseif($getTotalQty[0]->unit == 3){ //KG
                                             foreach ($getTotalQty as $totqty) {
-                                                $totalQty += ($totqty->qty / 1000);
+                                                $totalQty += ($totqty->qty /1000);
+                                            }
+                                        } elseif($getTotalQty[0]->unit == 5){ //MT
+                                            foreach ($getTotalQty as $totqty) {
+                                                $totalQty += $totqty->qty;
                                             }
                                         }
                                     }
