@@ -230,12 +230,32 @@ class ApiController extends BaseController
                     $groupBy[0] = 'ecomm_enquiry_products.product_id';
                     $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'type' => 'INNER'];
                     $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.product_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
-                    pr($getEnquiryItems,0);
+                    // pr($getEnquiryItems,0);
 
                     $groupBy[0] = 'ecoex_companies.state';
                     $join['0']  = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'company_id', 'type' => 'INNER'];
                     $getEnquiryStates = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.company_id, ecoex_companies.state', $join, $groupBy);
-                    pr($getEnquiryStates);
+                    // pr($getEnquiryStates);
+
+                    $state_wise_item = [];
+                    if($getEnquiryStates){
+                        foreach($getEnquiryStates as $getEnquiryState){
+                            $state_name = $getEnquiryState->state;
+
+                            if($getEnquiryItems){
+                                foreach($getEnquiryItems as $getEnquiryItem){
+                                    $product_id         = $getEnquiryItem->product_id;
+
+                                    $join['0']          = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'company_id', 'type' => 'INNER'];
+                                    $getTotalQty        = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek, 'ecomm_enquiry_products.product_id' => $product_id, 'ecoex_companies.state' => $state_name], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.qty, ecomm_enquiry_products.unit', $join);
+                                    
+                                    $this->db = \Config\Database::connect();
+                                    echo $this->db->getLastQuery();die;
+                                    pr($getTotalQty);
+                                }
+                            }
+                        }
+                    }
                 } else {
 
                 }
