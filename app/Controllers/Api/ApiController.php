@@ -245,7 +245,7 @@ class ApiController extends BaseController
                                     $product_id         = $getEnquiryItem->product_id;
                                     $item_name_ecoex    = $getEnquiryItem->item_name_ecoex;
 
-                                    $getProductItem = $this->common_model->find_data('ecomm_enquiry_products', 'row', ['id' => $product_id], 'item_category');
+                                    $getProductItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $product_id], 'item_category');
                                     $getProductCategory = $this->common_model->find_data('ecomm_product_categories', 'row', ['id' => (($getProductItem)?$getProductItem->item_category:'')], 'icon');
 
                                     if($getProductCategory){
