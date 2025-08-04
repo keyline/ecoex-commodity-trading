@@ -230,20 +230,36 @@ class ApiController extends BaseController
 
                 if($state == 'all'){
                     $groupBy[0] = 'enq_id';
-                    echo $enquiryCount = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['assigned_date>=' => $startOfLastWeek, 'assigned_date<=' => $endOfLastWeek], '', '', $groupBy);
+                    $enquiryCount = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['assigned_date>=' => $startOfLastWeek, 'assigned_date<=' => $endOfLastWeek], '', '', $groupBy);
 
                     $groupBy[0] = 'ecomm_sub_enquires.item_id';
                     $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
-                    $getEnquiryItems = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek], 'ecomm_sub_enquires.sub_enquiry_no, ecomm_sub_enquires.item_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
+                    $getSubEnquiryItems = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek], 'ecomm_sub_enquires.sub_enquiry_no, ecomm_sub_enquires.item_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
 
-                    $this->db = \Config\Database::connect();
-                    echo $this->db->getLastQuery();
-                    echo '<br><br>';
-                    pr($getEnquiryItems);
-
+                    // $this->db = \Config\Database::connect();
+                    // echo $this->db->getLastQuery();
+                    // echo '<br><br>';
                     
+                    $total_win_price_array = [];
+                    if($getSubEnquiryItems){
+                        foreach($getSubEnquiryItems as $getSubEnquiryItem){
+                            $subEnquiryWinPrices = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['assigned_date>=' => $startOfLastWeek, 'assigned_date<=' => $endOfLastWeek, 'item_id' => $getSubEnquiryItem->item_id], 'win_quote_price');
+                            $tot_item_win_price = 0;
+                            if($subEnquiryWinPrices){
+                                foreach($subEnquiryWinPrices as $subEnquiryWinPrice){
+                                    $tot_item_win_price += $subEnquiryWinPrice->win_quote_price;
+                                }
+                            }
 
+                            $total_win_price_array[] = [
+                                'item_id'               => $getSubEnquiryItem->item_id,
+                                'item_name'             => $getSubEnquiryItem->item_name_ecoex,
+                                'tot_item_win_price'    => ($tot_item_win_price / $enquiryCount),
+                            ];
+                        }
+                    }
 
+                    pr($total_win_price_array);
                 } else {
 
                 }
