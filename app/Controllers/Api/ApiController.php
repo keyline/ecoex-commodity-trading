@@ -254,30 +254,30 @@ class ApiController extends BaseController
                                     // echo $this->db->getLastQuery();
                                     // echo '<br><br>';
                                     
-                                    $getUnit = [];
                                     if($getTotalQty){
-                                        $getUnit = $this->common_model->find_data('ecomm_units', 'row', ['id' => $getTotalQty[0]->unit], 'name');
-
                                         $totalQty = 0;
                                         if($getTotalQty[0]->unit == 1){ //PCS
                                             foreach ($getTotalQty as $totqty) {
                                                 $totalQty += $totqty->qty;
                                             }
+                                            $item_unit = 'PCS';
                                         } elseif($getTotalQty[0]->unit == 3){ //KG
                                             foreach ($getTotalQty as $totqty) {
                                                 $totalQty += ($totqty->qty /1000);
                                             }
+                                            $item_unit = 'MT';
                                         } elseif($getTotalQty[0]->unit == 5){ //MT
                                             foreach ($getTotalQty as $totqty) {
                                                 $totalQty += $totqty->qty;
                                             }
+                                            $item_unit = 'MT';
                                         }
 
                                         $state_wise_item[] = [
                                             'state_name'        => $state_name,
                                             'item_name'         => $item_name_ecoex,
                                             'item_avg_qty'      => $totalQty,
-                                            'item_unit'         => (($getUnit)?$getUnit->name:''),
+                                            'item_unit'         => $item_unit,
                                         ];
                                     }                                    
                                 }
