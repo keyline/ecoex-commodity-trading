@@ -252,7 +252,7 @@ class ApiController extends BaseController
                                     
                                     $getUnit = [];
                                     if($getTotalQty){
-                                        $getUnit = $this->common_model->find_data('ecomm_enquiry_products', 'row', ['id' => $getTotalQty[0]->unit], 'name');
+                                        $getUnit = $this->common_model->find_data('ecomm_units', 'row', ['id' => $getTotalQty[0]->unit], 'name');
                                     }
 
                                     $totalQty = 0;
