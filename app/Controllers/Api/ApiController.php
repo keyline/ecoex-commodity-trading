@@ -225,12 +225,16 @@ class ApiController extends BaseController
                 $current_date       = date('Y-m-d');
                 $startOfLastWeek    = date('Y-m-d', strtotime('last monday -7 days'));
                 $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));
-                
+
                 /* top prices */
                     $top_prices         = [];
                     if($state == 'all'){
                         $groupBy[0] = 'enq_id';
                         $enquiryCount = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['assigned_date>=' => $startOfLastWeek, 'assigned_date<=' => $endOfLastWeek], '', '', $groupBy);
+                        
+                        $this->db = \Config\Database::connect();
+                        echo $this->db->getLastQuery();
+                        die;
 
                         $groupBy[0] = 'ecomm_sub_enquires.item_id';
                         $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
