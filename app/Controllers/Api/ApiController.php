@@ -223,7 +223,9 @@ class ApiController extends BaseController
             if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
                 $state              = $requestData['state'];
                 $current_date       = date('Y-m-d');
-                $startOfLastWeek    = date('Y-m-d', strtotime('last monday -7 days'));
+                // $startOfLastWeek    = date('Y-m-d', strtotime('monday last week'));
+                $givenDate = date('Y-m-d', strtotime('monday last week'));
+                $startOfLastWeek = date('Y-m-d', strtotime($givenDate . ' -7 days'));
                 $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));
 
                 echo $startOfLastWeek.'||'.$endOfLastWeek;
