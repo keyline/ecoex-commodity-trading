@@ -320,7 +320,7 @@ class ApiController extends BaseController
                         $final[] = [
                             'icon' => $item['icon'],
                             'item_name' => $item['item_name'],
-                            'avg_item_win_price' => $average_price,
+                            'tot_item_win_price' => $average_price,
                             'unit_name' => $item['unit_name'],
                         ];
                     }
