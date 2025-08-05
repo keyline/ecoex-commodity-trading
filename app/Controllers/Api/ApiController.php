@@ -396,11 +396,12 @@ class ApiController extends BaseController
                         }
                     }
 
-                    pr($state_wise_item);
-                    // Assume your array is in a variable called $items
-                    usort($state_wise_item, function($a, $b) {
-                        return $b['item_avg_qty'] <=> $a['item_avg_qty'];
-                    });
+                    // pr($state_wise_item);
+                    // // Assume your array is in a variable called $items
+                    // usort($state_wise_item, function($a, $b) {
+                    //     return $b['item_avg_qty'] <=> $a['item_avg_qty'];
+                    // });
+                    shuffle($state_wise_item); // Randomly reorders the elements
 
                     $sl=1;
                     $top_qty = [];
