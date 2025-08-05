@@ -292,7 +292,7 @@ class ApiController extends BaseController
                         }
                     }
                     $top_prices         = $total_win_price_array;
-                    Helper::pr($top_prices);
+                    pr($top_prices);
                 /* top prices */
                 /* top 10 transactions qty */
                     $groupBy[0] = 'ecomm_enquiry_products.product_id';
