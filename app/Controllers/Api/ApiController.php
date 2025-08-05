@@ -260,8 +260,21 @@ class ApiController extends BaseController
                             $join4['0']  = ['table' => 'ecomm_units', 'field' => 'id', 'table_master' => 'ecomm_company_items', 'field_table_master' => 'unit', 'type' => 'INNER'];
                             $getUnit = $this->common_model->find_data('ecomm_company_items', 'row', ['ecomm_company_items.id' => $getSubEnquiryItem->item_id], 'ecomm_units.name as unit_name', $join4);
 
+                            $getProductItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $getSubEnquiryItem->item_id], 'item_category');
+                            $getProductCategory = $this->common_model->find_data('ecomm_product_categories', 'row', ['id' => (($getProductItem)?$getProductItem->item_category:'')], 'icon');
+
+                            if($getProductCategory){
+                                if ($getProductCategory->icon != '') {
+                                    $icon = getenv('app.uploadsURL') . 'product/' . $getProductCategory->icon;
+                                } else {
+                                    $icon = getenv('app.NOIMAGE');
+                                }
+                            } else {
+                                $icon = getenv('app.NOIMAGE');
+                            }
+
                             $total_win_price_array[] = [
-                                // 'item_id'               => $getSubEnquiryItem->item_id,
+                                'icon'                  => $icon,
                                 'item_name'             => $getSubEnquiryItem->item_name_ecoex,
                                 'tot_item_win_price'    => number_format(($tot_item_win_price / $enquiryCount),2),
                                 'unit_name'             => (($getUnit)?$getUnit->unit_name:'')
