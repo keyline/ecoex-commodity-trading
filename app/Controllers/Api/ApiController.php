@@ -292,7 +292,39 @@ class ApiController extends BaseController
                         }
                     }
                     $top_prices         = $total_win_price_array;
-                    pr($top_prices);
+                    $data = $top_prices; // Your full array here
+
+                    $result = [];
+
+                    foreach ($data as $item) {
+                        $name = $item['item_name'];
+
+                        if (!isset($result[$name])) {
+                            $result[$name] = [
+                                'icon' => $item['icon'],
+                                'item_name' => $name,
+                                'unit_name' => $item['unit_name'],
+                                'total_price' => $item['tot_item_win_price'],
+                                'count' => 1,
+                            ];
+                        } else {
+                            $result[$name]['total_price'] += $item['tot_item_win_price'];
+                            $result[$name]['count'] += 1;
+                        }
+                    }
+
+                    // Final array with average price
+                    $final = [];
+                    foreach ($result as $item) {
+                        $average_price = round($item['total_price'] / $item['count'], 2);
+                        $final[] = [
+                            'icon' => $item['icon'],
+                            'item_name' => $item['item_name'],
+                            'avg_item_win_price' => $average_price,
+                            'unit_name' => $item['unit_name'],
+                        ];
+                    }
+                    // pr($final);
                 /* top prices */
                 /* top 10 transactions qty */
                     $groupBy[0] = 'ecomm_enquiry_products.product_id';
@@ -387,7 +419,7 @@ class ApiController extends BaseController
                 /* top 10 transactions qty */
 
                 $apiResponse = [
-                    'top_prices'    => $top_prices,
+                    'top_prices'    => $final,
                     'top_qty'       => $top_qty,
                 ];
 
