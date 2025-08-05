@@ -223,9 +223,9 @@ class ApiController extends BaseController
             if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
                 $state              = $requestData['state'];
                 $current_date       = date('Y-m-d');
-                $startOfLastWeek    = date('Y-m-d', strtotime('monday last week'));
-                $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));                
-
+                $startOfLastWeek    = date('Y-m-d', strtotime('last monday -7 days'));
+                $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));
+                
                 /* top prices */
                     $top_prices         = [];
                     if($state == 'all'){
