@@ -324,7 +324,6 @@ class ApiController extends BaseController
                             'unit_name' => $item['unit_name'],
                         ];
                     }
-                    // pr($final);
                 /* top prices */
                 /* top 10 transactions qty */
                     $groupBy[0] = 'ecomm_enquiry_products.product_id';
@@ -396,6 +395,8 @@ class ApiController extends BaseController
                             }
                         }
                     }
+
+                    pr($state_wise_item);
                     // Assume your array is in a variable called $items
                     usort($state_wise_item, function($a, $b) {
                         return $b['item_avg_qty'] <=> $a['item_avg_qty'];
