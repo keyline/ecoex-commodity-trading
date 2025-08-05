@@ -232,7 +232,7 @@ class ApiController extends BaseController
 
                 /* top prices */
                     $top_prices         = [];
-                    if($state == 'all'){
+                    if($state == 'All'){
                         
 
                         // $this->db = \Config\Database::connect();
