@@ -782,7 +782,10 @@ class CompanyController extends BaseController {
             $title                      = $data['action'].' '.$company_name;
             $page_name                  = 'company/manage-certificate';
             $data['company_id']         = $id;
-            $data['company_name']       = $company_name;            
+            $data['company_name']       = $company_name;
+
+            $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
+            $data['certificates']       = $this->common_model->find_data('ecomm_company_certificates', 'array', ['company_id' => $id, 'status' => 1], 'certificate_file,created_at', '', '', $orderBy);
             
             if($this->request->getMethod() == 'post') {
                 // pr($this->request->getPost());
