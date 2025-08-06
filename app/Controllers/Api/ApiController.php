@@ -295,14 +295,17 @@ class ApiController extends BaseController
                                 }
                             // last to last week data for comparison
 
+                            $current_price = ($tot_item_win_price / $enquiryCount);
+                            $before_price = (($lastToLastWeekEnquiryCount > 0)?($tot_item_win_price_before / $lastToLastWeekEnquiryCount):$tot_item_win_price_before);
+                            $difference_price = ($current_price - $before_price);
+
                             $total_win_price_array[] = [
                                 'icon'                  => $icon,
                                 'item_name'             => $getSubEnquiryItem->item_name_ecoex,
-                                'tot_item_win_price'    => number_format(($tot_item_win_price / $enquiryCount),2),
+                                'tot_item_win_price'    => number_format($current_price,2),
                                 'unit_name'             => (($getUnit)?$getUnit->unit_name:''),
-                                // 'tot_item_win_price_now'    => $tot_item_win_price,
-                                'tot_item_win_price_before'    => ($tot_item_win_price_before),
-                                'lastToLastWeekEnquiryCount' => $lastToLastWeekEnquiryCount
+                                'tot_item_win_price_before'    => $before_price,
+                                'difference_price' => $difference_price
                             ];
                         }
                     }
