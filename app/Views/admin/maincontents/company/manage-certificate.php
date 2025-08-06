@@ -65,15 +65,17 @@ $userType           = $session->user_type;
                                         </div>
                                     </div>
                                 <?php } }?>
-                                <!-- Empty Card -->
-                                <div class="col-md-4">
-                                    <div class="card card-custom card-empty">
-                                        <div class="card-body">
-                                            <button class="btn btn-download mb-2">Download Zip File</button>
-                                            <div class="text-muted">View Zip File</div>
+                                <?php if(!empty($certificates)){?>
+                                    <!-- Empty Card -->
+                                    <div class="col-md-4">
+                                        <div class="card card-custom card-empty">
+                                            <div class="card-body">
+                                                <button class="btn btn-download mb-2">Download Zip File</button>
+                                                <div class="text-muted">View Zip File</div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                <?php }?>
                             </div>
                         </div>
                     </div>
