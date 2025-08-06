@@ -23,8 +23,8 @@ $userType           = $session->user_type;
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <form id="uploadForm" enctype="multipart/form-data">
-                            <input type="hidden" name="company_id" value="<?=$company_id?>">
+                        <!-- <form id="uploadForm" enctype="multipart/form-data">
+                            <input type="hidden" name="company_id" value="<?=$company_id?>"> -->
                             <div class="container py-4">
                                 <h5 class="card-titles mb-3">
                                     <strong><?=$company_name?></strong>
@@ -44,7 +44,7 @@ $userType           = $session->user_type;
                                 <div id="uploadList"></div>
 
                             </div>
-                        </form>
+                        <!-- </form> -->
                     </div>
                 </div>
             </div>
