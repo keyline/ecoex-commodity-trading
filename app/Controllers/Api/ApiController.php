@@ -307,7 +307,7 @@ class ApiController extends BaseController
                                 'tot_item_win_price_before'     => $before_price,
                                 'difference_price'              => $difference_price,
                                 'comparison_stat'               => (($difference_price >= 0)?'increase':'decrease'),
-                                'comparison_percentage'         => (($difference_price / $before_price) * 100),
+                                'comparison_percentage'         => (($before_price > 0)?(($difference_price / $before_price) * 100):($difference_price * 100)),
                             ];
                         }
                     }
