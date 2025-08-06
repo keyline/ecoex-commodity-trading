@@ -25,18 +25,23 @@ $userType           = $session->user_type;
                     <div class="card-body">
                         <div class="container py-4">
                             <div class="row justify-content-between">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <h5 class="card-titles mb-3">
-                                        <strong>Nourishco Certificates</strong>
+                                        <strong><?=$company_name?> Certificates</strong>
                                     </h5>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="input-group shadow-sm rounded-pill" style="overflow: hidden; max-width: 300px;float: right;">
                                         <input type="text" class="form-control border-0" placeholder="Search here" aria-label="Search">
                                         <span class="input-group-text bg-white border-0">
                                             <i class="bi bi-search"></i>
                                         </span>
                                     </div>
+                                </div>
+                                 <div class="col-md-4">
+                                    <h5 class="card-titles mb-3">
+                                        <a href="<?=base_url('public/uploads/certificate/' . $certificate->certificate_file)?>" class="btn btn-success-ouline btn-sm">Upload New Certificates</a>
+                                    </h5>
                                 </div>
                             </div>
                         </div>
