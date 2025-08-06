@@ -37,7 +37,7 @@ $userType           = $session->user_type;
                                 <button class="btn btn-outline-secondary rounded-pill">Browse File</button>
                                 <input type="file" id="fileInput" class="d-none" multiple>
                             </div>
-
+                            <div id="uploadErrorList"></div>
                             <!-- Uploaded files will appear here -->
                             <div id="uploadList"></div>
 
@@ -54,6 +54,7 @@ $userType           = $session->user_type;
 <script>
     const fileInput = document.getElementById('fileInput');
     const uploadList = document.getElementById('uploadList');
+    const uploadErrorList = document.getElementById('uploadErrorList');
 
     fileInput.addEventListener('change', function() {
         for (let file of this.files) {
@@ -109,40 +110,46 @@ $userType           = $session->user_type;
         const fileType = getFileLabel(ext);
 
         card.innerHTML = `
-      <div class="file-left">
-        <div class="file-label" style="background-color: ${fileType.color};">${fileType.text}</div>
-        <div class="w-100">
-          <div class="fw-medium">${file.name}</div>
-          <div class="text-muted text-smaller" id="${fileId}-status">0 KB of ${Math.round(file.size / 1024)} KB • Uploading...</div>
-          <div class="progress-container">
-            <div class="progress w-100">
-              <div class="progress-bar bg-primary" id="${fileId}-bar" style="width: 0%"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <button class="btn btn-sm btn-light border-0" onclick="removeCard(this)">✖</button>
-    `;
+                        <div class="file-left">
+                            <div class="file-label" style="background-color: ${fileType.color};">${fileType.text}</div>
+                            <div class="w-100">
+                            <div class="fw-medium">${file.name}</div>
+                            <div class="text-muted text-smaller" id="${fileId}-status">0 KB of ${Math.round(file.size / 1024)} KB • Uploading...</div>
+                            <div class="progress-container">
+                                <div class="progress w-100">
+                                <div class="progress-bar bg-primary" id="${fileId}-bar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-light border-0" onclick="removeCard(this)">✖</button>
+                        `;
 
-        uploadList.appendChild(card);
+        
 
         // Simulated upload
         let uploaded = 0;
         const total = file.size / 1024;
-        console.log(total);
-        const interval = setInterval(() => {
-            uploaded += total / 20;
-            if (uploaded >= total) {
-                uploaded = total;
-                clearInterval(interval);
-                document.getElementById(`${fileId}-status`).innerHTML =
-                    `${Math.round(total)} KB of ${Math.round(total)} KB • <span class="text-success">✔ Completed</span>`;
-            } else {
-                document.getElementById(`${fileId}-status`).textContent =
-                    `${Math.round(uploaded)} KB of ${Math.round(total)} KB • Uploading...`;
-            }
-            document.getElementById(`${fileId}-bar`).style.width = `${(uploaded / total) * 100}%`;
-        }, 200);
+        if(total < 50){
+            uploadList.appendChild(card);
+            uploadErrorList.text('');
+            const interval = setInterval(() => {
+                uploaded += total / 20;
+                if (uploaded >= total) {
+                    uploaded = total;
+                    clearInterval(interval);
+                    document.getElementById(`${fileId}-status`).innerHTML =
+                        `${Math.round(total)} KB of ${Math.round(total)} KB • <span class="text-success">✔ Completed</span>`;
+                } else {
+                    document.getElementById(`${fileId}-status`).textContent =
+                        `${Math.round(uploaded)} KB of ${Math.round(total)} KB • Uploading...`;
+                }
+                document.getElementById(`${fileId}-bar`).style.width = `${(uploaded / total) * 100}%`;
+            }, 200);
+        } else {
+            uploadErrorList.text('Maximum uppload size will be 50 KB');
+            return false;
+        }
     }
 
     function removeCard(btn) {
