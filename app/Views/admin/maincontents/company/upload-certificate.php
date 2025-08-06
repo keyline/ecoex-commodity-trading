@@ -132,7 +132,7 @@ $userType           = $session->user_type;
         const total = file.size / 1024;
         if(total < 50){
             uploadList.appendChild(card);
-            uploadErrorList.text('');
+            uploadErrorList.innerText = '';
             const interval = setInterval(() => {
                 uploaded += total / 20;
                 if (uploaded >= total) {
@@ -147,7 +147,7 @@ $userType           = $session->user_type;
                 document.getElementById(`${fileId}-bar`).style.width = `${(uploaded / total) * 100}%`;
             }, 200);
         } else {
-            uploadErrorList.text('Maximum uppload size will be 50 KB');
+            uploadErrorList.innerText = 'Maximum uppload size will be 50 KB';
             return false;
         }
     }
