@@ -786,11 +786,7 @@ class CompanyController extends BaseController {
 
             $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
             $data['certificates']       = $this->common_model->find_data('ecomm_company_certificates', 'array', ['company_id' => $id, 'status' => 1], 'certificate_file,created_at', '', '', $orderBy);
-            
-            if($this->request->getMethod() == 'post') {
-                pr($this->request->getPost());
-                
-            }        
+                  
             echo $this->layout_after_login($title,$page_name,$data);
         }
         public function uploadCertificate($id)
@@ -810,6 +806,30 @@ class CompanyController extends BaseController {
                 
             }        
             echo $this->layout_after_login($title,$page_name,$data);
+        }
+        public function upload()
+        {
+            $companyId = $this->request->getPost('company_id');
+            $file = $this->request->getFile('certificate_file');
+
+            if ($file && $file->isValid() && !$file->hasMoved()) {
+                $newName = $file->getRandomName();
+                $file->move('public/uploads/certificate', $newName); // Store securely
+
+                $fields = [
+                    'company_id'      => $companyId,
+                    'certificate_file'=> $newName,
+                    'created_at'      => date('Y-m-d H:i:s'),
+                    'updated_at'      => date('Y-m-d H:i:s'),
+                    'status'          => 1
+                ];
+                pr($fields);
+                $this->common_model->save_data('ecomm_company_certificates',$fields, '', 'id');
+
+                return $this->response->setJSON(['status' => 'success', 'file' => $newName]);
+            }
+
+            return $this->response->setStatusCode(400)->setJSON(['status' => 'error', 'message' => 'File upload failed.']);
         }
     /* certificate manage */
 }

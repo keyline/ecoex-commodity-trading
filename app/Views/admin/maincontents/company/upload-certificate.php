@@ -23,25 +23,28 @@ $userType           = $session->user_type;
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="container py-4">
-                            <h5 class="card-titles mb-3">
-                                <strong><?=$company_name?></strong>
-                            </h5>
-                            <!-- Upload UI -->
-                            <div class="upload-box mb-4" onclick="document.getElementById('fileInput').click()">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" fill="currentColor" class="mb-2" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M8 0a5.53 5.53 0 0 0-5.468 4.5 3.5 3.5 0 1 0 .934 6.94h3.188v-3H5.5a.5.5 0 0 1 0-1h2.5V6.207l-.646.647a.5.5 0 0 1-.708-.708l1.5-1.5a.5.5 0 0 1 .708 0l1.5 1.5a.5.5 0 0 1-.708.708L8.5 6.207V8.5h2.5a.5.5 0 0 1 0 1H8.5v3h3.068a3.5 3.5 0 1 0 .933-6.94A5.53 5.53 0 0 0 8 0Z" />
-                                </svg>
-                                <div class="fw-medium">Choose a file or drag & drop it here</div>
-                                <div class="text-muted small mb-3">Only Zip file</div>
-                                <button class="btn btn-outline-secondary rounded-pill">Browse File</button>
-                                <input type="file" id="fileInput" class="d-none" multiple>
-                            </div>
-                            <div id="uploadErrorList"></div>
-                            <!-- Uploaded files will appear here -->
-                            <div id="uploadList"></div>
+                        <form id="uploadForm" enctype="multipart/form-data">
+                            <input type="hidden" name="company_id" value="<?=$company_id?>">
+                            <div class="container py-4">
+                                <h5 class="card-titles mb-3">
+                                    <strong><?=$company_name?></strong>
+                                </h5>
+                                <!-- Upload UI -->
+                                <div class="upload-box mb-4" onclick="document.getElementById('fileInput').click()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" fill="currentColor" class="mb-2" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8 0a5.53 5.53 0 0 0-5.468 4.5 3.5 3.5 0 1 0 .934 6.94h3.188v-3H5.5a.5.5 0 0 1 0-1h2.5V6.207l-.646.647a.5.5 0 0 1-.708-.708l1.5-1.5a.5.5 0 0 1 .708 0l1.5 1.5a.5.5 0 0 1-.708.708L8.5 6.207V8.5h2.5a.5.5 0 0 1 0 1H8.5v3h3.068a3.5 3.5 0 1 0 .933-6.94A5.53 5.53 0 0 0 8 0Z" />
+                                    </svg>
+                                    <div class="fw-medium">Choose a file or drag & drop it here</div>
+                                    <div class="text-muted small mb-3">Only Zip file</div>
+                                    <button class="btn btn-outline-secondary rounded-pill">Browse File</button>
+                                    <input type="file" id="fileInput" name="certificate_file" class="d-none" multiple>
+                                </div>
+                                <div id="uploadErrorList"></div>
+                                <!-- Uploaded files will appear here -->
+                                <div id="uploadList"></div>
 
-                        </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -102,6 +105,7 @@ $userType           = $session->user_type;
     }
 
     function uploadFile(file) {
+        console.log(file);
         const card = document.createElement('div');
         card.className = 'file-card';
         const fileId = 'file-' + Math.random().toString(36).substr(2, 9);
@@ -124,8 +128,6 @@ $userType           = $session->user_type;
                         </div>
                         <button class="btn btn-sm btn-light border-0" onclick="removeCard(this)">✖</button>
                         `;
-
-        
 
         // Simulated upload
         let uploaded = 0;

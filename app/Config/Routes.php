@@ -147,6 +147,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 	$routes->match(['get', 'post'], "companies/send-credentials/(:any)", "CompanyController::send_credentials/$1");
 	$routes->match(['get', 'post'], "companies/manage-certificate/(:any)", "CompanyController::manageCertificate/$1");
 	$routes->match(['get', 'post'], "companies/upload-certificate/(:any)", "CompanyController::uploadCertificate/$1");
+	$routes->post('companies/certificate/upload', 'CompanyController::upload');
 	// companies
 	// plants
 	$routes->match(['get'], "plants/list", "PlantController::list");
