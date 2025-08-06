@@ -108,7 +108,7 @@ $userType           = $session->user_type;
         console.log(file);
         const formData = new FormData();
         formData.append("certificate_file", file);
-        formData.append("company_id", "123"); // Replace with dynamic company_id if needed
+        formData.append("company_id", <?=$company_id?>); // Replace with dynamic company_id if needed
 
         fetch("<?= base_url('admin/companies/certificate/upload') ?>", {
             method: "POST",
