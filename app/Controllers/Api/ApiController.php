@@ -282,11 +282,26 @@ class ApiController extends BaseController
                             $groupBy[0] = 'enq_id';
                             $enquiryCount = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['assigned_date>=' => $startOfLastWeek, 'assigned_date<=' => $endOfLastWeek, 'item_id' => $getSubEnquiryItem->item_id], '', '', $groupBy);
 
+                            // last to last week data for comparison
+                                $lastToLastWeekEnquiryCount = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['assigned_date>=' => $startOfLastLastWeek, 'assigned_date<=' => $endOfLastLastWeek, 'item_id' => $getSubEnquiryItem->item_id], '', '', $groupBy);
+
+                                $lastToLastWeeksubEnquiryWinPrices = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['assigned_date>=' => $startOfLastLastWeek, 'assigned_date<=' => $endOfLastLastWeek, 'item_id' => $getSubEnquiryItem->item_id], 'win_quote_price');
+
+                                $tot_item_win_price_before = 0;
+                                if($lastToLastWeeksubEnquiryWinPrices){
+                                    foreach($lastToLastWeeksubEnquiryWinPrices as $lastToLastWeeksubEnquiryWinPrice){
+                                        $tot_item_win_price_before += $lastToLastWeeksubEnquiryWinPrice->win_quote_price;
+                                    }
+                                }
+                            // last to last week data for comparison
+
                             $total_win_price_array[] = [
                                 'icon'                  => $icon,
                                 'item_name'             => $getSubEnquiryItem->item_name_ecoex,
                                 'tot_item_win_price'    => number_format(($tot_item_win_price / $enquiryCount),2),
-                                'unit_name'             => (($getUnit)?$getUnit->unit_name:'')
+                                'unit_name'             => (($getUnit)?$getUnit->unit_name:''),
+                                'tot_item_win_price_now'    => $tot_item_win_price,
+                                'tot_item_win_price_before'    => $tot_item_win_price_before,
                             ];
                         }
                     }
