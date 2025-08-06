@@ -301,7 +301,8 @@ class ApiController extends BaseController
                                 'tot_item_win_price'    => number_format(($tot_item_win_price / $enquiryCount),2),
                                 'unit_name'             => (($getUnit)?$getUnit->unit_name:''),
                                 // 'tot_item_win_price_now'    => $tot_item_win_price,
-                                'tot_item_win_price_before'    => ($tot_item_win_price_before / $lastToLastWeekEnquiryCount),
+                                'tot_item_win_price_before'    => ($tot_item_win_price_before),
+                                'lastToLastWeekEnquiryCount' => $lastToLastWeekEnquiryCount
                             ];
                         }
                     }
