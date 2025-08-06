@@ -105,27 +105,6 @@ $userType           = $session->user_type;
     }
 
     function uploadFile(file) {
-        
-        const formData = new FormData();
-        formData.append("certificate_file", file);
-        formData.append("company_id", <?=$company_id?>); // Replace with dynamic company_id if needed
-
-        fetch("<?= base_url('admin/companies/certificate/upload') ?>", {
-            method: "POST",
-            body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === 'success') {
-                document.getElementById("uploadErrorList").innerText = "Upload successful";
-            } else {
-                document.getElementById("uploadErrorList").innerText = "Upload failed";
-            }
-        })
-        .catch(error => {
-            document.getElementById("uploadErrorList").innerText = "Error";
-        });
-        
         const card = document.createElement('div');
         card.className = 'file-card';
         const fileId = 'file-' + Math.random().toString(36).substr(2, 9);
@@ -154,20 +133,42 @@ $userType           = $session->user_type;
         const total = file.size / 1024;
         if(total < 50){
             uploadList.appendChild(card);
-            uploadErrorList.innerText = '';
-            const interval = setInterval(() => {
-                uploaded += total / 20;
-                if (uploaded >= total) {
-                    uploaded = total;
-                    clearInterval(interval);
-                    document.getElementById(`${fileId}-status`).innerHTML =
-                        `${Math.round(total)} KB of ${Math.round(total)} KB • <span class="text-success">✔ Completed</span>`;
-                } else {
-                    document.getElementById(`${fileId}-status`).textContent =
-                        `${Math.round(uploaded)} KB of ${Math.round(total)} KB • Uploading...`;
-                }
-                document.getElementById(`${fileId}-bar`).style.width = `${(uploaded / total) * 100}%`;
-            }, 200);
+
+            /* upload file into backend */
+                const formData = new FormData();
+                formData.append("certificate_file", file);
+                formData.append("company_id", <?=$company_id?>); // Replace with dynamic company_id if needed
+
+                fetch("<?= base_url('admin/companies/certificate/upload') ?>", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // document.getElementById("uploadErrorList").innerText = "Upload successful";
+                        uploadErrorList.innerText = '';
+                        const interval = setInterval(() => {
+                            uploaded += total / 20;
+                            if (uploaded >= total) {
+                                uploaded = total;
+                                clearInterval(interval);
+                                document.getElementById(`${fileId}-status`).innerHTML =
+                                    `${Math.round(total)} KB of ${Math.round(total)} KB • <span class="text-success">✔ Completed</span>`;
+                            } else {
+                                document.getElementById(`${fileId}-status`).textContent =
+                                    `${Math.round(uploaded)} KB of ${Math.round(total)} KB • Uploading...`;
+                            }
+                            document.getElementById(`${fileId}-bar`).style.width = `${(uploaded / total) * 100}%`;
+                        }, 200);
+                    } else {
+                        document.getElementById("uploadErrorList").innerText = "Upload failed";
+                    }
+                })
+                .catch(error => {
+                    document.getElementById("uploadErrorList").innerText = "Error";
+                });
+            /* upload file into backend */
         } else {
             uploadErrorList.innerText = 'Maximum uppload size will be 50 KB';
             return false;
