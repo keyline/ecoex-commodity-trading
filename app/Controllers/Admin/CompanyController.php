@@ -816,14 +816,16 @@ class CompanyController extends BaseController {
 
             if ($file && $file->isValid() && !$file->hasMoved()) {
                 $newName = $file->getRandomName();
+                $fileOriginalName = $file->getName();
                 $file->move('public/uploads/certificate', $newName); // Store securely
 
                 $fields = [
-                    'company_id'      => $companyId,
-                    'certificate_file'=> $newName,
-                    'created_at'      => date('Y-m-d H:i:s'),
-                    'updated_at'      => date('Y-m-d H:i:s'),
-                    'status'          => 1
+                    'company_id'        => $companyId,
+                    'certificate_file'  => $newName,
+                    'filename'          => $fileOriginalName,
+                    'created_at'        => date('Y-m-d H:i:s'),
+                    'updated_at'        => date('Y-m-d H:i:s'),
+                    'status'            => 1
                 ];
                 pr($fields);
                 $this->common_model->save_data('ecomm_company_certificates',$fields, '', 'id');
