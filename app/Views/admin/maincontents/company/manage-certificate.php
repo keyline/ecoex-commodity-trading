@@ -99,7 +99,8 @@ $userType           = $session->user_type;
         border: none;
         border-radius: 12px;
         transition: 0.3s;
-        min-height: 260px;
+        /* min-height: 260px; */
+        min-height: 170px;
     }
 
     .btn-download {
