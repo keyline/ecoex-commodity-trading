@@ -131,7 +131,7 @@ $userType           = $session->user_type;
         // Simulated upload
         let uploaded = 0;
         const total = file.size / 1024;
-        if(total < 50){
+        if(total < 100){
             uploadList.appendChild(card);
 
             /* upload file into backend */
@@ -170,7 +170,7 @@ $userType           = $session->user_type;
                 });
             /* upload file into backend */
         } else {
-            uploadErrorList.innerText = 'Maximum uppload size will be 50 KB';
+            uploadErrorList.innerText = 'Maximum uppload size will be 100KB';
             return false;
         }
     }
