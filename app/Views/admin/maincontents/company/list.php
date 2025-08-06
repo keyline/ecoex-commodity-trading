@@ -144,7 +144,7 @@ $company_id                 = $session->company_id;
                                                     <?php
                                                     $certficate_count = $common_model->find_data('ecomm_company_certificates', 'count', ['company_id' => $row->$primary_key, 'status!=' => 3]);
                                                     ?>
-                                                    <a href="<?= base_url('admin/' . $controller_route . '/manage-item/' . encoded($row->$primary_key)) ?>" class="btn btn-warning btn-sm mt-1" title="Manage Certificate"><i class="fa fa-tasks"></i> Certificates (<?=$certficate_count?>)</a>
+                                                    <a href="<?= base_url('admin/' . $controller_route . '/manage-certificate/' . encoded($row->$primary_key)) ?>" class="btn btn-warning btn-sm mt-1" title="Manage Certificate"><i class="fa fa-certificate"></i> Certificates (<?=$certficate_count?>)</a>
                                                 </td>
                                             </tr>
                                     <?php }
