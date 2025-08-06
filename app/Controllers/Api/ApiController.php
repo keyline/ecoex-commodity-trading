@@ -223,30 +223,29 @@ class ApiController extends BaseController
             if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
                 $state              = $requestData['state'];
                 $current_date       = date('Y-m-d');
-                // $startOfLastWeek    = date('Y-m-d', strtotime('monday last week'));
-                $givenDate = date('Y-m-d', strtotime('monday last week'));
-                $startOfLastWeek = date('Y-m-d', strtotime($givenDate . ' -7 days'));
+                $startOfLastWeek    = date('Y-m-d', strtotime('monday last week'));
                 $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));
 
-                // echo $startOfLastWeek.'||'.$endOfLastWeek;
+                $givenDate          = date('Y-m-d', strtotime('monday last week'));
+                $givenDate2          = date('Y-m-d', strtotime('sunday last week'));
+                $startOfLastLastWeek    = date('Y-m-d', strtotime($givenDate . ' -7 days'));
+                $endOfLastLastWeek    = date('Y-m-d', strtotime($givenDate2 . ' -7 days'));
+                
+
+                echo $startOfLastWeek.'||'.$endOfLastWeek;
+                echo '<br>';
+                echo $startOfLastLastWeek.'||'.$endOfLastLastWeek;
+                // $this->db = \Config\Database::connect();
+                // echo $this->db->getLastQuery();
+                die;
 
                 /* top prices */
                     $top_prices         = [];
                     if($state == 'All'){
-                        
-
-                        // $this->db = \Config\Database::connect();
-                        // echo $this->db->getLastQuery();
-                        // die;
-
                         $groupBy[0] = 'ecomm_sub_enquires.item_id';
                         $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
                         $getSubEnquiryItems = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek], 'ecomm_sub_enquires.sub_enquiry_no, ecomm_sub_enquires.item_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
                     } else {
-                        // $groupBy[0] = 'ecomm_sub_enquires.enq_id';
-                        // $join2['0']  = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'company_id', 'type' => 'INNER'];
-                        // $enquiryCount = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek, 'ecoex_companies.state' => $state], '', $join2, $groupBy);
-
                         $groupBy[0] = 'ecomm_sub_enquires.item_id';
                         $join3['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
                         $join3['1']  = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'company_id', 'type' => 'INNER'];
@@ -292,7 +291,7 @@ class ApiController extends BaseController
                         }
                     }
                     $top_prices         = $total_win_price_array;
-                    $data = $top_prices; // Your full array here
+                    $data               = $top_prices;
 
                     $result = [];
 
