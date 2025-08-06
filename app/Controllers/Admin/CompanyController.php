@@ -809,8 +809,6 @@ class CompanyController extends BaseController {
         }
         public function upload()
         {
-            // pr($_FILES,0);
-            // pr($this->request->getPost());
             $companyId = $this->request->getPost('company_id');
             $file = $this->request->getFile('certificate_file');
 
@@ -830,12 +828,9 @@ class CompanyController extends BaseController {
                     'updated_at'        => date('Y-m-d H:i:s'),
                     'status'            => 1
                 ];
-                pr($fields);
                 $this->common_model->save_data('ecomm_company_certificates',$fields, '', 'id');
-
                 return $this->response->setJSON(['status' => 'success', 'file' => $newName]);
             }
-
             return $this->response->setStatusCode(400)->setJSON(['status' => 'error', 'message' => 'File upload failed.']);
         }
     /* certificate manage */

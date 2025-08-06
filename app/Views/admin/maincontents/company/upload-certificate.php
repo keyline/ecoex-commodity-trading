@@ -105,7 +105,7 @@ $userType           = $session->user_type;
     }
 
     function uploadFile(file) {
-        console.log(file);
+        
         const formData = new FormData();
         formData.append("certificate_file", file);
         formData.append("company_id", <?=$company_id?>); // Replace with dynamic company_id if needed
@@ -117,16 +117,15 @@ $userType           = $session->user_type;
         .then(res => res.json())
         .then(data => {
             if (data.status === 'success') {
-                document.getElementById("response").innerText = "Upload successful: " + data.file;
+                document.getElementById("uploadErrorList").innerText = "Upload successful";
             } else {
-                document.getElementById("response").innerText = "Upload failed: " + data.message;
+                document.getElementById("uploadErrorList").innerText = "Upload failed";
             }
         })
         .catch(error => {
-            document.getElementById("response").innerText = "Error: " + error.message;
+            document.getElementById("uploadErrorList").innerText = "Error";
         });
-
-
+        
         const card = document.createElement('div');
         card.className = 'file-card';
         const fileId = 'file-' + Math.random().toString(36).substr(2, 9);
