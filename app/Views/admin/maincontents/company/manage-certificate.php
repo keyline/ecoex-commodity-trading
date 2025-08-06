@@ -52,7 +52,7 @@ $userType           = $session->user_type;
                                     <div class="col-md-4">
                                         <div class="card card-custom p-3">
                                             <div class="card-body">
-                                                <h6 class="text-muted mb-2 border-bottom"><?=$certificate->certificate_file?></h6>
+                                                <h6 class="text-muted mb-2 border-bottom"><?=$certificate->filename?></h6>
                                                 <h5 class="fw-bold mb-0"><?=$certificate->created_at?></h5>
                                                 <!-- <div class="text-muted">Invoice No</div>
                                                 <h5 class="fw-bold mt-3 mb-0">128283</h5>
