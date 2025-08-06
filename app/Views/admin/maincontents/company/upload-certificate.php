@@ -129,6 +129,7 @@ $userType           = $session->user_type;
         // Simulated upload
         let uploaded = 0;
         const total = file.size / 1024;
+        console.log(total);
         const interval = setInterval(() => {
             uploaded += total / 20;
             if (uploaded >= total) {
