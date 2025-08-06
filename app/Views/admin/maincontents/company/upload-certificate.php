@@ -68,34 +68,34 @@ $userType           = $session->user_type;
                 text: 'PDF',
                 color: '#e63946'
             },
-            zip: {
-                text: 'ZIP',
-                color: '#6c757d'
-            },
-            jpg: {
-                text: 'JPG',
-                color: '#0d6efd'
-            },
-            jpeg: {
-                text: 'JPG',
-                color: '#0d6efd'
-            },
-            png: {
-                text: 'PNG',
-                color: '#0d6efd'
-            },
-            doc: {
-                text: 'DOC',
-                color: '#198754'
-            },
-            docx: {
-                text: 'DOCX',
-                color: '#198754'
-            },
-            default: {
-                text: ext,
-                color: '#6c757d'
-            }
+            // zip: {
+            //     text: 'ZIP',
+            //     color: '#6c757d'
+            // },
+            // jpg: {
+            //     text: 'JPG',
+            //     color: '#0d6efd'
+            // },
+            // jpeg: {
+            //     text: 'JPG',
+            //     color: '#0d6efd'
+            // },
+            // png: {
+            //     text: 'PNG',
+            //     color: '#0d6efd'
+            // },
+            // doc: {
+            //     text: 'DOC',
+            //     color: '#198754'
+            // },
+            // docx: {
+            //     text: 'DOCX',
+            //     color: '#198754'
+            // },
+            // default: {
+            //     text: ext,
+            //     color: '#6c757d'
+            // }
         };
         return labelMap[ext] || labelMap['default'];
     }
