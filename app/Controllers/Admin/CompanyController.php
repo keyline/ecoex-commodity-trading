@@ -817,12 +817,15 @@ class CompanyController extends BaseController {
             if ($file && $file->isValid() && !$file->hasMoved()) {
                 $newName = $file->getRandomName();
                 $fileOriginalName = $file->getName();
+                // Strip extension before saving
+                $filenameWithoutExt = pathinfo($fileOriginalName, PATHINFO_FILENAME);
+
                 $file->move('public/uploads/certificate', $newName); // Store securely
 
                 $fields = [
                     'company_id'        => $companyId,
                     'certificate_file'  => $newName,
-                    'filename'          => $fileOriginalName,
+                    'filename'          => $filenameWithoutExt,
                     'created_at'        => date('Y-m-d H:i:s'),
                     'updated_at'        => date('Y-m-d H:i:s'),
                     'status'            => 1
