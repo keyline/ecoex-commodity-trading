@@ -232,12 +232,12 @@ class ApiController extends BaseController
                 $endOfLastLastWeek    = date('Y-m-d', strtotime($givenDate2 . ' -7 days'));
                 
 
-                echo $startOfLastWeek.'||'.$endOfLastWeek;
-                echo '<br>';
-                echo $startOfLastLastWeek.'||'.$endOfLastLastWeek;
+                // echo $startOfLastWeek.'||'.$endOfLastWeek;
+                // echo '<br>';
+                // echo $startOfLastLastWeek.'||'.$endOfLastLastWeek;
                 // $this->db = \Config\Database::connect();
                 // echo $this->db->getLastQuery();
-                die;
+                // die;
 
                 /* top prices */
                     $top_prices         = [];
@@ -292,7 +292,7 @@ class ApiController extends BaseController
                     }
                     $top_prices         = $total_win_price_array;
                     $data               = $top_prices;
-
+                    pr($data);
                     $result = [];
 
                     foreach ($data as $item) {
@@ -300,11 +300,11 @@ class ApiController extends BaseController
 
                         if (!isset($result[$name])) {
                             $result[$name] = [
-                                'icon' => $item['icon'],
-                                'item_name' => $name,
-                                'unit_name' => $item['unit_name'],
-                                'total_price' => $item['tot_item_win_price'],
-                                'count' => 1,
+                                'icon'              => $item['icon'],
+                                'item_name'         => $name,
+                                'unit_name'         => $item['unit_name'],
+                                'total_price'       => $item['tot_item_win_price'],
+                                'count'             => 1,
                             ];
                         } else {
                             $result[$name]['total_price'] += $item['tot_item_win_price'];
@@ -317,10 +317,10 @@ class ApiController extends BaseController
                     foreach ($result as $item) {
                         $average_price = round($item['total_price'] / $item['count'], 2);
                         $final[] = [
-                            'icon' => $item['icon'],
-                            'item_name' => $item['item_name'],
-                            'tot_item_win_price' => $average_price,
-                            'unit_name' => $item['unit_name'],
+                            'icon'                  => $item['icon'],
+                            'item_name'             => $item['item_name'],
+                            'tot_item_win_price'    => $average_price,
+                            'unit_name'             => $item['unit_name'],
                         ];
                     }
                 /* top prices */
