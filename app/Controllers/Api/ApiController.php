@@ -306,8 +306,8 @@ class ApiController extends BaseController
                                 'unit_name'                     => (($getUnit)?$getUnit->unit_name:''),
                                 'tot_item_win_price_before'     => $before_price,
                                 'difference_price'              => number_format($difference_price,2),
-                                'comparison_stat'               => (($difference_price >= 0)?'increase':'decrease'),
-                                'comparison_percentage'         => number_format((($before_price > 0)?(($difference_price / $before_price) * 100):($difference_price)),2),
+                                'comparison_stat'               => (($difference_price >= 0)?'+':'-'),
+                                'comparison_percentage'         => abs(number_format((($before_price > 0)?(($difference_price / $before_price) * 100):($difference_price)),2)),
                             ];
                         }
                     }
