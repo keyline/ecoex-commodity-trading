@@ -27,45 +27,47 @@ $userType           = $session->user_type;
                             <div class="row justify-content-between">
                                 <div class="col-md-6">
                                     <h5 class="card-titles mb-3">
-                                        <strong><?=$company_name?> Certificates</strong>
+                                        <strong><?= $company_name ?> Certificates</strong>
                                     </h5>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group shadow-sm rounded-pill" style="overflow: hidden; max-width: 300px;float: right;">
-                                        <input type="text" class="form-control border-0" placeholder="Search here" aria-label="Search">
+                                        <input type="text" class="form-control border-0" placeholder="Search here" aria-label="Search" id="myInput">
                                         <span class="input-group-text bg-white border-0">
                                             <i class="bi bi-search"></i>
                                         </span>
                                     </div>
                                 </div>
-                                 <div class="col-md-2">
+                                <div class="col-md-2">
                                     <h5 class="card-titles mb-3">
-                                        <a href="<?=base_url('admin/companies/upload-certificate/' . encoded($company_id))?>" class="btn btn-outline-success btn-sm"><i class="fa fa-upload"></i> Certificates</a>
+                                        <a href="<?= base_url('admin/companies/upload-certificate/' . encoded($company_id)) ?>" class="btn btn-outline-success btn-sm"><i class="fa fa-upload"></i> Upload Certificates</a>
                                     </h5>
                                 </div>
                             </div>
                         </div>
                         <div class="container py-4">
-                            <div class="row g-4">
-                                <?php if($certificates){ foreach($certificates as $certificate){?>
-                                    <!-- Repeated Card -->
-                                    <div class="col-md-4">
-                                        <div class="card card-custom p-3">
-                                            <div class="card-body">
-                                                <h6 class="text-muted mb-2 border-bottom"><?=$certificate->filename?></h6>
-                                                <h5 class="fw-bold mb-0"><?=$certificate->created_at?></h5>
-                                                <!-- <div class="text-muted">Invoice No</div>
+                            <div class="row g-4" id="item-list">
+                                <?php if ($certificates) {
+                                    foreach ($certificates as $certificate) { ?>
+                                        <!-- Repeated Card -->
+                                        <div class="col-md-4 productList">
+                                            <div class="card card-custom p-3">
+                                                <div class="card-body">
+                                                    <h6 class="text-muted mb-2 border-bottom"><?= $certificate->filename ?></h6>
+                                                    <h5 class="fw-bold mb-0"><?= $certificate->created_at ?></h5>
+                                                    <!-- <div class="text-muted">Invoice No</div>
                                                 <h5 class="fw-bold mt-3 mb-0">128283</h5>
                                                 <div class="text-muted">Certificate No</div> -->
-                                                <div class="d-flex justify-content-between align-items-center mt-4">
-                                                    <a href="<?=base_url('public/uploads/certificate/' . $certificate->certificate_file)?>" class="text-decoration-none text-viewcolor">View</a>
-                                                    <a href="<?=base_url('public/uploads/certificate/' . $certificate->certificate_file)?>" download=""><button class="btn btn-download download-icon px-3">Download</button></a>
+                                                    <div class="d-flex justify-content-between align-items-center mt-4">
+                                                        <a href="<?= base_url('public/uploads/certificate/' . $certificate->certificate_file) ?>" class="text-decoration-none text-viewcolor">View</a>
+                                                        <a href="<?= base_url('public/uploads/certificate/' . $certificate->certificate_file) ?>" download=""><button class="btn btn-download download-icon px-3">Download</button></a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                <?php } }?>
-                                <?php if(!empty($certificates)){?>
+                                <?php }
+                                } ?>
+                                <?php if (!empty($certificates)) { ?>
                                     <!-- Empty Card -->
                                     <div class="col-md-4">
                                         <div class="card card-custom card-empty">
@@ -75,7 +77,7 @@ $userType           = $session->user_type;
                                             </div>
                                         </div>
                                     </div>
-                                <?php }?>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
@@ -137,3 +139,20 @@ $userType           = $session->user_type;
         align-items: center;
     }
 </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#myInput").on("input", function() {
+            var value = $(this).val().toLowerCase();
+            //alert(value);
+            $("#item-list .productList").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+
+        $('.components > li > a').on('click', function() {
+            $(this).parent('li').toggleClass('active');
+        });
+
+    });
+</script>
