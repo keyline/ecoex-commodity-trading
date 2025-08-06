@@ -304,7 +304,7 @@ class ApiController extends BaseController
                                 'item_name'                     => $getSubEnquiryItem->item_name_ecoex,
                                 'tot_item_win_price'            => number_format($current_price,2),
                                 'unit_name'                     => (($getUnit)?$getUnit->unit_name:''),
-                                'tot_item_win_price_before'     => $before_price,
+                                'tot_item_win_price_before'     => number_format($before_price,2),
                                 'difference_price'              => number_format($difference_price,2),
                                 'comparison_stat'               => (($difference_price >= 0)?'+':'-'),
                                 'comparison_percentage'         => abs(number_format((($before_price > 0)?(($difference_price / $before_price) * 100):($difference_price)),2)),
