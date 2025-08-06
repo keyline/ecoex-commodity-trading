@@ -305,15 +305,15 @@ class ApiController extends BaseController
                                 'tot_item_win_price'            => number_format($current_price,2),
                                 'unit_name'                     => (($getUnit)?$getUnit->unit_name:''),
                                 'tot_item_win_price_before'     => $before_price,
-                                'difference_price'              => $difference_price,
+                                'difference_price'              => number_format($difference_price,2),
                                 'comparison_stat'               => (($difference_price >= 0)?'increase':'decrease'),
-                                'comparison_percentage'         => (($before_price > 0)?(($difference_price / $before_price) * 100):($difference_price * 100)),
+                                'comparison_percentage'         => number_format((($before_price > 0)?(($difference_price / $before_price) * 100):($difference_price)),2),
                             ];
                         }
                     }
                     $top_prices         = $total_win_price_array;
                     $data               = $top_prices;
-                    pr($data);
+                    // pr($data);
                     $result = [];
 
                     foreach ($data as $item) {
@@ -321,11 +321,15 @@ class ApiController extends BaseController
 
                         if (!isset($result[$name])) {
                             $result[$name] = [
-                                'icon'              => $item['icon'],
-                                'item_name'         => $name,
-                                'unit_name'         => $item['unit_name'],
-                                'total_price'       => $item['tot_item_win_price'],
-                                'count'             => 1,
+                                'icon'                                  => $item['icon'],
+                                'item_name'                             => $name,
+                                'unit_name'                             => $item['unit_name'],
+                                'total_price'                           => $item['tot_item_win_price'],
+                                'count'                                 => 1,
+                                'tot_item_win_price_before'             => $item['tot_item_win_price_before'],
+                                'difference_price'                      => $item['difference_price'],
+                                'comparison_stat'                       => $item['comparison_stat'],
+                                'comparison_percentage'                 => $item['comparison_percentage'],
                             ];
                         } else {
                             $result[$name]['total_price'] += $item['tot_item_win_price'];
@@ -338,10 +342,14 @@ class ApiController extends BaseController
                     foreach ($result as $item) {
                         $average_price = round($item['total_price'] / $item['count'], 2);
                         $final[] = [
-                            'icon'                  => $item['icon'],
-                            'item_name'             => $item['item_name'],
-                            'tot_item_win_price'    => $average_price,
-                            'unit_name'             => $item['unit_name'],
+                            'icon'                                  => $item['icon'],
+                            'item_name'                             => $item['item_name'],
+                            'tot_item_win_price'                    => $average_price,
+                            'unit_name'                             => $item['unit_name'],
+                            'tot_item_win_price_before'             => $item['tot_item_win_price_before'],
+                            'difference_price'                      => $item['difference_price'],
+                            'comparison_stat'                       => $item['comparison_stat'],
+                            'comparison_percentage'                 => $item['comparison_percentage'],
                         ];
                     }
                 /* top prices */
