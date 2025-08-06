@@ -809,6 +809,7 @@ class CompanyController extends BaseController {
         }
         public function upload()
         {
+            pr($_FILES,0);
             pr($this->request->getPost());
             $companyId = $this->request->getPost('company_id');
             $file = $this->request->getFile('certificate_file');
