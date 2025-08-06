@@ -40,7 +40,7 @@ $userType           = $session->user_type;
                                 </div>
                                  <div class="col-md-4">
                                     <h5 class="card-titles mb-3">
-                                        <a href="<?=base_url('public/uploads/certificate/' . $certificate->certificate_file)?>" class="btn btn-success-ouline btn-sm">Upload New Certificates</a>
+                                        <a href="<?=base_url('admin/companies/upload-certificate')?>" class="btn btn-success-ouline btn-sm">Upload New Certificates</a>
                                     </h5>
                                 </div>
                             </div>
