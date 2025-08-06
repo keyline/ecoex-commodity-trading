@@ -25,7 +25,7 @@ $userType           = $session->user_type;
                     <div class="card-body">
                         <div class="container py-4">
                             <div class="row justify-content-between">
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <h5 class="card-titles mb-3">
                                         <strong><?=$company_name?> Certificates</strong>
                                     </h5>
@@ -38,9 +38,9 @@ $userType           = $session->user_type;
                                         </span>
                                     </div>
                                 </div>
-                                 <div class="col-md-4">
+                                 <div class="col-md-2">
                                     <h5 class="card-titles mb-3">
-                                        <a href="<?=base_url('admin/companies/upload-certificate')?>" class="btn btn-success-ouline btn-sm">Upload New Certificates</a>
+                                        <a href="<?=base_url('admin/companies/upload-certificate')?>" class="btn btn-ouline-success btn-sm">Upload New Certificates</a>
                                     </h5>
                                 </div>
                             </div>
