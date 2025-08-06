@@ -28,6 +28,7 @@ $userType           = $session->user_type;
                             <div class="container py-4">
                                 <h5 class="card-titles mb-3">
                                     <strong><?=$company_name?></strong>
+                                    <a href="<?=base_url('admin/companies/manage-certificate/' . encoded($company_id))?>" class="btn btn-outline-secondary btn-sm" style="float:right;"><i class="fa fa-arrow-left"></i> Back To Certificate List</a>
                                 </h5>
                                 <!-- Upload UI -->
                                 <div class="upload-box mb-4" onclick="document.getElementById('fileInput').click()">
