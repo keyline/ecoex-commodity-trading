@@ -300,12 +300,14 @@ class ApiController extends BaseController
                             $difference_price = ($current_price - $before_price);
 
                             $total_win_price_array[] = [
-                                'icon'                  => $icon,
-                                'item_name'             => $getSubEnquiryItem->item_name_ecoex,
-                                'tot_item_win_price'    => number_format($current_price,2),
-                                'unit_name'             => (($getUnit)?$getUnit->unit_name:''),
-                                'tot_item_win_price_before'    => $before_price,
-                                'difference_price' => $difference_price
+                                'icon'                          => $icon,
+                                'item_name'                     => $getSubEnquiryItem->item_name_ecoex,
+                                'tot_item_win_price'            => number_format($current_price,2),
+                                'unit_name'                     => (($getUnit)?$getUnit->unit_name:''),
+                                'tot_item_win_price_before'     => $before_price,
+                                'difference_price'              => $difference_price,
+                                'comparison_stat'               => (($difference_price >= 0)?'increase':'decrease'),
+                                'comparison_percentage'         => (($difference_price / $before_price) * 100),
                             ];
                         }
                     }
