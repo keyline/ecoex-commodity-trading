@@ -59,8 +59,8 @@ $userType           = $session->user_type;
                                                 <h5 class="fw-bold mt-3 mb-0">128283</h5>
                                                 <div class="text-muted">Certificate No</div> -->
                                                     <div class="d-flex justify-content-between align-items-center mt-4">
-                                                        <a href="<?= base_url('public/uploads/certificate/' . $certificate->certificate_file) ?>" class="text-decoration-none text-viewcolor">View</a>
-                                                        <a href="<?= base_url('public/uploads/certificate/' . $certificate->certificate_file) ?>" download=""><button class="btn btn-download download-icon px-3">Download</button></a>
+                                                        <a target="_blank" href="<?= base_url('public/uploads/certificate/' . $certificate->certificate_file) ?>" class="text-decoration-none text-viewcolor">View</a>
+                                                        <a target="_blank" href="<?= base_url('public/uploads/certificate/' . $certificate->certificate_file) ?>" download=""><button class="btn btn-download download-icon px-3">Download</button></a>
                                                     </div>
                                                 </div>
                                             </div>
