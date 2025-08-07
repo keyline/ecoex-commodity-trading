@@ -789,6 +789,12 @@ class User extends BaseController
             $page_name                  = 'ecoex-certificates';
 
             $user_id                    = $this->session->get('user_id');
+            $company                    = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $user_id], 'company_name');
+            $company_name               = (($company) ? $company->company_name : '');
+
+            $data['company_id']         = $user_id;
+            $data['company_name']       = $company_name;
+
             $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
             $data['certificates']       = $this->common_model->find_data('ecomm_company_certificates', 'array', ['company_id' => $user_id, 'status' => 1], 'certificate_file,created_at,filename', '', '', $orderBy);
             echo $this->layout_after_login($title, $page_name, $data);
