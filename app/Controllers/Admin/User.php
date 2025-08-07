@@ -785,23 +785,12 @@ class User extends BaseController
     /* ecoex certificates */
         public function ecoexCertificates()
         {
-            if (!$this->session->get('is_admin_login')) {
-                return redirect()->to('/admin');
-            }
-            if (!$this->common_model->checkModuleAccess(22)) {
-                $data['action']             = 'Access Forbidden';
-                $title                      = $data['action'] . ' ' . $this->data['title'];
-                $page_name                  = 'access-forbidden';
-                echo $this->layout_after_login($title, $page_name, $data);
-                exit;
-            }
-            $title              = 'ECOEX Certificates';
-            $page_name          = 'ecoex-certificates';
-            $order_by[0]        = array('field' => 'activity_id', 'type' => 'desc');
-            $data['rows1']       = $this->common_model->find_data('user_activities', 'array', ['user_type' => 'MA'], '', '', '', $order_by);
-            $data['rows2']       = $this->common_model->find_data('user_activities', 'array', ['user_type' => 'PLANT'], '', '', '', $order_by);
-            $data['rows3']       = $this->common_model->find_data('user_activities', 'array', ['user_type' => 'HO'], '', '', '', $order_by);
-            $data['rows4']       = $this->common_model->find_data('user_activities', 'array', ['user_type' => 'VENDOR'], '', '', '', $order_by);
+            $title                      = 'ECOEX Certificates';
+            $page_name                  = 'ecoex-certificates';
+
+            $user_id                    = $this->session->get('user_id');
+            $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
+            $data['certificates']       = $this->common_model->find_data('ecomm_company_certificates', 'array', ['company_id' => $user_id, 'status' => 1], 'certificate_file,created_at,filename', '', '', $orderBy);
             echo $this->layout_after_login($title, $page_name, $data);
         }
     /* ecoex certificates */
