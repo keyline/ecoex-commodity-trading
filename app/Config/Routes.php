@@ -148,7 +148,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 	$routes->match(['get', 'post'], "companies/manage-certificate/(:any)", "CompanyController::manageCertificate/$1");
 	$routes->match(['get', 'post'], "companies/upload-certificate/(:any)", "CompanyController::uploadCertificate/$1");
 	$routes->post('companies/certificate/upload', 'CompanyController::upload');
-	$routes->get('companies/certificate/download-all-zip/(:any)', 'CompanyController::downloadAllCertificatesZip');
+	$routes->get('companies/certificate/download-all-zip/(:any)', 'CompanyController::downloadAllCertificatesZip/$1');
 	// companies
 	// plants
 	$routes->match(['get'], "plants/list", "PlantController::list");
