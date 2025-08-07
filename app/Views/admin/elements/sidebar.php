@@ -345,6 +345,14 @@ if ($userType == 'MA') {
             </ul>
         </li>
     <?php } ?>
+    <?php if ($common_model->checkModuleAccess(24)) { ?>
+        <li class="nav-item">
+            <a class="nav-link <?= (($pageSegment == 'ecoex-certificates') ? 'active' : '') ?>" href="<?= base_url('admin/ecoex-certificates') ?>">
+                <i class="fa fa-certificate"></i>
+                <span>ECOEX Certificates</span>
+            </a>
+        </li>
+    <?php } ?>
     <?php if (($common_model->checkModuleAccess(19)) || ($common_model->checkModuleAccess(20))) { ?>
         <li class="nav-item">
             <a class="nav-link <?= (($pageSegment == 'reports' || $pageSegment == 'company-report') ? '' : 'collapsed') ?> <?= (($pageSegment == 'reports' || $pageSegment == 'company-report') ? 'active' : '') ?>" data-bs-target="#report-nav" data-bs-toggle="collapse" href="#">

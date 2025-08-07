@@ -28,6 +28,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 	$routes->match(['get', 'post'], "email-logs", "User::emailLogs");
 	$routes->match(['get', 'post'], "email-logs-details/(:any)", "User::emailLogsDetails/$1");
 	$routes->match(['get', 'post'], "login-logs", "User::loginLogs");
+	$routes->match(['get', 'post'], "ecoex-certificates", "User::ecoexCertificates");
 	// dashboard
 	// settings
 	$routes->match(['get', 'post'], "settings", "User::settings");

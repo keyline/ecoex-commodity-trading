@@ -27,7 +27,7 @@ $userType           = $session->user_type;
                             <div class="row justify-content-between">
                                 <div class="col-md-6">
                                     <h5 class="card-titles mb-3">
-                                        <strong><?= $company_name ?> Certificates</strong>
+                                        <strong>Monthly Certificates : <?= $company_name ?></strong>
                                     </h5>
                                 </div>
                                 <div class="col-md-4">
@@ -47,6 +47,19 @@ $userType           = $session->user_type;
                         </div>
                         <div class="container py-4">
                             <div class="row g-4" id="item-list">
+                                <?php if (!empty($certificates)) { ?>
+                                    <!-- Empty Card -->
+                                    <div class="col-md-4">
+                                        <div class="card card-custom card-empty">
+                                            <div class="card-body">
+                                                <a target="_blank" href="<?= base_url('admin/companies/certificate/download-all-zip/' . encoded($company_id)) ?>">
+                                                    <button class="btn btn-download mb-2">Download Zip File</button>
+                                                    <!-- <div class="text-muted">View Zip File</div> -->
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } ?>
                                 <?php if ($certificates) {
                                     foreach ($certificates as $certificate) { ?>
                                         <!-- Repeated Card -->
@@ -67,19 +80,6 @@ $userType           = $session->user_type;
                                         </div>
                                 <?php }
                                 } ?>
-                                <?php if (!empty($certificates)) { ?>
-                                    <!-- Empty Card -->
-                                    <div class="col-md-4">
-                                        <div class="card card-custom card-empty">
-                                            <div class="card-body">
-                                                <a target="_blank" href="<?= base_url('admin/companies/certificate/download-all-zip/' . encoded($company_id)) ?>">
-                                                    <button class="btn btn-download mb-2">Download Zip File</button>
-                                                    <!-- <div class="text-muted">View Zip File</div> -->
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php } ?>
                             </div>
                         </div>
                     </div>
