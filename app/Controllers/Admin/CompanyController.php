@@ -709,6 +709,22 @@ class CompanyController extends BaseController
     {
         $id             = decoded($this->request->getPost('id'));
         $redirectLink   = decoded($this->request->getPost('redirect_link'));
+        $getItem        = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $id]);
+        /* icon */
+            $file = $this->request->getFile('icon')[0];
+            $originalName = $file->getClientName();
+            $fieldName = 'icon';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'product', 'image');
+                if ($upload_array['status']) {
+                    $icon = $upload_array['newFilename'];
+                } else {
+                    $icon = '';
+                }
+            } else {
+                $icon = $getItem->icon;
+            }
+        /* icon */
         $postData   = array(
             'item_category'             => $this->request->getPost('item_category')[0],
             'item_name_ecoex'           => $this->request->getPost('item_name_ecoex')[0],
@@ -717,7 +733,8 @@ class CompanyController extends BaseController
             'hsn'                       => $this->request->getPost('hsn')[0],
             'gst'                       => $this->request->getPost('gst')[0],
             'rate'                      => $this->request->getPost('rate')[0],
-            'unit'                      => $this->request->getPost('unit')[0]
+            'unit'                      => $this->request->getPost('unit')[0],
+            'icon'                      => $icon,
         );
         pr($postData);
         $this->data['model']->save_data('ecomm_company_items', $postData, $id, 'id');
