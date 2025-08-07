@@ -840,8 +840,12 @@ class CompanyController extends BaseController
         }
         return $this->response->setStatusCode(400)->setJSON(['status' => 'error', 'message' => 'File upload failed.']);
     }
-    public function downloadAllCertificatesZip()
+    public function downloadAllCertificatesZip($id)
     {
+        $id                         = decoded($id);
+        $company                    = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $id], 'company_name');
+        $company_name               = (($company) ? $company->company_name : '');
+
         helper('filesystem'); // for directory_map()
 
         // Folder where your certificate PDFs are stored
@@ -855,7 +859,9 @@ class CompanyController extends BaseController
 
         // Create ZIP
         $zip = new ZipArchive();
-        $zipFileName = 'KEYLINE DIGITECH PRIVATE LIMITED - Test Company.zip';
+        // Get current date and time
+        $timestamp = date('Y-m-d_H-i-s');
+        $zipFileName = $company_name . '_{$timestamp}' . '.zip';
         $zipPath = 'public/uploads/downloads/' . $zipFileName;
 
         if (file_exists($zipPath)) {
