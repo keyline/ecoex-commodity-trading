@@ -1,14 +1,20 @@
 <?php
+
 namespace App\Controllers\admin;
+
 use App\Controllers\BaseController;
 use App\Models\CommonModel;
-class CompanyController extends BaseController {
+use CodeIgniter\Files\File;
+use ZipArchive;
+
+class CompanyController extends BaseController
+{
 
     private $model;  //This can be accessed by all class methods
-	public function __construct()
+    public function __construct()
     {
         $session = \Config\Services::session();
-        if(!$session->get('is_admin_login')) {
+        if (!$session->get('is_admin_login')) {
             return redirect()->to('/Administrator');
         }
         $model = new CommonModel();
@@ -24,119 +30,119 @@ class CompanyController extends BaseController {
     }
     public function list()
     {
-        if(!$this->common_model->checkModuleFunctionAccess(14,67)){
+        if (!$this->common_model->checkModuleFunctionAccess(14, 67)) {
             $data['action']             = 'Access Forbidden';
-            $title                      = $data['action'].' '.$this->data['title'];
-            $page_name                  = 'access-forbidden';        
-            echo $this->layout_after_login($title,$page_name,$data);
+            $title                      = $data['action'] . ' ' . $this->data['title'];
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
             exit;
         }
         $userType                   = $this->session->user_type;
         $company_id                 = $this->session->company_id;
         $data['moduleDetail']       = $this->data;
-        $title                      = 'Manage '.$this->data['title'];
+        $title                      = 'Manage ' . $this->data['title'];
         $page_name                  = 'company/list';
 
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
-        if($userType == 'MA'){
+        if ($userType == 'MA') {
             $conditions                 = ['status!=' => 3, 'parent_id' => 0];
-        } elseif($userType == 'U'){
+        } elseif ($userType == 'U') {
             $conditions                 = ['status!=' => 3, 'parent_id' => 0];
         } else {
             $conditions                 = ['status!=' => 3, 'parent_id' => 0, 'id' => $company_id];
         }
         $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
-        echo $this->layout_after_login($title,$page_name,$data);
+        echo $this->layout_after_login($title, $page_name, $data);
     }
     public function add()
     {
-        if(!$this->common_model->checkModuleFunctionAccess(14,113)){
+        if (!$this->common_model->checkModuleFunctionAccess(14, 113)) {
             $data['action']             = 'Access Forbidden';
-            $title                      = $data['action'].' '.$this->data['title'];
-            $page_name                  = 'access-forbidden';        
-            echo $this->layout_after_login($title,$page_name,$data);
+            $title                      = $data['action'] . ' ' . $this->data['title'];
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
             exit;
         }
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Add';
-        $title                      = $data['action'].' '.$this->data['title'];
-        $page_name                  = 'company/add-edit';        
+        $title                      = $data['action'] . ' ' . $this->data['title'];
+        $page_name                  = 'company/add-edit';
         $data['row']                = [];
-        if($this->request->getMethod() == 'post') {
+        if ($this->request->getMethod() == 'post') {
             /* profile image */
-                $file = $this->request->getFile('profile_image');
-                $originalName = $file->getClientName();
-                $fieldName = 'profile_image';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','image');
-                    if($upload_array['status']) {
-                        $profile_image = $upload_array['newFilename'];
-                    } else {
-                        $profile_image = '';
-                    }
+            $file = $this->request->getFile('profile_image');
+            $originalName = $file->getClientName();
+            $fieldName = 'profile_image';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'image');
+                if ($upload_array['status']) {
+                    $profile_image = $upload_array['newFilename'];
                 } else {
                     $profile_image = '';
                 }
+            } else {
+                $profile_image = '';
+            }
             /* profile image */
             /* GST CERTIFICATE */
-                $file = $this->request->getFile('gst_certificate');
-                $originalName = $file->getClientName();
-                $fieldName = 'gst_certificate';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $gst_certificate = $upload_array['newFilename'];
-                    } else {
-                        $gst_certificate = '';
-                    }
+            $file = $this->request->getFile('gst_certificate');
+            $originalName = $file->getClientName();
+            $fieldName = 'gst_certificate';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'pdf');
+                if ($upload_array['status']) {
+                    $gst_certificate = $upload_array['newFilename'];
                 } else {
                     $gst_certificate = '';
                 }
+            } else {
+                $gst_certificate = '';
+            }
             /* GST CERTIFICATE */
             /* CIN CERTIFICATE */
-                $file = $this->request->getFile('cin_document');
-                $originalName = $file->getClientName();
-                $fieldName = 'cin_document';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $cin_document = $upload_array['newFilename'];
-                    } else {
-                        $cin_document = '';
-                    }
+            $file = $this->request->getFile('cin_document');
+            $originalName = $file->getClientName();
+            $fieldName = 'cin_document';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'pdf');
+                if ($upload_array['status']) {
+                    $cin_document = $upload_array['newFilename'];
                 } else {
                     $cin_document = '';
                 }
+            } else {
+                $cin_document = '';
+            }
             /* CIN CERTIFICATE */
             /* cancelled cheque */
-                $file = $this->request->getFile('cancelled_cheque');
-                $originalName = $file->getClientName();
-                $fieldName = 'cancelled_cheque';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $cancelled_cheque = $upload_array['newFilename'];
-                    } else {
-                        $cancelled_cheque = '';
-                    }
+            $file = $this->request->getFile('cancelled_cheque');
+            $originalName = $file->getClientName();
+            $fieldName = 'cancelled_cheque';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'pdf');
+                if ($upload_array['status']) {
+                    $cancelled_cheque = $upload_array['newFilename'];
                 } else {
                     $cancelled_cheque = '';
                 }
+            } else {
+                $cancelled_cheque = '';
+            }
             /* cancelled cheque */
             /* AGREEMENT DOCUMENT */
-                $file = $this->request->getFile('agreement_document');
-                $originalName = $file->getClientName();
-                $fieldName = 'agreement_document';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $agreement_document = $upload_array['newFilename'];
-                    } else {
-                        $agreement_document = '';
-                    }
+            $file = $this->request->getFile('agreement_document');
+            $originalName = $file->getClientName();
+            $fieldName = 'agreement_document';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'pdf');
+                if ($upload_array['status']) {
+                    $agreement_document = $upload_array['newFilename'];
                 } else {
                     $agreement_document = '';
                 }
+            } else {
+                $agreement_document = '';
+            }
             /* AGREEMENT DOCUMENT */
             $postData   = array(
                 'type'                  => 'COMPANY',
@@ -183,123 +189,123 @@ class CompanyController extends BaseController {
             $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
 
             // insert as a sub user of masteradmin of type COMPANY ADMIN
-                $postData2   = array(
-                    'user_type'                 => 'COMPANY',
-                    'role_id'                   => 14,
-                    'name'                      => $this->request->getPost('company_name'),
-                    'mobileNo'                  => $this->request->getPost('phone'),
-                    'username'                  => $this->request->getPost('email'),
-                    'password'                  => md5($this->request->getPost('password')),
-                    'original_password'         => $this->request->getPost('password'),
-                    'email'                     => $this->request->getPost('email'),
-                    'present_address'           => $this->request->getPost('full_address'),
-                    'permanent_address'         => $this->request->getPost('full_address'),
-                    'added_user'                => 1,
-                    'updated_user'              => 1,
-                    'company_id'                => $record,
-                );
-                $this->data['model']->save_data('ecoex_admin_user', $postData2, '', 'id');
+            $postData2   = array(
+                'user_type'                 => 'COMPANY',
+                'role_id'                   => 14,
+                'name'                      => $this->request->getPost('company_name'),
+                'mobileNo'                  => $this->request->getPost('phone'),
+                'username'                  => $this->request->getPost('email'),
+                'password'                  => md5($this->request->getPost('password')),
+                'original_password'         => $this->request->getPost('password'),
+                'email'                     => $this->request->getPost('email'),
+                'present_address'           => $this->request->getPost('full_address'),
+                'permanent_address'         => $this->request->getPost('full_address'),
+                'added_user'                => 1,
+                'updated_user'              => 1,
+                'company_id'                => $record,
+            );
+            $this->data['model']->save_data('ecoex_admin_user', $postData2, '', 'id');
             // insert as a sub user of masteradmin of type COMPANY ADMIN
 
-            $this->session->setFlashdata('success_message', $this->data['title'].' inserted successfully');
-            return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+            $this->session->setFlashdata('success_message', $this->data['title'] . ' inserted successfully');
+            return redirect()->to('/admin/' . $this->data['controller_route'] . '/list');
         }
-        echo $this->layout_after_login($title,$page_name,$data);
+        echo $this->layout_after_login($title, $page_name, $data);
     }
     public function edit($id)
     {
-        if(!$this->common_model->checkModuleFunctionAccess(14,71)){
+        if (!$this->common_model->checkModuleFunctionAccess(14, 71)) {
             $data['action']             = 'Access Forbidden';
-            $title                      = $data['action'].' '.$this->data['title'];
-            $page_name                  = 'access-forbidden';        
-            echo $this->layout_after_login($title,$page_name,$data);
+            $title                      = $data['action'] . ' ' . $this->data['title'];
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
             exit;
         }
         $id                         = decoded($id);
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Edit';
-        $title                      = $data['action'].' '.$this->data['title'];
-        $page_name                  = 'company/add-edit';        
-        $conditions                 = array($this->data['primary_key']=>$id);
+        $title                      = $data['action'] . ' ' . $this->data['title'];
+        $page_name                  = 'company/add-edit';
+        $conditions                 = array($this->data['primary_key'] => $id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
 
-        if($this->request->getMethod() == 'post') {
+        if ($this->request->getMethod() == 'post') {
             /* profile image */
-                $file = $this->request->getFile('profile_image');
-                $originalName = $file->getClientName();
-                $fieldName = 'profile_image';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','image');
-                    if($upload_array['status']) {
-                        $profile_image = $upload_array['newFilename'];
-                    } else {
-                        $profile_image = $data['row']->profile_image;
-                    }
+            $file = $this->request->getFile('profile_image');
+            $originalName = $file->getClientName();
+            $fieldName = 'profile_image';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'image');
+                if ($upload_array['status']) {
+                    $profile_image = $upload_array['newFilename'];
                 } else {
                     $profile_image = $data['row']->profile_image;
                 }
+            } else {
+                $profile_image = $data['row']->profile_image;
+            }
             /* profile image */
             /* GST CERTIFICATE */
-                $file = $this->request->getFile('gst_certificate');
-                $originalName = $file->getClientName();
-                $fieldName = 'gst_certificate';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $gst_certificate = $upload_array['newFilename'];
-                    } else {
-                        $gst_certificate = '';
-                    }
+            $file = $this->request->getFile('gst_certificate');
+            $originalName = $file->getClientName();
+            $fieldName = 'gst_certificate';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'pdf');
+                if ($upload_array['status']) {
+                    $gst_certificate = $upload_array['newFilename'];
                 } else {
-                    $gst_certificate = $data['row']->gst_certificate;
+                    $gst_certificate = '';
                 }
+            } else {
+                $gst_certificate = $data['row']->gst_certificate;
+            }
             /* GST CERTIFICATE */
             /* CIN CERTIFICATE */
-                $file = $this->request->getFile('cin_document');
-                $originalName = $file->getClientName();
-                $fieldName = 'cin_document';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $cin_document = $upload_array['newFilename'];
-                    } else {
-                        $cin_document = '';
-                    }
+            $file = $this->request->getFile('cin_document');
+            $originalName = $file->getClientName();
+            $fieldName = 'cin_document';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'pdf');
+                if ($upload_array['status']) {
+                    $cin_document = $upload_array['newFilename'];
                 } else {
-                    $cin_document = $data['row']->cin_document;
+                    $cin_document = '';
                 }
+            } else {
+                $cin_document = $data['row']->cin_document;
+            }
             /* CIN CERTIFICATE */
             /* cancelled cheque */
-                $file = $this->request->getFile('cancelled_cheque');
-                $originalName = $file->getClientName();
-                $fieldName = 'cancelled_cheque';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $cancelled_cheque = $upload_array['newFilename'];
-                    } else {
-                        $cancelled_cheque = '';
-                    }
+            $file = $this->request->getFile('cancelled_cheque');
+            $originalName = $file->getClientName();
+            $fieldName = 'cancelled_cheque';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'pdf');
+                if ($upload_array['status']) {
+                    $cancelled_cheque = $upload_array['newFilename'];
                 } else {
-                    $cancelled_cheque = $data['row']->cancelled_cheque;
+                    $cancelled_cheque = '';
                 }
+            } else {
+                $cancelled_cheque = $data['row']->cancelled_cheque;
+            }
             /* cancelled cheque */
             /* AGREEMENT DOCUMENT */
-                $file = $this->request->getFile('agreement_document');
-                $originalName = $file->getClientName();
-                $fieldName = 'agreement_document';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $agreement_document = $upload_array['newFilename'];
-                    } else {
-                        $agreement_document = '';
-                    }
+            $file = $this->request->getFile('agreement_document');
+            $originalName = $file->getClientName();
+            $fieldName = 'agreement_document';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'pdf');
+                if ($upload_array['status']) {
+                    $agreement_document = $upload_array['newFilename'];
                 } else {
-                    $agreement_document = $data['row']->agreement_document;
+                    $agreement_document = '';
                 }
+            } else {
+                $agreement_document = $data['row']->agreement_document;
+            }
             /* AGREEMENT DOCUMENT */
-            if($this->request->getPost('password') != ''){
+            if ($this->request->getPost('password') != '') {
                 $postData   = array(
                     'gst_no'                => $this->request->getPost('gst_no'),
                     'gst_certificate'       => $gst_certificate,
@@ -337,21 +343,21 @@ class CompanyController extends BaseController {
                 );
 
                 // insert as a sub user of masteradmin of type COMPANY ADMIN
-                    $postData2   = array(
-                        'user_type'                 => 'COMPANY',
-                        'role_id'                   => 14,
-                        'name'                      => $this->request->getPost('company_name'),
-                        'mobileNo'                  => $this->request->getPost('phone'),
-                        'username'                  => $this->request->getPost('email'),
-                        'password'                  => md5($this->request->getPost('password')),
-                        'original_password'         => $this->request->getPost('password'),
-                        'email'                     => $this->request->getPost('email'),
-                        'present_address'           => $this->request->getPost('full_address'),
-                        'permanent_address'         => $this->request->getPost('full_address'),
-                        'added_user'                => 1,
-                        'updated_user'              => 1,
-                        'company_id'                => $id,
-                    );
+                $postData2   = array(
+                    'user_type'                 => 'COMPANY',
+                    'role_id'                   => 14,
+                    'name'                      => $this->request->getPost('company_name'),
+                    'mobileNo'                  => $this->request->getPost('phone'),
+                    'username'                  => $this->request->getPost('email'),
+                    'password'                  => md5($this->request->getPost('password')),
+                    'original_password'         => $this->request->getPost('password'),
+                    'email'                     => $this->request->getPost('email'),
+                    'present_address'           => $this->request->getPost('full_address'),
+                    'permanent_address'         => $this->request->getPost('full_address'),
+                    'added_user'                => 1,
+                    'updated_user'              => 1,
+                    'company_id'                => $id,
+                );
                 // insert as a sub user of masteradmin of type COMPANY ADMIN
             } else {
                 $postData   = array(
@@ -390,56 +396,56 @@ class CompanyController extends BaseController {
                 );
 
                 // insert as a sub user of masteradmin of type COMPANY ADMIN
-                    $postData2   = array(
-                        'user_type'                 => 'COMPANY',
-                        'role_id'                   => 14,
-                        'name'                      => $this->request->getPost('company_name'),
-                        'mobileNo'                  => $this->request->getPost('phone'),
-                        'username'                  => $this->request->getPost('email'),
-                        'email'                     => $this->request->getPost('email'),
-                        'present_address'           => $this->request->getPost('full_address'),
-                        'permanent_address'         => $this->request->getPost('full_address'),
-                        'added_user'                => 1,
-                        'updated_user'              => 1,
-                        'company_id'                => $id,
-                    );
+                $postData2   = array(
+                    'user_type'                 => 'COMPANY',
+                    'role_id'                   => 14,
+                    'name'                      => $this->request->getPost('company_name'),
+                    'mobileNo'                  => $this->request->getPost('phone'),
+                    'username'                  => $this->request->getPost('email'),
+                    'email'                     => $this->request->getPost('email'),
+                    'present_address'           => $this->request->getPost('full_address'),
+                    'permanent_address'         => $this->request->getPost('full_address'),
+                    'added_user'                => 1,
+                    'updated_user'              => 1,
+                    'company_id'                => $id,
+                );
                 // insert as a sub user of masteradmin of type COMPANY ADMIN
             }
             $record = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
 
             $checkCompanySubuser = $this->common_model->find_data('ecoex_admin_user', 'row', ['company_id' => $id]);
-            if($checkCompanySubuser){
+            if ($checkCompanySubuser) {
                 $this->data['model']->save_data('ecoex_admin_user', $postData2, $checkCompanySubuser->id, 'id');
             } else {
                 $this->data['model']->save_data('ecoex_admin_user', $postData2, '', 'id');
             }
 
-            $this->session->setFlashdata('success_message', $this->data['title'].' updated successfully');
-            return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
-        }        
-        echo $this->layout_after_login($title,$page_name,$data);
+            $this->session->setFlashdata('success_message', $this->data['title'] . ' updated successfully');
+            return redirect()->to('/admin/' . $this->data['controller_route'] . '/list');
+        }
+        echo $this->layout_after_login($title, $page_name, $data);
     }
     public function confirm_delete($id)
     {
         $id                         = decoded($id);
         $postData = array(
-                            'status' => 3
-                        );
-        $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
-        $this->session->setFlashdata('success_message', $this->data['title'].' deleted successfully');
-        return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+            'status' => 3
+        );
+        $updateData = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
+        $this->session->setFlashdata('success_message', $this->data['title'] . ' deleted successfully');
+        return redirect()->to('/admin/' . $this->data['controller_route'] . '/list');
     }
     public function change_status($id)
     {
         $id                         = decoded($id);
-        $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', [$this->data['primary_key']=>$id]);
-        if($data['row']->status){
+        $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', [$this->data['primary_key'] => $id]);
+        if ($data['row']->status) {
             $status  = 0;
             $msg        = 'Deactivated';
         } else {
             $email_verify           = $data['row']->email_verify;
             $phone_verify           = $data['row']->phone_verify;
-            if(($email_verify == 1) && ($phone_verify == 1)){
+            if (($email_verify == 1) && ($phone_verify == 1)) {
                 $status  = 2;
             } else {
                 $status  = 1;
@@ -447,76 +453,77 @@ class CompanyController extends BaseController {
             $msg        = 'Activated';
 
             /* approve mail send */
-                $getUser = $data['row'];
-                $requestData = [
-                    'id'            => $getUser->id,
-                    'email'         => $getUser->email,
-                    'phone'         => $getUser->phone,
-                    'company_name'  => $getUser->company_name,
-                ];
-                /* send email */
-                    $generalSetting             = $this->common_model->find_data('general_settings', 'row');
-                    $subject                    = $generalSetting->site_name.' :: Account Approved';
-                    $message                    = view('email-templates/signup',$requestData);
-                    // echo $message;die;
-                    $this->sendMail($requestData['email'], $subject, $message);
-                /* send email */
-                /* email log save */
-                    $postData2 = [
-                        'name'                  => $getUser->company_name,
-                        'email'                 => $getUser->email,
-                        'subject'               => $subject,
-                        'message'               => $message
-                    ];
-                    $this->common_model->save_data('email_logs', $postData2, '', 'id');
-                /* email log save */
+            $getUser = $data['row'];
+            $requestData = [
+                'id'            => $getUser->id,
+                'email'         => $getUser->email,
+                'phone'         => $getUser->phone,
+                'company_name'  => $getUser->company_name,
+            ];
+            /* send email */
+            $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+            $subject                    = $generalSetting->site_name . ' :: Account Approved';
+            $message                    = view('email-templates/signup', $requestData);
+            // echo $message;die;
+            $this->sendMail($requestData['email'], $subject, $message);
+            /* send email */
+            /* email log save */
+            $postData2 = [
+                'name'                  => $getUser->company_name,
+                'email'                 => $getUser->email,
+                'subject'               => $subject,
+                'message'               => $message
+            ];
+            $this->common_model->save_data('email_logs', $postData2, '', 'id');
+            /* email log save */
             /* approve mail send */
         }
         $postData = array(
-                            'status' => $status
-                        );
-        $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
-        $this->session->setFlashdata('success_message', $this->data['title'].' '.$msg.' successfully');
-        return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+            'status' => $status
+        );
+        $updateData = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
+        $this->session->setFlashdata('success_message', $this->data['title'] . ' ' . $msg . ' successfully');
+        return redirect()->to('/admin/' . $this->data['controller_route'] . '/list');
     }
     public function view($id)
     {
-        if(!$this->common_model->checkModuleFunctionAccess(14,72)){
+        if (!$this->common_model->checkModuleFunctionAccess(14, 72)) {
             $data['action']             = 'Access Forbidden';
-            $title                      = $data['action'].' '.$this->data['title'];
-            $page_name                  = 'access-forbidden';        
-            echo $this->layout_after_login($title,$page_name,$data);
+            $title                      = $data['action'] . ' ' . $this->data['title'];
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
             exit;
         }
         $id                         = decoded($id);
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'View';
-        $title                      = $data['action'].' '.$this->data['title'];
-        $page_name                  = 'company/details';        
-        $conditions                 = array($this->data['primary_key']=>$id);
+        $title                      = $data['action'] . ' ' . $this->data['title'];
+        $page_name                  = 'company/details';
+        $conditions                 = array($this->data['primary_key'] => $id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
-        echo $this->layout_after_login($title,$page_name,$data);
+        echo $this->layout_after_login($title, $page_name, $data);
     }
-    public function check_email(){
+    public function check_email()
+    {
         $apiStatus          = TRUE;
         $apiMessage         = '';
         $apiResponse        = [];
         $apiExtraField      = '';
         $apiExtraData       = '';
         $this->isJSON(file_get_contents('php://input'));
-        $requestData        = $this->extract_json(file_get_contents('php://input'));        
+        $requestData        = $this->extract_json(file_get_contents('php://input'));
         $requiredFields     = ['company_email'];
         $headerData         = $this->request->headers();
-        if (!$this->validateArray($requiredFields, $requestData)){              
+        if (!$this->validateArray($requiredFields, $requestData)) {
             http_response_code(406);
             $apiStatus          = FALSE;
             $apiMessage         = $this->getResponseCode(http_response_code());
             $apiExtraField      = 'response_code';
             $apiExtraData       = http_response_code();
         }
-        if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
             $checkData = $this->common_model->find_data('ecoex_companies', 'count', ['email' => $requestData['company_email'], 'status!=' => 3]);
-            if($checkData > 0){
+            if ($checkData > 0) {
                 http_response_code(200);
                 $apiStatus          = FALSE;
                 $apiMessage         = 'Email Already Exists. Try Other Email !!!';
@@ -538,26 +545,27 @@ class CompanyController extends BaseController {
         }
         $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
     }
-    public function check_phone(){
+    public function check_phone()
+    {
         $apiStatus          = TRUE;
         $apiMessage         = '';
         $apiResponse        = [];
         $apiExtraField      = '';
         $apiExtraData       = '';
         $this->isJSON(file_get_contents('php://input'));
-        $requestData        = $this->extract_json(file_get_contents('php://input'));        
+        $requestData        = $this->extract_json(file_get_contents('php://input'));
         $requiredFields     = ['company_phone'];
         $headerData         = $this->request->headers();
-        if (!$this->validateArray($requiredFields, $requestData)){              
+        if (!$this->validateArray($requiredFields, $requestData)) {
             http_response_code(406);
             $apiStatus          = FALSE;
             $apiMessage         = $this->getResponseCode(http_response_code());
             $apiExtraField      = 'response_code';
             $apiExtraData       = http_response_code();
         }
-        if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
             $checkData = $this->common_model->find_data('ecoex_companies', 'count', ['phone' => $requestData['company_phone'], 'status!=' => 3]);
-            if($checkData > 0){
+            if ($checkData > 0) {
                 http_response_code(404);
                 $apiStatus          = TRUE;
                 $apiMessage         = 'Phone Already Exists. Try Other Phone !!!';
@@ -583,10 +591,10 @@ class CompanyController extends BaseController {
     {
         $id                         = decoded($id);
         $company                    = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $id], 'company_name');
-        $company_name               = (($company)?$company->company_name:'');
+        $company_name               = (($company) ? $company->company_name : '');
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Manage Product Category Of';
-        $title                      = $data['action'].' '.$company_name;
+        $title                      = $data['action'] . ' ' . $company_name;
         $page_name                  = 'company/assign-category';
         $data['cats']               = $this->common_model->find_data('ecomm_product_categories', 'array', ['status' => 1], 'id,name');
         $data['company_id']         = $id;
@@ -595,16 +603,16 @@ class CompanyController extends BaseController {
         $order_by[0]                = array('field' => 'id', 'type' => 'desc');
         $conditions                 = array('company_id' => $id, 'status' => 1);
         $data['assignCats']         = $this->data['model']->find_data('ecomm_company_category', 'array', $conditions, '', '', '', $order_by);
-        
-        if($this->request->getMethod() == 'post') {
+
+        if ($this->request->getMethod() == 'post') {
             $company_id         = $this->request->getPost('company_id');
             $category_id        = $this->request->getPost('category_id');
 
-            if(!empty($category_id)){
+            if (!empty($category_id)) {
                 $this->data['model']->save_data('ecomm_company_category', ['status' => 3], $company_id, 'company_id');
-                for($k=0;$k<count($category_id);$k++){
+                for ($k = 0; $k < count($category_id); $k++) {
                     $checkCompanyCategory = $this->common_model->find_data('ecomm_company_category', 'row', ['company_id' => $company_id, 'category_id' => $category_id[$k]]);
-                    if($checkCompanyCategory){
+                    if ($checkCompanyCategory) {
                         // update
                         $postData   = array(
                             'status'                    => 1,
@@ -612,7 +620,7 @@ class CompanyController extends BaseController {
                         $this->data['model']->save_data('ecomm_company_category', $postData, $checkCompanyCategory->id, 'id');
                     } else {
                         // insert
-                        $category_alias     = $this->request->getPost('category_alias'.$category_id[$k]);
+                        $category_alias     = $this->request->getPost('category_alias' . $category_id[$k]);
                         $postData   = array(
                             'company_id'                => $company_id,
                             'category_id'               => $category_id[$k],
@@ -623,19 +631,19 @@ class CompanyController extends BaseController {
                     }
                 }
             }
-            $this->session->setFlashdata('success_message', $this->data['title'].' Product Category Updated Successfully');
-            return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
-        }        
-        echo $this->layout_after_login($title,$page_name,$data);
+            $this->session->setFlashdata('success_message', $this->data['title'] . ' Product Category Updated Successfully');
+            return redirect()->to('/admin/' . $this->data['controller_route'] . '/list');
+        }
+        echo $this->layout_after_login($title, $page_name, $data);
     }
     public function manageItem($id)
     {
         $id                         = decoded($id);
         $company                    = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $id], 'company_name');
-        $company_name               = (($company)?$company->company_name:'');
+        $company_name               = (($company) ? $company->company_name : '');
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Manage Items Of';
-        $title                      = $data['action'].' '.$company_name;
+        $title                      = $data['action'] . ' ' . $company_name;
         $page_name                  = 'company/manage-item';
         $data['company_id']         = $id;
         $data['company_name']       = $company_name;
@@ -649,8 +657,8 @@ class CompanyController extends BaseController {
         $order_by[0]                = array('field' => 'id', 'type' => 'asc');
         $conditions                 = array('company_id' => $id, 'status!=' => 3);
         $data['assignItems']        = $this->data['model']->find_data('ecomm_company_items', 'array', $conditions, '', '', '', $order_by);
-        
-        if($this->request->getMethod() == 'post') {
+
+        if ($this->request->getMethod() == 'post') {
             // pr($this->request->getPost());
             $company_id             = $this->request->getPost('company_id');
             $item_category          = $this->request->getPost('item_category');
@@ -662,41 +670,41 @@ class CompanyController extends BaseController {
             $rate                   = $this->request->getPost('rate');
             $unit                   = $this->request->getPost('unit');
 
-            if(!empty($item_name_ecoex)){
+            if (!empty($item_name_ecoex)) {
                 // $this->data['model']->save_data('ecomm_company_items', ['status' => 3], $company_id, 'company_id');
                 // for($k=0;$k<count($item_name_ecoex);$k++){
-                    // $checkCompanyItem = $this->common_model->find_data('ecomm_company_items', 'row', ['company_id' => $company_id, 'item_name_ecoex' => $item_name_ecoex[$k]]);
-                    // if($checkCompanyItem){
-                    //     // update
-                    //     $postData   = array(
-                    //         'status'                    => 1,
-                    //     );
-                    //     $this->data['model']->save_data('ecomm_company_items', $postData, $checkCompanyItem->id, 'id');
-                    // } else {
-                        // insert
-                        $postData   = array(
-                            'company_id'                => $company_id,
-                            'item_category'             => $item_category[0],
-                            'item_name_ecoex'           => $item_name_ecoex[0],
-                            'alias_name'                => $alias_name[0],
-                            'billing_name'              => $billing_name[0],
-                            'hsn'                       => $hsn[0],
-                            'gst'                       => $gst[0],
-                            'rate'                      => $rate[0],
-                            'unit'                      => $unit[0],
-                            'is_approved'               => 1,
-                            'approved_date'             => date('Y-m-d H:i:s'),
-                            'status'                    => 1,
-                        );
-                        // pr($postData);
-                        $this->data['model']->save_data('ecomm_company_items', $postData, '', 'id');
-                    // }
+                // $checkCompanyItem = $this->common_model->find_data('ecomm_company_items', 'row', ['company_id' => $company_id, 'item_name_ecoex' => $item_name_ecoex[$k]]);
+                // if($checkCompanyItem){
+                //     // update
+                //     $postData   = array(
+                //         'status'                    => 1,
+                //     );
+                //     $this->data['model']->save_data('ecomm_company_items', $postData, $checkCompanyItem->id, 'id');
+                // } else {
+                // insert
+                $postData   = array(
+                    'company_id'                => $company_id,
+                    'item_category'             => $item_category[0],
+                    'item_name_ecoex'           => $item_name_ecoex[0],
+                    'alias_name'                => $alias_name[0],
+                    'billing_name'              => $billing_name[0],
+                    'hsn'                       => $hsn[0],
+                    'gst'                       => $gst[0],
+                    'rate'                      => $rate[0],
+                    'unit'                      => $unit[0],
+                    'is_approved'               => 1,
+                    'approved_date'             => date('Y-m-d H:i:s'),
+                    'status'                    => 1,
+                );
+                // pr($postData);
+                $this->data['model']->save_data('ecomm_company_items', $postData, '', 'id');
+                // }
                 // }
             }
-            $this->session->setFlashdata('success_message', $this->data['title'].' Item Inserted Successfully');
+            $this->session->setFlashdata('success_message', $this->data['title'] . ' Item Inserted Successfully');
             return redirect()->to(current_url());
-        }        
-        echo $this->layout_after_login($title,$page_name,$data);
+        }
+        echo $this->layout_after_login($title, $page_name, $data);
     }
     public function approveItem()
     {
@@ -715,40 +723,40 @@ class CompanyController extends BaseController {
         $this->data['model']->save_data('ecomm_company_items', $postData, $id, 'id');
 
         $getItem        = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $id]);
-        if($getItem){
-            if(($getItem->item_category > 0) && ($getItem->alias_name != '') && ($getItem->billing_name != '') && ($getItem->hsn != '') && ($getItem->gst > 0) &&  ($getItem->rate > 0) && ($getItem->unit > 0)){
+        if ($getItem) {
+            if (($getItem->item_category > 0) && ($getItem->alias_name != '') && ($getItem->billing_name != '') && ($getItem->hsn != '') && ($getItem->gst > 0) &&  ($getItem->rate > 0) && ($getItem->unit > 0)) {
                 /* company items */
-                    $postData   = array(
-                        'is_approved'               => 1,
-                        'approved_date'             => (($getItem->approved_date == '')?date('Y-m-d H:i:s'):$getItem->approved_date),
-                        'status'                    => 1,
-                    );
-                    $this->data['model']->save_data('ecomm_company_items', $postData, $id, 'id');
+                $postData   = array(
+                    'is_approved'               => 1,
+                    'approved_date'             => (($getItem->approved_date == '') ? date('Y-m-d H:i:s') : $getItem->approved_date),
+                    'status'                    => 1,
+                );
+                $this->data['model']->save_data('ecomm_company_items', $postData, $id, 'id');
                 /* company items */
                 /* company Enquiry items */
-                    $enq_id         = $getItem->enq_id;
-                    $enq_product_id = $getItem->enq_product_id;
-                    $product_id     = $id;
-                    $postData   = array(
-                        'product_id'                => $product_id,
-                        'hsn'                       => $getItem->hsn,
-                        'new_product_name'          => $getItem->alias_name,
-                        'new_hsn'                   => $getItem->hsn,
-                        'unit'                      => $getItem->unit,
-                        'remarks'                   => 'Approved By Admin',
-                        'status'                    => 1,
-                        'approved_date'             => date('Y-m-d H:i:s')
-                    );
-                    $this->data['model']->save_data('ecomm_enquiry_products', $postData, $enq_product_id, 'id');
+                $enq_id         = $getItem->enq_id;
+                $enq_product_id = $getItem->enq_product_id;
+                $product_id     = $id;
+                $postData   = array(
+                    'product_id'                => $product_id,
+                    'hsn'                       => $getItem->hsn,
+                    'new_product_name'          => $getItem->alias_name,
+                    'new_hsn'                   => $getItem->hsn,
+                    'unit'                      => $getItem->unit,
+                    'remarks'                   => 'Approved By Admin',
+                    'status'                    => 1,
+                    'approved_date'             => date('Y-m-d H:i:s')
+                );
+                $this->data['model']->save_data('ecomm_enquiry_products', $postData, $enq_product_id, 'id');
                 /* company enquiry items */
-                $this->session->setFlashdata('success_message', $this->data['title'].' Item Approved Successfully !!!');
+                $this->session->setFlashdata('success_message', $this->data['title'] . ' Item Approved Successfully !!!');
                 return redirect()->to($redirectLink);
             } else {
-                $this->session->setFlashdata('error_message', $this->data['title'].' Item Category, Alias Name, Billing Name, HSN, GST, Rate, Unit Must Be Entered Before Get Approved !!!');
+                $this->session->setFlashdata('error_message', $this->data['title'] . ' Item Category, Alias Name, Billing Name, HSN, GST, Rate, Unit Must Be Entered Before Get Approved !!!');
                 return redirect()->to($redirectLink);
             }
         } else {
-            $this->session->setFlashdata('error_message', $this->data['title'].' Item Not Found !!!');
+            $this->session->setFlashdata('error_message', $this->data['title'] . ' Item Not Found !!!');
             return redirect()->to($redirectLink);
         }
     }
@@ -757,81 +765,115 @@ class CompanyController extends BaseController {
         $id                         = decoded($id);
         $getSubUser                 = $this->common_model->find_data('ecoex_admin_user', 'row', ['company_id' => $id]);
         /* login credentials email */
-            $base               = base_url('/admin');
-            $emailTemplate      = $this->common_model->find_data('ecoex_email_template', 'row', ['id' => 12]);
-            $to2                = (($getSubUser)?$getSubUser->email:'');
-            $subject2           = "Welcome ".(($getSubUser)?$getSubUser->name:'')." to Ecoex Commodity Trading Portal";                        
-            $emailTemplate    = str_replace("{company}", (($getSubUser)?$getSubUser->name:''), $emailTemplate->content);
-            $emailTemplate1   = str_replace("{customer_email}", (($getSubUser)?$getSubUser->email:''), $emailTemplate);
-            $emailTemplate2   = str_replace("{password}", (($getSubUser)?$getSubUser->original_password:''), $emailTemplate1);
-            $message2         = str_replace("{login_link}", $base , $emailTemplate2);
-            // echo $message2;die;
-            $this->sendMail($to2,$subject2,$message2);
+        $base               = base_url('/admin');
+        $emailTemplate      = $this->common_model->find_data('ecoex_email_template', 'row', ['id' => 12]);
+        $to2                = (($getSubUser) ? $getSubUser->email : '');
+        $subject2           = "Welcome " . (($getSubUser) ? $getSubUser->name : '') . " to Ecoex Commodity Trading Portal";
+        $emailTemplate    = str_replace("{company}", (($getSubUser) ? $getSubUser->name : ''), $emailTemplate->content);
+        $emailTemplate1   = str_replace("{customer_email}", (($getSubUser) ? $getSubUser->email : ''), $emailTemplate);
+        $emailTemplate2   = str_replace("{password}", (($getSubUser) ? $getSubUser->original_password : ''), $emailTemplate1);
+        $message2         = str_replace("{login_link}", $base, $emailTemplate2);
+        // echo $message2;die;
+        $this->sendMail($to2, $subject2, $message2);
         /* login credentials email */
         $this->session->setFlashdata('success_message', 'Signin Credential Sent Successfully !!!');
-        return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+        return redirect()->to('/admin/' . $this->data['controller_route'] . '/list');
     }
     /* certificate manage */
-        public function manageCertificate($id)
-        {
-            $id                         = decoded($id);
-            $company                    = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $id], 'company_name');
-            $company_name               = (($company)?$company->company_name:'');
-            $data['moduleDetail']       = $this->data;
-            $data['action']             = 'Manage Certificates : ';
-            $title                      = $data['action'].' '.$company_name;
-            $page_name                  = 'company/manage-certificate';
-            $data['company_id']         = $id;
-            $data['company_name']       = $company_name;
+    public function manageCertificate($id)
+    {
+        $id                         = decoded($id);
+        $company                    = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $id], 'company_name');
+        $company_name               = (($company) ? $company->company_name : '');
+        $data['moduleDetail']       = $this->data;
+        $data['action']             = 'Manage Certificates : ';
+        $title                      = $data['action'] . ' ' . $company_name;
+        $page_name                  = 'company/manage-certificate';
+        $data['company_id']         = $id;
+        $data['company_name']       = $company_name;
 
-            $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
-            $data['certificates']       = $this->common_model->find_data('ecomm_company_certificates', 'array', ['company_id' => $id, 'status' => 1], 'certificate_file,created_at,filename', '', '', $orderBy);
-                  
-            echo $this->layout_after_login($title,$page_name,$data);
+        $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
+        $data['certificates']       = $this->common_model->find_data('ecomm_company_certificates', 'array', ['company_id' => $id, 'status' => 1], 'certificate_file,created_at,filename', '', '', $orderBy);
+
+        echo $this->layout_after_login($title, $page_name, $data);
+    }
+    public function uploadCertificate($id)
+    {
+        $id                         = decoded($id);
+        $company                    = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $id], 'company_name');
+        $company_name               = (($company) ? $company->company_name : '');
+        $data['moduleDetail']       = $this->data;
+        $data['action']             = 'Manage Certificates : ';
+        $title                      = $data['action'] . ' ' . $company_name;
+        $page_name                  = 'company/upload-certificate';
+        $data['company_id']         = $id;
+        $data['company_name']       = $company_name;
+
+        if ($this->request->getMethod() == 'post') {
+            pr($this->request->getPost());
         }
-        public function uploadCertificate($id)
-        {
-            $id                         = decoded($id);
-            $company                    = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $id], 'company_name');
-            $company_name               = (($company)?$company->company_name:'');
-            $data['moduleDetail']       = $this->data;
-            $data['action']             = 'Manage Certificates : ';
-            $title                      = $data['action'].' '.$company_name;
-            $page_name                  = 'company/upload-certificate';
-            $data['company_id']         = $id;
-            $data['company_name']       = $company_name;
-            
-            if($this->request->getMethod() == 'post') {
-                pr($this->request->getPost());
-                
-            }        
-            echo $this->layout_after_login($title,$page_name,$data);
+        echo $this->layout_after_login($title, $page_name, $data);
+    }
+    public function upload()
+    {
+        $companyId = $this->request->getPost('company_id');
+        $file = $this->request->getFile('certificate_file');
+
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $newName = $file->getRandomName();
+            $fileOriginalName = $file->getName();
+            // Strip extension before saving
+            $filenameWithoutExt = pathinfo($fileOriginalName, PATHINFO_FILENAME);
+
+            $file->move('public/uploads/certificate', $newName); // Store securely
+
+            $fields = [
+                'company_id'        => $companyId,
+                'certificate_file'  => $newName,
+                'filename'          => $filenameWithoutExt,
+                'created_at'        => date('Y-m-d H:i:s'),
+                'updated_at'        => date('Y-m-d H:i:s'),
+                'status'            => 1
+            ];
+            $this->common_model->save_data('ecomm_company_certificates', $fields, '', 'id');
+            return $this->response->setJSON(['status' => 'success', 'file' => $newName]);
         }
-        public function upload()
-        {
-            $companyId = $this->request->getPost('company_id');
-            $file = $this->request->getFile('certificate_file');
+        return $this->response->setStatusCode(400)->setJSON(['status' => 'error', 'message' => 'File upload failed.']);
+    }
+    public function downloadAllCertificatesZip()
+    {
+        helper('filesystem'); // for directory_map()
 
-            if ($file && $file->isValid() && !$file->hasMoved()) {
-                $newName = $file->getRandomName();
-                $fileOriginalName = $file->getName();
-                // Strip extension before saving
-                $filenameWithoutExt = pathinfo($fileOriginalName, PATHINFO_FILENAME);
+        // Folder where your certificate PDFs are stored
+        echo $certificatesPath = WRITEPATH . 'uploads/certificates'; die; // Update path as needed
 
-                $file->move('public/uploads/certificate', $newName); // Store securely
+        // Optional: Filter only .pdf files
+        $files = directory_map($certificatesPath, 1); // Get only files, not subfolders
+        $pdfFiles = array_filter($files, function ($file) {
+            return pathinfo($file, PATHINFO_EXTENSION) === 'pdf';
+        });
 
-                $fields = [
-                    'company_id'        => $companyId,
-                    'certificate_file'  => $newName,
-                    'filename'          => $filenameWithoutExt,
-                    'created_at'        => date('Y-m-d H:i:s'),
-                    'updated_at'        => date('Y-m-d H:i:s'),
-                    'status'            => 1
-                ];
-                $this->common_model->save_data('ecomm_company_certificates',$fields, '', 'id');
-                return $this->response->setJSON(['status' => 'success', 'file' => $newName]);
+        // Create ZIP
+        $zip = new ZipArchive();
+        $zipFileName = 'KEYLINE DIGITECH PRIVATE LIMITED - Test Company.zip';
+        $zipPath = WRITEPATH . 'downloads/' . $zipFileName;
+
+        if (file_exists($zipPath)) {
+            unlink($zipPath); // Remove old zip if exists
+        }
+
+        if ($zip->open($zipPath, ZipArchive::CREATE) === TRUE) {
+            foreach ($pdfFiles as $file) {
+                $filePath = $certificatesPath . '/' . $file;
+                $zip->addFile($filePath, $file);
             }
-            return $this->response->setStatusCode(400)->setJSON(['status' => 'error', 'message' => 'File upload failed.']);
+            $zip->close();
+        } else {
+            return $this->response->setStatusCode(500)->setBody('Failed to create ZIP file.');
         }
+
+        // Download response
+        return $this->response->download($zipPath, null)->setFileName($zipFileName);
+    }
     /* certificate manage */
 }

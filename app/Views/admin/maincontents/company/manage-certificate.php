@@ -72,8 +72,10 @@ $userType           = $session->user_type;
                                     <div class="col-md-4">
                                         <div class="card card-custom card-empty">
                                             <div class="card-body">
-                                                <button class="btn btn-download mb-2">Download Zip File</button>
-                                                <div class="text-muted">View Zip File</div>
+                                                <a href="<?= base_url('admin/companies/certificate/download-all-zip') ?>">
+                                                    <button class="btn btn-download mb-2">Download Zip File</button>
+                                                    <!-- <div class="text-muted">View Zip File</div> -->
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
