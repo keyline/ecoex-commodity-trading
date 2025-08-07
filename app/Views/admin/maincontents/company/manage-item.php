@@ -152,7 +152,7 @@ $userType           = $session->user_type;
                                             <div class="col-md-2 mb-3 mb-md-0">
                                                 <input type="file" name="icon" class="form-control" placeholder="Icon">
                                                 <?php if ($assignItem->icon != '') { ?>
-                                                    <img src="<?= getenv('app.uploadsURL') . 'product/' . $assignItem->icon ?>" alt="<?= $assignItem->item_name_ecoex ?>" class="img-thumbnail" style="width: 130px; height: auto; margin-top: 10px;">
+                                                    <img src="<?= getenv('app.uploadsURL') . 'product/' . $assignItem->icon ?>" alt="<?= $assignItem->item_name_ecoex ?>" class="img-thumbnail" style="width: 75px; height: 75px; margin-top: 10px;">
                                                 <?php }?>
                                             </div>
                                             <div class="col-md-1 mb-3 mb-md-0">
