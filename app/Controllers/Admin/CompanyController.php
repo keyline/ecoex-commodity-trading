@@ -861,7 +861,7 @@ class CompanyController extends BaseController
         $zip = new ZipArchive();
         // Get current date and time
         $timestamp = date('Y-m-d_H-i-s');
-        $zipFileName = $company_name . '_{$timestamp}' . '.zip';
+        $zipFileName = "{$company_name}_{$timestamp}.zip";
         $zipPath = 'public/uploads/downloads/' . $zipFileName;
 
         if (file_exists($zipPath)) {
