@@ -266,12 +266,10 @@ class ApiController extends BaseController
                             $join4['0']  = ['table' => 'ecomm_units', 'field' => 'id', 'table_master' => 'ecomm_company_items', 'field_table_master' => 'unit', 'type' => 'INNER'];
                             $getUnit = $this->common_model->find_data('ecomm_company_items', 'row', ['ecomm_company_items.id' => $getSubEnquiryItem->item_id], 'ecomm_units.name as unit_name', $join4);
 
-                            $getProductItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $getSubEnquiryItem->item_id], 'item_category');
-                            $getProductCategory = $this->common_model->find_data('ecomm_product_categories', 'row', ['id' => (($getProductItem)?$getProductItem->item_category:'')], 'icon');
-
-                            if($getProductCategory){
-                                if ($getProductCategory->icon != '') {
-                                    $icon = getenv('app.uploadsURL') . 'product/' . $getProductCategory->icon;
+                            $getProductItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $getSubEnquiryItem->item_id], 'item_category, icon');
+                            if($getProductItem){
+                                if ($getProductItem->icon != '') {
+                                    $icon = getenv('app.uploadsURL') . 'product/' . $getProductItem->icon;
                                 } else {
                                     $icon = getenv('app.NOIMAGE');
                                 }
@@ -372,12 +370,10 @@ class ApiController extends BaseController
                                     $product_id         = $getEnquiryItem->product_id;
                                     $item_name_ecoex    = $getEnquiryItem->item_name_ecoex;
 
-                                    $getProductItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $product_id], 'item_category');
-                                    $getProductCategory = $this->common_model->find_data('ecomm_product_categories', 'row', ['id' => (($getProductItem)?$getProductItem->item_category:'')], 'icon');
-
-                                    if($getProductCategory){
-                                        if ($getProductCategory->icon != '') {
-                                            $icon = getenv('app.uploadsURL') . 'product/' . $getProductCategory->icon;
+                                    $getProductItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $product_id], 'item_category,icon');
+                                    if($getProductItem){
+                                        if ($getProductItem->icon != '') {
+                                            $icon = getenv('app.uploadsURL') . 'product/' . $getProductItem->icon;
                                         } else {
                                             $icon = getenv('app.NOIMAGE');
                                         }
