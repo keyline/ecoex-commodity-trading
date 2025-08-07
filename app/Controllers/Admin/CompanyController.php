@@ -711,7 +711,7 @@ class CompanyController extends BaseController
         $redirectLink   = decoded($this->request->getPost('redirect_link'));
         $getItem        = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $id]);
         /* icon */
-            $file = $this->request->getFile('icon')[0];
+            $file = $this->request->getFile('icon');
             $originalName = $file->getClientName();
             $fieldName = 'icon';
             if ($file != '') {
