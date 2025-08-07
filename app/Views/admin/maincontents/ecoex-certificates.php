@@ -98,7 +98,9 @@ $userType           = $session->user_type;
         border-radius: 12px;
         transition: 0.3s;
         /* min-height: 260px; */
-        min-height: 170px;
+        min-height: 185px;
+        border: 1px solid #e3e3e3;
+        background: #ebebeb;
     }
 
     .btn-download {
