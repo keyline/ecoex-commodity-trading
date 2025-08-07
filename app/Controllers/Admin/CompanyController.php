@@ -845,7 +845,7 @@ class CompanyController extends BaseController
         helper('filesystem'); // for directory_map()
 
         // Folder where your certificate PDFs are stored
-        echo $certificatesPath = WRITEPATH . 'uploads/certificates'; die; // Update path as needed
+        echo $certificatesPath = 'public/uploads/certificate'; die; // Update path as needed
 
         // Optional: Filter only .pdf files
         $files = directory_map($certificatesPath, 1); // Get only files, not subfolders
