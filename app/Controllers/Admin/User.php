@@ -788,7 +788,7 @@ class User extends BaseController
             $title                      = 'ECOEX Certificates';
             $page_name                  = 'ecoex-certificates';
 
-            $user_id                    = $this->session->get('user_id');
+            echo $user_id                    = $this->session->get('user_id');
             $company                    = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $user_id], 'company_name');
             $company_name               = (($company) ? $company->company_name : '');
 
