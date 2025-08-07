@@ -62,10 +62,10 @@ $userType           = $session->user_type;
                                 <div class="col-md-2">
                                     <h6 class="text-success fw-bold">Item Name<br>(Ecoex)</h6>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <h6 class="text-success fw-bold">Alias<br>(App)</h6>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <h6 class="text-success fw-bold">Billing<br>Name</h6>
                                 </div>
                                 <div class="col-md-1">
@@ -97,7 +97,7 @@ $userType           = $session->user_type;
                                         }
                                     }
                                     ?>
-                                    <form method="POST" action="<?=base_url('admin/companies/approve-item')?>" style="display: <?=$display?>;">
+                                    <form method="POST" action="<?=base_url('admin/companies/approve-item')?>" style="display: <?=$display?>;" enctype="multipart/form-data">
                                         <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">
                                         <input type="hidden" name="id" value="<?=encoded($assignItem->id)?>">
                                         <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">
@@ -113,10 +113,10 @@ $userType           = $session->user_type;
                                             <div class="col-md-2 mb-3 mb-md-0">
                                                 <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex" value="<?=$assignItem->item_name_ecoex?>">
                                             </div>
-                                            <div class="col-md-2 mb-3 mb-md-0">
+                                            <div class="col-md-1 mb-3 mb-md-0">
                                                 <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name" value="<?=$assignItem->alias_name?>">
                                             </div>
-                                            <div class="col-md-2 mb-3 mb-md-0">
+                                            <div class="col-md-1 mb-3 mb-md-0">
                                                 <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name" value="<?=$assignItem->billing_name?>">
                                             </div>
                                             <div class="col-md-1 mb-3 mb-md-0">
@@ -143,6 +143,9 @@ $userType           = $session->user_type;
                                                     <?php } }?>
                                                 </select>
                                             </div>
+                                            <div class="col-md-2 mb-3 mb-md-0">
+                                                <input type="file" name="icon[]" class="form-control" placeholder="Icon">
+                                            </div>
                                             <div class="col-md-1 mb-3 mb-md-0">
                                                 <?php if($assignItem->status){?>
                                                     <p style="margin-bottom: 5px;"><span class="badge rounded-pill bg-success w-100" style="font-size: 9px; padding: 8px;"><i class="fa fa-check-circle"></i> APPROVED</span></p>
@@ -162,7 +165,7 @@ $userType           = $session->user_type;
                                     </form>
                                 <?php } }?>
                                 <?php if($userType == 'MA'){?>
-                                    <form method="POST" action="">
+                                    <form method="POST" action="" enctype="multipart/form-data">
                                         <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">
                                         <input type="hidden" name="id" value="<?=encoded($company_id)?>">
                                         <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">
@@ -178,10 +181,10 @@ $userType           = $session->user_type;
                                             <div class="col-md-2 mb-3 mb-md-0">
                                                 <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex">
                                             </div>
-                                            <div class="col-md-2 mb-3 mb-md-0">
+                                            <div class="col-md-1 mb-3 mb-md-0">
                                                 <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name">
                                             </div>
-                                            <div class="col-md-2 mb-3 mb-md-0">
+                                            <div class="col-md-1 mb-3 mb-md-0">
                                                 <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name">
                                             </div>
                                             <div class="col-md-1 mb-3 mb-md-0">
@@ -207,6 +210,9 @@ $userType           = $session->user_type;
                                                     <option value="<?=$unit->id?>"><?=$unit->name?></option>
                                                     <?php } }?>
                                                 </select>
+                                            </div>
+                                            <div class="col-md-2 mb-3 mb-md-0">
+                                               <input type="file" name="icon[]" class="form-control" placeholder="Icon">
                                             </div>
                                             <div class="col-md-1 mb-3 mb-md-0">
                                                 <?php if($userType == 'MA'){?>
@@ -254,7 +260,7 @@ $userType           = $session->user_type;
         var maxField = 10; //Input fields increment limitation
         var addButton = $('.add_button'); //Add button selector
         var wrapper = $('.field_wrapper'); //Input field wrapper
-        var fieldHTML = '<form method="POST" action="<?=base_url('admin/companies/approve-item')?>">\
+        var fieldHTML = '<form method="POST" action="<?=base_url('admin/companies/approve-item')?>" enctype="multipart/form-data">\
                             <input type="hidden" name="company_id" id="company_id" value="<?=$company_id?>">\
                             <input type="hidden" name="redirect_link" value="<?=encoded(current_url())?>">\
                             <div class="row item-cover" style="margin-left: 0; margin-right: 0;">\
@@ -269,10 +275,10 @@ $userType           = $session->user_type;
                                 <div class="col-md-2 mb-3 mb-md-0">\
                                     <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex">\
                                 </div>\
-                                <div class="col-md-2 mb-3 mb-md-0">\
+                                <div class="col-md-1 mb-3 mb-md-0">\
                                     <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name">\
                                 </div>\
-                                <div class="col-md-2 mb-3 mb-md-0">\
+                                <div class="col-md-1 mb-3 mb-md-0">\
                                     <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name">\
                                 </div>\
                                 <div class="col-md-1 mb-3 mb-md-0">\
@@ -298,6 +304,9 @@ $userType           = $session->user_type;
                                         <option value="<?=$unit->id?>"><?=$unit->name?></option>\
                                         <?php } }?>
                                     </select>\
+                                </div>\
+                                <div class="col-md-2 mb-3 mb-md-0">\
+                                    <input type="file" name="icon[]" class="form-control" placeholder="Icon">\
                                 </div>\
                                 <div class="col-md-1 mb-3 mb-md-0">\
                                     <a href="javascript:void(0);" class="btn btn-danger btn-sm remove_button" title="Remove Item"><i class="fa fa-trash"></i> Remove</a>\

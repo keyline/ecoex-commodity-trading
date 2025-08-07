@@ -696,7 +696,7 @@ class CompanyController extends BaseController
                     'approved_date'             => date('Y-m-d H:i:s'),
                     'status'                    => 1,
                 );
-                // pr($postData);
+                pr($postData);
                 $this->data['model']->save_data('ecomm_company_items', $postData, '', 'id');
                 // }
                 // }
