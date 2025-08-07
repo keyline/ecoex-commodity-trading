@@ -35,9 +35,9 @@ $userType           = $session->user_type;
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <h5 class="card-titles mb-3">
+                                    <!-- <h5 class="card-titles mb-3">
                                         <a href="<?= base_url('admin/companies/upload-certificate/' . encoded($company_id)) ?>" class="btn btn-outline-success"><i class="fa fa-upload"></i> Upload Certificates</a>
-                                    </h5>
+                                    </h5> -->
                                 </div>
                             </div>
                         </div>
