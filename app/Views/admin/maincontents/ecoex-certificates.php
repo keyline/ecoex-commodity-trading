@@ -1,7 +1,4 @@
 <?php
-$title              = $moduleDetail['title'];
-$primary_key        = $moduleDetail['primary_key'];
-$controller_route   = $moduleDetail['controller_route'];
 $userType           = $session->user_type;
 ?>
 <div class="container-fluid">
