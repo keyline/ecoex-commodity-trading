@@ -10,7 +10,6 @@ $userType           = $session->user_type;
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="<?= base_url('admin/dashboard') ?>">Home</a></li>
-                <li class="breadcrumb-item active"><a href="<?= base_url('admin/' . $controller_route . '/list/') ?>"><?= $title ?> List</a></li>
                 <li class="breadcrumb-item active"><?= $page_header ?></li>
             </ol>
         </nav>
