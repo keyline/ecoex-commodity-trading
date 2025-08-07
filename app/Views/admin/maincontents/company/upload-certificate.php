@@ -36,7 +36,7 @@ $userType           = $session->user_type;
                                         <path fill-rule="evenodd" d="M8 0a5.53 5.53 0 0 0-5.468 4.5 3.5 3.5 0 1 0 .934 6.94h3.188v-3H5.5a.5.5 0 0 1 0-1h2.5V6.207l-.646.647a.5.5 0 0 1-.708-.708l1.5-1.5a.5.5 0 0 1 .708 0l1.5 1.5a.5.5 0 0 1-.708.708L8.5 6.207V8.5h2.5a.5.5 0 0 1 0 1H8.5v3h3.068a3.5 3.5 0 1 0 .933-6.94A5.53 5.53 0 0 0 8 0Z" />
                                     </svg>
                                     <div class="fw-medium">Choose a file or drag & drop it here</div>
-                                    <div class="text-muted small mb-3">Only Zip file</div>
+                                    <div class="text-muted small mb-3">Only Pdf file & max file will be within 100KB</div>
                                     <button class="btn btn-outline-secondary rounded-pill">Browse File</button>
                                     <input type="file" id="fileInput" name="certificate_file" class="d-none" multiple>
                                 </div>
