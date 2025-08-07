@@ -682,6 +682,23 @@ class CompanyController extends BaseController
                 //     $this->data['model']->save_data('ecomm_company_items', $postData, $checkCompanyItem->id, 'id');
                 // } else {
                 // insert
+
+                /* icon */
+                    $file = $this->request->getFile('icon');
+                    $originalName = $file->getClientName();
+                    $fieldName = 'icon';
+                    if ($file != '') {
+                        $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'product', 'image');
+                        if ($upload_array['status']) {
+                            $icon = $upload_array['newFilename'];
+                        } else {
+                            $icon = '';
+                        }
+                    } else {
+                        $icon = '';
+                    }
+                /* icon */
+
                 $postData   = array(
                     'company_id'                => $company_id,
                     'item_category'             => $item_category[0],
@@ -692,6 +709,7 @@ class CompanyController extends BaseController
                     'gst'                       => $gst[0],
                     'rate'                      => $rate[0],
                     'unit'                      => $unit[0],
+                    'icon'                      => $icon,
                     'is_approved'               => 1,
                     'approved_date'             => date('Y-m-d H:i:s'),
                     'status'                    => 1,
@@ -711,20 +729,19 @@ class CompanyController extends BaseController
         $redirectLink   = decoded($this->request->getPost('redirect_link'));
         $getItem        = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $id]);
         /* icon */
-            $file = $this->request->getFile('icon');
-            pr($file,0);
-            $originalName = $file->getClientName();
-            $fieldName = 'icon';
-            if ($file != '') {
-                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'product', 'image');
-                if ($upload_array['status']) {
-                    $icon = $upload_array['newFilename'];
-                } else {
-                    $icon = '';
-                }
+        $file = $this->request->getFile('icon');
+        $originalName = $file->getClientName();
+        $fieldName = 'icon';
+        if ($file != '') {
+            $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'product', 'image');
+            if ($upload_array['status']) {
+                $icon = $upload_array['newFilename'];
             } else {
-                $icon = $getItem->icon;
+                $icon = '';
             }
+        } else {
+            $icon = $getItem->icon;
+        }
         /* icon */
         $postData   = array(
             'item_category'             => $this->request->getPost('item_category')[0],
@@ -737,7 +754,7 @@ class CompanyController extends BaseController
             'unit'                      => $this->request->getPost('unit')[0],
             'icon'                      => $icon,
         );
-        pr($postData);
+        // pr($postData);
         $this->data['model']->save_data('ecomm_company_items', $postData, $id, 'id');
 
         $getItem        = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $id]);
