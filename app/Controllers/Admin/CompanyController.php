@@ -856,7 +856,7 @@ class CompanyController extends BaseController
         // Create ZIP
         $zip = new ZipArchive();
         $zipFileName = 'KEYLINE DIGITECH PRIVATE LIMITED - Test Company.zip';
-        $zipPath = WRITEPATH . 'downloads/' . $zipFileName;
+        $zipPath = 'public/uploads/downloads/' . $zipFileName;
 
         if (file_exists($zipPath)) {
             unlink($zipPath); // Remove old zip if exists
