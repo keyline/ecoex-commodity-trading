@@ -712,6 +712,7 @@ class CompanyController extends BaseController
         $getItem        = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $id]);
         /* icon */
             $file = $this->request->getFile('icon');
+            pr($file,0);
             $originalName = $file->getClientName();
             $fieldName = 'icon';
             if ($file != '') {

@@ -144,7 +144,7 @@ $userType           = $session->user_type;
                                                 </select>
                                             </div>
                                             <div class="col-md-2 mb-3 mb-md-0">
-                                                <input type="file" name="icon[]" class="form-control" placeholder="Icon">
+                                                <input type="file" name="icon" class="form-control" placeholder="Icon">
                                             </div>
                                             <div class="col-md-1 mb-3 mb-md-0">
                                                 <?php if($assignItem->status){?>
@@ -212,7 +212,7 @@ $userType           = $session->user_type;
                                                 </select>
                                             </div>
                                             <div class="col-md-2 mb-3 mb-md-0">
-                                               <input type="file" name="icon[]" class="form-control" placeholder="Icon">
+                                               <input type="file" name="icon" class="form-control" placeholder="Icon">
                                             </div>
                                             <div class="col-md-1 mb-3 mb-md-0">
                                                 <?php if($userType == 'MA'){?>
