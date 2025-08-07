@@ -696,7 +696,6 @@ class CompanyController extends BaseController
                     'approved_date'             => date('Y-m-d H:i:s'),
                     'status'                    => 1,
                 );
-                pr($postData);
                 $this->data['model']->save_data('ecomm_company_items', $postData, '', 'id');
                 // }
                 // }
@@ -720,6 +719,7 @@ class CompanyController extends BaseController
             'rate'                      => $this->request->getPost('rate')[0],
             'unit'                      => $this->request->getPost('unit')[0]
         );
+        pr($postData);
         $this->data['model']->save_data('ecomm_company_items', $postData, $id, 'id');
 
         $getItem        = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $id]);
@@ -749,7 +749,7 @@ class CompanyController extends BaseController
                 );
                 $this->data['model']->save_data('ecomm_enquiry_products', $postData, $enq_product_id, 'id');
                 /* company enquiry items */
-                $this->session->setFlashdata('success_message', $this->data['title'] . ' Item Approved Successfully !!!');
+                $this->session->setFlashdata('success_message', $this->data['title'] . ' Item Approved & Updated Successfully !!!');
                 return redirect()->to($redirectLink);
             } else {
                 $this->session->setFlashdata('error_message', $this->data['title'] . ' Item Category, Alias Name, Billing Name, HSN, GST, Rate, Unit Must Be Entered Before Get Approved !!!');
