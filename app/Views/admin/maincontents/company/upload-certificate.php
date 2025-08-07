@@ -30,7 +30,7 @@ $userType           = $session->user_type;
                                     <a href="<?=base_url('admin/companies/manage-certificate/' . encoded($company_id))?>" class="btn btn-outline-secondary" style="float:right;"><i class="fa fa-arrow-left"></i> Back To Certificate List</a>
                                 </h5>
                                 <!-- Upload UI -->
-                                <div class="upload-box mb-4" onclick="document.getElementById('fileInput').click()">
+                                <div class="upload-box mt-4 mb-4" onclick="document.getElementById('fileInput').click()">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="30" fill="currentColor" class="mb-2" viewBox="0 0 16 16">
                                         <path fill-rule="evenodd" d="M8 0a5.53 5.53 0 0 0-5.468 4.5 3.5 3.5 0 1 0 .934 6.94h3.188v-3H5.5a.5.5 0 0 1 0-1h2.5V6.207l-.646.647a.5.5 0 0 1-.708-.708l1.5-1.5a.5.5 0 0 1 .708 0l1.5 1.5a.5.5 0 0 1-.708.708L8.5 6.207V8.5h2.5a.5.5 0 0 1 0 1H8.5v3h3.068a3.5 3.5 0 1 0 .933-6.94A5.53 5.53 0 0 0 8 0Z" />
                                     </svg>
