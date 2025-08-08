@@ -231,10 +231,6 @@ class ApiController extends BaseController
                 $startOfLastLastWeek    = date('Y-m-d', strtotime($givenDate . ' -7 days'));
                 $endOfLastLastWeek    = date('Y-m-d', strtotime($givenDate2 . ' -7 days'));
                 
-
-                // echo $startOfLastWeek.'||'.$endOfLastWeek;
-                // echo '<br>';
-                // echo $startOfLastLastWeek.'||'.$endOfLastLastWeek;
                 // $this->db = \Config\Database::connect();
                 // echo $this->db->getLastQuery();
                 // die;
@@ -250,6 +246,12 @@ class ApiController extends BaseController
                         $join3['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
                         $join3['1']  = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'company_id', 'type' => 'INNER'];
                         $getSubEnquiryItems = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek, 'ecoex_companies.state' => $state], 'ecomm_sub_enquires.sub_enquiry_no, ecomm_sub_enquires.item_id, ecomm_company_items.item_name_ecoex', $join3, $groupBy);
+                    }
+
+                    if(empty($getSubEnquiryItems)){
+                        $groupBy[0] = 'ecomm_sub_enquires.item_id';
+                        $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
+                        $getSubEnquiryItems = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek], 'ecomm_sub_enquires.sub_enquiry_no, ecomm_sub_enquires.item_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
                     }
 
                     $total_win_price_array = [];
