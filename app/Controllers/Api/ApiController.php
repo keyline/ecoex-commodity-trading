@@ -204,14 +204,13 @@ class ApiController extends BaseController
         }
         public function priceList()
         {
-            // CORS headers
+            // Set CORS headers first
             header('Access-Control-Allow-Origin: https://market.ecoex.market');
             header('Access-Control-Allow-Methods: POST, OPTIONS');
             header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-            // Handle preflight OPTIONS request
+            // Handle OPTIONS preflight request
             if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-                // Respond with 200 OK and proper headers
                 http_response_code(200);
                 exit();
             }
