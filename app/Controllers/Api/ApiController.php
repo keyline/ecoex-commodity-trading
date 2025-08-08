@@ -21,266 +21,370 @@ use function PHPSTORM_META\type;
 class ApiController extends BaseController
 {
     /* before login */
-        public function getAppSetting()
-        {
+    public function getAppSetting()
+    {
+        $apiStatus          = TRUE;
+        $apiMessage         = '';
+        $apiResponse        = [];
+        $apiExtraField      = '';
+        $apiExtraData       = '';
+        $headerData            = $this->request->headers();
+        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+            $generalSetting = $this->common_model->find_data('general_settings', 'row');
+            if ($generalSetting) {
+                $apiResponse = [
+                    'site_name'                 => $generalSetting->site_name,
+                    'site_phone'                => $generalSetting->site_phone,
+                    'site_mail'                 => $generalSetting->site_mail,
+                    'site_url'                  => $generalSetting->site_url,
+                    'firebase_server_key'       => $generalSetting->firebase_server_key,
+                    'gst_api_code'              => $generalSetting->gst_api_code,
+                    'theme_color'               => $generalSetting->theme_color,
+                    'font_color'                => $generalSetting->font_color,
+                    'site_logo'                 => getenv('app.uploadsURL') . $generalSetting->site_logo,
+                ];
+            }
+            http_response_code(200);
             $apiStatus          = TRUE;
-            $apiMessage         = '';
-            $apiResponse        = [];
-            $apiExtraField      = '';
-            $apiExtraData       = '';
-            $headerData            = $this->request->headers();
-            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-                $generalSetting = $this->common_model->find_data('general_settings', 'row');
-                if ($generalSetting) {
-                    $apiResponse = [
-                        'site_name'                 => $generalSetting->site_name,
-                        'site_phone'                => $generalSetting->site_phone,
-                        'site_mail'                 => $generalSetting->site_mail,
-                        'site_url'                  => $generalSetting->site_url,
-                        'firebase_server_key'       => $generalSetting->firebase_server_key,
-                        'gst_api_code'              => $generalSetting->gst_api_code,
-                        'theme_color'               => $generalSetting->theme_color,
-                        'font_color'                => $generalSetting->font_color,
-                        'site_logo'                 => getenv('app.uploadsURL') . $generalSetting->site_logo,
+            $apiMessage         = 'Data Available !!!';
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        } else {
+            http_response_code(400);
+            $apiStatus          = FALSE;
+            $apiMessage         = $this->getResponseCode(http_response_code());
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        }
+        $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+    }
+    public function getStaticPages()
+    {
+        $apiStatus          = TRUE;
+        $apiMessage         = '';
+        $apiResponse        = [];
+        $apiExtraField      = '';
+        $apiExtraData       = '';
+        $this->isJSON(file_get_contents('php://input'));
+        $requestData        = $this->extract_json(file_get_contents('php://input'));
+        $requiredFields     = ['page_slug'];
+        $headerData         = $this->request->headers();
+        if (!$this->validateArray($requiredFields, $requestData)) {
+            http_response_code(406);
+            $apiStatus          = FALSE;
+            $apiMessage         = $this->getResponseCode(http_response_code());
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        }
+        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+            $page = $this->common_model->find_data('ecomm_pages', 'row', ['slug' => $requestData['page_slug']]);
+            if ($page) {
+                $apiResponse = [
+                    'page_title'                => $page->page_title,
+                    'slug'                      => $page->slug,
+                    'short_description'         => $page->short_description,
+                    'long_description'          => $page->long_description,
+                    'meta_title'                => $page->meta_title,
+                    'meta_description'          => $page->meta_description,
+                    'meta_keywords'             => $page->meta_keywords,
+                ];
+            }
+            http_response_code(200);
+            $apiStatus          = TRUE;
+            $apiMessage         = 'Data Available !!!';
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        } else {
+            http_response_code(400);
+            $apiStatus          = FALSE;
+            $apiMessage         = $this->getResponseCode(http_response_code());
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        }
+        $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+    }
+    public function getProductCategory()
+    {
+        $apiStatus          = TRUE;
+        $apiMessage         = '';
+        $apiResponse        = [];
+        $apiExtraField      = '';
+        $apiExtraData       = '';
+        $headerData            = $this->request->headers();
+        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+            $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
+            $rows           = $this->common_model->find_data('ecomm_product_categories', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
+            if ($rows) {
+                foreach ($rows as $row) {
+                    $apiResponse[] = [
+                        'id'                => $row->id,
+                        'name'              => $row->name
                     ];
                 }
-                http_response_code(200);
-                $apiStatus          = TRUE;
-                $apiMessage         = 'Data Available !!!';
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            } else {
-                http_response_code(400);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
             }
-            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
-        }
-        public function getStaticPages()
-        {
+            http_response_code(200);
             $apiStatus          = TRUE;
-            $apiMessage         = '';
-            $apiResponse        = [];
-            $apiExtraField      = '';
-            $apiExtraData       = '';
-            $this->isJSON(file_get_contents('php://input'));
-            $requestData        = $this->extract_json(file_get_contents('php://input'));
-            $requiredFields     = ['page_slug'];
-            $headerData         = $this->request->headers();
-            if (!$this->validateArray($requiredFields, $requestData)) {
-                http_response_code(406);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            }
-            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-                $page = $this->common_model->find_data('ecomm_pages', 'row', ['slug' => $requestData['page_slug']]);
-                if ($page) {
-                    $apiResponse = [
-                        'page_title'                => $page->page_title,
-                        'slug'                      => $page->slug,
-                        'short_description'         => $page->short_description,
-                        'long_description'          => $page->long_description,
-                        'meta_title'                => $page->meta_title,
-                        'meta_description'          => $page->meta_description,
-                        'meta_keywords'             => $page->meta_keywords,
+            $apiMessage         = 'Data Available !!!';
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        } else {
+            http_response_code(400);
+            $apiStatus          = FALSE;
+            $apiMessage         = $this->getResponseCode(http_response_code());
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        }
+        $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+    }
+    public function getMemberType()
+    {
+        $apiStatus          = TRUE;
+        $apiMessage         = '';
+        $apiResponse        = [];
+        $apiExtraField      = '';
+        $apiExtraData       = '';
+        $headerData            = $this->request->headers();
+        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+            $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
+            $rows           = $this->common_model->find_data('ecomm_member_types', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
+            if ($rows) {
+                foreach ($rows as $row) {
+                    $apiResponse[] = [
+                        'id'                => $row->id,
+                        'name'              => $row->name
                     ];
                 }
-                http_response_code(200);
-                $apiStatus          = TRUE;
-                $apiMessage         = 'Data Available !!!';
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            } else {
-                http_response_code(400);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
             }
-            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
-        }
-        public function getProductCategory()
-        {
+            http_response_code(200);
             $apiStatus          = TRUE;
-            $apiMessage         = '';
-            $apiResponse        = [];
-            $apiExtraField      = '';
-            $apiExtraData       = '';
-            $headerData            = $this->request->headers();
-            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-                $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
-                $rows           = $this->common_model->find_data('ecomm_product_categories', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
-                if ($rows) {
-                    foreach ($rows as $row) {
-                        $apiResponse[] = [
-                            'id'                => $row->id,
-                            'name'              => $row->name
-                        ];
-                    }
+            $apiMessage         = 'Data Available !!!';
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        } else {
+            http_response_code(400);
+            $apiStatus          = FALSE;
+            $apiMessage         = $this->getResponseCode(http_response_code());
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        }
+        $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+    }
+    public function getState()
+    {
+        $apiStatus          = TRUE;
+        $apiMessage         = '';
+        $apiResponse        = [];
+        $apiExtraField      = '';
+        $apiExtraData       = '';
+        $headerData            = $this->request->headers();
+        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+            $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
+            $rows           = $this->common_model->find_data('ecomm_states', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
+            if ($rows) {
+                foreach ($rows as $row) {
+                    $apiResponse[] = [
+                        'id'                => $row->id,
+                        'name'              => $row->name
+                    ];
                 }
-                http_response_code(200);
-                $apiStatus          = TRUE;
-                $apiMessage         = 'Data Available !!!';
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            } else {
-                http_response_code(400);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
             }
-            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
-        }
-        public function getMemberType()
-        {
+            http_response_code(200);
             $apiStatus          = TRUE;
-            $apiMessage         = '';
-            $apiResponse        = [];
-            $apiExtraField      = '';
-            $apiExtraData       = '';
-            $headerData            = $this->request->headers();
-            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-                $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
-                $rows           = $this->common_model->find_data('ecomm_member_types', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
-                if ($rows) {
-                    foreach ($rows as $row) {
-                        $apiResponse[] = [
-                            'id'                => $row->id,
-                            'name'              => $row->name
-                        ];
+            $apiMessage         = 'Data Available !!!';
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        } else {
+            http_response_code(400);
+            $apiStatus          = FALSE;
+            $apiMessage         = $this->getResponseCode(http_response_code());
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        }
+        $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+    }
+    public function priceList()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+            $this->response
+                ->setHeader('Access-Control-Allow-Origin', 'https://market.ecoex.market')
+                ->setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+                ->setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+                ->setStatusCode(200)
+                ->setBody(''); // Empty body
+
+            return $this->response; // ← send it immediately and exit
+        }
+
+        $apiStatus          = TRUE;
+        $apiMessage         = '';
+        $apiResponse        = [];
+        $apiExtraField      = '';
+        $apiExtraData       = '';
+        $this->isJSON(file_get_contents('php://input'));
+        $requestData        = $this->extract_json(file_get_contents('php://input'));
+        $requiredFields     = ['state'];
+        $headerData         = $this->request->headers();
+        if (!$this->validateArray($requiredFields, $requestData)) {
+            http_response_code(406);
+            $apiStatus          = FALSE;
+            $apiMessage         = $this->getResponseCode(http_response_code());
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        }
+        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+            $state              = $requestData['state'];
+            $current_date       = date('Y-m-d');
+            $startOfLastWeek    = date('Y-m-d', strtotime('monday last week'));
+            $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));
+
+            $givenDate          = date('Y-m-d', strtotime('monday last week'));
+            $givenDate2          = date('Y-m-d', strtotime('sunday last week'));
+            $startOfLastLastWeek    = date('Y-m-d', strtotime($givenDate . ' -7 days'));
+            $endOfLastLastWeek    = date('Y-m-d', strtotime($givenDate2 . ' -7 days'));
+
+            // $this->db = \Config\Database::connect();
+            // echo $this->db->getLastQuery();
+            // die;
+
+            /* top prices */
+            $top_prices         = [];
+            if ($state == 'All') {
+                $groupBy[0] = 'ecomm_sub_enquires.item_id';
+                $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
+                $getSubEnquiryItems = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek], 'ecomm_sub_enquires.sub_enquiry_no, ecomm_sub_enquires.item_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
+            } else {
+                $groupBy[0] = 'ecomm_sub_enquires.item_id';
+                $join3['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
+                $join3['1']  = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'company_id', 'type' => 'INNER'];
+                $getSubEnquiryItems = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek, 'ecoex_companies.state' => $state], 'ecomm_sub_enquires.sub_enquiry_no, ecomm_sub_enquires.item_id, ecomm_company_items.item_name_ecoex', $join3, $groupBy);
+            }
+
+            if (empty($getSubEnquiryItems)) {
+                $groupBy[0] = 'ecomm_sub_enquires.item_id';
+                $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
+                $getSubEnquiryItems = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek], 'ecomm_sub_enquires.sub_enquiry_no, ecomm_sub_enquires.item_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
+            }
+
+            $total_win_price_array = [];
+            if ($getSubEnquiryItems) {
+                foreach ($getSubEnquiryItems as $getSubEnquiryItem) {
+                    $subEnquiryWinPrices = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['assigned_date>=' => $startOfLastWeek, 'assigned_date<=' => $endOfLastWeek, 'item_id' => $getSubEnquiryItem->item_id], 'win_quote_price');
+                    $tot_item_win_price = 0;
+                    if ($subEnquiryWinPrices) {
+                        foreach ($subEnquiryWinPrices as $subEnquiryWinPrice) {
+                            $tot_item_win_price += $subEnquiryWinPrice->win_quote_price;
+                        }
                     }
-                }
-                http_response_code(200);
-                $apiStatus          = TRUE;
-                $apiMessage         = 'Data Available !!!';
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            } else {
-                http_response_code(400);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            }
-            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
-        }
-        public function getState()
-        {
-            $apiStatus          = TRUE;
-            $apiMessage         = '';
-            $apiResponse        = [];
-            $apiExtraField      = '';
-            $apiExtraData       = '';
-            $headerData            = $this->request->headers();
-            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-                $orderBy[0]     = ['field' => 'name', 'type' => 'ASC'];
-                $rows           = $this->common_model->find_data('ecomm_states', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
-                if ($rows) {
-                    foreach ($rows as $row) {
-                        $apiResponse[] = [
-                            'id'                => $row->id,
-                            'name'              => $row->name
-                        ];
-                    }
-                }
-                http_response_code(200);
-                $apiStatus          = TRUE;
-                $apiMessage         = 'Data Available !!!';
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            } else {
-                http_response_code(400);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            }
-            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
-        }
-        public function priceList()
-        {
-            // Set CORS headers first
-            header('Access-Control-Allow-Origin: https://market.ecoex.market');
-            header('Access-Control-Allow-Methods: POST, OPTIONS');
-            header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-            // Handle OPTIONS preflight request
-            if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-                http_response_code(200);
-                exit();
-            }
+                    $join4['0']  = ['table' => 'ecomm_units', 'field' => 'id', 'table_master' => 'ecomm_company_items', 'field_table_master' => 'unit', 'type' => 'INNER'];
+                    $getUnit = $this->common_model->find_data('ecomm_company_items', 'row', ['ecomm_company_items.id' => $getSubEnquiryItem->item_id], 'ecomm_units.name as unit_name', $join4);
 
-            $apiStatus          = TRUE;
-            $apiMessage         = '';
-            $apiResponse        = [];
-            $apiExtraField      = '';
-            $apiExtraData       = '';
-            $this->isJSON(file_get_contents('php://input'));
-            $requestData        = $this->extract_json(file_get_contents('php://input'));
-            $requiredFields     = ['state'];
-            $headerData         = $this->request->headers();
-            if (!$this->validateArray($requiredFields, $requestData)) {
-                http_response_code(406);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            }
-            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-                $state              = $requestData['state'];
-                $current_date       = date('Y-m-d');
-                $startOfLastWeek    = date('Y-m-d', strtotime('monday last week'));
-                $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));
-
-                $givenDate          = date('Y-m-d', strtotime('monday last week'));
-                $givenDate2          = date('Y-m-d', strtotime('sunday last week'));
-                $startOfLastLastWeek    = date('Y-m-d', strtotime($givenDate . ' -7 days'));
-                $endOfLastLastWeek    = date('Y-m-d', strtotime($givenDate2 . ' -7 days'));
-                
-                // $this->db = \Config\Database::connect();
-                // echo $this->db->getLastQuery();
-                // die;
-
-                /* top prices */
-                    $top_prices         = [];
-                    if($state == 'All'){
-                        $groupBy[0] = 'ecomm_sub_enquires.item_id';
-                        $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
-                        $getSubEnquiryItems = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek], 'ecomm_sub_enquires.sub_enquiry_no, ecomm_sub_enquires.item_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
+                    $getProductItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $getSubEnquiryItem->item_id], 'item_category, icon');
+                    if ($getProductItem) {
+                        if ($getProductItem->icon != '') {
+                            $icon = getenv('app.uploadsURL') . 'product/' . $getProductItem->icon;
+                        } else {
+                            $icon = getenv('app.NOIMAGE');
+                        }
                     } else {
-                        $groupBy[0] = 'ecomm_sub_enquires.item_id';
-                        $join3['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
-                        $join3['1']  = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'company_id', 'type' => 'INNER'];
-                        $getSubEnquiryItems = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek, 'ecoex_companies.state' => $state], 'ecomm_sub_enquires.sub_enquiry_no, ecomm_sub_enquires.item_id, ecomm_company_items.item_name_ecoex', $join3, $groupBy);
+                        $icon = getenv('app.NOIMAGE');
                     }
 
-                    if(empty($getSubEnquiryItems)){
-                        $groupBy[0] = 'ecomm_sub_enquires.item_id';
-                        $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
-                        $getSubEnquiryItems = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek], 'ecomm_sub_enquires.sub_enquiry_no, ecomm_sub_enquires.item_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
+                    $groupBy[0] = 'enq_id';
+                    $enquiryCount = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['assigned_date>=' => $startOfLastWeek, 'assigned_date<=' => $endOfLastWeek, 'item_id' => $getSubEnquiryItem->item_id], '', '', $groupBy);
+
+                    // last to last week data for comparison
+                    $lastToLastWeekEnquiryCount = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['assigned_date>=' => $startOfLastLastWeek, 'assigned_date<=' => $endOfLastLastWeek, 'item_id' => $getSubEnquiryItem->item_id], '', '', $groupBy);
+
+                    $lastToLastWeeksubEnquiryWinPrices = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['assigned_date>=' => $startOfLastLastWeek, 'assigned_date<=' => $endOfLastLastWeek, 'item_id' => $getSubEnquiryItem->item_id], 'win_quote_price');
+
+                    $tot_item_win_price_before = 0;
+                    if ($lastToLastWeeksubEnquiryWinPrices) {
+                        foreach ($lastToLastWeeksubEnquiryWinPrices as $lastToLastWeeksubEnquiryWinPrice) {
+                            $tot_item_win_price_before += $lastToLastWeeksubEnquiryWinPrice->win_quote_price;
+                        }
                     }
+                    // last to last week data for comparison
 
-                    $total_win_price_array = [];
-                    if($getSubEnquiryItems){
-                        foreach($getSubEnquiryItems as $getSubEnquiryItem){
-                            $subEnquiryWinPrices = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['assigned_date>=' => $startOfLastWeek, 'assigned_date<=' => $endOfLastWeek, 'item_id' => $getSubEnquiryItem->item_id], 'win_quote_price');
-                            $tot_item_win_price = 0;
-                            if($subEnquiryWinPrices){
-                                foreach($subEnquiryWinPrices as $subEnquiryWinPrice){
-                                    $tot_item_win_price += $subEnquiryWinPrice->win_quote_price;
-                                }
-                            }
+                    $current_price = ($tot_item_win_price / $enquiryCount);
+                    $before_price = (($lastToLastWeekEnquiryCount > 0) ? ($tot_item_win_price_before / $lastToLastWeekEnquiryCount) : $tot_item_win_price_before);
+                    $difference_price = ($current_price - $before_price);
 
-                            $join4['0']  = ['table' => 'ecomm_units', 'field' => 'id', 'table_master' => 'ecomm_company_items', 'field_table_master' => 'unit', 'type' => 'INNER'];
-                            $getUnit = $this->common_model->find_data('ecomm_company_items', 'row', ['ecomm_company_items.id' => $getSubEnquiryItem->item_id], 'ecomm_units.name as unit_name', $join4);
+                    $total_win_price_array[] = [
+                        'icon'                          => $icon,
+                        'item_name'                     => $getSubEnquiryItem->item_name_ecoex,
+                        'tot_item_win_price'            => number_format($current_price, 2),
+                        'unit_name'                     => (($getUnit) ? $getUnit->unit_name : ''),
+                        'tot_item_win_price_before'     => number_format($before_price, 2),
+                        'difference_price'              => number_format($difference_price, 2),
+                        'comparison_stat'               => (($difference_price >= 0) ? '+' : '-'),
+                        'comparison_percentage'         => abs(number_format((($before_price > 0) ? (($difference_price / $before_price) * 100) : ($difference_price)), 2)),
+                    ];
+                }
+            }
+            $top_prices         = $total_win_price_array;
+            $data               = $top_prices;
+            // pr($data);
+            $result = [];
 
-                            $getProductItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $getSubEnquiryItem->item_id], 'item_category, icon');
-                            if($getProductItem){
+            foreach ($data as $item) {
+                $name = $item['item_name'];
+
+                if (!isset($result[$name])) {
+                    $result[$name] = [
+                        'icon'                                  => $item['icon'],
+                        'item_name'                             => $name,
+                        'unit_name'                             => $item['unit_name'],
+                        'total_price'                           => $item['tot_item_win_price'],
+                        'count'                                 => 1,
+                        'tot_item_win_price_before'             => $item['tot_item_win_price_before'],
+                        'difference_price'                      => $item['difference_price'],
+                        'comparison_stat'                       => $item['comparison_stat'],
+                        'comparison_percentage'                 => $item['comparison_percentage'],
+                    ];
+                } else {
+                    $result[$name]['total_price'] += $item['tot_item_win_price'];
+                    $result[$name]['count'] += 1;
+                }
+            }
+
+            // Final array with average price
+            $final = [];
+            foreach ($result as $item) {
+                $average_price = round($item['total_price'] / $item['count'], 2);
+                $final[] = [
+                    'icon'                                  => $item['icon'],
+                    'item_name'                             => $item['item_name'],
+                    'tot_item_win_price'                    => $average_price,
+                    'unit_name'                             => $item['unit_name'],
+                    'tot_item_win_price_before'             => $item['tot_item_win_price_before'],
+                    'difference_price'                      => $item['difference_price'],
+                    'comparison_stat'                       => $item['comparison_stat'],
+                    'comparison_percentage'                 => $item['comparison_percentage'],
+                ];
+            }
+            /* top prices */
+            /* top 10 transactions qty */
+            $groupBy[0] = 'ecomm_enquiry_products.product_id';
+            $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'type' => 'INNER'];
+            $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.product_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
+
+            $groupBy[0] = 'ecoex_companies.state';
+            $join['0']  = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'company_id', 'type' => 'INNER'];
+            $getEnquiryStates = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.company_id, ecoex_companies.state', $join, $groupBy);
+
+            $state_wise_item = [];
+            if ($getEnquiryStates) {
+                foreach ($getEnquiryStates as $getEnquiryState) {
+                    $state_name = $getEnquiryState->state;
+
+                    if ($getEnquiryItems) {
+                        foreach ($getEnquiryItems as $getEnquiryItem) {
+                            $product_id         = $getEnquiryItem->product_id;
+                            $item_name_ecoex    = $getEnquiryItem->item_name_ecoex;
+
+                            $getProductItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $product_id], 'item_category,icon');
+                            if ($getProductItem) {
                                 if ($getProductItem->icon != '') {
                                     $icon = getenv('app.uploadsURL') . 'product/' . $getProductItem->icon;
                                 } else {
@@ -290,192 +394,98 @@ class ApiController extends BaseController
                                 $icon = getenv('app.NOIMAGE');
                             }
 
-                            $groupBy[0] = 'enq_id';
-                            $enquiryCount = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['assigned_date>=' => $startOfLastWeek, 'assigned_date<=' => $endOfLastWeek, 'item_id' => $getSubEnquiryItem->item_id], '', '', $groupBy);
+                            $join['0']          = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'company_id', 'type' => 'INNER'];
+                            $getTotalQty        = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek, 'ecomm_enquiry_products.product_id' => $product_id, 'ecoex_companies.state' => $state_name], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.qty, ecomm_enquiry_products.unit', $join);
 
-                            // last to last week data for comparison
-                                $lastToLastWeekEnquiryCount = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['assigned_date>=' => $startOfLastLastWeek, 'assigned_date<=' => $endOfLastLastWeek, 'item_id' => $getSubEnquiryItem->item_id], '', '', $groupBy);
+                            // $this->db = \Config\Database::connect();
+                            // echo $this->db->getLastQuery();
+                            // echo '<br><br>';
 
-                                $lastToLastWeeksubEnquiryWinPrices = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['assigned_date>=' => $startOfLastLastWeek, 'assigned_date<=' => $endOfLastLastWeek, 'item_id' => $getSubEnquiryItem->item_id], 'win_quote_price');
-
-                                $tot_item_win_price_before = 0;
-                                if($lastToLastWeeksubEnquiryWinPrices){
-                                    foreach($lastToLastWeeksubEnquiryWinPrices as $lastToLastWeeksubEnquiryWinPrice){
-                                        $tot_item_win_price_before += $lastToLastWeeksubEnquiryWinPrice->win_quote_price;
+                            if ($getTotalQty) {
+                                $totalQty = 0;
+                                if ($getTotalQty[0]->unit == 1) { //PCS
+                                    foreach ($getTotalQty as $totqty) {
+                                        $totalQty += $totqty->qty;
                                     }
+                                    $item_unit = 'PCS';
+                                } elseif ($getTotalQty[0]->unit == 3) { //KG
+                                    foreach ($getTotalQty as $totqty) {
+                                        $totalQty += ($totqty->qty / 1000);
+                                    }
+                                    $item_unit = 'MT';
+                                } elseif ($getTotalQty[0]->unit == 5) { //MT
+                                    foreach ($getTotalQty as $totqty) {
+                                        $totalQty += $totqty->qty;
+                                    }
+                                    $item_unit = 'MT';
                                 }
-                            // last to last week data for comparison
 
-                            $current_price = ($tot_item_win_price / $enquiryCount);
-                            $before_price = (($lastToLastWeekEnquiryCount > 0)?($tot_item_win_price_before / $lastToLastWeekEnquiryCount):$tot_item_win_price_before);
-                            $difference_price = ($current_price - $before_price);
-
-                            $total_win_price_array[] = [
-                                'icon'                          => $icon,
-                                'item_name'                     => $getSubEnquiryItem->item_name_ecoex,
-                                'tot_item_win_price'            => number_format($current_price,2),
-                                'unit_name'                     => (($getUnit)?$getUnit->unit_name:''),
-                                'tot_item_win_price_before'     => number_format($before_price,2),
-                                'difference_price'              => number_format($difference_price,2),
-                                'comparison_stat'               => (($difference_price >= 0)?'+':'-'),
-                                'comparison_percentage'         => abs(number_format((($before_price > 0)?(($difference_price / $before_price) * 100):($difference_price)),2)),
-                            ];
-                        }
-                    }
-                    $top_prices         = $total_win_price_array;
-                    $data               = $top_prices;
-                    // pr($data);
-                    $result = [];
-
-                    foreach ($data as $item) {
-                        $name = $item['item_name'];
-
-                        if (!isset($result[$name])) {
-                            $result[$name] = [
-                                'icon'                                  => $item['icon'],
-                                'item_name'                             => $name,
-                                'unit_name'                             => $item['unit_name'],
-                                'total_price'                           => $item['tot_item_win_price'],
-                                'count'                                 => 1,
-                                'tot_item_win_price_before'             => $item['tot_item_win_price_before'],
-                                'difference_price'                      => $item['difference_price'],
-                                'comparison_stat'                       => $item['comparison_stat'],
-                                'comparison_percentage'                 => $item['comparison_percentage'],
-                            ];
-                        } else {
-                            $result[$name]['total_price'] += $item['tot_item_win_price'];
-                            $result[$name]['count'] += 1;
-                        }
-                    }
-
-                    // Final array with average price
-                    $final = [];
-                    foreach ($result as $item) {
-                        $average_price = round($item['total_price'] / $item['count'], 2);
-                        $final[] = [
-                            'icon'                                  => $item['icon'],
-                            'item_name'                             => $item['item_name'],
-                            'tot_item_win_price'                    => $average_price,
-                            'unit_name'                             => $item['unit_name'],
-                            'tot_item_win_price_before'             => $item['tot_item_win_price_before'],
-                            'difference_price'                      => $item['difference_price'],
-                            'comparison_stat'                       => $item['comparison_stat'],
-                            'comparison_percentage'                 => $item['comparison_percentage'],
-                        ];
-                    }
-                /* top prices */
-                /* top 10 transactions qty */
-                    $groupBy[0] = 'ecomm_enquiry_products.product_id';
-                    $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'type' => 'INNER'];
-                    $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.product_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
-                    
-                    $groupBy[0] = 'ecoex_companies.state';
-                    $join['0']  = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'company_id', 'type' => 'INNER'];
-                    $getEnquiryStates = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.company_id, ecoex_companies.state', $join, $groupBy);
-                    
-                    $state_wise_item = [];
-                    if($getEnquiryStates){
-                        foreach($getEnquiryStates as $getEnquiryState){
-                            $state_name = $getEnquiryState->state;
-
-                            if($getEnquiryItems){
-                                foreach($getEnquiryItems as $getEnquiryItem){
-                                    $product_id         = $getEnquiryItem->product_id;
-                                    $item_name_ecoex    = $getEnquiryItem->item_name_ecoex;
-
-                                    $getProductItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $product_id], 'item_category,icon');
-                                    if($getProductItem){
-                                        if ($getProductItem->icon != '') {
-                                            $icon = getenv('app.uploadsURL') . 'product/' . $getProductItem->icon;
-                                        } else {
-                                            $icon = getenv('app.NOIMAGE');
-                                        }
-                                    } else {
-                                        $icon = getenv('app.NOIMAGE');
-                                    }
-
-                                    $join['0']          = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'company_id', 'type' => 'INNER'];
-                                    $getTotalQty        = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek, 'ecomm_enquiry_products.product_id' => $product_id, 'ecoex_companies.state' => $state_name], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.qty, ecomm_enquiry_products.unit', $join);
-
-                                    // $this->db = \Config\Database::connect();
-                                    // echo $this->db->getLastQuery();
-                                    // echo '<br><br>';
-                                    
-                                    if($getTotalQty){
-                                        $totalQty = 0;
-                                        if($getTotalQty[0]->unit == 1){ //PCS
-                                            foreach ($getTotalQty as $totqty) {
-                                                $totalQty += $totqty->qty;
-                                            }
-                                            $item_unit = 'PCS';
-                                        } elseif($getTotalQty[0]->unit == 3){ //KG
-                                            foreach ($getTotalQty as $totqty) {
-                                                $totalQty += ($totqty->qty /1000);
-                                            }
-                                            $item_unit = 'MT';
-                                        } elseif($getTotalQty[0]->unit == 5){ //MT
-                                            foreach ($getTotalQty as $totqty) {
-                                                $totalQty += $totqty->qty;
-                                            }
-                                            $item_unit = 'MT';
-                                        }
-
-                                        $state_wise_item[] = [
-                                            'icon'              => $icon,
-                                            'state_name'        => $state_name,
-                                            'item_name'         => $item_name_ecoex,
-                                            'item_avg_qty'      => number_format($totalQty,2),
-                                            'item_unit'         => $item_unit,
-                                        ];
-                                    }
-                                }
+                                $state_wise_item[] = [
+                                    'icon'              => $icon,
+                                    'state_name'        => $state_name,
+                                    'item_name'         => $item_name_ecoex,
+                                    'item_avg_qty'      => number_format($totalQty, 2),
+                                    'item_unit'         => $item_unit,
+                                ];
                             }
                         }
                     }
-
-                    // pr($state_wise_item);
-                    // // Assume your array is in a variable called $items
-                    // usort($state_wise_item, function($a, $b) {
-                    //     return $b['item_avg_qty'] <=> $a['item_avg_qty'];
-                    // });
-                    shuffle($state_wise_item); // Randomly reorders the elements
-
-                    $sl=1;
-                    $top_qty = [];
-                    if($state_wise_item){
-                        foreach($state_wise_item as $item){
-                            $top_qty[] = [
-                                'name'              => 'Transaction ' . $sl,
-                                'icon'              => $item['icon'],
-                                'state_name'        => $item['state_name'],
-                                'item_name'         => $item['item_name'],
-                                'item_avg_qty'      => $item['item_avg_qty'],
-                                'item_unit'         => $item['item_unit'],
-                            ];
-                            $sl++;
-                        }
-                    }
-                /* top 10 transactions qty */
-
-                $apiResponse = [
-                    'top_prices'    => $final,
-                    'top_qty'       => $top_qty,
-                ];
-
-                http_response_code(200);
-                $apiStatus          = TRUE;
-                $apiMessage         = 'Data Available !!!';
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
-            } else {
-                http_response_code(400);
-                $apiStatus          = FALSE;
-                $apiMessage         = $this->getResponseCode(http_response_code());
-                $apiExtraField      = 'response_code';
-                $apiExtraData       = http_response_code();
+                }
             }
-            $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+
+            // pr($state_wise_item);
+            // // Assume your array is in a variable called $items
+            // usort($state_wise_item, function($a, $b) {
+            //     return $b['item_avg_qty'] <=> $a['item_avg_qty'];
+            // });
+            shuffle($state_wise_item); // Randomly reorders the elements
+
+            $sl = 1;
+            $top_qty = [];
+            if ($state_wise_item) {
+                foreach ($state_wise_item as $item) {
+                    $top_qty[] = [
+                        'name'              => 'Transaction ' . $sl,
+                        'icon'              => $item['icon'],
+                        'state_name'        => $item['state_name'],
+                        'item_name'         => $item['item_name'],
+                        'item_avg_qty'      => $item['item_avg_qty'],
+                        'item_unit'         => $item['item_unit'],
+                    ];
+                    $sl++;
+                }
+            }
+            /* top 10 transactions qty */
+
+            $apiResponse = [
+                'top_prices'    => $final,
+                'top_qty'       => $top_qty,
+            ];
+
+            http_response_code(200);
+            $apiStatus          = TRUE;
+            $apiMessage         = 'Data Available !!!';
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        } else {
+            http_response_code(400);
+            $apiStatus          = FALSE;
+            $apiMessage         = $this->getResponseCode(http_response_code());
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
         }
+        // $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+        return $this->response
+            ->setHeader('Access-Control-Allow-Origin', 'https://market.ecoex.market')
+            ->setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+            ->setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+            ->setJSON([
+                'success' => $apiStatus,
+                'message' => $apiMessage,
+                'data' => $apiResponse,
+                $apiExtraField => $apiExtraData
+            ]);
+    }
     /* before login */
     /* authentication */
     // signup
@@ -7646,7 +7656,7 @@ class ApiController extends BaseController
                     'vendor_invoice_date_arr' => json_encode([$date]),
                     'vendor_invoice_number_arr' => json_encode([$number]),
                 ];
-          
+
                 // use a fresh builder for each update
                 $upd = $db
                     ->table('ecomm_sub_enquires')
