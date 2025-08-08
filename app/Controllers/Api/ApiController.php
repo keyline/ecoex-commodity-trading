@@ -6311,9 +6311,9 @@ class ApiController extends BaseController
                     $fields1 = [
                         'pickup_scheduled_date'         => date_format(date_create($pickup_scheduled_date), "Y-m-d H:i:s"),
                         'pickup_schedule_edit_access'   => 0,
-                        'is_pickup_final'               => 1,
-                        'status'                        => 4.4,
-                        'main_status'                   => 4,
+                        // 'is_pickup_final'               => 1,
+                        // 'status'                        => 4.4,
+                        // 'main_status'                   => 4,
                     ];
                     $this->common_model->save_data('ecomm_sub_enquires', $fields1, $sub_enquiry_no, 'sub_enquiry_no');
 
@@ -6327,7 +6327,7 @@ class ApiController extends BaseController
                     ];
                     $this->common_model->save_data('ecomm_enquiry_vendor_pickup_schedule_logs', $fields2, '', 'sub_enquiry_no');
 
-                    $this->common_model->save_data('ecomm_enquires', ['status' => 4], (($getSubEnquiry) ? $getSubEnquiry->enquiry_no : ''), 'enquiry_no');
+                    // $this->common_model->save_data('ecomm_enquires', ['status' => 4], (($getSubEnquiry) ? $getSubEnquiry->enquiry_no : ''), 'enquiry_no');
 
                     $apiStatus          = TRUE;
                     http_response_code(200);
