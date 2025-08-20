@@ -319,7 +319,7 @@ class ApiController extends BaseController
                     }
                     // last to last week data for comparison
 
-                    $current_price = ($tot_item_win_price / $enquiryCount);
+                    $current_price = (($enquiryCount > 0)?($tot_item_win_price / $enquiryCount):0);
                     $before_price = (($lastToLastWeekEnquiryCount > 0) ? ($tot_item_win_price_before / $lastToLastWeekEnquiryCount) : $tot_item_win_price_before);
                     $difference_price = ($current_price - $before_price);
 
