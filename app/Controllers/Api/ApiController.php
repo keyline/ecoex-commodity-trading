@@ -266,15 +266,17 @@ class ApiController extends BaseController
                 // $getSubEnquiryItems = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek], 'ecomm_sub_enquires.sub_enquiry_no, ecomm_sub_enquires.item_id, ecomm_company_items.item_name_ecoex', $join4, $groupBy);
                 if($state != 'All'){
                     $groupBy[0] = 'ecomm_sub_enquires.item_id';
-                    $join4['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
-                    $join4['1']  = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'company_id', 'type' => 'INNER'];
-                    $getSubEnquiryItems = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['ecomm_sub_enquires.assigned_date>=' => '2024-01-01', 'ecomm_sub_enquires.assigned_date<=' => $endOfLastWeek, 'ecoex_companies.state' => $state], 'ecomm_sub_enquires.sub_enquiry_no, ecomm_sub_enquires.item_id, ecomm_company_items.item_name_ecoex', $join4, $groupBy);
+                    $join11['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
+                    $join11['1']  = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'company_id', 'type' => 'INNER'];
+                    $getSubEnquiryItems = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['ecoex_companies.state' => $state], 'ecomm_sub_enquires.sub_enquiry_no, ecomm_sub_enquires.item_id, ecomm_company_items.item_name_ecoex', $join11, $groupBy);
 
-                    $this->db = \Config\Database::connect();
-                    echo $this->db->getLastQuery();
-                    die;
+                    // $this->db = \Config\Database::connect();
+                    // echo $this->db->getLastQuery();
+                    // die;
                 }
             }
+
+            pr($getSubEnquiryItems);
 
             $total_win_price_array = [];
             if ($getSubEnquiryItems) {
