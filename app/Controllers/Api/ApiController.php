@@ -276,7 +276,7 @@ class ApiController extends BaseController
                 }
             }
 
-            pr($getSubEnquiryItems);
+            // pr($getSubEnquiryItems);
 
             $total_win_price_array = [];
             if ($getSubEnquiryItems) {
