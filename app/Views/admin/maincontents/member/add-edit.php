@@ -3,6 +3,16 @@ $title              = $moduleDetail['title'];
 $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
 ?>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+
+<style type="text/css">
+    .choices__list--multiple .choices__item {
+        background-color: #48974e;
+        border: 1px solid #48974e;
+    }
+</style>
+
 <div class="container-fluid">
     <div class="pagetitle">
         <h1><?= $page_header ?></h1>
@@ -187,7 +197,7 @@ $controller_route   = $moduleDetail['controller_route'];
                             <div class="row mb-3" id="recycler_category_div" style="<?= $member_type == 1 ? '' : 'display: none;' ?>">
                                 <label for="recycler_category" class="col-md-2 col-lg-2 col-form-label">Recycler Category<span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
-                                    <select class="form-control" name="recycler_category">
+                                    <select class="form-control" name="recycler_category" id="choices-multiple-remove-button" multiple>
                                         <option value="" selected disabled>Select</option>
                                         <?php if ($recycler_category) {
                                             foreach ($recycler_category as $row) { ?>
@@ -295,5 +305,15 @@ $controller_route   = $moduleDetail['controller_route'];
                 $('#recycler_category_div').hide().removeAttr('required'); // Hide the dropdown
             }
         });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function(){    
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+            maxItemCount:30,
+            searchResultLimit:30,
+            renderChoiceLimit:30
+        });     
     });
 </script>
