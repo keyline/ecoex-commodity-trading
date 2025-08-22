@@ -208,6 +208,7 @@ class VendorController extends BaseController
                 $contact_person_document = $data['row']->contact_person_document;
             }
             /* PAN CARD */
+            pr($postdata,0);
             if (array_key_exists("recycler_category",$postdata)){
                 $recycler_category_id = json_encode($this->request->getPost('recycler_category'));
             } else {
@@ -264,6 +265,7 @@ class VendorController extends BaseController
                     'updated_by'                                => $this->session->user_id,
                 );
             }
+            pr($postData);
             $record = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
             $this->session->setFlashdata('success_message', $this->data['title'] . ' updated successfully');
             return redirect()->to('/admin/' . $this->data['controller_route'] . '/list');
