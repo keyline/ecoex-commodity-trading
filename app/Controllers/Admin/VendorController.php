@@ -127,7 +127,7 @@ class VendorController extends BaseController
                 'password'                                  => md5($this->request->getPost('password')),
                 'profile_image'                             => $profile_image,
                 'member_type'                               => $this->request->getPost('member_type'),
-                'recycler_category_id'                      => $recycler_category_id,
+                'recycler_category'                         => $recycler_category_id,
                 'contact_person_name'                       => $this->request->getPost('contact_person_name'),
                 'contact_person_designation'                => $this->request->getPost('contact_person_designation'),
                 'contact_person_document'                   => $contact_person_document,
@@ -208,7 +208,6 @@ class VendorController extends BaseController
                 $contact_person_document = $data['row']->contact_person_document;
             }
             /* PAN CARD */
-            pr($postdata,0);
             if (array_key_exists("recycler_category",$postdata)){
                 $recycler_category_id = json_encode($this->request->getPost('recycler_category'));
             } else {
@@ -232,7 +231,7 @@ class VendorController extends BaseController
                     'password'                                  => md5($this->request->getPost('password')),
                     'profile_image'                             => $profile_image,
                     'member_type'                               => $this->request->getPost('member_type'),
-                    'recycler_category_id'                      => $recycler_category_id,
+                    'recycler_category'                         => $recycler_category_id,
                     'contact_person_name'                       => $this->request->getPost('contact_person_name'),
                     'contact_person_designation'                => $this->request->getPost('contact_person_designation'),
                     'contact_person_document'                   => $contact_person_document,
@@ -256,7 +255,7 @@ class VendorController extends BaseController
                     'phone'                                     => $this->request->getPost('phone'),
                     'profile_image'                             => $profile_image,
                     'member_type'                               => $this->request->getPost('member_type'),
-                    'recycler_category_id'                      => $recycler_category_id,
+                    'recycler_category'                         => $recycler_category_id,
                     'contact_person_name'                       => $this->request->getPost('contact_person_name'),
                     'contact_person_designation'                => $this->request->getPost('contact_person_designation'),
                     'contact_person_document'                   => $contact_person_document,
@@ -265,7 +264,6 @@ class VendorController extends BaseController
                     'updated_by'                                => $this->session->user_id,
                 );
             }
-            pr($postData);
             $record = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
             $this->session->setFlashdata('success_message', $this->data['title'] . ' updated successfully');
             return redirect()->to('/admin/' . $this->data['controller_route'] . '/list');
