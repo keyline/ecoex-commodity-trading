@@ -108,7 +108,7 @@ class VendorController extends BaseController
             if (array_key_exists("recycler_category",$postdata)){
                 $recycler_category_id = json_encode($this->request->getPost('recycler_category'));
             } else {
-                $recycler_category_id = [];
+                $recycler_category_id = json_encode(array());
             }
             $postData   = array(
                 'type'                                      => 'VENDOR',
@@ -211,7 +211,7 @@ class VendorController extends BaseController
             if (array_key_exists("recycler_category",$postdata)){
                 $recycler_category_id = json_encode($this->request->getPost('recycler_category'));
             } else {
-                $recycler_category_id = [];
+                $recycler_category_id = json_encode(array());
             }
 
             if ($this->request->getPost('password') != '') {
