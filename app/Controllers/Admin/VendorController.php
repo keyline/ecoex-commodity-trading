@@ -104,6 +104,12 @@ class VendorController extends BaseController
                 $contact_person_document = '';
             }
             /* PAN CARD */
+            $postdata = $this->request->getPost();
+            if (array_key_exists("recycler_category",$postdata)){
+                $recycler_category_id = json_encode($this->request->getPost('recycler_category'));
+            } else {
+                $recycler_category_id = [];
+            }
             $postData   = array(
                 'type'                                      => 'VENDOR',
                 'gst_no'                                    => $this->request->getPost('gst_no'),
@@ -121,6 +127,7 @@ class VendorController extends BaseController
                 'password'                                  => md5($this->request->getPost('password')),
                 'profile_image'                             => $profile_image,
                 'member_type'                               => $this->request->getPost('member_type'),
+                'recycler_category_id'                      => $recycler_category_id,
                 'contact_person_name'                       => $this->request->getPost('contact_person_name'),
                 'contact_person_designation'                => $this->request->getPost('contact_person_designation'),
                 'contact_person_document'                   => $contact_person_document,
@@ -155,6 +162,7 @@ class VendorController extends BaseController
 
 
         if ($this->request->getMethod() == 'post') {
+            $postdata = $this->request->getPost();
             /* profile image */
             $file = $this->request->getFile('profile_image');
             $originalName = $file->getClientName();
@@ -200,6 +208,12 @@ class VendorController extends BaseController
                 $contact_person_document = $data['row']->contact_person_document;
             }
             /* PAN CARD */
+            if (array_key_exists("recycler_category",$postdata)){
+                $recycler_category_id = json_encode($this->request->getPost('recycler_category'));
+            } else {
+                $recycler_category_id = [];
+            }
+
             if ($this->request->getPost('password') != '') {
                 $postData   = array(
                     'gst_no'                                    => $this->request->getPost('gst_no'),
@@ -217,7 +231,7 @@ class VendorController extends BaseController
                     'password'                                  => md5($this->request->getPost('password')),
                     'profile_image'                             => $profile_image,
                     'member_type'                               => $this->request->getPost('member_type'),
-                    'recycler_category_id'                      => $this->request->getPost('recycler_category'),
+                    'recycler_category_id'                      => $recycler_category_id,
                     'contact_person_name'                       => $this->request->getPost('contact_person_name'),
                     'contact_person_designation'                => $this->request->getPost('contact_person_designation'),
                     'contact_person_document'                   => $contact_person_document,
@@ -241,7 +255,7 @@ class VendorController extends BaseController
                     'phone'                                     => $this->request->getPost('phone'),
                     'profile_image'                             => $profile_image,
                     'member_type'                               => $this->request->getPost('member_type'),
-                    'recycler_category_id'                      => $this->request->getPost('recycler_category'),
+                    'recycler_category_id'                      => $recycler_category_id,
                     'contact_person_name'                       => $this->request->getPost('contact_person_name'),
                     'contact_person_designation'                => $this->request->getPost('contact_person_designation'),
                     'contact_person_document'                   => $contact_person_document,

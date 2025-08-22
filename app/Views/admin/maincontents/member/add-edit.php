@@ -60,7 +60,7 @@ $controller_route   = $moduleDetail['controller_route'];
                 $password         = $row->password;
                 $profile_image    = $row->profile_image;
                 $member_type      = $row->member_type;
-                $selected_recyclercategory = $row->recycler_category_id;
+                $selected_recyclercategory = json_decode($row->recycler_category_id);
                 $contact_person_name                  = $row->contact_person_name;
                 $contact_person_designation           = $row->contact_person_designation;
                 $contact_person_document              = $row->contact_person_document;
@@ -80,7 +80,7 @@ $controller_route   = $moduleDetail['controller_route'];
                 $password         = '';
                 $profile_image    = '';
                 $member_type      = '';
-                $selected_recyclercategory = '';
+                $selected_recyclercategory = [];
                 $contact_person_name              = '';
                 $contact_person_designation       = '';
                 $contact_person_document          = '';
@@ -198,10 +198,10 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <label for="recycler_category" class="col-md-2 col-lg-2 col-form-label">Recycler Category<span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
                                     <select class="form-control" name="recycler_category" id="choices-multiple-remove-button" multiple>
-                                        <option value="" selected disabled>Select</option>
+                                        <!-- <option value="" selected disabled>Select</option> -->
                                         <?php if ($recycler_category) {
                                             foreach ($recycler_category as $row) { ?>
-                                                <option value="<?= $row->id ?>" <?= (($row->id == $selected_recyclercategory) ? 'selected' : '') ?>><?= $row->category_name ?></option>
+                                                <option value="<?= $row->id ?>" <?=((in_array($row->id, $selected_recyclercategory))?'selected':'')?>><?= $row->category_name ?></option>
                                         <?php }
                                         } ?>
                                     </select>
