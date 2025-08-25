@@ -331,7 +331,7 @@ class ApiController extends BaseController
                         'tot_item_win_price_before'     => number_format($before_price, 2),
                         'difference_price'              => number_format($difference_price, 2),
                         'comparison_stat'               => (($difference_price >= 0) ? '+' : '-'),
-                        'comparison_percentage'         => abs((($before_price > 0) ? (($difference_price / $before_price) * 100) : ($difference_price))),
+                        'comparison_percentage'         => abs((($before_price > 0) ? number_format((($difference_price / $before_price) * 100),2) : number_format(($difference_price),2))),
                     ];
                 }
             }
