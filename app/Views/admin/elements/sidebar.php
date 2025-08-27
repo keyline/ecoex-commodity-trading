@@ -353,22 +353,21 @@ if ($userType == 'MA') {
             </a>
         </li>
     <?php } ?>
-    <?php if (($common_model->checkModuleAccess(19)) || ($common_model->checkModuleAccess(20))) { ?>
+    <?php if (($common_model->checkModuleAccess(26)) || ($common_model->checkModuleAccess(27))) { ?>
         <li class="nav-item">
             <a class="nav-link <?= (($pageSegment == 'reports' || $pageSegment == 'company-report') ? '' : 'collapsed') ?> <?= (($pageSegment == 'reports' || $pageSegment == 'company-report') ? 'active' : '') ?>" data-bs-target="#report-nav" data-bs-toggle="collapse" href="#">
                 <i class="fa fa-file"></i><span>Reports</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="report-nav" class="nav-content collapse <?= (($pageSegment == 'reports' || $pageSegment == 'company-report') ? 'show' : '') ?>" data-bs-parent="#sidebar-nav">
-                <?php if ($common_model->checkModuleAccess(19)) { ?>
-
+                <?php if ($common_model->checkModuleAccess(26)) { ?>
                     <li>
                         <a class="<?= (($pageSegment == 'reports') ? 'active' : '') ?>" href="<?= base_url('admin/reports/analytics-report') ?>">
                             <i class="fa fa-arrow-right"></i><span>Analytics Report</span>
                         </a>
                     </li>
-
-                    <!-- new plant report -->
-
+                <!-- new plant report -->
+                <?php } ?>
+                <?php if ($common_model->checkModuleAccess(27)) { ?>
                     <li>
                         <a class="<?= (($pageSegment == 'company-report') ? 'active' : '') ?>" href="<?= base_url('admin/company-report') ?>">
                             <i class="fa fa-arrow-right"></i><span>Company Report</span>

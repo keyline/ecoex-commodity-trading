@@ -43,13 +43,10 @@
                   <select name="search_company_id" class="form-control" id="search_company_id" required>
                     <option value="" selected>Select Company</option>
                     <hr>
-                    <?php if (!is_null($companies)) {
-
-                      foreach ($companies as $row) { ?>
-                        <option value="<?= $row['id'] ?>" <?= (($search_company_id == $row['id']) ? 'selected' : '') ?>><?= $row['company_name'] ?></option>
-                        <hr>
-                    <?php }
-                    } ?>
+                    <?php if (!is_null($companies)) { foreach ($companies as $row) { ?>
+                      <option value="<?= $row['id'] ?>" <?= (($search_company_id == $row['id']) ? 'selected' : '') ?>><?= $row['company_name'] ?></option>
+                      <hr>
+                    <?php } } ?>
                   </select>
                 </div>
 

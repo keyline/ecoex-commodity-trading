@@ -86,6 +86,9 @@ class CommonModel extends Model
             case 'row-array':
                 if($query->getNumRows() > 0){$result = $query->getRowArray();}
                 break;
+            case 'result-array':
+                if($query->getNumRows() > 0){$result = $query->getResultArray();}
+                break;
             case 'count':
                 $result = $query->getNumRows();
                 break;

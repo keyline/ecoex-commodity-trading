@@ -256,11 +256,16 @@ class ReportController extends BaseController
     // @Shubha75
     public function companyReport()
     {
-        // $data['moduleDetail']            = $this->data;
-        $title                              = 'Manage Plant Reports';
+        $user_type                          = session('user_type');
+        $company_id                         = session('company_id');
+        $title                              = 'Manage Company Reports';
         $page_name                          = 'reports/plants-report';
 
-        $data['companies']                  = $this->plantService->getCompanies();
+        if($user_type == 'COMPANY'){
+            $data['companies']  = $this->common_model->find_data('ecoex_companies', 'result-array', ['status' => 1, 'id' => $company_id], 'id,company_name');
+        } else {
+            $data['companies']                  = $this->plantService->getCompanies();
+        }
 
         $data['is_search']                  = 0;
         $data['search_day_id']              = '';
