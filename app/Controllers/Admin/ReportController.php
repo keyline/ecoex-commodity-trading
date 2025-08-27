@@ -257,12 +257,13 @@ class ReportController extends BaseController
     public function companyReport()
     {
         $user_type                          = session('user_type');
-        $company_id                         = session('company_id');
+        echo $company_id                         = session('company_id');
         $title                              = 'Manage Company Reports';
         $page_name                          = 'reports/plants-report';
 
         if($user_type == 'COMPANY'){
             $data['companies']  = $this->common_model->find_data('ecoex_companies', 'result-array', ['status' => 1, 'id' => $company_id], 'id,company_name');
+            pr($data['companies']);
         } else {
             $data['companies']                  = $this->plantService->getCompanies();
         }
