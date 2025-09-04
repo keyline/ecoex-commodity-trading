@@ -478,3 +478,51 @@ if (!function_exists('send_mail')) {
     return service('mailer')->send($to, $subj, $body, $alt, $atts);
   }
 }
+
+if (!function_exists('getQtyWithUnitGroupedItems')) {
+    function getQtyWithUnitGroupedItems($enquiry_id, $common_model = null) {
+        // Define the join conditions
+    $joins = [
+        [
+            'table' => 'ecomm_company_items',
+            'table_master' => 'ecomm_sub_enquires', 
+            'field' => 'id',
+            'field_table_master' => 'item_id',
+            'type' => 'left'
+        ]
+    ];
+    
+    // Select with SUM and proper aliasing
+    $select = 'ecomm_sub_enquires.item_id, 
+               ecomm_company_items.alias_name,
+               SUM(ecomm_sub_enquires.weighted_qty) as total_quantity,
+               ecomm_sub_enquires.weighted_unit';
+    
+    // Group by item and unit
+    $group_by = [
+        'ecomm_sub_enquires.enq_id',
+
+        'ecomm_sub_enquires.item_id',
+       
+    ];
+    
+    // Order by product name
+    $order_by = [
+        ['field' => 'ecomm_company_items.alias_name', 'type' => 'ASC']
+    ];
+    
+    $conditions = ['ecomm_sub_enquires.enq_id' => $enquiry_id];
+    
+    $groupedItems = $common_model->find_data(
+        'ecomm_sub_enquires',
+        'array',
+        $conditions,
+        $select,
+        $joins,
+        $group_by,
+        $order_by
+    );
+    
+    return $groupedItems;
+    }
+}

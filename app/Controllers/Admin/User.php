@@ -351,6 +351,30 @@ class User extends BaseController
                 return redirect()->to('/admin/dashboard');
             }
 
+            if($postData['filter_keyword'] == 'custom_date')
+            {
+                // Get posted from and to dates
+                $fDate = isset($postData['from_date']) ? $postData['from_date'] : '';
+                $tDate = isset($postData['to_date']) ? $postData['to_date'] : '';
+                // Optional: Add validation
+                if (empty($fDate) || empty($tDate)) {
+                    // Handle missing dates - you might want to set default or show error
+                    $fDate = date('Y-m-d');
+                    $tDate = date('Y-m-d');
+                }
+                
+                // Optional: Validate date format and ensure from_date <= to_date
+                if (strtotime($fDate) > strtotime($tDate)) {
+                    // Swap dates if from_date is later than to_date
+                    $temp = $fDate;
+                    $fDate = $tDate;
+                    $tDate = $temp;
+                }
+    
+                //$filter_keyword_text = 'Custom Date Range (' . date('M j, Y', strtotime($fDate)) . ' - ' . date('M j, Y', strtotime($tDate)) . ')';
+                $filter_keyword_text = "Custom Date";
+            }
+
             $userType                           = $this->session->user_type;
             $company_id                         = $this->session->company_id;
 
