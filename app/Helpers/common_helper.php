@@ -525,4 +525,12 @@ if (!function_exists('getQtyWithUnitGroupedItems')) {
     
     return $groupedItems;
     }
+
+    if(!function_exists('validateDate')){
+      // Validate date format (YYYY-MM-DD) if provided, else fallback
+       function validateDate($date) {
+          $d = DateTime::createFromFormat('Y-m-d', $date);
+          return $d && $d->format('Y-m-d') === $date;
+      }
+    }
 }

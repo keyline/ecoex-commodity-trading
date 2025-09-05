@@ -504,7 +504,7 @@ $userType           = $session->user_type;
             <div class="col-lg-12 col-md-12">
                 <div class="card recent-sales overflow-auto">
                     <div class="card-body">
-                        <h5 class="card-title">Recent Enquires <span>| <?= $filter_keyword_text ?></span></h5>
+                        <h5 class="card-title">Recent Enquires <span>| <?= $filter_keyword_text ?></span> <span> <?= $filter_keyword_addl_txt ?? ''?> </span></h5>
                         <!-- old code -->
                         <!-- <table class="table table-borderless datatable globel_table"> -->
                         <!-- 'datatable' class removed by @Shubha75 on 4/4/25  -->
