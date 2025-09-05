@@ -307,6 +307,15 @@ class User extends BaseController
             $postData = $this->request->getGet();
             $fDate = '';
             $tDate = '';
+
+            // Define allowed filter keywords
+            $allowed_filters = ['last_30_days','last_7_days','this_month','yesterday','today','last_year', 'last_month', 'this_year', 'custom_date'];
+
+            // Validate filter_keyword
+            if (!in_array($postData['filter_keyword'], $allowed_filters)) {
+                // Fallback to a default filter if invalid
+                $filter_keyword = 'last_year';
+            }
             if ($postData['filter_keyword'] == 'today') {
                 $fDate = date('Y-m-d');
                 $tDate = date('Y-m-d');
@@ -315,7 +324,7 @@ class User extends BaseController
             if ($postData['filter_keyword'] == 'yesterday') {
                 $fDate = date('Y-m-d', strtotime("-1 days"));
                 $tDate = date('Y-m-d', strtotime("-1 days"));
-                $filter_keyword_text = 'Yesterday';
+                $filter_keyword_text = 'Yesterday'; 
             }
             if ($postData['filter_keyword'] == 'this_month') {
                 $fDate = date('Y-m') . "-01";
@@ -370,10 +379,22 @@ class User extends BaseController
                     $fDate = $tDate;
                     $tDate = $temp;
                 }
+
+                if(!validateDate($fDate))
+                {
+                    // fallback: start of this year
+                    $fDate = date('Y-01-01');
+                }
+
+                if (!validateDate($tDate)) {
+                    // fallback: today
+                    $tDate = date('Y-m-d');
+                }
     
                 //$filter_keyword_text = 'Custom Date Range (' . date('M j, Y', strtotime($fDate)) . ' - ' . date('M j, Y', strtotime($tDate)) . ')';
                 $filter_keyword_text = "Custom Date";
             }
+            $filter_keyword_addl_txt = ' (' . date('M j, Y', strtotime($fDate)) . ' - ' . date('M j, Y', strtotime($tDate)) . ")" ;
 
             $userType                           = $this->session->user_type;
             $company_id                         = $this->session->company_id;
@@ -383,6 +404,7 @@ class User extends BaseController
 
             $data['filter_keyword']             = $postData['filter_keyword'];
             $data['filter_keyword_text']        = $filter_keyword_text;
+            $data['filter_keyword_addl_txt']    = $filter_keyword_addl_txt;
             $data['company']                    = $this->common_model->find_data('ecoex_companies', 'count', ['status!=' => 3, 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
             $data['vendor']                     = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'VENDOR', 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
             $data['itemCategory']               = $this->common_model->find_data('ecomm_product_categories', 'count', ['status' => 1, 'created_at>=' => $fDate, 'created_at<=' => $tDate]);
