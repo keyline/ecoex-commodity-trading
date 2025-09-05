@@ -264,7 +264,8 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 });
 /* ADMIN PANEL */
 /* API */
-$routes->group("api", ["namespace" => "App\Controllers\Api"], function ($routes) {
+//'filter' => 'cors'
+$routes->group("api", ["namespace" => "App\Controllers\Api",], function ($routes) {
 	// before login
 	$routes->match(['post'], "get-app-setting", "ApiController::getAppSetting");
 	$routes->match(['post'], "get-static-pages", "ApiController::getStaticPages");
@@ -368,3 +369,7 @@ $routes->group("api", ["namespace" => "App\Controllers\Api"], function ($routes)
 	$routes->match(['get'], "update-vendor-invoice-date", "ApiController::updateVendorInvoicedate");
 });
 /* API */
+//For Cors
+$routes->group('', ['filter' => 'cors'], static function (RouteCollection $routes): void {
+    $routes->options('api/(:any)', static function () {});
+});
