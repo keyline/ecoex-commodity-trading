@@ -14,7 +14,7 @@ class Cors extends BaseConfig
     // ...
 
     public array $api = [
-        'allowedOrigins'         => ['https://ecoex-commodity-trading.test'],
+        'allowedOrigins'         => ['https://market.ecoex.market/'],
         'allowedOriginsPatterns' => [],
         'supportsCredentials'    => true,
         'allowedHeaders'         => ['Authorization', 'Content-Type', 'Key'],
