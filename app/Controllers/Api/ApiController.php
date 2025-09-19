@@ -704,7 +704,9 @@ class ApiController extends BaseController
         $apiExtraData       = '';
         $this->isJSON(file_get_contents('php://input'));
         $requestData        = $this->extract_json(file_get_contents('php://input'));
-        $requiredFields     = ['gst_no', 'company_name', 'full_address', 'district', 'state', 'pincode', 'location', 'email', 'phone', 'password', 'confirm_password', 'member_type'];
+        // $requiredFields     = ['gst_no', 'company_name', 'full_address', 'district', 'state', 'pincode', 'location', 'email', 'phone', 'password', 'confirm_password', 'member_type'];
+        
+        $requiredFields     = ['cp_name', 'state', 'phone', 'password', 'confirm_password', 'member_type'];
         $headerData         = $this->request->headers();
         if (!$this->validateArray($requiredFields, $requestData)) {
             http_response_code(406);
@@ -741,7 +743,7 @@ class ApiController extends BaseController
                             'mobile_otp'                => $mobile_otp,
                             'member_type'               => $requestData['member_type']
                         ];
-                        // pr($postData);
+                        pr($postData);
                         $getUser = $this->common_model->find_data('ecomm_users', 'row', ['email' => $requestData['email']]);
                         if (!$getUser) {
                             $id = $this->common_model->save_data('ecomm_users', $postData, '', 'id');
