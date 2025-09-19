@@ -188,6 +188,13 @@ class SubscribersController extends BaseController {
 
     public function confirm_delete($id)
     {
+        if(!$this->common_model->checkModuleFunctionAccess(28,146)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $id                         = decoded($id);
         $postData = array(
                             'status' => 3
@@ -199,6 +206,21 @@ class SubscribersController extends BaseController {
 
     public function change_status($id)
     {
+        if(!$this->common_model->checkModuleFunctionAccess(28,148)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
+
+        if(!$this->common_model->checkModuleFunctionAccess(28,147)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
         $id                         = decoded($id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', [$this->data['primary_key']=>$id]);
         if($data['row']->status){
