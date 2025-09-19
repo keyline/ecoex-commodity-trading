@@ -98,11 +98,11 @@ $controller_route   = $moduleDetail['controller_route'];
                                                     <?php } ?>
                                                     <?php if ($row->status) { ?>
                                                         <?php if ($common_model->checkModuleFunctionAccess(16, 83)) { ?>
-                                                            <a href="<?= base_url('admin/' . $controller_route . '/change-status/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-danger btn-sm" title="Activate <?= $title ?>" onclick="return confirm('Do You Want To Deactivate This <?= $title ?>');"><i class="fa fa-times"></i></a>
+                                                            <a href="<?= base_url('admin/' . $controller_route . '/change-status/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-success btn-sm" title="Activate <?= $title ?>" onclick="return confirm('Do You Want To Deactivate This <?= $title ?>');"><i class="fa fa-check"></i></a>
                                                         <?php } ?>
                                                     <?php } else { ?>
                                                         <?php if ($common_model->checkModuleFunctionAccess(16, 82)) { ?>
-                                                            <a href="<?= base_url('admin/' . $controller_route . '/change-status/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-danger btn-sm mt-2" title="Deactivate <?= $title ?>" onclick="return confirm('Do You Want To Activate This <?= $title ?>');"><i class="fa fa-check"></i></a>
+                                                            <a href="<?= base_url('admin/' . $controller_route . '/change-status/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-danger btn-sm mt-2" title="Deactivate <?= $title ?>" onclick="return confirm('Do You Want To Activate This <?= $title ?>');"><i class="fa fa-times"></i></a>
                                                         <?php } ?>
                                                     <?php } ?>
                                                 </td>
