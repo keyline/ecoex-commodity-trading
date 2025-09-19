@@ -489,9 +489,9 @@ class ApiController extends BaseController
         }
         // $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
         return $this->response
-            ->setHeader('Access-Control-Allow-Origin', 'https://market.ecoex.market')
-            ->setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
-            ->setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+            //->setHeader('Access-Control-Allow-Origin', 'https://market.ecoex.market')
+            //->setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+            //->setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
             ->setJSON([
                 'success' => $apiStatus,
                 'message' => $apiMessage,

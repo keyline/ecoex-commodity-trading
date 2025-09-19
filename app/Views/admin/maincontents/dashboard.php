@@ -1,3 +1,26 @@
+<style>
+        /* Minimal styles - only for date inputs */
+        .custom-dates {
+            display: none;
+            margin-top: 10px;
+            gap: 10px;
+        }
+        .custom-dates.show {
+            display: flex;
+        }
+        .custom-dates input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .custom-dates label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+            display: block;
+        }
+</style>
 <?php
 $userType           = $session->user_type;
 ?>
@@ -23,8 +46,9 @@ $userType           = $session->user_type;
                             <div class="col-lg-6">
                                 <label for="filter_keyword">Filter Parameteres</label>
                             </div>
+                            <!-- onchange="PostName.submit()" -->
                             <div class="col-lg-6">
-                                <select class="form-control" id="filter_keyword" name="filter_keyword" onchange="PostName.submit()">
+                                <select class="form-control" id="filter_keyword" name="filter_keyword" onchange="handleFilterChange(this)">
                                     <option value="" <?= (($filter_keyword == '') ? 'selected' : '') ?>>All Time</option>
                                     <option value="today" <?= (($filter_keyword == 'today') ? 'selected' : '') ?>>Today</option>
                                     <option value="yesterday" <?= (($filter_keyword == 'yesterday') ? 'selected' : '') ?>>Yesterday</option>
@@ -34,7 +58,20 @@ $userType           = $session->user_type;
                                     <option value="last_30_days" <?= (($filter_keyword == 'last_30_days') ? 'selected' : '') ?>>Last 30 Days</option>
                                     <option value="this_year" <?= (($filter_keyword == 'this_year') ? 'selected' : '') ?>>This Year</option>
                                     <option value="last_year" <?= (($filter_keyword == 'last_year') ? 'selected' : '') ?>>Last Year</option>
+                                    <option value="custom_date" <?= (($filter_keyword == 'custom_date') ? 'selected' : '') ?>>Custom Date</option>
                                 </select>
+                                <!-- Custom date inputs (hidden by default) -->
+                                <div id="customDates" class="custom-dates">
+                                    <div>
+                                        <label>From Date</label>
+                                        <input type="date" name="from_date" id="fromDate">
+                                    </div>
+                                    <div>
+                                        <label>To Date</label>
+                                        <input type="date" name="to_date" id="toDate">
+                                    </div>
+                                    <input type="submit" class="btn btn-success w-100" name="date_submit" value="Filter Date" onsubmit="submitCustomDateFilter(this)">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -467,12 +504,40 @@ $userType           = $session->user_type;
             <div class="col-lg-12 col-md-12">
                 <div class="card recent-sales overflow-auto">
                     <div class="card-body">
-                        <h5 class="card-title">Recent Enquires <span>| <?= $filter_keyword_text ?></span></h5>
+                        <h5 class="card-title">Recent Enquires <span>| <?= $filter_keyword_text ?></span> <span> <?= $filter_keyword_addl_txt ?? ''?> </span></h5>
                         <!-- old code -->
                         <!-- <table class="table table-borderless datatable globel_table"> -->
                         <!-- 'datatable' class removed by @Shubha75 on 4/4/25  -->
+                         <!-- adding company name as per requirement by shuvadeep@keylines.net on 04/09/2025 -->
+                        <?php
+                        //getting company name outside loop
+                        if( ! in_array($userType, ['MA', 'U']) ){
+                            if(!empty($recent_enquiries)){
+                                $getCompany                 = $common_model->find_data('ecoex_companies', 'row', ['id' => $recent_enquiries[0]->company_id], 'company_name'); 
+
+                            }
+                        
+                        
+                        ?>
+                        <div style="text-align: center; margin-bottom: 1rem; font-weight: bold; font-size: 1.2rem;">
+                            <?= (isset($getCompany) ? $getCompany->company_name : '') ?>
+                        </div>
+                        <?php }?>
                         <table class="table table-borderless  globel_table">
                             <thead>
+                            <?php if( ! in_array($userType, ['MA', 'U']) ) {?>    
+                                <tr>
+                                    <!-- <th>#</th> -->
+                                     <th>Date</th>
+                                    <!-- <th>Company</th> -->
+                                    <th>Plant</th>
+                                    <th>Items</th>
+                                    <th>Quantity</th>
+                                    <th>Completion Date</th>
+                                    <th>Status</th>
+                                </tr>
+                                <?php }?>
+                                <?php if(in_array($userType, ['MA']) ) {?>    
                                 <tr>
                                     <th>#</th>
                                     <th>Company</th>
@@ -480,6 +545,7 @@ $userType           = $session->user_type;
                                     <th>Items</th>
                                     <th>Status</th>
                                 </tr>
+                                <?php }?>
                             </thead>
                             <tbody>
                                 <?php
@@ -489,8 +555,13 @@ $userType           = $session->user_type;
                                         $getPlant                   = $common_model->find_data('ecomm_users', 'row', ['id' => $recent_enquiry->plant_id], 'plant_name');
                                 ?>
                                         <tr>
+                                            <?php if(in_array($userType, ['MA']) ) {?>
                                             <th><a href="<?= base_url('admin/enquiry-requests/enquiry-details/' . encoded($recent_enquiry->id)) ?>">#<?= $recent_enquiry->enquiry_no ?></a></th>
                                             <td><?= (($getCompany) ? $getCompany->company_name : '') ?></td>
+                                            <?php }?>
+                                            <?php if( ! in_array($userType, ['MA', 'U']) ) {?>  
+                                            <td><?= date_format(date_create($recent_enquiry->created_at), "d-m-Y h:i A") ?></td>
+                                            <?php } ?>
                                             <td><?= (($getPlant) ? $getPlant->plant_name : '') ?></td>
                                             <td>
                                                 <ul>
@@ -498,15 +569,33 @@ $userType           = $session->user_type;
                                                     $getEnquiryItems            = $common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $recent_enquiry->id]);
                                                     if ($getEnquiryItems) {
                                                         $sl = 1;
+                                                        $enqItems=[];
                                                         foreach ($getEnquiryItems as $getEnquiryItem) {
-                                                            $getItem                = $common_model->find_data('ecomm_company_items', 'row', ['id' => $getEnquiryItem->product_id], 'alias_name');
+                                                            $getItem                = $common_model->find_data('ecomm_company_items', 'row', ['id' => $getEnquiryItem->product_id], 'alias_name, id');
+                                                            $enqItems = $getItem->id;
+
                                                     ?>
                                                             <li><?= (($getItem) ? $getItem->alias_name : $getEnquiryItem->new_product_name) ?></li>
                                                     <?php }
                                                     } ?>
                                                 </ul>
                                             </td>
+                                            <?php if( ! in_array($userType, ['MA', 'U']) ) {?>  
                                             <td>
+                                                <?php $grpItems = getQtyWithUnitGroupedItems($recent_enquiry->id, $common_model); ?>
+                                                <ul>
+                                                    <?php foreach($grpItems AS $itm){?>
+                                                    <li><?= $itm->total_quantity . " (" . $itm->weighted_unit .")"?></li>
+                                                    <?php }?>
+                                                </ul>    
+                                            </td>
+
+                                            <td><?php echo (!empty($recent_enquiry->order_complete_date) && $recent_enquiry->order_complete_date != '0000-00-00') 
+     ? date_format(date_create($recent_enquiry->order_complete_date), "d-m-Y h:i A") 
+     : '';?></td>
+     <?php } ?>
+                                            <td>
+                                                
                                                 <?php
                                                 if ($recent_enquiry->status == 0) {
                                                     $enquiryStatus  = 'Request Submitted';
@@ -581,3 +670,67 @@ $userType           = $session->user_type;
 
     <!-- End Recent Sales -->
 </section>
+
+<script>
+        function handleFilterChange(select) {
+            const customDates = document.getElementById('customDates');
+            
+            if (select.value === 'custom_date') {
+                // Show date inputs
+                customDates.classList.add('show');
+                
+                // Set default dates if empty
+                const today = new Date().toISOString().split('T')[0];
+                if (!document.getElementById('fromDate').value) {
+                    document.getElementById('fromDate').value = today;
+                }
+                if (!document.getElementById('toDate').value) {
+                    document.getElementById('toDate').value = today;
+                }
+                
+                // Don't submit form yet, wait for button click
+                return;
+            } else {
+                // Hide date inputs and clear values
+                customDates.classList.remove('show');
+                document.getElementById('fromDate').value = '';
+                document.getElementById('toDate').value = '';
+                
+                // Submit form for preset filters
+                PostName.submit();
+            }
+        }
+
+        // Submit form only via button click for custom date
+        function submitCustomDateFilter(e) {
+            if (document.getElementById('filter_keyword').value === 'Filter Date') {
+                validateAndSubmit();
+            }
+        }
+
+        function validateAndSubmit() {
+            debugger;
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            
+            if (fromDate && toDate) {
+                if (new Date(fromDate) > new Date(toDate)) {
+                    alert('From date cannot be later than to date');
+                    return;
+                }
+                PostName.submit();
+            } else {
+                alert('Please select both from and to dates');
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('filter_keyword') === 'custom_date') {
+                document.getElementById('customDates').classList.add('show');
+                document.getElementById('fromDate').value = urlParams.get('from_date') || '';
+                document.getElementById('toDate').value = urlParams.get('to_date') || '';
+            }
+        });
+</script>
