@@ -261,6 +261,12 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 	$routes->get('company-report-export/pdf',   'ReportController::companyReportExportPdf');
 	$routes->get('company-report-export/excel', 'ReportController::companyReportExportExcel');
 	// reports
+	//Subscriber list
+	$routes->match (['get'], "subscriber/list", "SubscribersController::list");
+	$routes->match(['get', 'post'], "subscriber/add", "SubscribersController::add");
+	$routes->match(['get', 'post'], "subscriber/edit/(:any)", "SubscribersController::edit/$1");
+	$routes->match(['get', 'post'], "subscriber/delete/(:any)", "SubscribersController::confirm_delete/$1");
+	$routes->match(['get', 'post'], "subscriber/change-status/(:any)", "SubscribersController::change_status/$1");
 });
 /* ADMIN PANEL */
 /* API */
