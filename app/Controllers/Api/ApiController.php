@@ -743,7 +743,7 @@ class ApiController extends BaseController
                             'mobile_otp'                => $mobile_otp,
                             'member_type'               => $requestData['member_type']
                         ];
-                        pr($postData);
+                        // pr($postData);
                         $getUser = $this->common_model->find_data('ecomm_users', 'row', ['email' => $requestData['email']]);
                         if (!$getUser) {
                             $id = $this->common_model->save_data('ecomm_users', $postData, '', 'id');
