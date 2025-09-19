@@ -4875,6 +4875,7 @@ class ApiController extends BaseController
                         'pincode'           => $getUser->pincode,
                         'location'          => $getUser->location,
                         'email'             => $getUser->email,
+                        'phone'             => $getUser->phone,
                         'total_request'     => 'Total',
                         'new_request'       => 'New Requests',
                         'quotation_request' => 'Quotation Requests',
