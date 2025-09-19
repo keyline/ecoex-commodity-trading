@@ -248,6 +248,17 @@ if ($userType == 'MA') {
         </li>
     <?php } ?>
 
+    <!-- Starting Subscriber List -->
+     <?php if ($common_model->checkModuleAccess(28)) { ?>
+        <li class="nav-item">
+            <a class="nav-link <?= (($pageSegment == 'subscriber') ? 'active' : '') ?>" href="<?= base_url('admin/subscriber/list') ?>">
+                <i class="fa fa-flag-checkered"></i>
+                <span>Subscribers</span>
+            </a>
+        </li>
+    <?php } ?>
+     <!-- Ending Subscriber List -->
+
 
     <?php if ($common_model->checkModuleAccess(17)) { ?>
         <li class="nav-item">
