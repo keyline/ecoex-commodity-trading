@@ -66,9 +66,9 @@ class SubscribersController extends BaseController {
             $validation->setRules([
                 'email' => [
                     'label' => 'Email',
-                    'rules' => 'required|valid_email|max_length[255]|is_unique[subscribers.email]',
+                    'rules' => 'valid_email|max_length[255]|is_unique[subscribers.email]',
                     'errors' => [
-                        'required' => 'Email is required.',
+                        // 'required' => 'Email is required.',
                         'valid_email' => 'Please enter a valid email address.',
                         'is_unique' => 'This email is already subscribed.',
                         'max_length' => 'Email cannot exceed 255 characters.'

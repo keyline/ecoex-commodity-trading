@@ -91,7 +91,7 @@ $controller_route   = $moduleDetail['controller_route'];
                             <div class="row mb-3">
                                 <label for="email" class="col-md-2 col-lg-2 col-form-label"><?=$title?> Email</label>
                                 <div class="col-md-10 col-lg-10">
-                                    <input type="text" name="email" class="form-control" id="email" value="<?=$email?>" required>
+                                    <input type="text" name="email" class="form-control" id="email" value="<?=$email?>">
                                     <?php if(isset($validation) && $validation->hasError('email')): ?>
                                 <span class="text-danger">
                                     <?= $validation->getError('email') ?>
