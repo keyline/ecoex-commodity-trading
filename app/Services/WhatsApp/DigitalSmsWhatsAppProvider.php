@@ -79,7 +79,7 @@ class DigitalSmsWhatsAppProvider implements WhatsAppProviderInterface
         } catch (\Throwable $e) {
 
             log_message('error', "[WhatsApp] Failed sending to {$to}: params " . json_encode($params) . ", error: " . $e->getMessage());
-            log_message('debug', "[WhatsApp] Full response: " . ($response->getBody() ?? 'no response'));
+            log_message('error', "[WhatsApp] Full response: " . (json_encode($response->getBody()) ?? 'no response'));
             throw new WhatsAppException("Failed to send WhatsApp: " . $e->getMessage(), 0, $e);
         }
     }
