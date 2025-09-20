@@ -52,4 +52,9 @@ Events::on('pre_system', static function () {
             });
         }
     }
+
+
+    // inside $events->on(...) or $listeners
+    // Events::on('enquiry.created', [\App\Listeners\EnquiryCreatedListener::class, 'handle']);
+
 });
