@@ -33,13 +33,15 @@ class DigitalSmsWhatsAppProvider implements WhatsAppProviderInterface
                 'timeout' => 30,
             ]);
 
-            $response = $client->get($this->baseUrl, [
-                'query' => [
+            $params = [
                     'apikey' => $this->apiKey,
                     'mobile' => $to,
                     'msg'    => $msg,
                     'img1'   => $mediaUrl ?? '',
-                ]
+                ];
+
+            $response = $client->get($this->baseUrl, [
+                'query' => $params
             ]);
 
 
@@ -65,6 +67,8 @@ class DigitalSmsWhatsAppProvider implements WhatsAppProviderInterface
             if (is_array($json) && isset($json['status']) && $json['status'] !== 'success') {
                 throw new WhatsAppException("API error: " . ($json['message'] ?? 'Unknown'));
             }
+            //$reason = $response->getReasonPhrase();
+
 
             return [
                 'success' => true,
@@ -73,6 +77,9 @@ class DigitalSmsWhatsAppProvider implements WhatsAppProviderInterface
             ];
 
         } catch (\Throwable $e) {
+
+            log_message('error', "[WhatsApp] Failed sending to {$to}: params " . json_encode($params) . ", error: " . $e->getMessage());
+            log_message('debug', "[WhatsApp] Full response: " . ($response->getBody() ?? 'no response'));
             throw new WhatsAppException("Failed to send WhatsApp: " . $e->getMessage(), 0, $e);
         }
     }
