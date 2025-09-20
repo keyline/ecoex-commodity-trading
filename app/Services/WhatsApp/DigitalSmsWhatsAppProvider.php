@@ -37,7 +37,7 @@ class DigitalSmsWhatsAppProvider implements WhatsAppProviderInterface
                     'apikey' => $this->apiKey,
                     'mobile' => $to,
                     'msg'    => $msg,
-                    'img1'   => $mediaUrl ?? '',
+                    //'img1'   => $mediaUrl ?? '',
                 ];
 
             $response = $client->get($this->baseUrl, [
@@ -77,6 +77,8 @@ class DigitalSmsWhatsAppProvider implements WhatsAppProviderInterface
             ];
 
         } catch (\Throwable $e) {
+
+            log_message('error', "Requesting: " . $this->baseUrl . '?' . http_build_query($params));
 
             log_message('error', "[WhatsApp] Failed sending to {$to}: params " . json_encode($params) . ", error: " . $e->getMessage());
             log_message('error', "[WhatsApp] Full response: " . (json_encode($response->getBody()) ?? 'no response'));
