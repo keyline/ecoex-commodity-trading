@@ -37,8 +37,8 @@ class DigitalSmsWhatsAppProvider implements WhatsAppProviderInterface
                 'query' => [
                     'apikey' => $this->apiKey,
                     'mobile' => $to,
-                    'msg'    => urlencode($msg),
-                    'img1'   => urlencode($mediaUrl ?? ''),
+                    'msg'    => $msg,
+                    'img1'   => $mediaUrl ?? '',
                 ]
             ]);
 
