@@ -45,6 +45,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <tr>
                                         <th width="5%" class="text-center">#</th>
                                         <th>Name</th>
+                                        <th>Type</th>
                                         <th>Phone</th>
                                         <th>Email</th>
 
@@ -57,6 +58,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <tr>
                                         <th class="text-center" scope="row"><?=$sl++?></th>
                                         <td><?=$row->name?></td>
+                                        <td><?=$row->type?></td>
                                         <td>
                                             <?=$row->phone?>
                                         </td>
