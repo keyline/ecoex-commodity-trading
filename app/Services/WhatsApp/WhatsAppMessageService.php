@@ -25,9 +25,9 @@ class WhatsAppMessageService
 
         foreach ($recipients as $recipient) {
             $results = [];
-            try {
-                foreach ($enquiryItems as $index => $item) {
 
+            foreach ($enquiryItems as $index => $item) {
+                try {
                     $text     = $this->formatMessage($item);
                     $mediaUrl = json_decode($item['media_url'], true) ?: [];
 
@@ -45,19 +45,20 @@ class WhatsAppMessageService
                         'status'     => 'success',
                         'result'     => $sendResult,
                     ];
+                } catch (WhatsAppException $e) {
+                    log_message('error', "[WhatsApp] Failed sending to {$recipient}, item {$index}: " . $e->getMessage());
 
+                    $results[] = [
+                        'item_index' => $index,
+                        'recipient'  => $recipient,
+                        'status'     => 'failed',
+                        'error'      => $e->getMessage(),
+                        'provider_response' => $e->getProviderResponse(),
+                    ];
                 }
-            } catch (WhatsAppException $e) {
-                log_message('error', "[WhatsApp] Failed sending to {$recipient}, item {$index}: " . $e->getMessage());
 
-                $results[] = [
-                    'item_index' => $index,
-                    'recipient'  => $recipient,
-                    'status'     => 'failed',
-                    'error'      => $e->getMessage(),
-                    'provider_response' => $e->getProviderResponse(),
-                ];
             }
+
 
             $allResults[$recipient] = $results;
         }
