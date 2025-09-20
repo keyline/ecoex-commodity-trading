@@ -5,10 +5,14 @@ namespace App\Controllers\admin;
 use App\Controllers\BaseController;
 use App\Models\CommonModel;
 use App\Services\Enquiry\VendorInvoiceService;
+use App\Models\WhatsAppWorkerModel;
+use App\Services\WhatsApp\WhatsAppMessageService;
+use App\Services\WhatsApp\WhatsAppProviderInterface;
+use App\Services\WhatsApp\DigitalSmsWhatsAppProvider;
+use App\Services\WhatsApp\WhatsAppException;
 
 class EnquiryRequestController extends BaseController
 {
-
     protected $vendorInvoiceService;
     private $model;  //This can be accessed by all class methods
     public function __construct()
@@ -429,7 +433,7 @@ class EnquiryRequestController extends BaseController
     }
     public function getRejectModal()
     {
-        $apiStatus          = TRUE;
+        $apiStatus          = true;
         $apiMessage         = '';
         $apiResponse        = [];
         $requestData        = $this->request->getPost();
@@ -453,7 +457,7 @@ class EnquiryRequestController extends BaseController
     }
     public function getImageModal()
     {
-        $apiStatus          = TRUE;
+        $apiStatus          = true;
         $apiMessage         = '';
         $apiResponse        = [];
         $requestData        = $this->request->getPost();
@@ -1194,7 +1198,7 @@ class EnquiryRequestController extends BaseController
             $invoice_amount             = array_map(function ($val) {
                 // Cast to float, format with 2 decimals, dot as decimal separator, no thousands sep
                 return number_format((float)$val, 2, '.', '');
-            },  $this->request->getPost('ho_payable_amount'));
+            }, $this->request->getPost('ho_payable_amount'));
 
             $invoice_number = $this->request->getPost('ho_inv_number');
 
@@ -1204,7 +1208,7 @@ class EnquiryRequestController extends BaseController
 
 
 
-            # old code 
+            # old code
             /*
             $file = $this->request->getFile('invoice_file_from_ho');
             $originalName = $file->getClientName();
@@ -1223,7 +1227,7 @@ class EnquiryRequestController extends BaseController
             }
             */
 
-            # new code by shubha on 21-4-25 
+            # new code by shubha on 21-4-25
             # upload multiple files
 
             $file_arr = $this->common_model->commonFileArrayUpload('enquiry/', $files, 'pdf');
@@ -1781,7 +1785,7 @@ class EnquiryRequestController extends BaseController
      * @param mixed    $matchVal The value you want every item’s property to equal
      * @return bool              True if EVERY object has $object->$prop === $matchVal
      */
-    function allItemsMatch(array $items, string $prop, $matchVal): bool
+    public function allItemsMatch(array $items, string $prop, $matchVal): bool
     {
         foreach ($items as $item) {
             // if property doesn't exist or value differs, bail out
@@ -1962,7 +1966,7 @@ class EnquiryRequestController extends BaseController
         $data['is_plant_ecoex_confirm'] = $this->allItemsMatch($data['subenquires'], 'is_plant_ecoex_confirm', 2);
         $title                      = 'View Enquiry Details Of ' . $data['row']->enquiry_no;
         $page_name                  = 'enquiry-request/enquiry-details';
-       
+
         echo $this->layout_after_login($title, $page_name, $data);
     }
 
@@ -2239,4 +2243,94 @@ class EnquiryRequestController extends BaseController
             return redirect()->to('/admin/' . $this->data['controller_route'] . '/enquiry-details/' . encoded($enq_id));
         }
     }
+
+    public function sendWhatsAppNotification($enquiryId)
+    {
+        $enquiryId = decoded($enquiryId);
+
+
+        // $enquiry is what the event sends (array)
+        $model = new WhatsAppWorkerModel();
+        //Check if the enquiry exists
+        $workerExists = $model->enquiryExists($enquiryId);
+
+        $enquiryData = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enquiryId]);
+
+        if (!$workerExists) {
+            //If not, we stop here
+            //insert data into whatsapp_worker table with status inititialized
+            $data = [
+                'enquiry_id' => $enquiryId,
+                'status' => 'new',
+                'enquiry_meta' => json_encode($enquiryData),
+                'created_at' => date('Y-m-d H:i:s'),
+            ];
+            $model->insert($data);
+        }
+
+        //update the enquiry with the new status
+
+        $model->where('enquiry_id', $enquiryId)
+              ->set(['status' => 'pending', 'started_at' => date('Y-m-d H:i:s')])
+              ->update();
+
+
+        //Claim one job at a time
+        $job = $model->claimPending();
+
+        //get items from enquiry
+
+
+
+        $db = \Config\Database::connect();
+
+        $builder = $db->table('ecomm_enquires ee');
+        $builder->select("
+    ee.id   AS enquiry_id,
+    ci.id   AS enquiry_product_id,
+    ep.new_product_image AS media_url,
+    ep.qty,
+    ep.unit,
+    CONCAT('₹', ROUND(ci.rate * 0.9), ' - ₹', ROUND(ci.rate * 1.1)) AS price_range,
+    ci.id   AS item_id,
+    ci.item_name_ecoex AS material,
+    u.plant_name,
+    u.district,
+    u.state,
+    unit.name AS unit_name
+");
+        $builder->join('ecomm_enquiry_products ep', 'ee.id = ep.enq_id');
+        $builder->join('ecomm_company_items ci', 'ep.product_id = ci.id');
+        $builder->join('ecomm_users u', 'ep.plant_id = u.id');
+        $builder->join('ecomm_units unit', 'unit.id = ci.unit');
+        $builder->where('ee.id', $enquiryId);
+        $builder->orderBy('ep.id');
+
+        $query   = $builder->get();
+        $results = $query->getResultArray();
+
+        if (!$results) {
+            return;
+        }
+
+        try {
+
+            $whatsAppProvider = new DigitalSmsWhatsAppProvider();
+
+            $whatsAppService = new WhatsAppMessageService($whatsAppProvider);
+            $recipients = ['9903985858', '8910649429']; // Replace with actual recipient numbers
+            $finishedProcess = $whatsAppService->sendEnquiryMessages($recipients, $results);
+
+        } catch (\Exception $ex) {
+            //throw $th;
+            echo $ex->getMessage();
+        } catch (\App\Services\WhatsApp\WhatsAppException $wpErr) {
+            echo $wpErr->getMessage();
+
+        }
+
+        var_dump($finishedProcess);
+        exit;
+    }
+
 }

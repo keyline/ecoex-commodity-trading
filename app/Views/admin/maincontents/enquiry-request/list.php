@@ -53,7 +53,7 @@ $userType           = $session->user_type;
                                         <th>Created At<br>Created By<br>Updated At<br>Updated By</th>
                                         <?php if ($rows) {
                                             if ($rows[0]->status >= 11 && $rows[0]->status <= 12) { ?><th>Ecoex Payment<br>Approve Status<br>HO Approve<br>Enquiry Complete</th><?php }
-                                                                                                                                                                        } ?>
+                                            } ?>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -80,7 +80,7 @@ $userType           = $session->user_type;
                                                     </h5>
                                                 </td>
                                                 <td>
-                                                    <!-- <h6><? // (($plant) ? $plant->plant_name : '') 
+                                                    <!-- <h6><?php // (($plant) ? $plant->plant_name : '')
                                                                 ?></h6> -->
                                                     <h5><?= ($plant) ? nl2br(wordwrap($plant->plant_name, 15, "\n", false)) : '' ?>
                                                     </h5>
@@ -92,7 +92,7 @@ $userType           = $session->user_type;
                                                         <?php
                                                         if ($row->created_by > 0) {
                                                             $actionUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->created_by], 'plant_name');
-                                                        ?>
+                                                            ?>
                                                             <small><?= ($actionUser) ? nl2br(wordwrap($actionUser->plant_name, 15, "\n", false)) : '' ?>
                                                             </small>
                                                         <?php } ?>
@@ -101,9 +101,9 @@ $userType           = $session->user_type;
                                                     <h6>
                                                         <?= (($row->updated_at != '') ? date_format(date_create($row->updated_at), "M d, Y h:i A") : '') ?><br>
                                                         <?php
-                                                        if ($row->updated_by > 0) {
-                                                            $actionUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->updated_by], 'plant_name');
-                                                        ?>
+                                                            if ($row->updated_by > 0) {
+                                                                $actionUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->updated_by], 'plant_name');
+                                                                ?>
                                                             <small><?= ($actionUser) ? nl2br(wordwrap($actionUser->plant_name, 15, "\n", false)) : '' ?>
                                                             </small>
                                                         <?php } ?>
@@ -150,6 +150,11 @@ $userType           = $session->user_type;
                                                                 <a href="javascript:void(0);" class="btn btn-danger btn-sm mt-2" title="Reject <?= $title ?>" onclick="getRejectModal(<?= $row->$primary_key ?>);"><i class="fa fa-times"></i> Click To Reject</a>
                                                             <?php } ?>
                                                         <?php } ?>
+                                                        <?php if ($common_model->checkModuleFunctionAccess(23, 149)) { ?>
+                                                            <?php if ($userType == 'MA') { ?>
+                                                                <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification/' . encoded($row->$primary_key)) ?>" class="btn btn-success btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa fa-whatsapp" aria-hidden="true"></i> Click To Send Notification</a>
+                                                            <?php } ?>
+                                                        <?php } ?>
                                                     <?php } else { ?>
                                                         <?php if ($row->status >= 1 && $row->status <= 12) { ?>
                                                             <h6 class="badge bg-success mt-2"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
@@ -161,7 +166,7 @@ $userType           = $session->user_type;
                                                 </td>
                                             </tr>
                                     <?php }
-                                    } ?>
+                                        } ?>
                                 </tbody>
                             </table>
                         </div>
