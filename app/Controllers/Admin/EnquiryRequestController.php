@@ -2341,8 +2341,11 @@ class EnquiryRequestController extends BaseController
         //var_dump($finishedProcess);
         //exit;
 
-        $this->session->setFlashdata('success_message', 'whatsapp message send successfully');
-        return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/');
+        //$this->session->setFlashdata('success_message', 'whatsapp message send successfully');
+        //return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/');
+
+        return redirect()->back()->with('success_message', 'whatsapp message send successfully!');
+
 
     }
 
