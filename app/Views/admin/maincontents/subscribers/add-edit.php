@@ -55,8 +55,8 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <div class="col-md-10 col-lg-10">
                                     <select name="type" class="form-control" id="type" require>
                                         <option value="">Select Type</option>
-                                        <option value="plant" <?= ($row && $row->type == 'PLANT') ? 'selected' : '' ?>>Plant</option>
-                                        <option value="vendor" <?= ($row && $row->type == 'VENDOR') ? 'selected' : '' ?>>Vendor</option>
+                                        <!-- <option value="PLANT" <?= ($row && $row->type == 'PLANT') ? 'selected' : '' ?>>PLANT</option> -->
+                                        <option value="VENDOR" <?= ($row && $row->type == 'VENDOR') ? 'selected' : '' ?>>VENDOR</option>
                                     </select>
                                 </div>
                             </div>
