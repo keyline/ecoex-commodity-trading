@@ -33,7 +33,7 @@ class WhatsAppMessageService
 
 
                     $appUrl = getenv('app.baseURL');
-                    $buildImgUrl = $appUrl . 'uploads/enquiries/' . $mediaUrl[0];
+                    $buildImgUrl = $appUrl . 'public/uploads/enquiries/' . $mediaUrl[0];
 
 
 
