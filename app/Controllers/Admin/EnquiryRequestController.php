@@ -2319,6 +2319,15 @@ class EnquiryRequestController extends BaseController
 
             $whatsAppService = new WhatsAppMessageService($whatsAppProvider);
             $recipients = ['9903985858', '8910649429']; // Replace with actual recipient numbers
+            /*$sql = "SELECT ecomm_users.phone FROM ecomm_users WHERE ecomm_users.type='VENDOR' and ecomm_users.phone IS NOT NULL AND ecomm_users.phone <> ''
+                        UNION
+                    SELECT subscribers.phone FROM subscribers WHERE subscribers.phone IS NOT NULL AND subscribers.phone <> ''";
+
+
+            $query = $db->query($sql);
+            $recipientResult = $query->getResultArray();
+            $recipients = array_column($recipientResult, 'phone');*/
+
             $finishedProcess = $whatsAppService->sendEnquiryMessages($recipients, $results);
 
         } catch (\Exception $ex) {

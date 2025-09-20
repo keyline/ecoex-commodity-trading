@@ -26,6 +26,12 @@ class WhatsAppMessageService
         foreach ($recipients as $recipient) {
             $results = [];
 
+            if (!preg_match('/^[0-9]{10}$/', $recipient)) {
+                log_message('error', "Invalid mobile skipped: {$recipient}");
+                continue; // skip this number
+            }
+
+
             foreach ($enquiryItems as $index => $item) {
                 try {
                     $text     = $this->formatMessage($item);
