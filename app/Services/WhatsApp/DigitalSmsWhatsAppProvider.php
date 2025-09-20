@@ -37,30 +37,16 @@ class DigitalSmsWhatsAppProvider implements WhatsAppProviderInterface
                     'apikey' => $this->apiKey,
                     'mobile' => $to,
                     'msg'    => $msg,
-                    //'img1'   => $mediaUrl ?? '',
+                    'img1'   => $mediaUrl ?? '',
                 ];
 
             $response = $client->get($this->baseUrl, [
                 'query' => $params
             ]);
 
-
-            /*$ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $resp = curl_exec($ch);
-
-            if ($resp === false) {
-                $error = curl_error($ch);
-                curl_close($ch);
-                throw new WhatsAppException("cURL error: " . $error);
-            }
-
-            $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);*/
-
-            if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
+            /*if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
                 throw new WhatsAppException("API returned HTTP {$response->getStatusCode()}: {$response->getBody()}");
-            }
+            }*/
 
             // If API returns JSON with status
             $json = json_decode($response->getBody(), true);
