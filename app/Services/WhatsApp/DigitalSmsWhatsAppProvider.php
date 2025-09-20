@@ -50,7 +50,7 @@ class DigitalSmsWhatsAppProvider implements WhatsAppProviderInterface
 
             // If API returns JSON with status
             $json = json_decode($response->getBody(), true);
-            if (is_array($json) && isset($json['status']) && $json['status'] !== 'success') {
+            if (is_array($json) && isset($json['status']) && $json['status'] !== '1') {
                 throw new WhatsAppException("API error: " . ($json['message'] ?? 'Unknown'));
             }
             //$reason = $response->getReasonPhrase();
