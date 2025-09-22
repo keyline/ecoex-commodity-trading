@@ -2318,7 +2318,7 @@ class EnquiryRequestController extends BaseController
             $whatsAppProvider = new DigitalSmsWhatsAppProvider();
 
             $whatsAppService = new WhatsAppMessageService($whatsAppProvider);
-            $recipients = ['9903985585', '8910649429', '6289339520']; // Replace with actual recipient numbers
+            $recipients = ['9903985585']; // Replace with actual recipient numbers
             /*$sql = "SELECT ecomm_users.phone FROM ecomm_users WHERE ecomm_users.type='VENDOR' and ecomm_users.phone IS NOT NULL AND ecomm_users.phone <> ''
                         UNION
                     SELECT subscribers.phone FROM subscribers WHERE subscribers.phone IS NOT NULL AND subscribers.phone <> ''";
