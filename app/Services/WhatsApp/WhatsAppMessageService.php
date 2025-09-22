@@ -81,10 +81,10 @@ class WhatsAppMessageService
              . "📦 *Material*: {$item['material']}\n"
              . "⚖️ *Quantity*: {$item['qty']} {$item['unit_name']}\n"
              . "📍 *Location*: {$item['district']}, {$item['state']}\n"
-             . "🪙 *Price Range*: ₹{$item['price_range']}\n"
+             . "🪙 *Price Range*: ₹{$item['price_range']}\n\n"
              . "For More Details,\n"
              . "🔗 Please download our APP:\n"
-             . "https://play.google.com/store/apps/details?id=com.ecoexvendor.keyline\n\n"
-             . "📞 Helpline No:  +91-11 4034 6015";
+             . "https://play.google.com/store/apps/details?id=com.ecoexvendor.keyline \n\n"
+             . "📞 Helpline:  +911140346015";
     }
 }
