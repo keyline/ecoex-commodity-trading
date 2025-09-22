@@ -80,6 +80,6 @@ class WhatsAppMessageService
              . "📦 *Material*: {$item['material']}\n"
              . "⚖️ *Quantity*: {$item['qty']}\n"
              . "📍 *Location*: {$item['district']}, {$item['state']}\n"
-             . "💰 *Price Range*: {$item['price_range']}/{$item['unit_name']}\n\n";
+             . "🪙₹*Price Range*: {$item['price_range']}\n\n";
     }
 }

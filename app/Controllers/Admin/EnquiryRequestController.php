@@ -2280,7 +2280,7 @@ class EnquiryRequestController extends BaseController
 
         //get items from enquiry
 
-
+        //CONCAT('₹', ROUND(ci.rate * 0.9), ' - ₹', ROUND(ci.rate * 1.1))
 
         $db = \Config\Database::connect();
 
@@ -2291,7 +2291,7 @@ class EnquiryRequestController extends BaseController
     ep.new_product_image AS media_url,
     ep.qty,
     ep.unit,
-    CONCAT('₹', ROUND(ci.rate * 0.9), ' - ₹', ROUND(ci.rate * 1.1)) AS price_range,
+    ci.price_range AS price_range,
     ci.id   AS item_id,
     ci.item_name_ecoex AS material,
     u.plant_name,
@@ -2318,15 +2318,15 @@ class EnquiryRequestController extends BaseController
             $whatsAppProvider = new DigitalSmsWhatsAppProvider();
 
             $whatsAppService = new WhatsAppMessageService($whatsAppProvider);
-            //$recipients = ['9903985858', '8910649429']; // Replace with actual recipient numbers
-            $sql = "SELECT ecomm_users.phone FROM ecomm_users WHERE ecomm_users.type='VENDOR' and ecomm_users.phone IS NOT NULL AND ecomm_users.phone <> ''
+            $recipients = ['9903985585', '8910649429', '6289339520']; // Replace with actual recipient numbers
+            /*$sql = "SELECT ecomm_users.phone FROM ecomm_users WHERE ecomm_users.type='VENDOR' and ecomm_users.phone IS NOT NULL AND ecomm_users.phone <> ''
                         UNION
                     SELECT subscribers.phone FROM subscribers WHERE subscribers.phone IS NOT NULL AND subscribers.phone <> ''";
 
 
             $query = $db->query($sql);
             $recipientResult = $query->getResultArray();
-            $recipients = array_column($recipientResult, 'phone');
+            $recipients = array_column($recipientResult, 'phone');*/
 
             $finishedProcess = $whatsAppService->sendEnquiryMessages($recipients, $results);
 

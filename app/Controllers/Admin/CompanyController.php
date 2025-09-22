@@ -9,7 +9,6 @@ use ZipArchive;
 
 class CompanyController extends BaseController
 {
-
     private $model;  //This can be accessed by all class methods
     public function __construct()
     {
@@ -505,7 +504,7 @@ class CompanyController extends BaseController
     }
     public function check_email()
     {
-        $apiStatus          = TRUE;
+        $apiStatus          = true;
         $apiMessage         = '';
         $apiResponse        = [];
         $apiExtraField      = '';
@@ -516,7 +515,7 @@ class CompanyController extends BaseController
         $headerData         = $this->request->headers();
         if (!$this->validateArray($requiredFields, $requestData)) {
             http_response_code(406);
-            $apiStatus          = FALSE;
+            $apiStatus          = false;
             $apiMessage         = $this->getResponseCode(http_response_code());
             $apiExtraField      = 'response_code';
             $apiExtraData       = http_response_code();
@@ -525,20 +524,20 @@ class CompanyController extends BaseController
             $checkData = $this->common_model->find_data('ecoex_companies', 'count', ['email' => $requestData['company_email'], 'status!=' => 3]);
             if ($checkData > 0) {
                 http_response_code(200);
-                $apiStatus          = FALSE;
+                $apiStatus          = false;
                 $apiMessage         = 'Email Already Exists. Try Other Email !!!';
                 $apiExtraField      = 'response_code';
                 $apiExtraData       = http_response_code();
             } else {
                 http_response_code(200);
-                $apiStatus          = TRUE;
+                $apiStatus          = true;
                 $apiMessage         = 'Email Available !!!';
                 $apiExtraField      = 'response_code';
                 $apiExtraData       = http_response_code();
             }
         } else {
             http_response_code(400);
-            $apiStatus          = FALSE;
+            $apiStatus          = false;
             $apiMessage         = $this->getResponseCode(http_response_code());
             $apiExtraField      = 'response_code';
             $apiExtraData       = http_response_code();
@@ -547,7 +546,7 @@ class CompanyController extends BaseController
     }
     public function check_phone()
     {
-        $apiStatus          = TRUE;
+        $apiStatus          = true;
         $apiMessage         = '';
         $apiResponse        = [];
         $apiExtraField      = '';
@@ -558,7 +557,7 @@ class CompanyController extends BaseController
         $headerData         = $this->request->headers();
         if (!$this->validateArray($requiredFields, $requestData)) {
             http_response_code(406);
-            $apiStatus          = FALSE;
+            $apiStatus          = false;
             $apiMessage         = $this->getResponseCode(http_response_code());
             $apiExtraField      = 'response_code';
             $apiExtraData       = http_response_code();
@@ -567,20 +566,20 @@ class CompanyController extends BaseController
             $checkData = $this->common_model->find_data('ecoex_companies', 'count', ['phone' => $requestData['company_phone'], 'status!=' => 3]);
             if ($checkData > 0) {
                 http_response_code(404);
-                $apiStatus          = TRUE;
+                $apiStatus          = true;
                 $apiMessage         = 'Phone Already Exists. Try Other Phone !!!';
                 $apiExtraField      = 'response_code';
                 $apiExtraData       = http_response_code();
             } else {
                 http_response_code(200);
-                $apiStatus          = TRUE;
+                $apiStatus          = true;
                 $apiMessage         = 'Phone Available !!!';
                 $apiExtraField      = 'response_code';
                 $apiExtraData       = http_response_code();
             }
         } else {
             http_response_code(400);
-            $apiStatus          = FALSE;
+            $apiStatus          = false;
             $apiMessage         = $this->getResponseCode(http_response_code());
             $apiExtraField      = 'response_code';
             $apiExtraData       = http_response_code();
@@ -669,6 +668,7 @@ class CompanyController extends BaseController
             $gst                    = $this->request->getPost('gst');
             $rate                   = $this->request->getPost('rate');
             $unit                   = $this->request->getPost('unit');
+            $price_range            = $this->request->getPost('price_range');
 
             if (!empty($item_name_ecoex)) {
                 // $this->data['model']->save_data('ecomm_company_items', ['status' => 3], $company_id, 'company_id');
@@ -684,19 +684,19 @@ class CompanyController extends BaseController
                 // insert
 
                 /* icon */
-                    $file = $this->request->getFile('icon');
-                    $originalName = $file->getClientName();
-                    $fieldName = 'icon';
-                    if ($file != '') {
-                        $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'product', 'image');
-                        if ($upload_array['status']) {
-                            $icon = $upload_array['newFilename'];
-                        } else {
-                            $icon = '';
-                        }
+                $file = $this->request->getFile('icon');
+                $originalName = $file->getClientName();
+                $fieldName = 'icon';
+                if ($file != '') {
+                    $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'product', 'image');
+                    if ($upload_array['status']) {
+                        $icon = $upload_array['newFilename'];
                     } else {
                         $icon = '';
                     }
+                } else {
+                    $icon = '';
+                }
                 /* icon */
 
                 $postData   = array(
@@ -713,6 +713,7 @@ class CompanyController extends BaseController
                     'is_approved'               => 1,
                     'approved_date'             => date('Y-m-d H:i:s'),
                     'status'                    => 1,
+                    'price_range'               => $price_range[0],
                 );
                 $this->data['model']->save_data('ecomm_company_items', $postData, '', 'id');
                 // }
@@ -752,6 +753,7 @@ class CompanyController extends BaseController
             'gst'                       => $this->request->getPost('gst')[0],
             'rate'                      => $this->request->getPost('rate')[0],
             'unit'                      => $this->request->getPost('unit')[0],
+            'price_range'               => $this->request->getPost('price_range')[0],
             'icon'                      => $icon,
         );
         // pr($postData);
@@ -903,7 +905,7 @@ class CompanyController extends BaseController
             unlink($zipPath); // Remove old zip if exists
         }
 
-        if ($zip->open($zipPath, ZipArchive::CREATE) === TRUE) {
+        if ($zip->open($zipPath, ZipArchive::CREATE) === true) {
             foreach ($pdfFiles as $file) {
                 $filePath = $certificatesPath . '/' . $file;
                 $zip->addFile($filePath, $file);
