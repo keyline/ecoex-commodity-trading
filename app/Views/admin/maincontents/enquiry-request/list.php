@@ -152,7 +152,7 @@ $userType           = $session->user_type;
                                                         <?php } ?>
                                                         <?php if ($common_model->checkModuleFunctionAccess(23, 149)) { ?>
                                                             <?php if ($userType == 'MA') { ?>
-                                                                <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification/' . encoded($row->$primary_key)) ?>" class="btn btn-success btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa fa-whatsapp" aria-hidden="true"></i> Click To Send Notification</a>
+                                                                <!-- <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification/' . encoded($row->$primary_key)) ?>" class="btn btn-success btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa fa-whatsapp" aria-hidden="true"></i> Click To Send Notification</a> -->
                                                             <?php } ?>
                                                         <?php } ?>
                                                     <?php } else { ?>
