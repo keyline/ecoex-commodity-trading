@@ -79,8 +79,12 @@ $userType           = $session->user_type;
                                 <h6 class="text-success fw-bold">Rate</h6>
                             </div>
                             <div class="col-md-1">
+                                <h6 class="text-success fw-bold">Price Range</h6>
+                            </div>
+                            <div class="col-md-1">
                                 <h6 class="text-success fw-bold">Unit</h6>
                             </div>
+                            
                             <div class="col-md-1">
                                 <h6 class="text-success fw-bold">Action</h6>
                             </div>
@@ -111,7 +115,7 @@ $userType           = $session->user_type;
                                                         foreach ($cats as $cat) { ?>
                                                             <option value="<?= $cat->category_id ?>" <?= (($cat->category_id == $assignItem->item_category) ? 'selected' : '') ?>><?= $cat->category_alias ?></option>
                                                     <?php }
-                                                    } ?>
+                                                        } ?>
                                                 </select>
                                             </div>
                                             <div class="col-md-2 mb-3 mb-md-0">
@@ -140,13 +144,16 @@ $userType           = $session->user_type;
                                                 <input type="text" name="rate[]" class="form-control" placeholder="Rate" value="<?= $assignItem->rate ?>">
                                             </div>
                                             <div class="col-md-1 mb-3 mb-md-0">
+                                                <input type="text" name="price_range[]" class="form-control" placeholder="Price Range" value="<?= $assignItem->price_range ?>">
+                                            </div>
+                                            <div class="col-md-1 mb-3 mb-md-0">
                                                 <select class="form-control" name="unit[]">
                                                     <option value="" selected>Select</option>
                                                     <?php if ($units) {
                                                         foreach ($units as $unit) { ?>
                                                             <option value="<?= $unit->id ?>" <?= (($unit->id == $assignItem->unit) ? 'selected' : '') ?>><?= $unit->name ?></option>
                                                     <?php }
-                                                    } ?>
+                                                        } ?>
                                                 </select>
                                             </div>
                                             <div class="col-md-2 mb-3 mb-md-0">
@@ -173,7 +180,7 @@ $userType           = $session->user_type;
                                         </div>
                                     </form>
                             <?php }
-                            } ?>
+                                } ?>
                             <?php if ($userType == 'MA') { ?>
                                 <form method="POST" action="" enctype="multipart/form-data">
                                     <input type="hidden" name="company_id" id="company_id" value="<?= $company_id ?>">
@@ -187,7 +194,7 @@ $userType           = $session->user_type;
                                                     foreach ($cats as $cat) { ?>
                                                         <option value="<?= $cat->category_id ?>"><?= $cat->category_alias ?></option>
                                                 <?php }
-                                                } ?>
+                                                    } ?>
                                             </select>
                                         </div>
                                         <div class="col-md-2 mb-3 mb-md-0">
@@ -216,13 +223,16 @@ $userType           = $session->user_type;
                                             <input type="text" name="rate[]" class="form-control" placeholder="Rate">
                                         </div>
                                         <div class="col-md-1 mb-3 mb-md-0">
+                                            <input type="text" name="price_range[]" class="form-control" placeholder="Price Range">
+                                        </div>
+                                        <div class="col-md-1 mb-3 mb-md-0">
                                             <select class="form-control" name="unit[]">
                                                 <option value="" selected>Select</option>
                                                 <?php if ($units) {
                                                     foreach ($units as $unit) { ?>
                                                         <option value="<?= $unit->id ?>"><?= $unit->name ?></option>
                                                 <?php }
-                                                } ?>
+                                                    } ?>
                                             </select>
                                         </div>
                                         <div class="col-md-2 mb-3 mb-md-0">
@@ -285,7 +295,7 @@ $userType           = $session->user_type;
                                             foreach ($cats as $cat) { ?> <
             option value = "<?= $cat->category_id ?>" > <?= $cat->category_alias ?> < /option>\
     <?php }
-                                        } ?>
+                                            } ?>
         <
         /select>\ <
         /div>\ <
@@ -355,7 +365,7 @@ $userType           = $session->user_type;
                 <
                 option value = "<?= $unit->id ?>" > <?= $unit->name ?> < /option>\
     <?php }
-    } ?>
+        } ?>
         <
         /select>\ <
         /div>\ <
