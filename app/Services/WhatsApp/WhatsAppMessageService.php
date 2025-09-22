@@ -75,11 +75,16 @@ class WhatsAppMessageService
 
     protected function formatMessage(array $item): string
     {
-        return "ECOEX Alerts 🚨\n"
-             . "New Scrap Deal Available\n\n"
+        return "Hello Buyer Partner \n"
+             . "🚨 Have a look at New Deals open for\n"
+             . "you today\n\n"
              . "📦 *Material*: {$item['material']}\n"
-             . "⚖️ *Quantity*: {$item['qty']}\n"
+             . "⚖️ *Quantity*: {$item['qty']} {$item['unit_name']}\n"
              . "📍 *Location*: {$item['district']}, {$item['state']}\n"
-             . "🪙₹*Price Range*: {$item['price_range']}\n\n";
+             . "🪙₹*Price Range*: {$item['price_range']}\n"
+             . "For More Details,\n"
+             . "Please download our APP:\n"
+             . "https://play.google.com/store/apps/details?id=com.ecoexvendor.keyline\n"
+             . "Our Helpline No:  +91 11 4034 6015";
     }
 }
