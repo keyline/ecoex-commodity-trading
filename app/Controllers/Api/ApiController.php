@@ -479,7 +479,7 @@ class ApiController extends BaseController
             $startDate = $startOfLastWeek;
             $endDate   = $endOfLastWeek;
 
-            $sql = "
+            echo $sql = "
                 WITH top_vendors AS (
                     SELECT 
                         vendor_id,
