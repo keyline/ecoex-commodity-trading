@@ -4,6 +4,7 @@ namespace App\Controllers\Api;
 
 use App\Controllers\BaseController;
 use App\Models\CommonModel;
+use App\Models\PriceModel;
 use App\Libraries\CreatorJwt;
 use App\Libraries\JWT;
 use CodeIgniter\Database\Exceptions\DatabaseException;
@@ -475,7 +476,12 @@ class ApiController extends BaseController
 
             $top_buyers = [];
 
-            pr($getSubEnquiryItems);
+            $startDate = $startOfLastWeek;
+            $endDate   = $endOfLastWeek;
+
+            $priceModel = new PriceModel();
+            $buyer_data = $priceModel->getTopVendorsWithItems($startDate, $endDate);
+            pr($buyer_data);
 
             $apiResponse = [
                 'top_prices'    => $final,
