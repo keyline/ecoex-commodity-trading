@@ -552,7 +552,7 @@ class ApiController extends BaseController
 
             $top_buyers_final = array_slice($top_buyers_final, 0, 3);
 
-            pr($top_buyers_final);
+            // pr($top_buyers_final);
 
             $apiResponse = [
                 'top_prices'        => $final,
