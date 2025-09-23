@@ -526,12 +526,34 @@ class ApiController extends BaseController
                     ];
                 }
             }
-            pr($top_buyers);
+            
+            // Sort by item_qty (descending)
+            usort($top_buyers, function($a, $b) {
+                return $b['item_qty'] <=> $a['item_qty'];
+            });
+
+            // Now group by vendor and keep only top 3 vendors
+            $vendors = [];
+            $top_buyers_final = [];
+
+            foreach ($top_buyers as $row) {
+                $vendor = $row['vendor_name'];
+
+                if (!isset($vendors[$vendor])) {
+                    if (count($vendors) >= 3) {
+                        // already have top 3 vendors
+                        continue;
+                    }
+                    $vendors[$vendor] = true;
+                }
+
+                $top_buyers_final[] = $row;
+            }
 
             $apiResponse = [
                 'top_prices'        => $final,
                 'top_qty'           => $top_qty,
-                'top_buyers'        => $top_buyers,
+                'top_buyers'        => $top_buyers_final,
             ];
 
             http_response_code(200);
