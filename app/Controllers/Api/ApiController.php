@@ -239,8 +239,8 @@ class ApiController extends BaseController
 
             $givenDate          = date('Y-m-d', strtotime('monday last week'));
             $givenDate2          = date('Y-m-d', strtotime('sunday last week'));
-            $startOfLastLastWeek    = date('Y-m-d', strtotime($givenDate . ' -7 days'));
-            $endOfLastLastWeek    = date('Y-m-d', strtotime($givenDate2 . ' -7 days'));
+            $startOfLastLastWeek    = date('Y-m-d', strtotime($givenDate . ' -21 days'));
+            $endOfLastLastWeek    = date('Y-m-d', strtotime($givenDate2 . ' -21 days'));
 
             // $this->db = \Config\Database::connect();
             // echo $this->db->getLastQuery();
