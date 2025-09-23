@@ -550,6 +550,8 @@ class ApiController extends BaseController
                 $top_buyers_final[] = $row;
             }
 
+            pr($top_buyers_final);
+
             $apiResponse = [
                 'top_prices'        => $final,
                 'top_qty'           => $top_qty,
