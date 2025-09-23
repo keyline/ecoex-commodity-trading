@@ -259,6 +259,10 @@ class ApiController extends BaseController
                 $getSubEnquiryItems = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['ecomm_sub_enquires.assigned_date>=' => $startOfLastLastWeek, 'ecomm_sub_enquires.assigned_date<=' => $endOfLastLastWeek, 'ecoex_companies.state' => $state], 'ecomm_sub_enquires.sub_enquiry_no, ecomm_sub_enquires.item_id, ecomm_company_items.item_name_ecoex', $join3, $groupBy);
             }
 
+            $this->db = \Config\Database::connect();
+            echo $this->db->getLastQuery();
+            die;
+
             if (empty($getSubEnquiryItems)) {
                 // $groupBy[0] = 'ecomm_sub_enquires.item_id';
                 // $join4['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_sub_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
