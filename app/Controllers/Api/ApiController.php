@@ -276,7 +276,6 @@ class ApiController extends BaseController
                 }
             }
 
-            // pr($getSubEnquiryItems);
 
             $total_win_price_array = [];
             if ($getSubEnquiryItems) {
@@ -470,9 +469,12 @@ class ApiController extends BaseController
             }
             /* top 10 transactions qty */
 
+            $top_buyers = [];
+
             $apiResponse = [
                 'top_prices'    => $final,
                 'top_qty'       => $top_qty,
+                'top_buyers'       => $top_buyers,
             ];
 
             http_response_code(200);
