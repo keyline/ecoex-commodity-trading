@@ -479,7 +479,7 @@ class ApiController extends BaseController
             $startDate = $startOfLastWeek;
             $endDate   = $endOfLastWeek;
 
-            echo $sql = "WITH top_vendors AS (
+            $sql = "WITH top_vendors AS (
                             SELECT 
                                 vendor_id,
                                 SUM(weighted_qty) AS total_qty
@@ -515,12 +515,23 @@ class ApiController extends BaseController
             $query = $this->db->query($sql);
 
             $buyer_data = $query->getResultArray(); // or getResult() for objects
-            pr($buyer_data);
+            if($buyer_data){
+                foreach($buyer_data as $buyer_data_row){
+                    $getVendor = $this->common_model->find_data('ecomm_users', 'row', ['id' => $buyer_data_row['vendor_id']], 'company_name');
+                    $top_buyers[] = [
+                        'vendor_name'   => (($getVendor)?$getVendor->company_name:''),
+                        'item_name'     => $buyer_data_row['item_name'],
+                        'item_qty'      => $buyer_data_row['item_qty'],
+                        'item_unit'     => $buyer_data_row['item_unit'],
+                    ];
+                }
+            }
+            pr($top_buyers);
 
             $apiResponse = [
-                'top_prices'    => $final,
-                'top_qty'       => $top_qty,
-                'top_buyers'       => $top_buyers,
+                'top_prices'        => $final,
+                'top_qty'           => $top_qty,
+                'top_buyers'        => $top_buyers,
             ];
 
             http_response_code(200);
