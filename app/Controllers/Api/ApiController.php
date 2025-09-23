@@ -504,7 +504,7 @@ class ApiController extends BaseController
                 JOIN 
                     top_vendors tv ON e.vendor_id = tv.vendor_id
                 LEFT JOIN 
-                    ecomm_company_items i ON e.eng_id = i.enq_id
+                    ecomm_company_items i ON e.item_id = i.id
                 WHERE 
                     e.assigned_date BETWEEN ".$startDate." AND ".$endDate."
                 GROUP BY 
