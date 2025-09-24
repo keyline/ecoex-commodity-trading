@@ -247,6 +247,8 @@ class ApiController extends BaseController
             // echo $this->db->getLastQuery();
             // die;
 
+            $state = (($state == 'All')?'all':$state);
+
             /* top prices */
             $top_prices         = [];
             if ($state == 'all') {
