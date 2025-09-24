@@ -255,8 +255,9 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     $routes->get('recycler-category/status/(:segment)/(:segment)', 'RecyclerCategorysController::updateStatus/$1/$2', ['as' => 'recycler_category.status']); // Toggle status
     // Manage Recycler Categorys
 
-
-
+    // temporary plants
+    $routes->match(['get', 'post'], "plants/add-without-gst", "PlantController::addWithoutGST");
+    // temporary plants
 
     // reports
     $routes->match(['get', 'post'], "reports/analytics-report", "ReportController::analyticsReport");
