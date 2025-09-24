@@ -167,7 +167,7 @@ $company_id                 = $session->company_id;
                             
                             <!-- items -->
                                 <div class="col-md-12 mb-4 text-center">
-                                    <button type="button" class="btn paynow_btn mt-4 add_button">Add Item For Enquiry</button>
+                                    <button type="button" class="btn btn-info btn-sm mt-4 add_button">Add Item For Enquiry</button>
                                 </div>
                                 <div class="col-md-12 mb-4 text-center">
                                     <div class="field_wrapper">
@@ -242,20 +242,22 @@ $company_id                 = $session->company_id;
         var addButton = $('.add_button'); //Add button selector
         var wrapper = $('.field_wrapper'); //Input field wrapper
         var fieldHTML = `<div class="row" style="border: 1px solid #bfc00aa6; padding: 10px;margin-bottom: 5px;border-radius:10px;">
-                            <div class="col-md-3">
-                                <input type="text" class="form-control" name="associate_name[]" id="associate_name" placeholder="Name" required>
+                            <div class="col-md-4">
+                                <select class="form-control" name="item_id[]" required>
+                                    <option value="" selected>Select Item</option>
+                                    <?php if($items){ foreach($items as $item){?>
+                                        <option value="<?=$item->id?>"><?=$item->item_name_ecoex?></option>
+                                    <?php } }?>
+                                </select>
                             </div>
                             <div class="col-md-3">
-                                <input type="email" class="form-control" name="associate_email[]" id="associate_email" placeholder="Email" required>
+                                <input type="text" class="form-control" name="product_id[]" placeholder="Item Tentative Qty" required>
                             </div>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control" name="associate_phone[]" id="associate_phone" pattern="[0-9]*" onkeypress="return event.charCode >= 48 && event.charCode <= 57" minlength="10" maxlength="10" placeholder="Phone" required>
-                            </div>
-                            <div class="col-md-2">
-                                <input type="text" class="form-control" name="associate_age[]" id="associate_age" pattern="[0-9]*" onkeypress="return event.charCode >= 48 && event.charCode <= 57" minlength="2" maxlength="3" placeholder="Age" required>
+                            <div class="col-md-4">
+                                <input type="file" class="form-control" name="new_product_image[] placeholder="Item Image" required>
                             </div>
                             <div class="col-md-1">
-                                <a href="javascript:void(0);" class="btn paynow_btn remove_button" style="background: #FFF;">❌</a>
+                                <a href="javascript:void(0);" class="btn btn-danger btn-sm remove_button" style="background: #FFF;">❌</a>
                             </div>
                         </div>`; //New input field html 
         var x = 1; //Initial field counter is 1

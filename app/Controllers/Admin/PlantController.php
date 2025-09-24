@@ -491,6 +491,9 @@ class PlantController extends BaseController {
         $orderBy[0]                 = ['field' => 'company_name', 'type' => 'ASC'];
         $data['companyList']        = $this->data['model']->find_data('ecoex_companies', 'array', ['status!=' => 3, 'parent_id' => 0, 'id' => 1], '', '', '', $orderBy);
 
+        $orderBy2[0]                = ['field' => 'item_name_ecoex', 'type' => 'ASC'];
+        $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => 1], 'id,item_name_ecoex', '', '', $orderBy2);
+
         if($this->request->getMethod() == 'post') {
             $profile_image = '';
             $gst_certificate = '';
