@@ -512,7 +512,7 @@ class PlantController extends BaseController {
                 'phone'                 => $this->request->getPost('phone'),
                 'phone_verify'          => 1,
                 'phone_verified_at'     => date('Y-m-d H:i:s'),
-                'password'              => md5($this->request->getPost('password')),
+                // 'password'              => md5($this->request->getPost('password')),
                 'created_by'            => $this->session->user_id,
                 'updated_by'            => $this->session->user_id,
                 'status'                => 2,

@@ -164,15 +164,17 @@ $company_id                 = $session->company_id;
                                     <input type="text" name="phone" class="form-control" value="<?=$phone?>" onkeypress="return isNumber(event)" maxlength="10" minlength="10" required>
                                 </div>
                             </div>
-                            <div class="row mb-3">
-                                <label for="password" class="col-md-2 col-lg-2 col-form-label">Password <span class="text-danger">*</span></label>
-                                <div class="col-md-10 col-lg-10">
-                                    <input type="password" name="password" class="form-control" id="password" maxlength="15" minlength="8" <?=(($row)?'':'required')?>>
-                                    <?php if($row){?>
-                                        <small class="text-info">* Please leave blank when you dont want to change password</small><br>
-                                    <?php }?>
+                            
+                            <!-- items -->
+                                <div class="col-md-12 mb-4 text-center">
+                                    <button type="button" class="btn paynow_btn mt-4 add_button">Add Item For Enquiry</button>
                                 </div>
-                            </div>
+                                <div class="col-md-12 mb-4 text-center">
+                                    <div class="field_wrapper">
+                                        
+                                    </div>
+                                </div>
+                            <!-- items -->
                                 
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary"><?=(($row)?'Save':'Add')?></button>
@@ -233,4 +235,47 @@ $company_id                 = $session->company_id;
         }
         return true;
     }
+</script>
+<script>
+    $(document).ready(function(){
+        var maxField = 10; //Input fields increment limitation
+        var addButton = $('.add_button'); //Add button selector
+        var wrapper = $('.field_wrapper'); //Input field wrapper
+        var fieldHTML = `<div class="row" style="border: 1px solid #bfc00aa6; padding: 10px;margin-bottom: 5px;border-radius:10px;">
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="associate_name[]" id="associate_name" placeholder="Name" required>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="email" class="form-control" name="associate_email[]" id="associate_email" placeholder="Email" required>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="associate_phone[]" id="associate_phone" pattern="[0-9]*" onkeypress="return event.charCode >= 48 && event.charCode <= 57" minlength="10" maxlength="10" placeholder="Phone" required>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" class="form-control" name="associate_age[]" id="associate_age" pattern="[0-9]*" onkeypress="return event.charCode >= 48 && event.charCode <= 57" minlength="2" maxlength="3" placeholder="Age" required>
+                            </div>
+                            <div class="col-md-1">
+                                <a href="javascript:void(0);" class="btn paynow_btn remove_button" style="background: #FFF;">❌</a>
+                            </div>
+                        </div>`; //New input field html 
+        var x = 1; //Initial field counter is 1
+        
+        // Once add button is clicked
+        $(addButton).click(function(){
+            //Check maximum number of input fields
+            if(x < maxField){ 
+                x++; //Increase field counter
+                $(wrapper).append(fieldHTML); //Add field html
+            }else{
+                alert('A maximum of '+maxField+' fields are allowed to be added. ');
+            }
+        });
+        
+        // Once remove button is clicked
+        $(wrapper).on('click', '.remove_button', function(e){
+            e.preventDefault();
+            $(this).parent('div').parent('div').remove(); //Remove field html
+            x--; //Decrease field counter
+        });
+    });
 </script>
