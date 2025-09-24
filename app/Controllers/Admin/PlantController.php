@@ -489,74 +489,17 @@ class PlantController extends BaseController {
         $page_name                  = 'plant/add-edit-without-gst';
         $data['row']                = [];
         $orderBy[0]                 = ['field' => 'company_name', 'type' => 'ASC'];
-        $data['companyList']        = $this->data['model']->find_data('ecoex_companies', 'array', ['status!=' => 3, 'parent_id' => 0], '', '', '', $orderBy);
+        $data['companyList']        = $this->data['model']->find_data('ecoex_companies', 'array', ['status!=' => 3, 'parent_id' => 0, 'id' => 1], '', '', '', $orderBy);
 
         if($this->request->getMethod() == 'post') {
-            /* profile image */
-                $file = $this->request->getFile('profile_image');
-                $originalName = $file->getClientName();
-                $fieldName = 'profile_image';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','image');
-                    if($upload_array['status']) {
-                        $profile_image = $upload_array['newFilename'];
-                    } else {
-                        $profile_image = '';
-                    }
-                } else {
-                    $profile_image = '';
-                }
-            /* profile image */
-            /* GST CERTIFICATE */
-                $file = $this->request->getFile('gst_certificate');
-                $originalName = $file->getClientName();
-                $fieldName = 'gst_certificate';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $gst_certificate = $upload_array['newFilename'];
-                    } else {
-                        $gst_certificate = '';
-                    }
-                } else {
-                    $gst_certificate = '';
-                }
-            /* GST CERTIFICATE */
-            /* PAN CARD */
-                $file = $this->request->getFile('contact_person_document');
-                $originalName = $file->getClientName();
-                $fieldName = 'contact_person_document';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $contact_person_document = $upload_array['newFilename'];
-                    } else {
-                        $contact_person_document = '';
-                    }
-                } else {
-                    $contact_person_document = '';
-                }
-            /* PAN CARD */
-            /* cancelled cheque */
-                $file = $this->request->getFile('cancelled_cheque');
-                $originalName = $file->getClientName();
-                $fieldName = 'cancelled_cheque';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $cancelled_cheque = $upload_array['newFilename'];
-                    } else {
-                        $cancelled_cheque = '';
-                    }
-                } else {
-                    $cancelled_cheque = '';
-                }
-            /* cancelled cheque */
+            $profile_image = '';
+            $gst_certificate = '';
+            $contact_person_document = '';
+            $cancelled_cheque = '';
+
             $postData   = array(
                 'type'                  => 'PLANT',
                 'parent_id'             => $this->request->getPost('parent_id'),
-                'gst_no'                => $this->request->getPost('gst_no'),
-                'gst_certificate'       => $gst_certificate,
                 'company_name'          => $this->request->getPost('company_name'),
                 'plant_name'            => $this->request->getPost('plant_name'),
                 'full_address'          => $this->request->getPost('full_address'),
@@ -566,28 +509,15 @@ class PlantController extends BaseController {
                 'state'                 => $this->request->getPost('state'),
                 'pincode'               => $this->request->getPost('pincode'),
                 'location'              => $this->request->getPost('location'),
-                'email'                 => $this->request->getPost('email'),
-                'email_verify'          => 1,
-                'email_verified_at'     => date('Y-m-d H:i:s'),
                 'phone'                 => $this->request->getPost('phone'),
                 'phone_verify'          => 1,
                 'phone_verified_at'     => date('Y-m-d H:i:s'),
                 'password'              => md5($this->request->getPost('password')),
-                'profile_image'         => $profile_image,
-                'contact_person_name'                       => $this->request->getPost('contact_person_name'),
-                'contact_person_designation'                => $this->request->getPost('contact_person_designation'),
-                'contact_person_document'                   => $contact_person_document,
-                'bank_name'             => $this->request->getPost('bank_name'),
-                'branch_name'           => $this->request->getPost('branch_name'),
-                'ifsc_code'             => $this->request->getPost('ifsc_code'),
-                'account_type'          => $this->request->getPost('account_type'),
-                'account_number'        => $this->request->getPost('account_number'),
-                'cancelled_cheque'      => $cancelled_cheque,
                 'created_by'            => $this->session->user_id,
                 'updated_by'            => $this->session->user_id,
                 'status'                => 2,
             );
-            // pr($postData);
+            pr($postData);
             $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);            
             $this->session->setFlashdata('success_message', $this->data['title'].' inserted successfully');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
