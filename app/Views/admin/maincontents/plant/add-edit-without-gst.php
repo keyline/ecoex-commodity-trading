@@ -167,7 +167,7 @@ $company_id                 = $session->company_id;
                             
                             <!-- items -->
                                 <div class="col-md-12 mb-4 text-center">
-                                    <button type="button" class="btn btn-info btn-sm mt-4 add_button">Add Item For Enquiry</button>
+                                    <button type="button" class="btn btn-info mt-4 add_button">Add Item For Enquiry</button>
                                 </div>
                                 <div class="col-md-12 mb-4 text-center">
                                     <div class="field_wrapper">
@@ -241,7 +241,7 @@ $company_id                 = $session->company_id;
         var maxField = 10; //Input fields increment limitation
         var addButton = $('.add_button'); //Add button selector
         var wrapper = $('.field_wrapper'); //Input field wrapper
-        var fieldHTML = `<div class="row" style="border: 1px solid #bfc00aa6; padding: 10px;margin-bottom: 5px;border-radius:10px;">
+        var fieldHTML = `<div class="row" style="border: 1px solid #022b6d; padding: 10px;margin-bottom: 5px;border-radius:10px;">
                             <div class="col-md-4">
                                 <select class="form-control" name="item_id[]" required>
                                     <option value="" selected>Select Item</option>
