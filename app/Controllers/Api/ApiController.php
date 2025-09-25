@@ -521,24 +521,30 @@ class ApiController extends BaseController
                 foreach($buyer_data as $buyer_data_row){
                     $getVendor = $this->common_model->find_data('ecomm_users', 'row', ['id' => $buyer_data_row['vendor_id']], 'company_name');
 
-                    if ($buyer_data_row['item_unit'] === 'KG') {
-                        $top_buyers[] = [
-                            'vendor_name'   => (($getVendor)?$getVendor->company_name:''),
-                            'item_name'     => $buyer_data_row['item_name'],
-                            'item_qty'      => ($buyer_data_row['item_qty'] / 1000),
-                            'item_unit'     => 'MT',
-                        ];
-                    } else {
-                        $top_buyers[] = [
-                            'vendor_name'   => (($getVendor)?$getVendor->company_name:''),
-                            'item_name'     => $buyer_data_row['item_name'],
-                            'item_qty'      => $buyer_data_row['item_qty'],
-                            'item_unit'     => $buyer_data_row['item_unit'],
-                        ];
-                    }
+                    // if ($buyer_data_row['item_unit'] === 'KG') {
+                    //     $top_buyers[] = [
+                    //         'vendor_name'   => (($getVendor)?$getVendor->company_name:''),
+                    //         'item_name'     => $buyer_data_row['item_name'],
+                    //         'item_qty'      => ($buyer_data_row['item_qty'] / 1000),
+                    //         'item_unit'     => 'MT',
+                    //     ];
+                    // } else {
+                    //     $top_buyers[] = [
+                    //         'vendor_name'   => (($getVendor)?$getVendor->company_name:''),
+                    //         'item_name'     => $buyer_data_row['item_name'],
+                    //         'item_qty'      => $buyer_data_row['item_qty'],
+                    //         'item_unit'     => $buyer_data_row['item_unit'],
+                    //     ];
+                    // }
+                    $top_buyers[] = [
+                        'vendor_name'   => (($getVendor)?$getVendor->company_name:''),
+                        'item_name'     => $buyer_data_row['item_name'],
+                        'item_qty'      => $buyer_data_row['item_qty'],
+                        'item_unit'     => $buyer_data_row['item_unit'],
+                    ];
                 }
             }
-                        
+
             // Sort by item_qty (descending)
             usort($top_buyers, function($a, $b) {
                 return $b['item_qty'] <=> $a['item_qty'];
@@ -564,7 +570,7 @@ class ApiController extends BaseController
 
             $top_buyers_final = array_slice($top_buyers_final, 0, 3);
 
-            // pr($top_buyers_final);
+            pr($top_buyers_final);
 
             $apiResponse = [
                 'top_prices'        => $final,
