@@ -538,9 +538,7 @@ class ApiController extends BaseController
                     }
                 }
             }
-
-            pr($top_buyers);
-            
+                        
             // Sort by item_qty (descending)
             usort($top_buyers, function($a, $b) {
                 return $b['item_qty'] <=> $a['item_qty'];
