@@ -239,7 +239,7 @@ class ApiController extends BaseController
             // $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));
 
             $startOfLastWeek    = date('Y-m-d', strtotime('first day of previous month'));
-            $endOfLastWeek      = date('Y-m-d', strtotime('last day of previous month'));
+            $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));
 
             $givenDate          = date('Y-m-d', strtotime('monday last week'));
             $givenDate2          = date('Y-m-d', strtotime('sunday last week'));
