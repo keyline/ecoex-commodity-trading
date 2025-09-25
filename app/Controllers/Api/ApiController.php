@@ -574,12 +574,23 @@ class ApiController extends BaseController
             $top_buyers_final_final = [];
             if(!empty($top_buyers_final)){
                 for($k=0;$k<count($top_buyers_final);$k++){
-                    $top_buyers_final_final[] = [
-
-                    ];
+                    if($top_buyers_final[$k]['item_unit'] === 'KG'){
+                        $top_buyers_final_final[] = [
+                            'vendor_name'   => $top_buyers_final[$k]['vendor_name'],
+                            'item_name'     => $top_buyers_final[$k]['item_name'],
+                            'item_qty'      => ($top_buyers_final[$k]['item_qty'] / 1000),
+                            'item_unit'     => 'MT',
+                        ];
+                    } else {
+                        $top_buyers_final_final[] = [
+                            'vendor_name'   => $top_buyers_final[$k]['vendor_name'],
+                            'item_name'     => $top_buyers_final[$k]['item_name'],
+                            'item_qty'      => $top_buyers_final[$k]['item_qty'],
+                            'item_unit'     => $top_buyers_final[$k]['item_unit'],
+                        ];
+                    }
                 }
             }
-            pr($row);
 
             $apiResponse = [
                 'top_prices'        => $final,
