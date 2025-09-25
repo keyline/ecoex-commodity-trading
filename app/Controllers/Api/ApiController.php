@@ -570,12 +570,19 @@ class ApiController extends BaseController
 
             $top_buyers_final = array_slice($top_buyers_final, 0, 3);
 
-            pr($top_buyers_final);
+            $top_buyers_final_final = [];
+            foreach ($top_buyers_final as &$row) {
+                if ($row['item_unit'] === 'KG') {
+                    $row['item_qty'] = $row['item_qty'] / 1000; // convert KG → MT
+                    $row['item_unit'] = 'MT'; // update unit
+                }
+            }
+            pr($row);
 
             $apiResponse = [
                 'top_prices'        => $final,
                 'top_qty'           => $top_qty,
-                'top_buyers'        => $top_buyers_final,
+                'top_buyers'        => $top_buyers_final_final,
             ];
 
             http_response_code(200);
