@@ -235,13 +235,18 @@ class ApiController extends BaseController
         if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
             $state              = $requestData['state'];
             $current_date       = date('Y-m-d');
-            $startOfLastWeek    = date('Y-m-d', strtotime('monday last week'));
-            $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));
+            // $startOfLastWeek    = date('Y-m-d', strtotime('monday last week'));
+            // $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));
+
+            $startOfLastWeek    = date('Y-m-d', strtotime('first day of previous month'));
+            $endOfLastWeek      = date('Y-m-d', strtotime('last day of previous month'));
 
             $givenDate          = date('Y-m-d', strtotime('monday last week'));
             $givenDate2          = date('Y-m-d', strtotime('sunday last week'));
             $startOfLastLastWeek    = date('Y-m-d', strtotime($givenDate . ' -21 days'));
             $endOfLastLastWeek    = date('Y-m-d', strtotime($givenDate2 . ' -21 days'));
+
+            echo $startOfLastWeek . ' || ' . $endOfLastWeek;die;
 
             // $this->db = \Config\Database::connect();
             // echo $this->db->getLastQuery();
