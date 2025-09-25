@@ -520,12 +520,22 @@ class ApiController extends BaseController
             if($buyer_data){
                 foreach($buyer_data as $buyer_data_row){
                     $getVendor = $this->common_model->find_data('ecomm_users', 'row', ['id' => $buyer_data_row['vendor_id']], 'company_name');
-                    $top_buyers[] = [
-                        'vendor_name'   => (($getVendor)?$getVendor->company_name:''),
-                        'item_name'     => $buyer_data_row['item_name'],
-                        'item_qty'      => $buyer_data_row['item_qty'],
-                        'item_unit'     => $buyer_data_row['item_unit'],
-                    ];
+
+                    if ($row['item_unit'] === 'KG') {
+                        $top_buyers[] = [
+                            'vendor_name'   => (($getVendor)?$getVendor->company_name:''),
+                            'item_name'     => $buyer_data_row['item_name'],
+                            'item_qty'      => ($buyer_data_row['item_qty'] / 1000),
+                            'item_unit'     => 'MT',
+                        ];
+                    } else {
+                        $top_buyers[] = [
+                            'vendor_name'   => (($getVendor)?$getVendor->company_name:''),
+                            'item_name'     => $buyer_data_row['item_name'],
+                            'item_qty'      => $buyer_data_row['item_qty'],
+                            'item_unit'     => $buyer_data_row['item_unit'],
+                        ];
+                    }
                 }
             }
 
