@@ -696,7 +696,7 @@ class ApiController extends BaseController
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
                 $response = json_decode(curl_exec($ch));
-                pr($response);
+                // pr($response);
                 if ($response) {
                     if ($response->flag) {
                         $gstResponse    = [
