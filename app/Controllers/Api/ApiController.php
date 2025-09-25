@@ -569,8 +569,7 @@ class ApiController extends BaseController
             }
 
             $top_buyers_final = array_slice($top_buyers_final, 0, 3);
-            pr($top_buyers_final);
-
+            
             $top_buyers_final_final = [];
             if(!empty($top_buyers_final)){
                 for($k=0;$k<count($top_buyers_final);$k++){
