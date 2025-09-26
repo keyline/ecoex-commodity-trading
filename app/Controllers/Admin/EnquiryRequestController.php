@@ -10,6 +10,7 @@ use App\Services\WhatsApp\WhatsAppMessageService;
 use App\Services\WhatsApp\WhatsAppProviderInterface;
 use App\Services\WhatsApp\DigitalSmsWhatsAppProvider;
 use App\Services\WhatsApp\WhatsAppException;
+use CodeIgniter\I18n\Time;
 
 class EnquiryRequestController extends BaseController
 {
@@ -92,6 +93,23 @@ class EnquiryRequestController extends BaseController
             $conditions                 = ['status' => $status, 'company_id' => $company_id];
         }
         $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+        //get whatsapp notification status per enquiry
+
+        $enquiryIds = array_column($data['rows'], 'id');
+
+        $w_select = 'id, enquiry_id, status';
+
+        $statusList = $this->data['model']->find_where_in(
+            'ecomm_whatsapp_workers',                          // table name
+            'enquiry_id',                                      // column for WHERE IN
+            $enquiryIds,                               // array of values
+            'result-array',                        // return type (as array)
+            $w_select                      // specific fields to select
+        );
+
+
+        $data['statusMap']  = array_column($statusList, 'status', 'enquiry_id');
+
         echo $this->layout_after_login($title, $page_name, $data);
     }
     public function viewDetail($enq_id)
@@ -2244,9 +2262,21 @@ class EnquiryRequestController extends BaseController
         }
     }
 
-    public function sendWhatsAppNotification($enquiryId)
+    public function sendWhatsAppNotification()
     {
-        $enquiryId = decoded($enquiryId);
+        $validation = \Config\Services::validation();
+
+        $validation->setRules([
+            'enquiry_id' => 'required|is_natural_no_zero',
+        ]);
+        $isValid = $validation->withRequest($this->request)->run();
+        if (!$isValid) {
+            $errors = $validation->getErrors();
+            // Return the first error message
+            return redirect()->back()->with('error_message', array_values($errors)[0])->withInput();
+        }
+        //Get the enquiry ID from the request
+        $enquiryId = decoded($this->request->getPost('enquiry_id'));
 
 
         // $enquiry is what the event sends (array)
@@ -2318,7 +2348,7 @@ class EnquiryRequestController extends BaseController
             $whatsAppProvider = new DigitalSmsWhatsAppProvider();
 
             $whatsAppService = new WhatsAppMessageService($whatsAppProvider);
-            $recipients = ['9903985585', '6289339520']; // Replace with actual recipient numbers
+            $recipients = ['9903985585', '8910649429']; // Replace with actual recipient numbers
             /*$sql = "SELECT ecomm_users.phone FROM ecomm_users WHERE ecomm_users.type='VENDOR' and ecomm_users.phone IS NOT NULL AND ecomm_users.phone <> ''
                         UNION
                     SELECT subscribers.phone FROM subscribers WHERE subscribers.phone IS NOT NULL AND subscribers.phone <> ''";
@@ -2329,6 +2359,11 @@ class EnquiryRequestController extends BaseController
             $recipients = array_column($recipientResult, 'phone');*/
 
             $finishedProcess = $whatsAppService->sendEnquiryMessages($recipients, $results);
+
+            //Update the job as finished
+            $model->where('enquiry_id', $enquiryId)
+                  ->set(['status' => 'finished', 'finished_at' => date('Y-m-d H:i:s')])
+                  ->update();
 
         } catch (\Exception $ex) {
             //throw $th;
@@ -2346,6 +2381,155 @@ class EnquiryRequestController extends BaseController
 
         return redirect()->back()->with('success_message', 'whatsapp message send successfully!');
 
+
+    }
+
+    public function sendWhatsappWithSparkCmd($enquiry_id)
+    {
+
+        /*$validation = \Config\Services::validation();
+
+        $validation->setRules([
+            'enquiry_id' => 'required|is_natural_no_zero',
+        ]);
+        $isValid = $validation->withRequest($this->request)->run();
+        if (!$isValid) {
+            $errors = $validation->getErrors();
+            // Return the first error message
+            return redirect()->back()->with('error_message', array_values($errors)[0])->withInput();
+        }*/
+        //Get the enquiry ID from the request
+        //$enquiryId = decoded($this->request->getPost('enquiry_id'));
+        $enquiryId = decoded($enquiry_id);
+
+
+        $jobModel = new WhatsAppWorkerModel();
+
+
+        //Check if the enquiry exists
+        $workerExists = $jobModel->enquiryExists($enquiryId);
+
+        $enquiryData = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enquiryId]);
+
+
+        if (!$workerExists) {
+            //If not, we stop here
+            //insert data into whatsapp_worker table with status inititialized
+            $data = [
+                'enquiry_id' => $enquiryId,
+                'status' => 'new',
+                'enquiry_meta' => json_encode($enquiryData),
+                'created_at' => date('Y-m-d H:i:s'),
+            ];
+            $jobModel->insert($data);
+
+            $jobId = $jobModel->getInsertID();
+        } else {
+
+            $job = $jobModel->where('status', 'new')
+                            ->where('enquiry_id', $enquiryId)
+                            ->first();
+            $jobId = $job['id'];
+        }
+
+        if (! $jobId) {
+
+            return redirect()->back()->with('error_message', 'Job not found');
+
+        }
+        $isWindows = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
+
+        $basePath = ROOTPATH;   // project root
+
+        $spark    = $basePath . 'spark';
+
+
+        if ($isWindows) {
+            $phpPath = 'C:\\laragon\\bin\\php\\php-8.2.8-Win32-vs16-x64\\php.exe';
+
+            $logPath  = WRITEPATH . 'logs/whatsapp-worker-' . Time::now()->format('Y-m-d') . '.log';
+
+
+            //$command = "start /B " . '"" ';// Empty title for start command
+
+            //$command .= "\"{$phpPath}\" -f \"{$basePath}spark whatsapp:process\" \"{$jobId}\"";
+
+            $command  = 'start /B "" ';
+            $command .= '"' . $phpPath . '" "' . $spark . '" whatsapp:process ' . (int)$jobId;
+
+
+
+            $descriptors = [
+                        0 => ['pipe', 'r'], // stdin
+                        1 => ['pipe', 'w'], // stdout
+                        2 => ['pipe', 'w']  // stderr
+                    ];
+
+            $process = proc_open($command, $descriptors, $pipes);
+
+            if (is_resource($process)) {
+
+                // Close pipes we don't need
+                fclose($pipes[0]);
+
+                // Make stdout and stderr non-blocking
+                stream_set_blocking($pipes[1], false);
+                stream_set_blocking($pipes[2], false);
+
+
+                // Capture output
+                /*$stdout = stream_get_contents($pipes[1]);
+                $stderr = stream_get_contents($pipes[2]);
+
+                // Close pipes
+                fclose($pipes[0]);
+                fclose($pipes[1]);
+                fclose($pipes[2]);
+
+                // Close process
+                $exitCode = proc_close($process);
+
+
+                // Write log file
+                file_put_contents(
+                    $logPath,
+                    "=== Job {$jobId} run at " . Time::now() . " ===\n" .
+                    "Command: {$command}\n" .
+                    "Exit code: {$exitCode}\n" .
+                    "Output:\n{$stdout}\n" .
+                    "Error:\n{$stderr}\n\n",
+                    FILE_APPEND
+                );*/
+
+
+
+
+                $pid = proc_get_status($process)['pid'];
+
+            }
+
+
+
+
+
+        } else {
+            $phpPath = '/usr/bin/php';
+
+            /*$command = escapeshellcmd($phpPath) . ' -f ' .
+                                escapeshellarg($basePath . 'spark whatsapp:process') . ' ' .
+                                escapeshellarg($jobId) . ' ' .
+                                ' > /dev/null 2>&1 & echo $!';*/
+
+            $command  = $phpPath . ' ' . escapeshellarg($spark) . ' whatsapp:process ' . (int)$jobId;
+            $command .= ' > /dev/null 2>&1 & echo $!';
+
+
+            $pid = (int) trim(shell_exec($command));
+
+
+        }
+
+        return redirect()->back()->with('success_message', "Job {$jobId} started (PID: {$pid})");
 
     }
 

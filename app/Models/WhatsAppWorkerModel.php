@@ -13,7 +13,7 @@ class WhatsAppWorkerModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['enquiry_id','status','enquiry_meta','created_at','started_at','finished_at','last_error'];
+    protected $allowedFields    = ['enquiry_id','status','enquiry_meta','created_at','started_at','finished_at','last_error', 'total_recipients', 'total_messages', 'failed'];
 
     // Dates
     protected $useTimestamps = false;
