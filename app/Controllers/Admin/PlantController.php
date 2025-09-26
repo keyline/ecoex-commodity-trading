@@ -39,11 +39,37 @@ class PlantController extends BaseController {
 
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
         if($userType == 'MA'){
-            $conditions                 = ['status!=' => 3, 'type' => 'PLANT'];
+            $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'gst_no!=' => ''];
         } elseif($userType == 'U'){
-            $conditions                 = ['status!=' => 3, 'type' => 'PLANT'];
+            $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'gst_no!=' => ''];
         } else {
-            $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'parent_id' => $company_id];
+            $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'parent_id' => $company_id, 'gst_no!=' => ''];
+        }
+        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+        echo $this->layout_after_login($title,$page_name,$data);
+    }
+    public function temporaryList()
+    {
+        if(!$this->common_model->checkModuleFunctionAccess(15,75)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
+        $userType                   = $this->session->user_type;
+        $company_id                 = $this->session->company_id;
+        $data['moduleDetail']       = $this->data;
+        $title                      = 'Manage Temporary '.$this->data['title'];
+        $page_name                  = 'plant/temporary-list';
+
+        $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
+        if($userType == 'MA'){
+            $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'gst_no' => ''];
+        } elseif($userType == 'U'){
+            $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'gst_no' => ''];
+        } else {
+            $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'parent_id' => $company_id, 'gst_no' => ''];
         }
         $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
         echo $this->layout_after_login($title,$page_name,$data);
@@ -485,7 +511,7 @@ class PlantController extends BaseController {
         }
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Add';
-        $title                      = $data['action'].' '.$this->data['title'];
+        $title                      = $data['action'].' Temporary '.$this->data['title'];
         $page_name                  = 'plant/add-edit-without-gst';
         $data['row']                = [];
         $orderBy[0]                 = ['field' => 'company_name', 'type' => 'ASC'];

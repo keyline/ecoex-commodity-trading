@@ -232,10 +232,25 @@ if ($userType == 'MA') {
     <?php } ?>
     <?php if ($common_model->checkModuleAccess(15)) { ?>
         <li class="nav-item">
-            <a class="nav-link <?= (($pageSegment == 'plants') ? 'active' : '') ?>" href="<?= base_url('admin/plants/list') ?>">
-                <i class="fa fa-industry"></i>
-                <span>Plants</span>
+            <a class="nav-link <?= (($pageSegment == 'plants') ? '' : 'collapsed') ?> <?= (($pageSegment == 'plants') ? 'active' : '') ?>" data-bs-target="#notification-nav" data-bs-toggle="collapse" href="javascript:void(0);">
+                <i class="fa fa-industry"></i><span>Plants</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
+            <ul id="notification-nav" class="nav-content collapse <?= (($pageSegment == 'plants') ? 'show' : '') ?>" data-bs-parent="#sidebar-nav">
+                <?php if ($common_model->checkModuleAccess(15)) { ?>
+                    <li>
+                        <a class="<?= (($pageSegment == 'plants') ? 'active' : '') ?>" href="<?= base_url('admin/plants/list') ?>">
+                            <i class="fa fa-arrow-right"></i><span>Final</span>
+                        </a>
+                    </li>
+                <?php } ?>
+                <?php if ($common_model->checkModuleAccess(15)) { ?>
+                    <li>
+                        <a class="<?= (($pageSegment == 'plants') ? 'active' : '') ?>" href="<?= base_url('admin/plants/temporary-list') ?>">
+                            <i class="fa fa-arrow-right"></i><span>Temporary</span>
+                        </a>
+                    </li>
+                <?php } ?>
+            </ul>
         </li>
     <?php } ?>
 

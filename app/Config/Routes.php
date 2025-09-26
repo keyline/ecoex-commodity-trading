@@ -161,6 +161,10 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     $routes->match(['get', 'post'], "plants/check-email", "PlantController::check_email");
     $routes->match(['get', 'post'], "plants/check-phone", "PlantController::check_phone");
     // plants
+    // temporary plants
+    $routes->match(['get'], "plants/temporary-list", "PlantController::temporaryList");
+    $routes->match(['get', 'post'], "plants/add-without-gst", "PlantController::addWithoutGST");
+    // temporary plants
     // vendors
     $routes->match(['get'], "vendors/list", "VendorController::list");
     $routes->match(['get', 'post'], "vendors/add", "VendorController::add");
@@ -253,11 +257,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     $routes->post('recycler-category/(:segment)', 'RecyclerCategorysController::update/$1', ['as' => 'recycler_category.update']); // Update record
     $routes->delete('recycler-category/(:segment)', 'RecyclerCategorysController::delete/$1', ['as' => 'recycler_category.delete']); // Delete record
     $routes->get('recycler-category/status/(:segment)/(:segment)', 'RecyclerCategorysController::updateStatus/$1/$2', ['as' => 'recycler_category.status']); // Toggle status
-    // Manage Recycler Categorys
-
-    // temporary plants
-    $routes->match(['get', 'post'], "plants/add-without-gst", "PlantController::addWithoutGST");
-    // temporary plants
+    // Manage Recycler Categorys    
 
     // reports
     $routes->match(['get', 'post'], "reports/analytics-report", "ReportController::analyticsReport");
