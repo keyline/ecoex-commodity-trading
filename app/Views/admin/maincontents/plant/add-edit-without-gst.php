@@ -97,7 +97,7 @@ $company_id                 = $session->company_id;
                         <small class="text-danger mb-0 mb-md-2 d-block">* (star) marks fields are mandatory</small>
                         <form method="POST" action="" enctype="multipart/form-data">
                             <input type="hidden" name="holding_no" id="holding_no" value="<?=$holding_no?>">
-                            <input type="hidden" name="location" id="location" value="<?=$location?>">
+                            
                             <div class="row mb-3">
                                 <?php if($userType == 'MA'){?>
                                     <label for="parent_id" class="col-md-2 col-lg-2 col-form-label">Select Company <span class="text-danger">*</span></label>
@@ -136,6 +136,12 @@ $company_id                 = $session->company_id;
                                 <label for="street" class="col-md-2 col-lg-2 col-form-label">Street <span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
                                     <input type="text" name="street" class="form-control" id="street" value="<?=$street?>" required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="location" class="col-md-2 col-lg-2 col-form-label">Location <span class="text-danger">*</span></label>
+                                <div class="col-md-10 col-lg-10">
+                                    <input type="text" name="location" class="form-control" id="location" value="<?=$location?>" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
