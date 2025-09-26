@@ -106,10 +106,11 @@ $userType           = $session->user_type;
                                                             if ($row->updated_by > 0) {
                                                                 $actionUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->updated_by], 'plant_name');
                                                                 ?>
-                                                            <?php } else {?>
-                                                                <small>Admin</small>
-                                                            <?php }?>
-                                                        <?php } ?>
+                                                            <small><?= ($actionUser) ? nl2br(wordwrap($actionUser->plant_name, 15, "\n", false)) : '' ?>
+                                                            </small>
+                                                        <?php } else {?>
+                                                            <small>Admin</small>
+                                                        <?php }?>
                                                     </h6>
                                                 </td>
                                                 <?php if ($row->status >= 11 && $row->status <= 12) { ?>
