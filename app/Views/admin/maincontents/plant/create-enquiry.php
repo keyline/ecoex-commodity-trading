@@ -121,7 +121,7 @@ $company_id                 = $session->company_id;
         var wrapper = $('.field_wrapper'); //Input field wrapper
         var fieldHTML = `<div class="row" style="border: 1px solid #022b6d; padding: 10px;margin-bottom: 5px;border-radius:10px;">
                             <div class="col-md-4">
-                                <select class="form-control" name="item_id[]" required>
+                                <select class="form-select" name="item_id[]" required>
                                     <option value="" selected>Select Item</option>
                                     <?php if($items){ foreach($items as $item){?>
                                         <option value="<?=$item->id?>"><?=$item->item_name_ecoex?></option>
