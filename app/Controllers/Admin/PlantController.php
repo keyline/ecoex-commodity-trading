@@ -589,7 +589,9 @@ class PlantController extends BaseController {
         $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => $parent_id], 'id,item_name_ecoex', '', '', $orderBy2);
 
         if($this->request->getMethod() == 'post') {
-            pr($this->request->getPost());
+            pr($this->request->getPost(), 0);
+            pr($this->request->getFile(), 0);
+            die;
             $postData   = array(
                 'type'                  => 'PLANT',
                 'parent_id'             => $this->request->getPost('parent_id'),
