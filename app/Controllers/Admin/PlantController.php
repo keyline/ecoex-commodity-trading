@@ -65,9 +65,9 @@ class PlantController extends BaseController {
 
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
         if($userType == 'MA'){
-            $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'gst_no' => ''];
+            $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'gst_no' => NULL];
         } elseif($userType == 'U'){
-            $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'gst_no' => ''];
+            $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'gst_no' => NULL];
         } else {
             $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'parent_id' => $company_id, 'gst_no' => ''];
         }
