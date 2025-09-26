@@ -166,14 +166,14 @@ $company_id                 = $session->company_id;
                             </div>
                             
                             <!-- items -->
-                                <div class="col-md-12 mb-4 text-center">
+                                <!-- <div class="col-md-12 mb-4 text-center">
                                     <button type="button" class="btn btn-info btn-sm mt-4 add_button">Add Item For Enquiry</button>
                                 </div>
                                 <div class="col-md-12 mb-4 text-center">
                                     <div class="field_wrapper">
                                         
                                     </div>
-                                </div>
+                                </div> -->
                             <!-- items -->
                                 
                             <div class="text-center">

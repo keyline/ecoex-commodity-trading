@@ -517,14 +517,11 @@ class PlantController extends BaseController {
         $orderBy[0]                 = ['field' => 'company_name', 'type' => 'ASC'];
         $data['companyList']        = $this->data['model']->find_data('ecoex_companies', 'array', ['status!=' => 3, 'parent_id' => 0, 'id' => 1], '', '', '', $orderBy);
 
-        $orderBy2[0]                = ['field' => 'item_name_ecoex', 'type' => 'ASC'];
-        $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => 1], 'id,item_name_ecoex', '', '', $orderBy2);
+        // $orderBy2[0]                = ['field' => 'item_name_ecoex', 'type' => 'ASC'];
+        // $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => 1], 'id,item_name_ecoex', '', '', $orderBy2);
 
         if($this->request->getMethod() == 'post') {
-            $profile_image = '';
-            $gst_certificate = '';
-            $contact_person_document = '';
-            $cancelled_cheque = '';
+            
 
             $postData   = array(
                 'type'                  => 'PLANT',
@@ -549,7 +546,7 @@ class PlantController extends BaseController {
             pr($postData);
             $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);            
             $this->session->setFlashdata('success_message', $this->data['title'].' inserted successfully');
-            return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/temporary-list');
         }
         echo $this->layout_after_login($title,$page_name,$data);
     }
