@@ -116,7 +116,7 @@ $company_id                 = $session->company_id;
                                                             <a href="<?= base_url('admin/' . $controller_route . '/change-status/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-danger btn-sm" title="Deactivate <?= $title ?>" onclick="return confirm('Do You Want To Activate This <?= $title ?>');"><i class="fa fa-times"></i></a>
                                                         <?php } ?>
                                                     <?php } ?>
-                                                    <br>
+                                                    <br><br>
                                                     <a href="<?= base_url('admin/' . $controller_route . '/create-enquiry/' . encoded($row->$primary_key)) ?>" class="btn btn-primary btn-sm" title="Create <?= $title ?> Enquiry"><i class="fa fa-question-circle"></i> Create <?= $title ?> Enquiry</a>
                                                 </td>
                                             </tr>
