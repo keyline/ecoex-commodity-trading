@@ -11,7 +11,7 @@ if ($baseUrl == 'https://commodity.ecoex.market/') {
     $pageSegment    = $uri->getSegment(3);
     $pageFunction    = $uri->getSegment(4);
 }
-echo $pageFunction;die;
+
 $segmentCount = $uri->getTotalSegments();
 if ($segmentCount > 3) {
     $paramerId = $uri->getSegment(5);
@@ -241,14 +241,14 @@ if ($userType == 'MA') {
             <ul id="notification-nav" class="nav-content collapse <?= (($pageSegment == 'plants') ? 'show' : '') ?>" data-bs-parent="#sidebar-nav">
                 <?php if ($common_model->checkModuleAccess(15)) { ?>
                     <li>
-                        <a class="<?= (($pageSegment == 'plants') ? 'active' : '') ?>" href="<?= base_url('admin/plants/list') ?>">
+                        <a class="<?= (($pageSegment == 'plants' && $pageFunction == 'list') ? 'active' : '') ?>" href="<?= base_url('admin/plants/list') ?>">
                             <i class="fa fa-arrow-right"></i><span>Final</span>
                         </a>
                     </li>
                 <?php } ?>
                 <?php if ($common_model->checkModuleAccess(15)) { ?>
                     <li>
-                        <a class="<?= (($pageSegment == 'plants') ? 'active' : '') ?>" href="<?= base_url('admin/plants/temporary-list') ?>">
+                        <a class="<?= (($pageSegment == 'plants' && $pageFunction == 'temporary-list') ? 'active' : '') ?>" href="<?= base_url('admin/plants/temporary-list') ?>">
                             <i class="fa fa-arrow-right"></i><span>Temporary</span>
                         </a>
                     </li>
