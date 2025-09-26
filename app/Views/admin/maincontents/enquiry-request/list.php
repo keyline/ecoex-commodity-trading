@@ -95,7 +95,9 @@ $userType           = $session->user_type;
                                                             ?>
                                                             <small><?= ($actionUser) ? nl2br(wordwrap($actionUser->plant_name, 15, "\n", false)) : '' ?>
                                                             </small>
-                                                        <?php } ?>
+                                                        <?php } else {?>
+                                                            <small>Admin</small>
+                                                        <?php }?>
                                                         <hr>
                                                     </h6>
                                                     <h6>
@@ -104,8 +106,9 @@ $userType           = $session->user_type;
                                                             if ($row->updated_by > 0) {
                                                                 $actionUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->updated_by], 'plant_name');
                                                                 ?>
-                                                            <small><?= ($actionUser) ? nl2br(wordwrap($actionUser->plant_name, 15, "\n", false)) : '' ?>
-                                                            </small>
+                                                            <?php } else {?>
+                                                                <small>Admin</small>
+                                                            <?php }?>
                                                         <?php } ?>
                                                     </h6>
                                                 </td>
