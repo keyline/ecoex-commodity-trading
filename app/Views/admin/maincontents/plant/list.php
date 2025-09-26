@@ -117,7 +117,10 @@ $company_id                 = $session->company_id;
                                                         <?php } ?>
                                                     <?php } ?>
                                                     <br><br>
-                                                    <a href="<?= base_url('admin/' . $controller_route . '/create-enquiry/' . encoded($row->$primary_key)) ?>" class="btn btn-primary btn-sm" title="Create <?= $title ?> Enquiry"><i class="fa fa-question-circle"></i> Create <?= $title ?> Enquiry</a>
+                                                    <?php
+                                                    $enquiry_count = $common_model->find_data('ecomm_enquires', 'count', ['plant_id' => $row->$primary_key]);
+                                                    ?>
+                                                    <a href="<?= base_url('admin/' . $controller_route . '/create-enquiry/' . encoded($row->$primary_key)) ?>" class="btn btn-primary btn-sm" title="Create <?= $title ?> Enquiry"><i class="fa fa-question-circle"></i> Create <?= $title ?> Enquiry (<?=$enquiry_count?>)</a>
                                                 </td>
                                             </tr>
                                     <?php }
