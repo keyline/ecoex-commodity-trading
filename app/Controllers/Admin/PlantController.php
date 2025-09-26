@@ -590,7 +590,7 @@ class PlantController extends BaseController {
 
         if($this->request->getMethod() == 'post') {
             pr($this->request->getPost(), 0);
-            pr($this->request->getFile(), 0);
+            pr($_FILES, 0);
             die;
             $postData   = array(
                 'type'                  => 'PLANT',
