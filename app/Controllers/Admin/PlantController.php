@@ -589,13 +589,13 @@ class PlantController extends BaseController {
         $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => $parent_id], 'id,item_name_ecoex', '', '', $orderBy2);
 
         if($this->request->getMethod() == 'post') {
-            pr($this->request->getPost(), 0);
-            pr($_FILES, 0);
+            // pr($this->request->getPost(), 0);
+            // pr($_FILES, 0);
             // die;
 
             $item_id            = $this->request->getPost('item_id');
             $qty                = $this->request->getPost('qty');
-            $new_product_image  = $_FILES['new_product_image'];
+            $new_product_image  = $this->request->getFiles('new_product_image');
             $image_arr          = $this->data['model']->commonFileArrayUpload('enquiry/', $new_product_image, 'image');
             pr($image_arr);
 
