@@ -164,6 +164,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     // temporary plants
     $routes->match(['get'], "plants/temporary-list", "PlantController::temporaryList");
     $routes->match(['get', 'post'], "plants/add-without-gst", "PlantController::addWithoutGST");
+    $routes->match(['get', 'post'], "plants/create-enquiry/(:any)", "PlantController::createEnquiry/$1");
     // temporary plants
     // vendors
     $routes->match(['get'], "vendors/list", "VendorController::list");

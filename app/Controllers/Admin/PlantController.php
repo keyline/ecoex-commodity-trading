@@ -536,12 +536,60 @@ class PlantController extends BaseController {
         $orderBy[0]                 = ['field' => 'company_name', 'type' => 'ASC'];
         $data['companyList']        = $this->data['model']->find_data('ecoex_companies', 'array', ['status!=' => 3, 'parent_id' => 0, 'id' => 1], '', '', '', $orderBy);
 
-        $orderBy2[0]                = ['field' => 'item_name_ecoex', 'type' => 'ASC'];
-        $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => 1], 'id,item_name_ecoex', '', '', $orderBy2);
-
         if($this->request->getMethod() == 'post') {
             
 
+            $postData   = array(
+                'type'                  => 'PLANT',
+                'parent_id'             => $this->request->getPost('parent_id'),
+                'company_name'          => $this->request->getPost('company_name'),
+                'plant_name'            => $this->request->getPost('plant_name'),
+                'full_address'          => $this->request->getPost('full_address'),
+                'holding_no'            => $this->request->getPost('holding_no'),
+                'street'                => $this->request->getPost('street'),
+                'district'              => $this->request->getPost('district'),
+                'state'                 => $this->request->getPost('state'),
+                'pincode'               => $this->request->getPost('pincode'),
+                'location'              => $this->request->getPost('location'),
+                'phone'                 => $this->request->getPost('phone'),
+                'phone_verify'          => 1,
+                'phone_verified_at'     => date('Y-m-d H:i:s'),
+                // 'password'              => md5($this->request->getPost('password')),
+                'created_by'            => $this->session->user_id,
+                'updated_by'            => $this->session->user_id,
+                'status'                => 2,
+            );
+            // pr($postData);
+            $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);            
+            $this->session->setFlashdata('success_message', $this->data['title'].' inserted successfully');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/temporary-list');
+        }
+        echo $this->layout_after_login($title,$page_name,$data);
+    }
+    public function createEnquiry($id)
+    {
+        if(!$this->common_model->checkModuleFunctionAccess(15,115)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
+        $id                         = decoded($id);
+        $data['moduleDetail']       = $this->data;
+        $data['action']             = 'Add';
+        $title                      = $data['action'].' Temporary '.$this->data['title'];
+        $page_name                  = 'plant/create-enquiry';
+        
+        $conditions                 = array($this->data['primary_key']=>$id);
+        $data['plant']              = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
+        $parent_id                  = (($data['plant'])?$data['plant']->parent_id:0);
+
+        $orderBy2[0]                = ['field' => 'item_name_ecoex', 'type' => 'ASC'];
+        $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => $parent_id], 'id,item_name_ecoex', '', '', $orderBy2);
+
+        if($this->request->getMethod() == 'post') {
+            pr($this->request->getPost());
             $postData   = array(
                 'type'                  => 'PLANT',
                 'parent_id'             => $this->request->getPost('parent_id'),

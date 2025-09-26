@@ -170,17 +170,6 @@ $company_id                 = $session->company_id;
                                     <input type="text" name="phone" class="form-control" value="<?=$phone?>" onkeypress="return isNumber(event)" maxlength="10" minlength="10" required>
                                 </div>
                             </div>
-                            
-                            <!-- items -->
-                                <!-- <div class="col-md-12 mb-4 text-center">
-                                    <button type="button" class="btn btn-info btn-sm mt-4 add_button">Add Item For Enquiry</button>
-                                </div>
-                                <div class="col-md-12 mb-4 text-center">
-                                    <div class="field_wrapper">
-                                        
-                                    </div>
-                                </div> -->
-                            <!-- items -->
                                 
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary"><?=(($row)?'Save':'Add')?></button>
@@ -241,49 +230,4 @@ $company_id                 = $session->company_id;
         }
         return true;
     }
-</script>
-<script>
-    $(document).ready(function(){
-        var maxField = 10; //Input fields increment limitation
-        var addButton = $('.add_button'); //Add button selector
-        var wrapper = $('.field_wrapper'); //Input field wrapper
-        var fieldHTML = `<div class="row" style="border: 1px solid #022b6d; padding: 10px;margin-bottom: 5px;border-radius:10px;">
-                            <div class="col-md-4">
-                                <select class="form-control" name="item_id[]" required>
-                                    <option value="" selected>Select Item</option>
-                                    <?php if($items){ foreach($items as $item){?>
-                                        <option value="<?=$item->id?>"><?=$item->item_name_ecoex?></option>
-                                    <?php } }?>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control" name="product_id[]" placeholder="Item Tentative Qty" required>
-                            </div>
-                            <div class="col-md-4">
-                                <input type="file" class="form-control" name="new_product_image[] placeholder="Item Image" required>
-                            </div>
-                            <div class="col-md-1">
-                                <a href="javascript:void(0);" class="btn btn-danger btn-sm remove_button" style="background: #FFF;">❌</a>
-                            </div>
-                        </div>`; //New input field html 
-        var x = 1; //Initial field counter is 1
-        
-        // Once add button is clicked
-        $(addButton).click(function(){
-            //Check maximum number of input fields
-            if(x < maxField){ 
-                x++; //Increase field counter
-                $(wrapper).append(fieldHTML); //Add field html
-            }else{
-                alert('A maximum of '+maxField+' fields are allowed to be added. ');
-            }
-        });
-        
-        // Once remove button is clicked
-        $(wrapper).on('click', '.remove_button', function(e){
-            e.preventDefault();
-            $(this).parent('div').parent('div').remove(); //Remove field html
-            x--; //Decrease field counter
-        });
-    });
 </script>
