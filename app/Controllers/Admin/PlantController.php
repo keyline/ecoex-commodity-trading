@@ -595,7 +595,7 @@ class PlantController extends BaseController {
 
             $item_id            = $this->request->getPost('item_id');
             $qty                = $this->request->getPost('qty');
-            $uploadedFiles = $this->request->getFile('new_product_image'); 
+            $uploadedFiles = $this->request->getFileMultiple('new_product_image');
             $uploadPath = FCPATH . 'uploads/enquiry/';
 
             if (!is_dir($uploadPath)) {
@@ -604,16 +604,15 @@ class PlantController extends BaseController {
 
             $imageNames = [];
 
-            foreach ($uploadedFiles as $file) {
-                if ($file->isValid() && !$file->hasMoved()) {
-                    // Generate unique name
-                    $newName = $file->getRandomName();
+            if ($uploadedFiles && is_array($uploadedFiles)) {
+                foreach ($uploadedFiles as $file) {
+                    if ($file->isValid() && !$file->hasMoved()) {
+                        // Use random name (safe) or keep original with getClientName()
+                        $newName = $file->getRandomName();
+                        $file->move($uploadPath, $newName);
 
-                    // Move file
-                    $file->move($uploadPath, $newName);
-
-                    // Save filename
-                    $imageNames[] = $newName;
+                        $imageNames[] = $newName;
+                    }
                 }
             }
             pr($imageNames);
