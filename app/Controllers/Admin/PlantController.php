@@ -595,10 +595,9 @@ class PlantController extends BaseController {
 
             $item_id            = $this->request->getPost('item_id');
             $qty                = $this->request->getPost('qty');
-            $uploadedFiles      = $this->request->getFiles('new_product_image');
-            $uploadPath = FCPATH . 'uploads/enquiry/'; // FCPATH = public/ directory
+            $uploadedFiles = $this->request->getFile('new_product_image'); 
+            $uploadPath = FCPATH . 'uploads/enquiry/';
 
-            // $image_arr          = $this->data['model']->commonFileArrayUpload('enquiry/', $new_product_image, 'image');
             if (!is_dir($uploadPath)) {
                 mkdir($uploadPath, 0777, true);
             }
@@ -607,13 +606,13 @@ class PlantController extends BaseController {
 
             foreach ($uploadedFiles as $file) {
                 if ($file->isValid() && !$file->hasMoved()) {
-                    // Generate unique name (optional)
+                    // Generate unique name
                     $newName = $file->getRandomName();
 
-                    // Move file to destination
+                    // Move file
                     $file->move($uploadPath, $newName);
 
-                    // Collect filename for return
+                    // Save filename
                     $imageNames[] = $newName;
                 }
             }
