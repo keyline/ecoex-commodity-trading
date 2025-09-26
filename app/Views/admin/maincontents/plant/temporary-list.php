@@ -109,11 +109,11 @@ $company_id                 = $session->company_id;
                                                     <?php } ?>
                                                     <?php if ($row->status) { ?>
                                                         <?php if ($common_model->checkModuleFunctionAccess(15, 77)) { ?>
-                                                            <a href="<?= base_url('admin/' . $controller_route . '/change-status/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-danger btn-sm" title="Deactivate <?= $title ?>" onclick="return confirm('Do You Want To Deactivate This <?= $title ?>');"><i class="fa fa-times"></i></a>
+                                                            <a href="<?= base_url('admin/' . $controller_route . '/change-status/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-success btn-sm" title="Activate <?= $title ?>" onclick="return confirm('Do You Want To Deactivate This <?= $title ?>');"><i class="fa fa-check"></i></a>
                                                         <?php } ?>
                                                     <?php } else { ?>
                                                         <?php if ($common_model->checkModuleFunctionAccess(15, 76)) { ?>
-                                                            <a href="<?= base_url('admin/' . $controller_route . '/change-status/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-danger btn-sm mt-2" title="Activate <?= $title ?>" onclick="return confirm('Do You Want To Activate This <?= $title ?>');"><i class="fa fa-check"></i></a>
+                                                            <a href="<?= base_url('admin/' . $controller_route . '/change-status/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-danger btn-sm" title="Deactivate <?= $title ?>" onclick="return confirm('Do You Want To Activate This <?= $title ?>');"><i class="fa fa-times"></i></a>
                                                         <?php } ?>
                                                     <?php } ?>
                                                 </td>
