@@ -55,7 +55,7 @@ $company_id                 = $session->company_id;
                             <!-- items -->
                                 
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary"><?=(($row)?'Save':'Add')?></button>
+                                <button type="submit" class="btn btn-primary">Create</button>
                             </div>
                         </form>
                     </div>
