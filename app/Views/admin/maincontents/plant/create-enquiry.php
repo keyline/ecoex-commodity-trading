@@ -132,7 +132,7 @@ $company_id                 = $session->company_id;
                                 <input type="text" class="form-control" name="qty[]" placeholder="Item Tentative Qty" required>
                             </div>
                             <div class="col-md-4">
-                                <input type="file" class="form-control" name="new_product_image[] placeholder="Item Image" required>
+                                <input type="file" class="form-control" name="new_product_image[]" placeholder="Item Image" required>
                             </div>
                             <div class="col-md-1">
                                 <a href="javascript:void(0);" class="btn btn-danger btn-sm remove_button" style="background: #FFF;">❌</a>
