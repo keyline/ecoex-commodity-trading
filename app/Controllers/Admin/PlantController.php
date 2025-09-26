@@ -342,12 +342,25 @@ class PlantController extends BaseController {
     public function confirm_delete($id)
     {
         $id                         = decoded($id);
-        $postData = array(
-                            'status' => 3
-                        );
-        $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
-        $this->session->setFlashdata('success_message', $this->data['title'].' deleted successfully');
-        return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+        $conditions                 = array($this->data['primary_key']=>$id);
+        $getPlant                   = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
+        if($getPlant){
+            $postData = array(
+                                'status' => 3
+                            );
+            $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
+
+            if($getPlant->gst_no != ''){
+                $this->session->setFlashdata('success_message', $this->data['title'].' deleted successfully');
+                return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+            } else {
+                $this->session->setFlashdata('success_message', $this->data['title'].' deleted successfully');
+                return redirect()->to('/admin/'.$this->data['controller_route'].'/temporary-list');
+            }
+        } else {
+            $this->session->setFlashdata('success_message', $this->data['title'].' not found');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+        }
     }
     public function change_status($id)
     {
@@ -396,8 +409,14 @@ class PlantController extends BaseController {
                             'status' => $status
                         );
         $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
-        $this->session->setFlashdata('success_message', $this->data['title'].' '.$msg.' successfully');
-        return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+
+        if($data['row']->gst_no != ''){
+            $this->session->setFlashdata('success_message', $this->data['title'].' '.$msg.' successfully');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+        } else {
+            $this->session->setFlashdata('success_message', $this->data['title'].' '.$msg.' successfully');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/temporary-list');
+        }
     }
     public function view($id)
     {
