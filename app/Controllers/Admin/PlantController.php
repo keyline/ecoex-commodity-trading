@@ -647,11 +647,8 @@ class PlantController extends BaseController {
                 'device_model'              => '',
                 'created_by'                => 0,
             ];
-            pr($fields1,0);
-            
-            $enq_id = $this->data['model']->save_data('ecomm_enquires', $fields1, '', 'id');
-
-            
+            // pr($fields1,0);
+            $enq_id = $this->data['model']->save_data('ecomm_enquires', $fields1, '', 'id');            
 
             if (!empty($item_id)) {
                 for ($k = 0; $k < count($item_id); $k++) {
@@ -669,18 +666,15 @@ class PlantController extends BaseController {
                         'qty'                           => $qty[$k],
                         'unit'                          => (($getItem)?$getItem->unit:0),
                         'new_product_image'             => json_encode($item_images),
-                        'status'                        => 1,
+                        'status'                        => 0,
                     ];
-                    pr($fields2,0);
-                    // $this->data['model']->save_data('ecomm_enquiry_products', $fields2, '', 'id');
+                    // pr($fields2,0);
+                    $this->data['model']->save_data('ecomm_enquiry_products', $fields2, '', 'id');
                 }
             }
-            die;
             
-            // pr($postData);
-            $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);            
-            $this->session->setFlashdata('success_message', $this->data['title'].' inserted successfully');
-            return redirect()->to('/admin/'.$this->data['controller_route'].'/temporary-list');
+            $this->session->setFlashdata('success_message', $this->data['title'].' enquiry created successfully');
+            return redirect()->to('/admin/enquiry-requests/list/' . encoded(0));
         }
         echo $this->layout_after_login($title,$page_name,$data);
     }
