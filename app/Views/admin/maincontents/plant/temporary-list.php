@@ -40,7 +40,7 @@ $company_id                 = $session->company_id;
                     <div class="card-body">
                         <?php if ($common_model->checkModuleFunctionAccess(15, 115)) { ?>
                             <h5 class="card-titles">
-                                <a href="<?= base_url('admin/' . $controller_route . '/add-without-gst/') ?>" class="btn btn-outline-warning btn-sm">Add Temporary <?= $title ?></a>
+                                <a href="<?= base_url('admin/' . $controller_route . '/add-without-gst/') ?>" class="btn btn-outline-success btn-sm">Add Temporary <?= $title ?></a>
                             </h5>
                         <?php } ?>
                         <div class="table-responsive">

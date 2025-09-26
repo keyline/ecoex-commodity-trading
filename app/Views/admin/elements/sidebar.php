@@ -4,11 +4,14 @@ if ($baseUrl == 'https://commodity.ecoex.market/') {
     $currentLink    = current_url();
     $uri            = new \CodeIgniter\HTTP\URI($currentLink);
     $pageSegment    = $uri->getSegment(2);
+    $pageFunction    = $uri->getSegment(3);
 } else {
     $currentLink    = current_url();
     $uri            = new \CodeIgniter\HTTP\URI($currentLink);
     $pageSegment    = $uri->getSegment(3);
+    $pageFunction    = $uri->getSegment(4);
 }
+echo $pageFunction;die;
 $segmentCount = $uri->getTotalSegments();
 if ($segmentCount > 3) {
     $paramerId = $uri->getSegment(5);
