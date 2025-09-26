@@ -596,6 +596,7 @@ class PlantController extends BaseController {
             $item_id            = $this->request->getPost('item_id');
             $qty                = $this->request->getPost('qty');
             $new_product_image  = $this->request->getFiles('new_product_image');
+            pr($new_product_image);
             $image_arr          = $this->data['model']->commonFileArrayUpload('enquiry/', $new_product_image, 'image');
             pr($image_arr);
 
