@@ -215,7 +215,10 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     $routes->match(['get', 'post'], "enquiry-requests/order-complete/(:any)", "EnquiryRequestController::orderComplete/$1");
     $routes->match(['get', 'post'], "enquiry-requests/sub-enquiry-quit/(:any)/(:any)/(:any)", "EnquiryRequestController::subEnquiryQuit/$1/$2/$3");
     //Send WhatsApp notification to vendors/subscribers
-    $routes->match(['get', 'post'], "enquiry-requests/send-whatsapp-notification/(:any)", "EnquiryRequestController::sendWhatsAppNotification/$1");
+    //$routes->match(['get', 'post'], "enquiry-requests/send-whatsapp-notification/(:any)", "EnquiryRequestController::sendWhatsAppNotification/$1");
+
+    $routes->match(['get', 'post'], "enquiry-requests/send-whatsapp-notification/(:any)", "EnquiryRequestController::sendWhatsappWithSparkCmd/$1");
+
 
 
     // enquiry requests
@@ -273,6 +276,11 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     $routes->match(['get', 'post'], "subscriber/edit/(:any)", "SubscribersController::edit/$1");
     $routes->match(['get', 'post'], "subscriber/delete/(:any)", "SubscribersController::confirm_delete/$1");
     $routes->match(['get', 'post'], "subscriber/change-status/(:any)", "SubscribersController::change_status/$1");
+    //Manage Whatsapp log
+    $routes->match(['get'], 'whatsapp/logs', "WhatsappMessageController::list");
+
+    $routes->match(['get', 'post'], 'whatsapp/failed/retry/(:num)', "WhatsappMessageController::retryList/$1");
+
 });
 /* ADMIN PANEL */
 /* API */

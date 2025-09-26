@@ -462,5 +462,11 @@ if ($userType == 'MA') {
                 <span>Settings</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link <?= (($pageSegment == 'whatsapp') ? 'active' : '') ?>" href="<?= base_url('admin/whatsapp/logs') ?>">
+                <i class="fa fa-gear"></i>
+                <span>WhatsApp Logs</span>
+            </a>
+        </li>
     <?php } ?>
 </ul>
