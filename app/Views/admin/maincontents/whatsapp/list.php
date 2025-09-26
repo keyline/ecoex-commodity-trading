@@ -57,11 +57,13 @@ $userType                   = $session->user_type;
                                     <?php if ($rows) {
                                         $sl = 1;
                                         foreach ($rows as $row) { ?>
+                                            <?php $data = json_decode($row['enquiry_meta'], true);?>
+
                                             <tr>
                                                 <th scope="row" class="text-center"><?= $row['id'] ?></th>
                                                 
                                                 
-                                                <td><?= $row['enquiry_id'] ?></td>
+                                                <td><?= $data['enquiry_no'] ?></td>
                                                 <td><?= $row['status'] ?></td>
                                                 <td><?= $row['total_recipients'] ?></td>
                                                 <td><?= $row['total_messages'] ?></td>

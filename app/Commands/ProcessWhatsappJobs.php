@@ -71,9 +71,19 @@ class ProcessWhatsappJobs extends BaseCommand
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
-        $payload = json_decode($job['enquiry_meta'], true);
+        //$payload = json_decode($job['enquiry_meta'], true);
         //$recipients = $payload['recipients'] ?? [];
-        $recipients = ['9903985585', '8910649429', '6289339520', '8981374267']; // Replace with actual recipient numbers
+        //$recipients = ['9903985585', '8910649429', '6289339520', '8981374267']; // Replace with actual recipient numbers
+
+        $sql = "SELECT ecomm_users.phone FROM ecomm_users WHERE ecomm_users.type='VENDOR' and ecomm_users.phone IS NOT NULL AND ecomm_users.phone <> ''
+                        UNION
+                    SELECT subscribers.phone FROM subscribers WHERE subscribers.phone IS NOT NULL AND subscribers.phone <> ''";
+
+
+        $query = $this->db->query($sql);
+        $recipientResult = $query->getResultArray();
+        $recipients = array_column($recipientResult, 'phone');
+
         //getting items send in message
         //one item per message
         $builder = $this->db->table('ecomm_enquires ee');
