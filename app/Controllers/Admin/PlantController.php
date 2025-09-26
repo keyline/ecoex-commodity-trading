@@ -595,10 +595,29 @@ class PlantController extends BaseController {
 
             $item_id            = $this->request->getPost('item_id');
             $qty                = $this->request->getPost('qty');
-            $new_product_image  = $this->request->getFiles('new_product_image');
-            pr($new_product_image);
-            $image_arr          = $this->data['model']->commonFileArrayUpload('enquiry/', $new_product_image, 'image');
-            pr($image_arr);
+            $uploadedFiles      = $this->request->getFiles('new_product_image');
+            $uploadPath = FCPATH . 'uploads/enquiry/'; // FCPATH = public/ directory
+
+            // $image_arr          = $this->data['model']->commonFileArrayUpload('enquiry/', $new_product_image, 'image');
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            $imageNames = [];
+
+            foreach ($uploadedFiles as $file) {
+                if ($file->isValid() && !$file->hasMoved()) {
+                    // Generate unique name (optional)
+                    $newName = $file->getRandomName();
+
+                    // Move file to destination
+                    $file->move($uploadPath, $newName);
+
+                    // Collect filename for return
+                    $imageNames[] = $newName;
+                }
+            }
+            pr($imageNames);
 
             $plant_id       = $id;
             $company_id     = $parent_id;
