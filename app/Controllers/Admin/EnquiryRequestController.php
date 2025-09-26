@@ -2524,7 +2524,7 @@ class EnquiryRequestController extends BaseController
             $command .= ' > /dev/null 2>&1 & echo $!';
 
 
-            $pid = (int) trim(shell_exec($command));
+            $pid = (int) trim(\shell_exec($command));
 
 
         }
