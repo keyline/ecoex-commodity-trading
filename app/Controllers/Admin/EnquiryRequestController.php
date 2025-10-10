@@ -2533,4 +2533,53 @@ class EnquiryRequestController extends BaseController
 
     }
 
+    public function sendWhatsappWithSparkCmdV2($enquiry_id)
+    {
+
+
+        $enquiryId = decoded($enquiry_id);
+
+
+        $jobModel = new WhatsAppWorkerModel();
+
+
+        //Check if the enquiry exists
+        $workerExists = $jobModel->enquiryExists($enquiryId);
+
+        $enquiryData = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enquiryId]);
+
+
+        if (!$workerExists) {
+            //If not, we stop here
+            //insert data into whatsapp_worker table with status inititialized
+            $data = [
+                'enquiry_id' => $enquiryId,
+                'status' => 'pending',
+                'enquiry_meta' => json_encode($enquiryData),
+                'created_at' => date('Y-m-d H:i:s'),
+            ];
+            $jobModel->insert($data);
+
+            $jobId = $jobModel->getInsertID();
+        } else {
+
+            $job = $jobModel->where('enquiry_id', $enquiryId)->first();
+
+            $jobModel->where('enquiry_id', $enquiryId)
+                            ->set(['status' => 'pending', 'started_at' => date('Y-m-d H:i:s')])
+                            ->update();
+            $jobId = $job['id'];
+        }
+
+        if (! $jobId) {
+
+            return redirect()->back()->with('error_message', 'Job not found');
+
+        }
+
+
+        return redirect()->back()->with('success_message', "Job {$jobId} is in pending state. It will be processed soon.");
+
+    }
+
 }

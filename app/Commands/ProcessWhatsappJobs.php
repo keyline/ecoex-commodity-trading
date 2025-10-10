@@ -74,13 +74,35 @@ class ProcessWhatsappJobs extends BaseCommand
         //$payload = json_decode($job['enquiry_meta'], true);
         //$recipients = $payload['recipients'] ?? [];
         //$recipients = ['9903985585', '8910649429', '6289339520', '8981374267']; // Replace with actual recipient numbers
+        $testRecipients = ['9866186563', '9733159567']; // Replace with actual recipient numbers
 
-        $sql = "SELECT ecomm_users.phone FROM ecomm_users WHERE ecomm_users.type='VENDOR' and ecomm_users.phone IS NOT NULL AND ecomm_users.phone <> ''
+        $phones = array_filter(array_map('trim', $testRecipients));
+
+
+        $placeholders = implode(',', array_fill(0, count($phones), '?'));
+
+        /*$sql = "SELECT ecomm_users.phone FROM ecomm_users WHERE ecomm_users.type='VENDOR' and ecomm_users.phone IS NOT NULL AND ecomm_users.phone <> ''
                         UNION
-                    SELECT subscribers.phone FROM subscribers WHERE subscribers.phone IS NOT NULL AND subscribers.phone <> ''";
+                    SELECT subscribers.phone FROM subscribers WHERE subscribers.phone IS NOT NULL AND subscribers.phone <> ''";*/
+        //AND state = 'Uttar pradesh'
+
+        $sql = "SELECT phone, 'vendor' as source, state
+                FROM ecomm_users 
+                WHERE type = 'VENDOR' 
+                  AND phone <> ''
+                  AND phone IN ($placeholders)
+                
+                UNION
+                
+                SELECT phone, 'subscriber' as source, NULL as state
+                FROM subscribers 
+                WHERE phone <> ''
+                  AND phone IN ($placeholders)";
 
 
-        $query = $this->db->query($sql);
+        $bindings = array_merge($phones, $phones);
+        $query = $this->db->query($sql, $bindings);
+        //$query = $this->db->query($sql);
         $recipientResult = $query->getResultArray();
         $recipients = array_column($recipientResult, 'phone');
 
@@ -128,7 +150,7 @@ class ProcessWhatsappJobs extends BaseCommand
             foreach ($recipients as $recipient) {
                 try {
 
-                    $result = $whatsAppService->sendWithRetry($recipient, $items, $job['id']);
+                    //$result = $whatsAppService->sendWithRetry($recipient, $items, $job['id']);
 
 
 

@@ -4,6 +4,7 @@ namespace App\Services\WhatsApp;
 
 use App\Services\WhatsApp\WhatsAppException;
 use Throwable;
+use App\Libraries\RateLimiter;
 
 class WhatsAppMessageService
 {
@@ -99,6 +100,9 @@ class WhatsAppMessageService
 
         $jobModel = new \App\Models\WhatsAppWorkerModel();
 
+        $rateLimiter = new RateLimiter(); // <-- instantiate once
+
+
 
 
         $messageResults = [];
@@ -136,6 +140,11 @@ class WhatsAppMessageService
 
                 while ($attempts < $this->maxRetries && !$sent) {
                     $attempts++;
+
+                    // 🧩 RATE LIMITER HERE
+                    $rateLimiter->throttle('whatsapp_api', 1, 1);
+                    // means: max 1 request per second globally
+
                     try {
 
                         $sendResult = $this->provider->send($recipient, $text, $buildImgUrl);

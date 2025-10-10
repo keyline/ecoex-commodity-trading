@@ -217,7 +217,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     //Send WhatsApp notification to vendors/subscribers
     //$routes->match(['get', 'post'], "enquiry-requests/send-whatsapp-notification/(:any)", "EnquiryRequestController::sendWhatsAppNotification/$1");
 
-    $routes->match(['get', 'post'], "enquiry-requests/send-whatsapp-notification/(:any)", "EnquiryRequestController::sendWhatsappWithSparkCmd/$1");
+    $routes->match(['get', 'post'], "enquiry-requests/send-whatsapp-notification/(:any)", "EnquiryRequestController::sendWhatsappWithSparkCmdV2/$1");
 
 
 
@@ -261,7 +261,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     $routes->post('recycler-category/(:segment)', 'RecyclerCategorysController::update/$1', ['as' => 'recycler_category.update']); // Update record
     $routes->delete('recycler-category/(:segment)', 'RecyclerCategorysController::delete/$1', ['as' => 'recycler_category.delete']); // Delete record
     $routes->get('recycler-category/status/(:segment)/(:segment)', 'RecyclerCategorysController::updateStatus/$1/$2', ['as' => 'recycler_category.status']); // Toggle status
-    // Manage Recycler Categorys    
+    // Manage Recycler Categorys
 
     // reports
     $routes->match(['get', 'post'], "reports/analytics-report", "ReportController::analyticsReport");
