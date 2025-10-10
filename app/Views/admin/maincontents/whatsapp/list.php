@@ -60,7 +60,7 @@ $userType                   = $session->user_type;
                                             <?php $data = json_decode($row['enquiry_meta'], true);?>
 
                                             <tr>
-                                                <th scope="row" class="text-center"><?= $row['id'] ?></th>
+                                                <th scope="row" class="text-center"><?= $sl ?></th>
                                                 
                                                 
                                                 <td><?= $data['enquiry_no'] ?></td>
@@ -93,8 +93,10 @@ $userType                   = $session->user_type;
                                                 
                                                 
                                             </tr>
-                                    <?php }
-                                        } ?>
+                                    <?php
+                                    ++$sl;
+                                        }
+                                    } ?>
                                 </tbody>
                             </table>
                         </div>

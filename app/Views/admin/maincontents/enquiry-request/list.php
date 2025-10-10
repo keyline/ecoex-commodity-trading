@@ -160,8 +160,8 @@ $userType           = $session->user_type;
                                                                  <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification/'. encoded($row->$primary_key)) ?>" style="display:inline;">
                                                                     <?= csrf_field() ?>
                                                                     <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
-                                                                    <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]) && $statusMap[$row->id] != 'new') ? 'disabled' : '' ?>>
-                                                                        <i class="fa fa-whatsapp" aria-hidden="true"></i> Click To Send Notification
+                                                                    <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]) && ($statusMap[$row->id] == 'processing' || $statusMap[$row->id] == 'pending')) ? 'disabled' : '' ?>>
+                                                                        <i class="fa fa-whatsapp" aria-hidden="true"></i> Click To Send Notification (<?= $statusMap[$row->id] ?? '' ?>)
                                                                     </button>
                                                                 </form>
                                                                 
