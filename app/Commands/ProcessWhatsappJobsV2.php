@@ -194,12 +194,12 @@ class ProcessWhatsappJobsV2 extends BaseCommand
 
 
 
+                CLI::write(sprintf("=== Processing Completed: %d message(s) delivered ===", count($recipients)), 'green');
+
 
             }
 
-            //CLI::write("=== Processing Completed: {count($recipients)} message(s) delivered ===", 'green');
 
-            CLI::write(sprintf("=== Processing Completed: %d message(s) delivered ===", count($recipients)), 'green');
 
         } catch (Throwable $th) {
             log_message('critical', "[CronJob] Uncaught exception: " . $th->getMessage());
