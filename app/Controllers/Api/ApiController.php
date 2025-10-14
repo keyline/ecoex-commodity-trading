@@ -638,10 +638,11 @@ class ApiController extends BaseController
         $headerData            = $this->request->headers();
         
         if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-            $groupBy[0] = 'ecomm_enquires.item_id';
-            $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
+            $groupBy[0] = 'ecomm_users.state';
+            $join[0]  = ['table' => 'ecomm_users', 'field' => 'id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'plant_id', 'type' => 'INNER'];
+            $orderBy[0] = ['field' => 'ecomm_enquires.id', 'type' => 'DESC'];
             
-            $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status' => 0], 'ecomm_enquires.enquiry_no');
+            $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status' => 0], 'ecomm_enquires.enquiry_no,ecomm_users.state', $join, $groupBy, $orderBy);
             pr($requestNotSubmittedEnquiries);
         }
     }
