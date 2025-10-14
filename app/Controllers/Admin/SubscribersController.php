@@ -39,7 +39,7 @@ class SubscribersController extends BaseController {
         $data['action']             = 'List';
         $title                      = $data['action'].' '.$this->data['title'];
         $page_name                  = 'subscribers/list';        
-        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status!=' => 3], '', '', '', $order_by);
+        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status!=' => 3], '', '', '', $order_by);        
         
         echo $this->layout_after_login($title,$page_name,$data);
     }
@@ -59,6 +59,9 @@ class SubscribersController extends BaseController {
         $title                      = $data['action'].' '.$this->data['title'];
         $page_name                  = 'subscribers/add-edit';        
         $data['row']                = [];
+
+        $order_by2[0]               = array('field' => 'name', 'type' => 'ASC');
+        $data['states']             = $this->data['model']->find_data('ecomm_states', 'array', ['status' => 1], 'name', '', '', $order_by2);
 
         if($this->request->getMethod() == "post")
         {
@@ -82,16 +85,23 @@ class SubscribersController extends BaseController {
                         'max_length' => 'Name cannot exceed 100 characters.'
                     ]
                 ],
-                    'phone' => [
-                        'label' => 'Phone',
-                        'rules' => 'required|max_length[10]|numeric|is_unique[subscribers.phone]',
-                        'errors' => [
-                            'required' => 'Phone number is required.',
-                            'max_length' => 'Phone number cannot exceed 10 characters.',
-                            'is_unique' => 'This phone number is already subscribed.',
-                            'numeric' => 'Phone number must contain only numbers.'
-                        ]
-                    ],
+                'phone' => [
+                    'label' => 'Phone',
+                    'rules' => 'required|max_length[10]|numeric|is_unique[subscribers.phone]',
+                    'errors' => [
+                        'required' => 'Phone number is required.',
+                        'max_length' => 'Phone number cannot exceed 10 characters.',
+                        'is_unique' => 'This phone number is already subscribed.',
+                        'numeric' => 'Phone number must contain only numbers.'
+                    ]
+                ],
+                'state' => [
+                    'label' => 'State',
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'State is required.'
+                    ]
+                ],
             ]);
 
             if (!$validation->withRequest($this->request)->run()) {
@@ -103,8 +113,8 @@ class SubscribersController extends BaseController {
                     'name' => $this->request->getPost('name'),
                     'phone' => $this->request->getPost('phone'),
                     'type' => $this->request->getPost('type'),
+                    'state' => $this->request->getPost('state'),
                     'created_at' => date('Y-m-d H:i:s'),
-                    
                 ];
                 $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
                 $this->session->setFlashdata('success_message', $this->data['title'].' inserted successfully');
@@ -131,6 +141,9 @@ class SubscribersController extends BaseController {
         $page_name                  = 'subscribers/add-edit';        
         $conditions                 = array($this->data['primary_key']=>$id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
+
+        $order_by2[0]               = array('field' => 'name', 'type' => 'ASC');
+        $data['states']             = $this->data['model']->find_data('ecomm_states', 'array', ['status' => 1], 'name', '', '', $order_by2);
 
         if($this->request->getMethod() == 'post') {
             $validation = \Config\Services::validation();
@@ -163,6 +176,13 @@ class SubscribersController extends BaseController {
                         'is_unique' => 'This phone number is already subscribed.'
                     ]
                 ],
+                'state' => [
+                    'label' => 'State',
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'State is required.'
+                    ]
+                ],
             ]);
 
             if (!$validation->withRequest($this->request)->run()) {
@@ -174,8 +194,8 @@ class SubscribersController extends BaseController {
                     'name' => $this->request->getPost('name'),
                     'phone' => $this->request->getPost('phone'),
                     'type' => $this->request->getPost('type'),
+                    'state' => $this->request->getPost('state'),
                     'updated_at' => date('Y-m-d H:i:s'),
-                    
                 ];
                 $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
                 $this->session->setFlashdata('success_message', $this->data['title'].' updated successfully');
@@ -241,9 +261,5 @@ class SubscribersController extends BaseController {
         $this->session->setFlashdata('success_message', $this->data['title'].' '.$msg.' successfully');
         return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
     }
-
-
-        
-    
 
 }
