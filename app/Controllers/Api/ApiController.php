@@ -635,8 +635,7 @@ class ApiController extends BaseController
         $apiResponse        = [];
         $apiExtraField      = '';
         $apiExtraData       = '';
-        $this->isJSON(file_get_contents('php://input'));
-        $requestData        = $this->extract_json(file_get_contents('php://input'));
+        $headerData            = $this->request->headers();
         
         if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
             $groupBy[0] = 'ecomm_enquires.item_id';
