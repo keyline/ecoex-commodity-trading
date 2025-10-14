@@ -672,7 +672,7 @@ class ApiController extends BaseController
                     ];
                 }
             }
-            die;
+            pr($response);
         }
     }
     /* before login */
