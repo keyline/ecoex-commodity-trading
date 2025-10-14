@@ -650,17 +650,31 @@ class ApiController extends BaseController
                     
                     $join[0]  = ['table' => 'ecomm_enquires', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'enq_id', 'type' => 'INNER'];
                     $join[1]  = ['table' => 'ecomm_users', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'plant_id', 'type' => 'INNER'];
-                    $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquires.status' => 0, 'ecomm_users.state' => $requestNotSubmittedEnquiry->state], 'ecomm_users.state, ecomm_enquiry_products.product_id, ecomm_enquiry_products.new_product_name, ecomm_enquiry_products.qty, ecomm_enquiry_products.unit,ecomm_enquiry_products.new_product_image', $join, '', $orderBy);
+                    $join[2]  = ['table' => 'ecomm_units', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'type' => 'INNER'];
+                    $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquires.status' => 0, 'ecomm_users.state' => $requestNotSubmittedEnquiry->state], 'ecomm_users.state, ecomm_enquiry_products.product_id, ecomm_enquiry_products.new_product_name, ecomm_enquiry_products.qty, ecomm_units.name as unit_name,ecomm_enquiry_products.new_product_image', $join, '', $orderBy);
                     
                     $scraps = [];
                     if($getEnquiryItems){
                         foreach($getEnquiryItems as $getEnquiryItem){
+                            if($getEnquiryItem->product_id <= 0){
+                                $scrap_name = $getEnquiryItem->new_product_name;
+                            } else {
+                                $getItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $getEnquiryItem->product_id], 'item_name_ecoex');
+                                $scrap_name = (($getItem)?$getItem->item_name_ecoex:'');
+                            }
+
+                            $new_product_image = json_decodde($getEnquiryItem->new_product_image);
+                            if(empty($new_product_image)){
+                                $scrap_image = getenv('app.NOIMAGE');
+                            } else {
+                                $scrap_image = getenv('app.uploadsURL') . 'enquiry/' .$new_product_image[0];
+                            }
 
                             $scraps[] = [
-                                'scrap_name'    => $getEnquiryItem->product_id,
+                                'scrap_name'    => $scrap_name,
                                 'scrap_qty'     => $getEnquiryItem->qty,
-                                'scrap_unit'    => $getEnquiryItem->unit,
-                                'scrap_image'   => $getEnquiryItem->new_product_image,
+                                'scrap_unit'    => $getEnquiryItem->unit_name,
+                                'scrap_image'   => $scrap_image,
                                 'state_name'    => $requestNotSubmittedEnquiry->state,
                             ];
                         }
