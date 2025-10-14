@@ -628,6 +628,24 @@ class ApiController extends BaseController
                 $apiExtraField => $apiExtraData
             ]);
     }
+    public function quotation()
+    {
+        $apiStatus          = TRUE;
+        $apiMessage         = '';
+        $apiResponse        = [];
+        $apiExtraField      = '';
+        $apiExtraData       = '';
+        $this->isJSON(file_get_contents('php://input'));
+        $requestData        = $this->extract_json(file_get_contents('php://input'));
+        
+        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+            $groupBy[0] = 'ecomm_enquires.item_id';
+            $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'item_id', 'type' => 'INNER'];
+            
+            $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status' => 0], 'ecomm_enquires.enquiry_no');
+            pr($requestNotSubmittedEnquiries);
+        }
+    }
     /* before login */
     /* authentication */
     // signup

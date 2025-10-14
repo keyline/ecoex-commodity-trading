@@ -293,6 +293,8 @@ $routes->group("api", ["namespace" => "App\Controllers\Api",], function ($routes
     $routes->match(['post'], "get-member-type", "ApiController::getMemberType");
     $routes->match(['get'], "get-state", "ApiController::getState");
     $routes->match(['post'], "price-list", "ApiController::priceList");
+    $routes->match(['get'], "quotation", "ApiController::quotation");
+    $routes->match(['post'], "submit-quotation", "ApiController::submitQuotation");
     // before login
     // authentication
     $routes->match(['post'], "get-company-details", "ApiController::getCompanyDetails");
