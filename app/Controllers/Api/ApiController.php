@@ -686,8 +686,21 @@ class ApiController extends BaseController
                     ];
                 }
             }
-            pr($response);
+
+            $apiResponse        = $response;
+            http_response_code(200);
+            $apiStatus          = TRUE;
+            $apiMessage         = $this->getResponseCode(http_response_code());
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        } else {
+            http_response_code(400);
+            $apiStatus          = FALSE;
+            $apiMessage         = $this->getResponseCode(http_response_code());
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
         }
+        $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
     }
     /* before login */
     /* authentication */
