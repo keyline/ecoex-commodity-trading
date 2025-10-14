@@ -376,16 +376,18 @@ class ApiController extends BaseController
             $final = [];
             foreach ($result as $item) {
                 $average_price = round($item['total_price'] / $item['count'], 2);
-                $final[] = [
-                    'icon'                                  => $item['icon'],
-                    'item_name'                             => $item['item_name'],
-                    'tot_item_win_price'                    => $average_price,
-                    'unit_name'                             => $item['unit_name'],
-                    'tot_item_win_price_before'             => $item['tot_item_win_price_before'],
-                    'difference_price'                      => $item['difference_price'],
-                    'comparison_stat'                       => $item['comparison_stat'],
-                    'comparison_percentage'                 => $item['comparison_percentage'],
-                ];
+                if($average_price > 0){
+                    $final[] = [
+                        'icon'                                  => $item['icon'],
+                        'item_name'                             => $item['item_name'],
+                        'tot_item_win_price'                    => $average_price,
+                        'unit_name'                             => $item['unit_name'],
+                        'tot_item_win_price_before'             => $item['tot_item_win_price_before'],
+                        'difference_price'                      => $item['difference_price'],
+                        'comparison_stat'                       => $item['comparison_stat'],
+                        'comparison_percentage'                 => $item['comparison_percentage'],
+                    ];
+                }
             }
             /* top prices */
             /* top 10 transactions qty */
