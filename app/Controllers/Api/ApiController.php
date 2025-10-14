@@ -663,7 +663,7 @@ class ApiController extends BaseController
                                 $scrap_name = (($getItem)?$getItem->item_name_ecoex:'');
                             }
 
-                            $new_product_image = json_decodde($getEnquiryItem->new_product_image);
+                            $new_product_image = json_decode($getEnquiryItem->new_product_image);
                             if(empty($new_product_image)){
                                 $scrap_image = getenv('app.NOIMAGE');
                             } else {
