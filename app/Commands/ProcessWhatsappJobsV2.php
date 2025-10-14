@@ -96,13 +96,14 @@ class ProcessWhatsappJobsV2 extends BaseCommand
                 
                 UNION
                 
-                SELECT phone, 'subscriber' as source, NULL as state
+                SELECT phone, 'subscriber' as source, state
                 FROM subscribers 
-                WHERE phone <> ''";
+                WHERE phone <> ''
+                AND state =?";
 
 
                 //$bindings = array_merge($phones, $phones);
-                $query = $this->db->query($sql, [$result->state]);
+                $query = $this->db->query($sql, [$result->state, $result->state]);
                 //$query = $this->db->query($sql);
                 $recipientResult = $query->getResultArray();
                 $recipients = array_column($recipientResult, 'phone');
