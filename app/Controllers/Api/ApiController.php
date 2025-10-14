@@ -642,8 +642,18 @@ class ApiController extends BaseController
             $join[0]  = ['table' => 'ecomm_users', 'field' => 'id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'plant_id', 'type' => 'INNER'];
             $orderBy[0] = ['field' => 'ecomm_enquires.id', 'type' => 'DESC'];
             
-            $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status' => 0], 'ecomm_enquires.enquiry_no,ecomm_users.state', $join, $groupBy, $orderBy);
-            pr($requestNotSubmittedEnquiries);
+            $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status' => 0], 'ecomm_enquires.plant_id,ecomm_users.state', $join, $groupBy, $orderBy);
+
+            $response = [];
+            if($requestNotSubmittedEnquiries){
+                foreach($requestNotSubmittedEnquiries as $requestNotSubmittedEnquiry){
+                    $response[] = [
+                        'plant_id' => $requestNotSubmittedEnquiry->plant_id,
+                        'state' => $requestNotSubmittedEnquiry->state,
+                    ];
+                }
+            }
+            pr($response);
         }
     }
     /* before login */
