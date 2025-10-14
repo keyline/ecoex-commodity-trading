@@ -647,13 +647,19 @@ class ApiController extends BaseController
             $response = [];
             if($requestNotSubmittedEnquiries){
                 foreach($requestNotSubmittedEnquiries as $requestNotSubmittedEnquiry){
-                    $response[] = [
-                        'plant_id' => $requestNotSubmittedEnquiry->plant_id,
-                        'state' => $requestNotSubmittedEnquiry->state,
-                    ];
+                    // $response[] = [
+                    //     'plant_id' => $requestNotSubmittedEnquiry->plant_id,
+                    //     'state' => $requestNotSubmittedEnquiry->state,
+                    // ];
+                    echo $requestNotSubmittedEnquiry->state;
+
+                    $join[0]  = ['table' => 'ecomm_enquires', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'enq_id', 'type' => 'INNER'];
+                    $join[1]  = ['table' => 'ecomm_users', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'plant_id', 'type' => 'INNER'];
+                    $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquires.status' => 0, 'ecomm_users.state' => $requestNotSubmittedEnquiry->state], 'ecomm_users.state, ecomm_enquiry_products.product_id, ecomm_enquiry_products.qty, ecomm_enquiry_products.unit,ecomm_enquiry_products.new_product_image', $join, '', $orderBy);
+                    pr($getEnquiryItems,0);
                 }
             }
-            pr($response);
+            die;
         }
     }
     /* before login */
