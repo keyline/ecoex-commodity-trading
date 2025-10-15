@@ -114,7 +114,7 @@ class WhatsappMessageController extends BaseController
     {
 
         // ✅ Use the exact same token you entered in your Meta app dashboard
-        $verify_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30";
+        $verify_token = "EAAUnZA37SyikBPvrmhgrZBihQRNHecdiYJjgwew7SoALgn9virKKowy2TjEjtgpX4bxHtvyDV3x7FbxwN0P5OnZBEMiBFuVywBJ01ti3MNcDL1GAZAM1i8OND64eA5dMHNZBFXQLNZBCdZAmKtmZBi6J3SIjxUIRUBOXJ2ZARL8w1ZAucFIYHsDvbppprRfF6gmYKftrCBWGwa2WwUNM5thZBAvZC6dJEvuqazLziF65UZC9QeyD6ciGe4ptFK1EjX3F9PwZDZD";
 
         $request = service('request');
 

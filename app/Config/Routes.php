@@ -391,7 +391,7 @@ $routes->group("api", ["namespace" => "App\Controllers\Api",], function ($routes
     $routes->match(['get'], "update-vendor-invoice-date", "ApiController::updateVendorInvoicedate");
 
     // whatsapp webhook
-    $routes->match(['get', 'post'], '/wpmsg/incoming', [App\Controllers\Admin\WhatsappMessageController::class, 'incoming']);
+    $routes->match(['get', 'post'], 'wpmsg/incoming', [App\Controllers\Admin\WhatsappMessageController::class, 'incoming']);
 
 });
 /* API */
