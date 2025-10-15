@@ -651,7 +651,7 @@ class ApiController extends BaseController
                     $join[0]  = ['table' => 'ecomm_enquires', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'enq_id', 'type' => 'INNER'];
                     $join[1]  = ['table' => 'ecomm_users', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'plant_id', 'type' => 'INNER'];
                     $join[2]  = ['table' => 'ecomm_units', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'type' => 'INNER'];
-                    $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquires.status' => 0, 'ecomm_users.state' => $requestNotSubmittedEnquiry->state], 'ecomm_users.state, ecomm_enquiry_products.product_id, ecomm_enquiry_products.new_product_name, ecomm_enquiry_products.qty, ecomm_units.name as unit_name,ecomm_enquiry_products.new_product_image', $join, '', $orderBy);
+                    $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquires.status' => 0, 'ecomm_users.state' => $requestNotSubmittedEnquiry->state], 'ecomm_users.state, ecomm_enquiry_products.product_id, ecomm_enquiry_products.new_product_name, ecomm_enquiry_products.qty, ecomm_units.name as unit_name,ecomm_enquiry_products.new_product_image, ecomm_enquiry_products.id as enquiry_product_id', $join, '', $orderBy);
                     
                     $scraps = [];
                     if($getEnquiryItems){
@@ -671,6 +671,7 @@ class ApiController extends BaseController
                             }
 
                             $scraps[] = [
+                                'scrap_id'      => $getEnquiryItem->enquiry_product_id,
                                 'scrap_name'    => $scrap_name,
                                 'scrap_qty'     => $getEnquiryItem->qty,
                                 'scrap_unit'    => $getEnquiryItem->unit_name,
