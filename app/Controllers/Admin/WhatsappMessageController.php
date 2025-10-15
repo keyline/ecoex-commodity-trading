@@ -109,4 +109,56 @@ class WhatsappMessageController extends BaseController
             'results' => $results
         ]);*/
     }
+
+    public function incoming()
+    {
+
+        // ✅ Use the exact same token you entered in your Meta app dashboard
+        $verify_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30";
+
+        $request = service('request');
+
+        // =============================
+        // 1️⃣ Handle GET: Webhook verification
+        // =============================
+        if ($request->getMethod() === 'get') {
+            $mode = $request->getGet('hub_mode');
+            $token = $request->getGet('hub_verify_token');
+            $challenge = $request->getGet('hub_challenge');
+
+            if ($mode === 'subscribe' && $token === $verify_token) {
+                // Respond with the challenge in plain text
+                return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('text/plain')
+                    ->setBody($challenge);
+            } else {
+                return $this->response
+                    ->setStatusCode(403)
+                    ->setBody('Invalid verify token');
+            }
+        }
+
+        // =============================
+        // 2️⃣ Handle POST: Incoming WhatsApp messages
+        // =============================
+        if ($request->getMethod() === 'post') {
+            $input = $request->getJSON(true);
+
+            // Log incoming messages for debugging
+            log_message('info', 'WhatsApp Webhook Received: ' . json_encode($input));
+
+            // You can handle messages here, e.g. store to DB
+            // $this->saveToDatabase($input);
+
+            return $this->response
+                ->setStatusCode(200)
+                ->setBody('EVENT_RECEIVED');
+        }
+
+        return $this->response
+            ->setStatusCode(404)
+            ->setBody('Unsupported method');
+
+    }
 }
