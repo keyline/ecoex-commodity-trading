@@ -746,6 +746,8 @@ class ApiController extends BaseController
                 'contact_no'            => $requestData['contact_no'],
                 'notes'                 => $requestData['notes'],
                 'quotation_item_count'  => count($requestData['quotation_items']),
+                'created_at'            => date('Y-m-d H:i:s'),
+                'updated_at'            => date('Y-m-d H:i:s'),
             ];
             $quotation_id = $this->common_model->save_data('quotations', $fields1, '', 'id');
 
@@ -759,6 +761,8 @@ class ApiController extends BaseController
                         'rate'              => $quotation_items[$k]['rate'],
                         'qty'               => $quotation_items[$k]['qty'],
                         'unit'              => $quotation_items[$k]['scrap_unit'],
+                        'created_at'        => date('Y-m-d H:i:s'),
+                        'updated_at'        => date('Y-m-d H:i:s'),
                     ];
                     $this->common_model->save_data('quotation_items', $fields2, '', 'id');
                 }
