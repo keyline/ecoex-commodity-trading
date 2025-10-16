@@ -8,8 +8,8 @@ if ($baseUrl == 'https://commodity.ecoex.market/') {
 } else {
     $currentLink    = current_url();
     $uri            = new \CodeIgniter\HTTP\URI($currentLink);
-    $pageSegment    = $uri->getSegment(3);
-    $pageFunction    = $uri->getSegment(4);
+    $pageSegment    = $uri->getSegment(2);
+    $pageFunction    = $uri->getSegment(3);
 }
 
 $segmentCount = $uri->getTotalSegments();
@@ -466,6 +466,10 @@ if ($userType == 'MA') {
             <a class="nav-link <?= (($pageSegment == 'whatsapp') ? 'active' : '') ?>" href="<?= base_url('admin/whatsapp/logs') ?>">
                 <i class="fa fa-gear"></i>
                 <span>WhatsApp Logs</span>
+            </a>
+            <a class="nav-link <?= (($pageSegment == 'whatsapp-interactions') ? 'active' : '') ?>" href="<?= base_url('admin/whatsapp-interactions') ?>">
+                <i class="fa fa-gear"></i>
+                <span>WhatsApp Interactions</span>
             </a>
         </li>
     <?php } ?>

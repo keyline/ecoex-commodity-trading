@@ -42,13 +42,18 @@ class WhatsAppMessageService
                     $text     = $this->formatMessage($item);
                     $mediaUrl = json_decode($item['media_url'], true) ?: [];
 
+                    $relevantData = [
+                        'enquiry_id' => $item['enquiry_id'],
+                        'product_id' => $item['enquiry_product_id'],
+                    ];
+
 
                     $appUrl = getenv('app.baseURL');
                     $buildImgUrl = $appUrl . 'public/uploads/enquiry/' . $mediaUrl[0];
 
 
 
-                    $sendResult = $this->provider->send($recipient, $text, $buildImgUrl);
+                    $sendResult = $this->provider->send($recipient, $text, $buildImgUrl, $relevantData);
 
                     $results[] = [
                         'item_index' => $index,
@@ -118,12 +123,18 @@ class WhatsAppMessageService
 
                 $sendResult = false; // initialize before retry loop
 
+                $relevantData = [
+                                        'enquiry_id' => $item['enquiry_id'],
+                                        'product_id' => $item['enquiry_product_id'],
+                                    ];
 
 
-                if (!preg_match('/^[0-9]{10}$/', $recipient)) {
+
+
+                /*if (!preg_match('/^[0-9]{10}$/', $recipient)) {
                     log_message('error', "Invalid mobile skipped: {$recipient}");
                     continue; // skip this number
-                }
+                }*/
 
 
                 $text     = $this->formatMessage($item);
@@ -147,7 +158,7 @@ class WhatsAppMessageService
 
                     try {
 
-                        $sendResult = $this->provider->send($recipient, $text, $buildImgUrl);
+                        $sendResult = $this->provider->send($recipient, $text, $buildImgUrl, $relevantData);
 
                         if ($sendResult['success'] === true) {
                             $sent = true;
