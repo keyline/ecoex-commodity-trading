@@ -727,13 +727,11 @@ class ApiController extends BaseController
                 $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
                 $checkQuotation = $this->common_model->find_data('quotations', 'row', '', 'sl_no', '', '', $orderBy);
                 if ($checkQuotation) {
-                    // exist
                     $sl_no              = $checkQuotation->sl_no;
                     $next_sl_no         = $sl_no + 1;
                     $next_sl_no_string  = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
                     $quotation_no       = 'ECOMM-Q-' . $next_sl_no_string;
                 } else {
-                    // not exist
                     $next_sl_no         = 1;
                     $next_sl_no_string  = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
                     $quotation_no       = 'ECOMM-Q-' . $next_sl_no_string;
@@ -762,12 +760,15 @@ class ApiController extends BaseController
                         'qty'               => $quotation_items[$k]['qty'],
                         'unit'              => $quotation_items[$k]['scrap_unit'],
                     ];
-                    pr($fields2,0);
-                    // $this->common_model->save_data('quotation_items', $fields2, '', 'id');
+                    $this->common_model->save_data('quotation_items', $fields2, '', 'id');
                 }
             }
-            die;
 
+            http_response_code(200);
+            $apiStatus          = TRUE;
+            $apiMessage         = 'Quotation Submitted Successfully !!!';
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
         } else {
             http_response_code(400);
             $apiStatus          = FALSE;
