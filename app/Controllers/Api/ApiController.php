@@ -723,7 +723,51 @@ class ApiController extends BaseController
             $apiExtraData       = http_response_code();
         }
         if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-            pr($requestData);
+            /* sl no*/
+                $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
+                $checkQuotation = $this->common_model->find_data('quotations', 'row', '', 'sl_no', '', '', $orderBy);
+                if ($checkQuotation) {
+                    // exist
+                    $sl_no              = $checkQuotation->sl_no;
+                    $next_sl_no         = $sl_no + 1;
+                    $next_sl_no_string  = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
+                    $quotation_no       = 'ECOMM-Q-' . $next_sl_no_string;
+                } else {
+                    // not exist
+                    $next_sl_no         = 1;
+                    $next_sl_no_string  = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
+                    $quotation_no       = 'ECOMM-Q-' . $next_sl_no_string;
+                }
+            /* sl no*/
+
+            $fields1 = [
+                'sl_no'                 => $next_sl_no,
+                'quotation_no'          => $quotation_no,
+                'location'              => $requestData['location'],
+                'current_location'      => $requestData['current_location'],
+                'contact_no'            => $requestData['contact_no'],
+                'notes'                 => $requestData['notes'],
+                'quotation_item_count'  => count($requestData['quotation_items']),
+            ];
+            $quotation_id = $this->common_model->save_data('quotations', $fields1, '', 'id');
+
+            $quotation_items = $requestData['quotation_items'];
+            if(!empty($quotation_items)){
+                for($k=0; $k<count($quotation_items); $k++){
+                    $fields2 = [
+                        'quotation_id'      => $quotation_id,
+                        'scrap_id'          => $quotation_items[$k]['scrap_id'],
+                        'scrap_name'        => $quotation_items[$k]['scrap_name'],
+                        'rate'              => $quotation_items[$k]['rate'],
+                        'qty'               => $quotation_items[$k]['qty'],
+                        'unit'              => $quotation_items[$k]['scrap_unit'],
+                    ];
+                    pr($fields2,0);
+                    // $this->common_model->save_data('quotation_items', $fields2, '', 'id');
+                }
+            }
+            die;
+
         } else {
             http_response_code(400);
             $apiStatus          = FALSE;
