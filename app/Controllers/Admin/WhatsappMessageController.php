@@ -7,6 +7,7 @@ use App\Models\CommonModel;
 use Config\App;
 use App\Services\WhatsApp\DigitalSmsWhatsAppProvider;
 use App\Services\WhatsApp\WhatsAppMessageService;
+use App\Models\WhatsappInteractionModel;
 
 class WhatsappMessageController extends BaseController
 {
@@ -149,7 +150,48 @@ class WhatsappMessageController extends BaseController
             log_message('info', 'WhatsApp Webhook Received: ' . json_encode($input));
 
             // You can handle messages here, e.g. store to DB
-            // $this->saveToDatabase($input);
+
+            // Validate payload structure
+            if (!isset($input['entry'][0]['changes'][0]['value']['messages'][0])) {
+
+                return $this->response->setJSON(['status' => 'ignored'])->setStatusCode(200);
+
+            }
+
+            $value    = $input['entry'][0]['changes'][0]['value'];
+            $message  = $value['messages'][0];
+            $contact  = $value['contacts'][0] ?? [];
+
+            // Extract details
+            $wa_id    = $message['from'] ?? null;
+            $userName = $contact['profile']['name'] ?? null;
+            $buttonId = $message['interactive']['button_reply']['id'] ?? '';
+            $timestamp = $message['timestamp'] ?? null;
+
+            // Button ID format: <enquiry_id>_<product_id>_<action>
+            $parts = explode('_', $buttonId);
+            $enquiryId = $parts[0] ?? null;
+            $productId = $parts[1] ?? null;
+            $action    = $parts[2] ?? null;
+
+            // Save to DB
+            $model = new WhatsappInteractionModel();
+            $model->insert([
+                'enquiry_id'    => $enquiryId,
+                'product_id'    => $productId,
+                'wa_id'         => $wa_id,
+                'user_name'     => $userName,
+                'button_action' => $action,
+                'raw_payload'   => json_encode($input),
+            ]);
+
+            $insertId = $model->getInsertID();
+
+
+            log_message('info', 'WhatsApp Webhook data stored successfully : ' . json_encode($insertId));
+
+            //return $this->respond(['status' => 'stored'], 200);
+
 
             return $this->response
                 ->setStatusCode(200)
@@ -160,5 +202,21 @@ class WhatsappMessageController extends BaseController
             ->setStatusCode(404)
             ->setBody('Unsupported method');
 
+    }
+
+    public function interactionList()
+    {
+
+        $userType                   = $this->session->user_type;
+        //$company_id                 = $this->session->company_id;
+        $data['moduleDetail']       = $this->data;
+        $title                      = 'Manage ' . $this->data['title'];
+        $page_name                  = 'whatsapp/interactionlist';
+
+        $model = new WhatsappInteractionModel();
+        $data['interactions'] = $model->orderBy('id', 'DESC')->findAll();
+
+        //return view('whatsapp/interactionlist', $data);
+        echo $this->layout_after_login($title, $page_name, $data);
     }
 }

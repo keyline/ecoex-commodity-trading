@@ -8,6 +8,7 @@ use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\CLI\CLI;
 use App\Models\WhatsAppWorkerModel;
 use App\Services\WhatsApp\DigitalSmsWhatsAppProvider;
+use App\Services\WhatsApp\MetaWhatsAppProvider;
 use App\Services\WhatsApp\WhatsAppMessageService;
 use App\Services\WhatsApp\WhatsAppException;
 use Throwable;
@@ -107,7 +108,7 @@ class ProcessWhatsappJobsV2 extends BaseCommand
                 //$query = $this->db->query($sql);
                 $recipientResult = $query->getResultArray();
                 $recipients = array_column($recipientResult, 'phone');
-                //$recipients = ['9903985585', '8910649429']; //test number
+                $recipients = ['919903985585', '916289339520']; //test number
 
                 //getting items send in message
                 //one item per message
@@ -145,7 +146,8 @@ class ProcessWhatsappJobsV2 extends BaseCommand
 
 
                 try {
-                    $whatsAppProvider = new DigitalSmsWhatsAppProvider();
+                    //$whatsAppProvider = new DigitalSmsWhatsAppProvider();
+                    $whatsAppProvider = new MetaWhatsAppProvider();
                     $whatsAppService  = new WhatsAppMessageService($whatsAppProvider);
 
                     //getting data from db to build items to send
@@ -196,6 +198,7 @@ class ProcessWhatsappJobsV2 extends BaseCommand
 
 
                 CLI::write(sprintf("=== Processing Completed: %d message(s) delivered ===", count($recipients)), 'green');
+                exit(0);
 
 
             }
@@ -206,5 +209,12 @@ class ProcessWhatsappJobsV2 extends BaseCommand
             log_message('critical', "[CronJob] Uncaught exception: " . $th->getMessage());
             CLI::error("Fatal error in job processor: " . $th->getMessage());
         }
+
+        // Update job status to error if fatal exception
+        $jobModel->update($jobId, [
+            'status' => 'error',
+            'error_message' => $th->getMessage(),
+            'finished_at' => date('Y-m-d H:i:s')
+        ]);
     }
 }
