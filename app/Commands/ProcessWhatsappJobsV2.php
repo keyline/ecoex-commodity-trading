@@ -108,7 +108,7 @@ class ProcessWhatsappJobsV2 extends BaseCommand
                 //$query = $this->db->query($sql);
                 $recipientResult = $query->getResultArray();
                 $recipients = array_column($recipientResult, 'phone');
-                $recipients = ['919903985585', '916289339520']; //test number
+                $recipients = ['919903985585', '916289339520', '918910649429']; //test number
 
                 //getting items send in message
                 //one item per message

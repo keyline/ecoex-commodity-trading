@@ -41,7 +41,7 @@ class MetaWhatsAppProvider implements WhatsAppProviderInterface
                         'type'  => 'image',
                         'image' => [
                             // use provided media id or fallback
-                            'link' =>  $mediaUrl ?: '' ,//'https://commodity.ecoex.market/public/uploads/enquiry/68d7b8c93d071.jpg' //
+                            'link' => 'https://commodity.ecoex.market/public/uploads/enquiry/68d7b8c93d071.jpg' //$mediaUrl ?: '' ,
                         ],
                     ],
                     'body'   => [

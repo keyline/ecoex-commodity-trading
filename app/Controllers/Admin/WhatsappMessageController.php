@@ -153,6 +153,7 @@ class WhatsappMessageController extends BaseController
 
             // Validate payload structure
             if (!isset($input['entry'][0]['changes'][0]['value']['messages'][0])) {
+                log_message('warning', 'WhatsApp Webhook: No messages found in payload');
 
                 return $this->response->setJSON(['status' => 'ignored'])->setStatusCode(200);
 
