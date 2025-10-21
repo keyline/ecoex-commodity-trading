@@ -712,7 +712,7 @@ class ApiController extends BaseController
         $apiExtraData       = '';
         $this->isJSON(file_get_contents('php://input'));
         $requestData        = $this->extract_json(file_get_contents('php://input'));
-        $requiredFields     = ['location', 'current_location', 'contact_no', 'notes', 'quotation_items'];
+        $requiredFields     = ['location', 'current_location', 'vendor_name', 'contact_no', 'notes', 'quotation_items'];
         
         $headerData         = $this->request->headers();
         if (!$this->validateArray($requiredFields, $requestData)) {
@@ -743,6 +743,7 @@ class ApiController extends BaseController
                 'quotation_no'          => $quotation_no,
                 'location'              => $requestData['location'],
                 'current_location'      => $requestData['current_location'],
+                'vendor_name'           => $requestData['vendor_name'],
                 'contact_no'            => $requestData['contact_no'],
                 'notes'                 => $requestData['notes'],
                 'quotation_item_count'  => count($requestData['quotation_items']),
