@@ -281,6 +281,10 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 
     $routes->match(['get', 'post'], 'whatsapp/failed/retry/(:num)', "WhatsappMessageController::retryList/$1");
 
+
+    $routes->match(['get'], 'whatsapp-interactions', 'WhatsappMessageController::interactionList');
+
+
 });
 /* ADMIN PANEL */
 /* API */

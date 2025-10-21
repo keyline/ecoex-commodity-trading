@@ -11,5 +11,5 @@ interface WhatsAppProviderInterface
      * @param string|null $mediaUrl Optional image/media URL
      * @return array ['success' => bool, 'provider_id' => ?string, 'error' => ?string]
      */
-    public function send(string $to, string $text, ?string $mediaUrl = null): array;
+    public function send(string $to, string $text, ?string $mediaUrl = null, $relevantData = []): array;
 }

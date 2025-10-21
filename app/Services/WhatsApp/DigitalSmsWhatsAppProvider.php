@@ -15,7 +15,7 @@ class DigitalSmsWhatsAppProvider implements WhatsAppProviderInterface
 
     }
 
-    public function send(string $to, string $text, ?string $mediaUrl = null): array
+    public function send(string $to, string $text, ?string $mediaUrl = null, $data = []): array
     {
         try {
             if (empty($this->apiKey) || empty($this->baseUrl)) {
