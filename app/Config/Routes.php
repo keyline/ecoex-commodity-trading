@@ -184,6 +184,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     //quotation
     $routes->match(['get'], "quotation/list", "QuotationController::list");
     $routes->match(['get', 'post'], "quotation/view-detail/(:any)", "QuotationController::viewDetail/$1");
+    $routes->match(['post'], "get-state-location", "QuotationController::get_state_location");
     // enquiry requests
     $routes->match(['get'], "enquiry-requests/list/(:any)", "EnquiryRequestController::list/$1");
     $routes->match(['get', 'post'], "enquiry-requests/view-detail/(:any)", "EnquiryRequestController::viewDetail/$1");

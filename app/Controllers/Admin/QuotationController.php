@@ -29,7 +29,7 @@ class QuotationController extends BaseController
             'title'                 => 'Quotation',
             'controller_route'      => 'quotation',
             'controller'            => 'QuotationController',
-            'table_name'            => 'quotations',
+            'table_name'            => 'quotation_items',
             'primary_key'           => 'id'
         );
 
@@ -46,54 +46,27 @@ class QuotationController extends BaseController
         // }
 
         $userType                   = $this->session->user_type;
-        $company_id                 = $this->session->company_id;
-        // $status                     = decoded($status);
-        // $data['current_status']     = $status;
-        $data['moduleDetail']       = $this->data;
-
-        // if ($status == 0) {
-        //     $stepName = 'Request Submitted';
-        // } elseif ($status == 1) {
-        //     $stepName = 'Accept Request';
-        // } elseif ($status == 2) {
-        //     $stepName = 'Vendor Allocated';
-        // } elseif ($status == 3) {
-        //     $stepName = 'Vendor Assigned';
-        // } elseif ($status == 4) {
-        //     $stepName = 'Pickup Scheduled';
-        // } elseif ($status == 5) {
-        //     $stepName = 'Vehicle Placed';
-        // } elseif ($status == 6) {
-        //     $stepName = 'Material Weighed';
-        // } elseif ($status == 7) {
-        //     $stepName = 'Invoice from HO';
-        // } elseif ($status == 8) {
-        //     $stepName = 'Invoice to Vendor';
-        // } elseif ($status == 9) {
-        //     $stepName = 'Payment received from Vendor';
-        // } elseif ($status == 10) {
-        //     $stepName = 'Vehicle Dispatched';
-        // } elseif ($status == 11) {
-        //     $stepName = 'Payment to HO';
-        // } elseif ($status == 12) {
-        //     $stepName = 'Order Complete';
-        // } elseif ($status == 13) {
-        //     $stepName = 'Reject Request';
-        // }
-
+        $company_id                 = $this->session->company_id;        
+        $data['moduleDetail']       = $this->data;        
         $title                      = 'Manage ' . $this->data['title'] . ' List';
         $page_name                  = 'quotation/list';
 
-        $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
-        // if ($userType == 'MA') {
-        //     $conditions                 = ['status' => $status];
-        // } elseif ($userType == 'U') {
-        //     $conditions                 = ['status' => $status];
-        // } else {
-        //     $conditions                 = ['status' => $status, 'company_id' => $company_id];
-        // }
-        $conditions                 = ['status' => 1];
-        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+        $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');        
+        $conditions                 = ['status' => 0];
+        // $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+        $data['rows']               =$this->db->table('quotations q')
+                                    ->select('q.*, qi.scrap_name, qi.rate, qi.qty, qi.unit')
+                                    ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
+                                    ->orderBy('q.quotation_no', 'ASC')
+                                    ->get()
+                                    ->getResult();
+
+        $query                      = $this->db->query("SELECT DISTINCT location FROM quotations");
+        $data['locations']          = $query->getResult();  
+        
+        $query                      = $this->db->query("SELECT DISTINCT scrap_name FROM quotation_items");
+        $data['items']              = $query->getResult();  
+        // pr($result);
         //get whatsapp notification status per enquiry
 
         // $enquiryIds = array_column($data['rows'], 'id');
@@ -124,7 +97,7 @@ class QuotationController extends BaseController
         }
         $enq_id                     = decoded($enq_id);
         $data['enq_id']             = $enq_id;
-        $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);
+        $data['row']                = $this->data['model']->find_data('quotations', 'row', ['id' => $enq_id]);
         $data['quotation_items']    = $this->data['model']->find_data('quotation_items', 'array', ['quotation_id' => $enq_id]);
         // pr($data['quotation_items']);
         $data['moduleDetail']       = $this->data;        
@@ -203,7 +176,38 @@ class QuotationController extends BaseController
         $page_name                  = 'quotation/view-details';
         echo $this->layout_after_login($title, $page_name, $data);
     }
-    public function confirm_delete($id, $current_status)
+    public function get_state_location()
+    {
+        $loc = $this->request->getPost('loc');
+        $item = $this->request->getPost('item');
+
+        $builder = $this->db->table('quotations q');
+        $builder->select('q.*, qi.scrap_name, qi.rate, qi.qty, qi.unit');
+        $builder->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner');
+
+        if ($loc) {
+            $builder->where('q.location', $loc);
+        }
+        if ($item) {
+            $builder->where('qi.scrap_name', $item);
+        }
+
+        $query = $builder->get();
+        $result = $query->getResult();
+
+        if (count($result) > 0) {
+            return $this->response->setJSON([
+                'success' => true,
+                'data' => $result
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'No records found'
+            ]);
+        }
+    }
+    public function confirm_delete($id)
     {
         if (!$this->common_model->checkModuleFunctionAccess(23, 107)) {
             $data['action']             = 'Access Forbidden';
@@ -214,10 +218,10 @@ class QuotationController extends BaseController
         }
         $id                         = decoded($id);
         $postData = array(
-            'status' => 14
+            'status' => 3
         );
         $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
-        $this->common_model->save_data('ecomm_sub_enquires', ['status' => 14.14], $id, 'enq_id');
+        $this->common_model->save_data('quotations', $postData, $id, 'enq_id');
 
         $this->session->setFlashdata('success_message', $this->data['title'] . ' deleted successfully');
         return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/' . encoded($current_status));
@@ -326,32 +330,32 @@ class QuotationController extends BaseController
             $pendingItemCount       = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $id, 'status' => 0]);
             if ($pendingItemCount <= 0) {
                 /* send push */
-                $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $getEnquiry->plant_id, 'fcm_token!=' => ''], 'fcm_token');
-                if ($getDeviceTokens) {
-                    foreach ($getDeviceTokens as $getDeviceToken) {
-                        $fcm_token          = $getDeviceToken->fcm_token;
-                        $messageData = [
-                            'title'     => 'Enquiry Request Accepted',
-                            'body'      => 'Enquiry Request (' . (($getEnquiry) ? $getEnquiry->enquiry_no : "") . ') Accepted By EcoEx',
-                            'badge'     => 1,
-                            'sound'     => 'Default',
-                            'data'      => [],
-                        ];
-                        $this->pushNotification($fcm_token, $messageData);
-                        $users[]    = $getEnquiry->plant_id;
-                        $pushData   = [
-                            'source'            => 'FROM APP',
-                            'title'             => 'Enquiry Request Accepted',
-                            'description'       => 'Enquiry Request (' . (($getEnquiry) ? $getEnquiry->enquiry_no : "") . ') Accepted By EcoEx',
-                            'user_type'         => 'PLANT',
-                            'users'             => json_encode($users),
-                            'is_send'           => 1,
-                            'send_timestamp'    => date('Y-m-d H:i:s'),
-                            'status'            => 1,
-                        ];
-                        $this->common_model->save_data('notifications', $pushData, '', 'id');
-                    }
-                }
+                // $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $getEnquiry->plant_id, 'fcm_token!=' => ''], 'fcm_token');
+                // if ($getDeviceTokens) {
+                //     foreach ($getDeviceTokens as $getDeviceToken) {
+                //         $fcm_token          = $getDeviceToken->fcm_token;
+                //         $messageData = [
+                //             'title'     => 'Enquiry Request Accepted',
+                //             'body'      => 'Enquiry Request (' . (($getEnquiry) ? $getEnquiry->enquiry_no : "") . ') Accepted By EcoEx',
+                //             'badge'     => 1,
+                //             'sound'     => 'Default',
+                //             'data'      => [],
+                //         ];
+                //         $this->pushNotification($fcm_token, $messageData);
+                //         $users[]    = $getEnquiry->plant_id;
+                //         $pushData   = [
+                //             'source'            => 'FROM APP',
+                //             'title'             => 'Enquiry Request Accepted',
+                //             'description'       => 'Enquiry Request (' . (($getEnquiry) ? $getEnquiry->enquiry_no : "") . ') Accepted By EcoEx',
+                //             'user_type'         => 'PLANT',
+                //             'users'             => json_encode($users),
+                //             'is_send'           => 1,
+                //             'send_timestamp'    => date('Y-m-d H:i:s'),
+                //             'status'            => 1,
+                //         ];
+                //         $this->common_model->save_data('notifications', $pushData, '', 'id');
+                //     }
+                // }
                 /* send push */
                 $postData = array(
                     'status'                    => 1,
