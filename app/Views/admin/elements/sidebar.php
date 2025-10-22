@@ -374,6 +374,20 @@ if ($userType == 'MA') {
             </ul>
         </li>
     <?php } ?>
+    <?php if ($common_model->checkModuleAccess(29)) { ?>
+        <li class="nav-item">
+            <a class="nav-link <?= (($pageSegment == 'quotation') ? '' : 'collapsed') ?> <?= (($pageSegment == 'quotation') ? 'active' : '') ?>" data-bs-target="#quotation-nav" data-bs-toggle="collapse" href="#">
+                <i class="fa fa-question-circle"></i><span>Quotation</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="quotation-nav" class="nav-content collapse <?= (($pageSegment == 'quotation') ? 'show' : '') ?>" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="<?= ((($pageSegment == 'quotation') && (decoded($paramerId) == 0)) ? 'active' : '') ?>" href="<?= base_url('admin/quotation/list/') ?>">
+                        <i class="fa fa-arrow-right"></i><span>Quotation List</span>
+                    </a>
+                </li>                
+            </ul>
+        </li>
+    <?php } ?>
     <?php if ($common_model->checkModuleAccess(24)) { ?>
         <li class="nav-item">
             <a class="nav-link <?= (($pageSegment == 'ecoex-certificates') ? 'active' : '') ?>" href="<?= base_url('admin/ecoex-certificates') ?>">
