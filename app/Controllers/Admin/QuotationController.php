@@ -51,15 +51,16 @@ class QuotationController extends BaseController
         $title                      = 'Manage ' . $this->data['title'] . ' List';
         $page_name                  = 'quotation/list';
 
-        $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');        
-        $conditions                 = ['status' => 0];
+        $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');                
         // $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
         $data['rows']               =$this->db->table('quotations q')
-                                    ->select('q.*, qi.scrap_name, qi.rate, qi.qty, qi.unit')
+                                    ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit')
                                     ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
+                                    ->where(' qi.status !=', 3)
                                     ->orderBy('q.quotation_no', 'ASC')
                                     ->get()
                                     ->getResult();
+                                    // pr($data['rows']);
 
         $query                      = $this->db->query("SELECT DISTINCT location FROM quotations");
         $data['locations']          = $query->getResult();  
@@ -207,7 +208,7 @@ class QuotationController extends BaseController
             ]);
         }
     }
-    public function confirm_delete($id)
+    public function confirm_delete($quotationId, $quotationItemId)
     {
         if (!$this->common_model->checkModuleFunctionAccess(23, 107)) {
             $data['action']             = 'Access Forbidden';
@@ -216,15 +217,15 @@ class QuotationController extends BaseController
             echo $this->layout_after_login($title, $page_name, $data);
             exit;
         }
-        $id                         = decoded($id);
+        $quotationId                         = decoded($quotationId);
+        $quotationItemId                     = decoded($quotationItemId);
         $postData = array(
             'status' => 3
         );
-        $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
-        $this->common_model->save_data('quotations', $postData, $id, 'enq_id');
-
+        // pr($postData);
+        $this->common_model->save_data($this->data['table_name'], $postData, $quotationItemId, $this->data['primary_key']);       
         $this->session->setFlashdata('success_message', $this->data['title'] . ' deleted successfully');
-        return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/' . encoded($current_status));
+        return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/');
     }
     public function change_status($id)
     {
@@ -325,54 +326,13 @@ class QuotationController extends BaseController
             exit;
         }
         $id                         = decoded($id);
-        $getEnquiry                 = $this->common_model->find_data($this->data['table_name'], 'row', ['id' => $id]);
-        if ($getEnquiry) {
-            $pendingItemCount       = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $id, 'status' => 0]);
-            if ($pendingItemCount <= 0) {
-                /* send push */
-                // $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $getEnquiry->plant_id, 'fcm_token!=' => ''], 'fcm_token');
-                // if ($getDeviceTokens) {
-                //     foreach ($getDeviceTokens as $getDeviceToken) {
-                //         $fcm_token          = $getDeviceToken->fcm_token;
-                //         $messageData = [
-                //             'title'     => 'Enquiry Request Accepted',
-                //             'body'      => 'Enquiry Request (' . (($getEnquiry) ? $getEnquiry->enquiry_no : "") . ') Accepted By EcoEx',
-                //             'badge'     => 1,
-                //             'sound'     => 'Default',
-                //             'data'      => [],
-                //         ];
-                //         $this->pushNotification($fcm_token, $messageData);
-                //         $users[]    = $getEnquiry->plant_id;
-                //         $pushData   = [
-                //             'source'            => 'FROM APP',
-                //             'title'             => 'Enquiry Request Accepted',
-                //             'description'       => 'Enquiry Request (' . (($getEnquiry) ? $getEnquiry->enquiry_no : "") . ') Accepted By EcoEx',
-                //             'user_type'         => 'PLANT',
-                //             'users'             => json_encode($users),
-                //             'is_send'           => 1,
-                //             'send_timestamp'    => date('Y-m-d H:i:s'),
-                //             'status'            => 1,
-                //         ];
-                //         $this->common_model->save_data('notifications', $pushData, '', 'id');
-                //     }
-                // }
-                /* send push */
-                $postData = array(
-                    'status'                    => 1,
-                    'enquiry_remarks'           => 'Approved By EcoEx',
-                    'accepted_date'             => date('y-m-d H:i:s')
-                );
-                $updateData = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
-                $this->session->setFlashdata('success_message', $this->data['title'] . ' Accepted Successfully & Transfer To Sent/Submitted List !!!');
-                return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/' . encoded(1));
-            } else {
-                $this->session->setFlashdata('error_message', $pendingItemCount . ' Pending Items In ' . $getEnquiry->enquiry_no . '. Please Approve The Same Before Accept Enquiry Request !!!');
-                return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/' . encoded(0));
-            }
-        } else {
-            $this->session->setFlashdata('success_message', $this->data['title'] . ' Not Found !!!');
-            return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/' . encoded(0));
-        }
+        $postData = array(
+            'status' => 1
+        );
+        // pr($postData);
+        $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);       
+        $this->session->setFlashdata('success_message', $this->data['title'] . ' accepted successfully');
+        return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/');
     }
     public function reject_request($id)
     {
@@ -384,57 +344,13 @@ class QuotationController extends BaseController
             exit;
         }
         $id                         = decoded($id);
-        $getEnquiry                 = $this->common_model->find_data($this->data['table_name'], 'row', ['id' => $id]);
-        if ($getEnquiry) {
-            /* send push */
-            $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $getEnquiry->plant_id, 'fcm_token!=' => ''], 'fcm_token');
-            if ($getDeviceTokens) {
-                foreach ($getDeviceTokens as $getDeviceToken) {
-                    $fcm_token          = $getDeviceToken->fcm_token;
-                    $messageData = [
-                        'title'     => 'Enquiry Request Rejected',
-                        'body'      => 'Enquiry Request (' . (($getEnquiry) ? $getEnquiry->enquiry_no : "") . ') Rejected By EcoEx',
-                        'badge'     => 1,
-                        'sound'     => 'Default',
-                        'data'      => [],
-                    ];
-                    $this->pushNotification($fcm_token, $messageData);
-                    $users[]    = $getEnquiry->plant_id;
-                    $pushData   = [
-                        'source'            => 'FROM APP',
-                        'title'             => 'Enquiry Request Rejected',
-                        'description'       => 'Enquiry Request (' . (($getEnquiry) ? $getEnquiry->enquiry_no : "") . ') Rejected By EcoEx',
-                        'user_type'         => 'PLANT',
-                        'users'             => json_encode($users),
-                        'is_send'           => 1,
-                        'send_timestamp'    => date('Y-m-d H:i:s'),
-                        'status'            => 1,
-                    ];
-                    $this->common_model->save_data('notifications', $pushData, '', 'id');
-                }
-            }
-            /* send push */
-            $postData = array(
-                'status'                    => 13,
-                'enquiry_remarks'           => $this->request->getPost('enquiry_remarks'),
-                'accepted_date'             => date('Y-m-d H:i:s')
-            );
-            $updateData = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
-
-            $postData2 = array(
-                'enq_id'                    => $id,
-                'remarks'                   => $this->request->getPost('enquiry_remarks'),
-                'rejected_timestamp'        => date('Y-m-d H:i:s'),
-                'status'                    => 13,
-            );
-            $updateData = $this->common_model->save_data('ecomm_rejected_requests', $postData2, '', $this->data['primary_key']);
-
-            $this->session->setFlashdata('success_message', $this->data['title'] . ' Rejected Successfully & Transfer To Rejected List !!!');
-            return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/' . encoded(13));
-        } else {
-            $this->session->setFlashdata('error_message', $this->data['title'] . ' Not Found !!!');
-            return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/' . encoded(0));
-        }
+        $postData = array(
+            'status' => 2
+        );
+        // pr($postData);
+        $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);       
+        $this->session->setFlashdata('success_message', $this->data['title'] . ' rejected successfully');
+        return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/');
     }
     public function getRejectModal()
     {
