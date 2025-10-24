@@ -288,14 +288,14 @@ $userType           = $session->user_type;
                                                         <hr>
                                                     </p>
                                                 <?php }
-                                                } ?>
+                                                    } ?>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div> -->
                         <?php }
-                        } ?>
+                            } ?>
                     <?php } ?>
                     <?php if ($userType == 'U') { ?>
                         <!-- Item Categories Card -->
@@ -510,22 +510,22 @@ $userType           = $session->user_type;
                         <!-- 'datatable' class removed by @Shubha75 on 4/4/25  -->
                          <!-- adding company name as per requirement by shuvadeep@keylines.net on 04/09/2025 -->
                         <?php
-                        //getting company name outside loop
-                        if( ! in_array($userType, ['MA', 'U']) ){
-                            if(!empty($recent_enquiries)){
-                                $getCompany                 = $common_model->find_data('ecoex_companies', 'row', ['id' => $recent_enquiries[0]->company_id], 'company_name'); 
+                            //getting company name outside loop
+                            if (! in_array($userType, ['MA', 'U'])) {
+                                if (!empty($recent_enquiries)) {
+                                    $getCompany                 = $common_model->find_data('ecoex_companies', 'row', ['id' => $recent_enquiries[0]->company_id], 'company_name');
 
-                            }
-                        
-                        
-                        ?>
+                                }
+
+
+                                ?>
                         <div style="text-align: center; margin-bottom: 1rem; font-weight: bold; font-size: 1.2rem;">
                             <?= (isset($getCompany) ? $getCompany->company_name : '') ?>
                         </div>
                         <?php }?>
                         <table class="table table-borderless  globel_table">
                             <thead>
-                            <?php if( ! in_array($userType, ['MA', 'U']) ) {?>    
+                            <?php if (! in_array($userType, ['MA', 'U'])) {?>    
                                 <tr>
                                     <!-- <th>#</th> -->
                                      <th>Date</th>
@@ -537,7 +537,7 @@ $userType           = $session->user_type;
                                     <th>Status</th>
                                 </tr>
                                 <?php }?>
-                                <?php if(in_array($userType, ['MA']) ) {?>    
+                                <?php if (in_array($userType, ['MA'])) {?>    
                                 <tr>
                                     <th>#</th>
                                     <th>Company</th>
@@ -549,49 +549,50 @@ $userType           = $session->user_type;
                             </thead>
                             <tbody>
                                 <?php
-                                if ($recent_enquiries) {
-                                    foreach ($recent_enquiries as $recent_enquiry) {
-                                        $getCompany                 = $common_model->find_data('ecoex_companies', 'row', ['id' => $recent_enquiry->company_id], 'company_name');
-                                        $getPlant                   = $common_model->find_data('ecomm_users', 'row', ['id' => $recent_enquiry->plant_id], 'plant_name');
-                                ?>
+                                        if ($recent_enquiries) {
+                                            foreach ($recent_enquiries as $recent_enquiry) {
+                                                $getCompany                 = $common_model->find_data('ecoex_companies', 'row', ['id' => $recent_enquiry->company_id], 'company_name');
+                                                $getPlant                   = $common_model->find_data('ecomm_users', 'row', ['id' => $recent_enquiry->plant_id], 'plant_name');
+                                                ?>
                                         <tr>
-                                            <?php if(in_array($userType, ['MA']) ) {?>
+                                            <?php if (in_array($userType, ['MA'])) {?>
                                             <th><a href="<?= base_url('admin/enquiry-requests/enquiry-details/' . encoded($recent_enquiry->id)) ?>">#<?= $recent_enquiry->enquiry_no ?></a></th>
                                             <td><?= (($getCompany) ? $getCompany->company_name : '') ?></td>
                                             <?php }?>
-                                            <?php if( ! in_array($userType, ['MA', 'U']) ) {?>  
+                                            <?php if (! in_array($userType, ['MA', 'U'])) {?>  
                                             <td><?= date_format(date_create($recent_enquiry->created_at), "d-m-Y h:i A") ?></td>
                                             <?php } ?>
                                             <td><?= (($getPlant) ? $getPlant->plant_name : '') ?></td>
                                             <td>
                                                 <ul>
                                                     <?php
-                                                    $getEnquiryItems            = $common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $recent_enquiry->id]);
-                                                    if ($getEnquiryItems) {
-                                                        $sl = 1;
-                                                        $enqItems=[];
-                                                        foreach ($getEnquiryItems as $getEnquiryItem) {
-                                                            $getItem                = $common_model->find_data('ecomm_company_items', 'row', ['id' => $getEnquiryItem->product_id], 'alias_name, id');
-                                                            $enqItems = $getItem->id;
+                                                                    $getEnquiryItems            = $common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $recent_enquiry->id]);
+                                                if ($getEnquiryItems) {
+                                                    $sl = 1;
+                                                    $enqItems = [];
+                                                    foreach ($getEnquiryItems as $getEnquiryItem) {
+                                                        $getItem                = $common_model->find_data('ecomm_company_items', 'row', ['id' => $getEnquiryItem->product_id], 'alias_name, id');
+                                                        $enqItems = @($getItem->id) ?? '';
 
-                                                    ?>
+
+                                                        ?>
                                                             <li><?= (($getItem) ? $getItem->alias_name : $getEnquiryItem->new_product_name) ?></li>
                                                     <?php }
                                                     } ?>
                                                 </ul>
                                             </td>
-                                            <?php if( ! in_array($userType, ['MA', 'U']) ) {?>  
+                                            <?php if (! in_array($userType, ['MA', 'U'])) {?>  
                                             <td>
                                                 <?php $grpItems = getQtyWithUnitGroupedItems($recent_enquiry->id, $common_model); ?>
                                                 <ul>
-                                                    <?php foreach($grpItems AS $itm){?>
+                                                    <?php foreach ($grpItems as $itm) {?>
                                                     <li><?= $itm->total_quantity . " (" . $itm->weighted_unit .")"?></li>
                                                     <?php }?>
                                                 </ul>    
                                             </td>
 
-                                            <td><?php echo (!empty($recent_enquiry->order_complete_date) && $recent_enquiry->order_complete_date != '0000-00-00') 
-     ? date_format(date_create($recent_enquiry->order_complete_date), "d-m-Y h:i A") 
+                                            <td><?php echo (!empty($recent_enquiry->order_complete_date) && $recent_enquiry->order_complete_date != '0000-00-00')
+     ? date_format(date_create($recent_enquiry->order_complete_date), "d-m-Y h:i A")
      : '';?></td>
      <?php } ?>
                                             <td>
@@ -659,7 +660,7 @@ $userType           = $session->user_type;
                                             </td>
                                         </tr>
                                 <?php }
-                                } ?>
+                                            } ?>
                             </tbody>
                         </table>
                     </div>
