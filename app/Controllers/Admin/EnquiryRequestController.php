@@ -10,7 +10,9 @@ use App\Services\WhatsApp\WhatsAppMessageService;
 use App\Services\WhatsApp\WhatsAppProviderInterface;
 use App\Services\WhatsApp\DigitalSmsWhatsAppProvider;
 use App\Services\WhatsApp\WhatsAppException;
+use CodeIgniter\HTTP\Request;
 use CodeIgniter\I18n\Time;
+use EmptyIterator;
 
 class EnquiryRequestController extends BaseController
 {
@@ -94,21 +96,53 @@ class EnquiryRequestController extends BaseController
         }
         $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
         //get whatsapp notification status per enquiry
+        if (!empty($data['rows'])) {
 
-        $enquiryIds = array_column($data['rows'], 'id');
+            $enquiryIds = array_column($data['rows'], 'id');
 
-        $w_select = 'id, enquiry_id, status';
+            $w_select = 'id, enquiry_id, send_type, status';
 
-        $statusList = $this->data['model']->find_where_in(
-            'ecomm_whatsapp_workers',                          // table name
-            'enquiry_id',                                      // column for WHERE IN
-            $enquiryIds,                               // array of values
-            'result-array',                        // return type (as array)
-            $w_select                      // specific fields to select
-        );
+            $statusList = $this->data['model']->find_where_in(
+                'ecomm_whatsapp_workers',                          // table name
+                'enquiry_id',                                      // column for WHERE IN
+                $enquiryIds,                               // array of values
+                'result-array',                        // return type (as array)
+                $w_select                      // specific fields to select
+            );
 
 
-        $data['statusMap']  = array_column($statusList, 'status', 'enquiry_id');
+            // Build a nested map: [enquiry_id][send_type] = status
+            $statusMap = [];
+            foreach ($statusList as $row) {
+                $statusMap[$row['enquiry_id']][$row['send_type']] = $row['status'];
+            }
+
+            $data['statusMap']  = $statusMap;
+
+            $db = \Config\Database::connect();
+
+            $builder = $db->table('ecomm_enquires enq');
+            $builder->select('u.state, enq.id as enquiry_id');
+            $builder->join('ecomm_users u', 'u.id = enq.plant_id');
+            $builder->where('u.type', 'PLANT');
+            $builder->whereIn('enq.id', $enquiryIds);
+
+            $query = $builder->get();
+            $stateList = $query->getResultArray();
+
+            // Map enquiry_id => state
+            $data['stateMap'] = !empty($stateList)
+                ? array_column($stateList, 'state', 'enquiry_id')
+                : [];
+
+
+
+        } else {
+            $data['statusMap']  = [];
+            $data['stateMap']  = [];
+        }
+
+
 
         echo $this->layout_after_login($title, $page_name, $data);
     }
@@ -2533,35 +2567,61 @@ class EnquiryRequestController extends BaseController
 
     }
 
-    public function sendWhatsappWithSparkCmdV2($enquiry_id)
+    public function sendWhatsappWithSparkCmdV2()
     {
 
+        // Ensure this is a POST request
+        if ($this->request->getMethod() !== 'post') {
 
-        $enquiryId = decoded($enquiry_id);
+            return redirect()->back()->with('error_message', 'Invalid request method.');
+
+        }
+
+
+
+        $validation = \Config\Services::validation();
+
+        $validation->setRules([
+            'enquiry_id' => 'required|alpha_numeric',
+            'send_type'  => 'required|in_list[state, pan_india]',
+        ]);
+        $isValid = $validation->withRequest($this->request)->run();
+        if (!$isValid) {
+            $errors = $validation->getErrors();
+            // Return the first error message
+            return redirect()->back()->with('error_message', array_values($errors)[0])->withInput();
+        }
+        //Get the enquiry ID from the request
+        $enquiryId = decoded($this->request->getPost('enquiry_id'));
+        $sendType = $this->request->getPost('send_type');
+
+        //$enquiryId = decoded($request->getVar('enquiry_id'));
 
 
         $jobModel = new WhatsAppWorkerModel();
 
 
         //Check if the enquiry exists
-        $workerExists = $jobModel->enquiryExists($enquiryId);
+        //$workerExists = $jobModel->enquiryExists($enquiryId, $sendType);
 
         $enquiryData = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enquiryId]);
 
 
-        if (!$workerExists) {
-            //If not, we stop here
-            //insert data into whatsapp_worker table with status inititialized
-            $data = [
-                'enquiry_id' => $enquiryId,
-                'status' => 'pending',
-                'enquiry_meta' => json_encode($enquiryData),
-                'created_at' => date('Y-m-d H:i:s'),
-            ];
-            $jobModel->insert($data);
+        //if (!$workerExists) {
+        //If not, we stop here
+        //insert data into whatsapp_worker table with status inititialized
+        $data = [
+            'send_type' => $sendType,
+            'enquiry_id' => $enquiryId,
+            'status' => 'pending',
+            'enquiry_meta' => json_encode($enquiryData),
+            'created_at' => date('Y-m-d H:i:s'),
+        ];
+        $jobModel->insert($data);
 
-            $jobId = $jobModel->getInsertID();
-        } else {
+        $jobId = $jobModel->getInsertID();
+        //}
+        /* else {
 
             $job = $jobModel->where('enquiry_id', $enquiryId)->first();
 
@@ -2569,7 +2629,7 @@ class EnquiryRequestController extends BaseController
                             ->set(['status' => 'pending', 'started_at' => date('Y-m-d H:i:s')])
                             ->update();
             $jobId = $job['id'];
-        }
+        }*/
 
         if (! $jobId) {
 

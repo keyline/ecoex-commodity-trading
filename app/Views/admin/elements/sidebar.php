@@ -467,10 +467,10 @@ if ($userType == 'MA') {
                 <i class="fa fa-gear"></i>
                 <span>WhatsApp Logs</span>
             </a>
-            <a class="nav-link <?= (($pageSegment == 'whatsapp-interactions') ? 'active' : '') ?>" href="<?= base_url('admin/whatsapp-interactions') ?>">
+            <!-- <a class="nav-link <?= (($pageSegment == 'whatsapp-interactions') ? 'active' : '') ?>" href="<?= base_url('admin/whatsapp-interactions') ?>">
                 <i class="fa fa-gear"></i>
                 <span>WhatsApp Interactions</span>
-            </a>
+            </a> -->
         </li>
     <?php } ?>
 </ul>

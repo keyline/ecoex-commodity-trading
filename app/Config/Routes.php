@@ -217,7 +217,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     //Send WhatsApp notification to vendors/subscribers
     //$routes->match(['get', 'post'], "enquiry-requests/send-whatsapp-notification/(:any)", "EnquiryRequestController::sendWhatsAppNotification/$1");
 
-    $routes->match(['get', 'post'], "enquiry-requests/send-whatsapp-notification/(:any)", "EnquiryRequestController::sendWhatsappWithSparkCmdV2/$1");
+    $routes->match(['post'], "enquiry-requests/send-whatsapp-notification", "EnquiryRequestController::sendWhatsappWithSparkCmdV2");
 
 
 
@@ -283,6 +283,12 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 
 
     $routes->match(['get'], 'whatsapp-interactions', 'WhatsappMessageController::interactionList');
+
+    $routes->match(['get'], 'whatsapp-notification/report/(:num)', 'WhatsappMessageController::viewReport/$1');
+
+
+    $routes->match(['get'], 'notification-report/tabdata', 'WhatsappMessageController::tabData');
+
 
 
 });
