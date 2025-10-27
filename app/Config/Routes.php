@@ -181,6 +181,13 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     $routes->match(['get', 'post'], "delete-account-request/delete/(:any)", "DeleteAccountRequestController::confirm_delete/$1");
     $routes->match(['get', 'post'], "delete-account-request/change-status/(:any)", "DeleteAccountRequestController::change_status/$1");
     // delete account requests
+    //quotation
+    $routes->match(['get'], "quotation/list", "QuotationController::list");
+    $routes->match(['get', 'post'], "quotation/view-detail/(:any)", "QuotationController::viewDetail/$1");
+    $routes->match(['get', 'post'], "quotation/delete/(:any)/(:any)", "QuotationController::confirm_delete/$1/$2");
+    $routes->match(['get', 'post'], "quotation/accept-request/(:any)", "QuotationController::accept_request/$1");
+    $routes->match(['get', 'post'], "quotation/reject-request/(:any)", "QuotationController::reject_request/$1");
+    $routes->match(['post'], "get-state-location", "QuotationController::get_state_location");
     // enquiry requests
     $routes->match(['get'], "enquiry-requests/list/(:any)", "EnquiryRequestController::list/$1");
     $routes->match(['get', 'post'], "enquiry-requests/view-detail/(:any)", "EnquiryRequestController::viewDetail/$1");
