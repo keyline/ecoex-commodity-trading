@@ -5,7 +5,7 @@ $controller_route   = $moduleDetail['controller_route'];
 $userType           = $session->user_type;
 ?>
 <style>
-    #simpletable_wrapper .dt-layout-row.dt-layout-table {
+    #simpletable1_wrapper .dt-layout-row.dt-layout-table {
         width: 100%;
         overflow: auto;
     }
@@ -42,42 +42,51 @@ $userType           = $session->user_type;
                 <div class="card">
                     <div class="card-body">
                         <div class="row mb-3">
-                            <div class="col-md-3">                                
-                                <select id="filterLocation" class="form-control">
-                                <option value="">Filter by Location</option>
-                                <?php foreach ($locations as $location) {?>
-                                <option value="<?=$location->location?>"><?=$location->location?></option>                                
-                                <?php } ?>
-                                <!-- add more -->
-                                </select>
+                            <div class="col-md-10">
+                                <div class="row">
+                                    <div class="col-md-4">                                
+                                        <select id="filterLocation" class="form-control">
+                                        <option value="">Filter by Location</option>
+                                        <?php foreach ($locations as $location) {?>
+                                        <option value="<?=$location->location?>"><?=$location->location?></option>                                
+                                        <?php } ?>
+                                        <!-- add more -->
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select id="filterItem" class="form-control">
+                                        <option value="">Filter by Item Name</option>
+                                        <?php foreach ($items as $item) {?>
+                                        <option value="<?=$item->scrap_name?>"><?=$item->scrap_name?></option>
+                                        <?php } ?>
+                                        <!-- add more -->
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button id="applyFilter" class="btn btn-outline-secondary">Apply Filter</button>
+                                        <button id="resetFilter" class="btn btn-secondary" disabled>Reset</button>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="col-md-3">
-                                <select id="filterItem" class="form-control">
-                                <option value="">Filter by Item Name</option>
-                                <?php foreach ($items as $item) {?>
-                                <option value="<?=$item->scrap_name?>"><?=$item->scrap_name?></option>
-                                <?php } ?>
-                                <!-- add more -->
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <button id="applyFilter">Apply Filter</button>
+                            <div class="col-md-2">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <select id="sortOption" class="form-control" style="width:150px;">
+                                            <option value="">Sort By</option>
+                                            <option value="rate_asc">Rate: Low → High</option>
+                                            <option value="rate_desc">Rate: High → Low</option>
+                                            <option value="qty_asc">Quantity: Low → High</option>
+                                            <option value="qty_desc">Quantity: High → Low</option>
+                                        </select>
+                                    </div> 
+                                </div>
                             </div>
                         </div>
                         <div class="row mb-3">
-                           <div class="col-md-3">
-                                <select id="sortOption" class="form-control" style="width:200px;">
-                                    <option value="">Sort By</option>
-                                    <option value="rate_asc">Rate: Low → High</option>
-                                    <option value="rate_desc">Rate: High → Low</option>
-                                    <option value="qty_asc">Quantity: Low → High</option>
-                                    <option value="qty_desc">Quantity: High → Low</option>
-                                </select>
-                            </div> 
+                           
                         </div>
                         <div class="table-responsive">
-                            <table id="simpletable" class="table globel_table nowrap" style="width: 100%">
+                            <table id="simpletable1" class="table globel_table nowrap" style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th>#</th>                                        
@@ -89,14 +98,21 @@ $userType           = $session->user_type;
                                         <th style="width: 5%;">Current Location</th>
                                         <th style="width: 5%;">Vendor Name</th>
                                         <th style="width: 5%;">Contact No.</th>                                                                              
-                                        <th>Quotation Submitted</th>                                        
+                                        <th>Quotation Submitted</th>     
+                                        <?php foreach ($rows as $row) {
+                                            $itemStatus = $row->quotation_item_status;
+                                            if($itemStatus == 1) {?>
+                                            <th>Active Timestamp</th>
+                                       <?php }elseif($itemStatus == 2) { ?>
+                                            <th>Reject Timestamp</th>
+                                      <?php } }?>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if ($rows) {
                                         $sl = 1;
-                                        foreach ($rows as $row) { ?>                                            
+                                        foreach ($rows as $row) { $itemStatus = $row->quotation_item_status;?>                                            
                                             <tr>
                                                 <th scope="row"><?= $sl++ ?></th>
                                                 <td><h5><?= $row->quotation_no ?></h5></td>
@@ -107,16 +123,23 @@ $userType           = $session->user_type;
                                                 <td><h5><?= ($row->current_location) ?> </h5></td>
                                                 <td><h5><?= ($row->vendor_name) ?> </h5></td>
                                                 <td><h5><?= ($row->contact_no) ?> </h5></td>                                                                                             
-                                                <td><h6><?= (($row->created_at != '') ? date_format(date_create($row->created_at), "M d, Y h:i A") : '') ?></h6></td>                                                
+                                                <td><h6><?= (($row->created_at != '') ? date_format(date_create($row->created_at), "M d, Y h:i A") : '') ?></h6></td>    
+                                                <?php if($itemStatus == 1) {?>
+                                                <td><h6><?= (($row->quotation_item_status == 1) ? date_format(date_create($row->active_time), "M d, Y h:i A") : '') ?></h6></td>
+                                                <?php }elseif($itemStatus == 2) { ?>
+                                                <td><h6><?= (($row->quotation_item_status == 2) ? date_format(date_create($row->reject_time), "M d, Y h:i A") : '') ?></h6></td>
+                                                <?php } ?>                                          
+                                                
                                                 <td>
                                                     <?php if ($common_model->checkModuleFunctionAccess(23, 109)) { ?>
                                                         <a href="<?= base_url('admin/' . $controller_route . '/view-detail/' . encoded($row->id)) ?>" class="btn btn-outline-info btn-sm" title="View <?= $title ?>"><i class="fa fa-info-circle"></i> View Details</a>
                                                     <?php } ?> 
                                                     <?php if ($common_model->checkModuleFunctionAccess(23, 107)) { ?>
-                                                        <?php if ($userType == 'MA') { ?>
+                                                        <?php if ($userType == 'MA') { 
+                                                            if($row->quotation_item_status != 1) {?>
                                                             <a href="<?= base_url('admin/' . $controller_route . '/delete/' . encoded($row->id). '/' . encoded($row->quotation_item_id)) ?>" class="btn btn-outline-danger btn-sm" title="Delete <?= $title ?>" onclick="return confirm('Do You Want To Delete This <?= $title ?>');"><i class="fa fa-trash"></i> Delete</a>
                                                             <br>
-                                                        <?php } ?>
+                                                        <?php } } ?>
                                                     <?php } ?> 
                                                     <?php if ($row->quotation_item_status == 0) { ?>
                                                         <?php if ($common_model->checkModuleFunctionAccess(23, 110)) { ?>
@@ -173,9 +196,7 @@ const baseUrl = '<?= base_url() ?>';
 let table;
 
 $(function () {
-  // Reuse if already initialised by theme; otherwise init once.
-  table = $('#simpletable').DataTable({
-    retrieve: true,                 // ← avoids “Cannot reinitialise” if pre-inited
+  table = $('#simpletable1').DataTable({
     pageLength: 10,
     lengthMenu: [10, 25, 50, 100],
     language: { emptyTable: 'No data found' },
@@ -186,7 +207,7 @@ $(function () {
     deferRender: true
   });
 
-  // Auto-number the first column on every draw (respects paging/search/order)
+  // Auto numbering
   table.on('draw.dt', function () {
     const info = table.page.info();
     table.column(0, { search: 'applied', order: 'applied' })
@@ -194,36 +215,51 @@ $(function () {
       .each((cell, i) => { cell.innerHTML = info.start + i + 1; });
   }).draw(false);
 
-  // Filter button
+  // 🔹 Watch dropdown changes to enable/disable Reset button
+  $('#filterLocation, #filterItem').on('change', function () {
+    const hasFilter = $('#filterLocation').val() || $('#filterItem').val();
+    $('#resetFilter').prop('disabled', !hasFilter);
+  });
+
   $('#applyFilter').on('click', function () {
     const loc  = $('#filterLocation').val() || '';
     const item = $('#filterItem').val() || '';
     getStateLocation(loc, item);
   });
+  // 🔹 Reset Filter button
+  $('#resetFilter').on('click', function () {
+    $('#filterLocation').val('');
+    $('#filterItem').val('');
+    $('#resetFilter').prop('disabled', true);
+
+     location.reload();
+  });
 });
 
 function getStateLocation(loc, item) {
-  $('#tableLoader').show();  // loader OUTSIDE the table
+  $('#tableLoader').show();
 
   $.ajax({
     type: 'POST',
     url: baseUrl + 'admin/get-state-location',
     dataType: 'json',
     data: { loc, item },
-    success: function (res) {
+    success:function (res) {
+        console.log('Response data:', res.data);
+
       if (res && res.success && Array.isArray(res.data) && res.data.length) {
-        const rows = res.data.map(row => ([
-          '', // serial # (filled by draw handler)
+        const rows = res.data.map((row, index) => ([
+          index + 1,
           `<h5>${row.quotation_no}</h5>`,
           `<h5>${row.scrap_name}</h5>`,
-          `<h5>${parseInt(row.rate, 10)} /${row.unit}</h5>`,
-          `<h5>${parseInt(row.qty, 10)} ${row.unit}</h5>`,
+          `<h5>${parseFloat(row.rate).toFixed(2)} /${row.unit}</h5>`,
+          `<h5>${parseFloat(row.qty).toFixed(2)} ${row.unit}</h5>`,
           `<h5>${row.location}</h5>`,
           `<h5>${row.current_location}</h5>`,
           `<h5>${row.vendor_name}</h5>`,
           `<h5>${row.contact_no}</h5>`,
           `<h6>${row.created_at ? formatDate(row.created_at) : ''}</h6>`,
-          `<a href="${baseUrl}admin/quotations/view-detail/${row.id}"
+          `<a href="${baseUrl}admin/quotations/view-detail/${row.id}" 
               class="btn btn-outline-info btn-sm">
               <i class="fa fa-info-circle"></i> View
            </a>`
@@ -231,14 +267,13 @@ function getStateLocation(loc, item) {
 
         table.clear();
         table.rows.add(rows);
-        table.page('first').draw(false); // keep pagination at 10 after filter
+        table.page('first').draw(false);
       } else {
-        table.clear().draw(false);       // empty state, pagination intact
+        table.clear().draw(false);
       }
     },
     error: function () {
       table.clear().draw(false);
-      // optionally show a toast here
     },
     complete: function () {
       $('#tableLoader').hide();
@@ -255,21 +290,5 @@ function formatDate(dateStr) {
   });
 }
 
-$('#sortOption').on('change', function () {
-    let val = $(this).val();
-
-    if (val == "rate_asc") {
-        table.order([3, "asc"]).draw();  // 3 = Rate column index
-    } 
-    else if (val == "rate_desc") {
-        table.order([3, "desc"]).draw();
-    } 
-    else if (val == "qty_asc") {
-        table.order([4, "asc"]).draw();  // 4 = Quantity column index
-    } 
-    else if (val == "qty_desc") {
-        table.order([4, "desc"]).draw();
-    }
-});
 </script>
 
