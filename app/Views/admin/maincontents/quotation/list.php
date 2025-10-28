@@ -9,6 +9,20 @@ $userType           = $session->user_type;
         width: 100%;
         overflow: auto;
     }
+    .quatation-filter-card {
+        border: 1px dashed #48974e;
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+    .quatation-filter-card select{
+        appearance: auto;
+    }
+    .quatation-filter-card .form-control{
+        min-height: 37.6px;
+    }
+    .dt-length label{
+        margin-left: 5px;
+    }
 </style>
 <div class="container-fluid">
     <div class="pagetitle">
@@ -41,47 +55,52 @@ $userType           = $session->user_type;
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="row mb-3">
-                            <div class="col-md-10">
-                                <div class="row">
-                                    <div class="col-md-4">                                
-                                        <select id="filterLocation" class="form-control">
-                                        <option value="">Filter by Location</option>
-                                        <?php foreach ($locations as $location) {?>
-                                        <option value="<?=$location->location?>"><?=$location->location?></option>                                
-                                        <?php } ?>
-                                        <!-- add more -->
-                                        </select>
+                        <div class="card quatation-filter-card">
+                            <div class="card-body">
+                                <div class="row flex-column-reverse flex-md-row">
+                                    <div class="col-md-9">
+                                        <div class="row">
+                                            <div class="col-md-4 my-2">                                
+                                                <select id="filterLocation" class="form-control">
+                                                <option value="">Filter by Location</option>
+                                                <?php foreach ($locations as $location) {?>
+                                                <option value="<?=$location->location?>"><?=$location->location?></option>                                
+                                                <?php } ?>
+                                                <!-- add more -->
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4 my-2">
+                                                <select id="filterItem" class="form-control">
+                                                <option value="">Filter by Item Name</option>
+                                                <?php foreach ($items as $item) {?>
+                                                <option value="<?=$item->scrap_name?>"><?=$item->scrap_name?></option>
+                                                <?php } ?>
+                                                <!-- add more -->
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4 my-2">
+                                                <button id="applyFilter" class="btn btn-outline-secondary">Apply Filter</button>
+                                                <button id="resetFilter" class="btn btn-secondary" disabled>Reset</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <select id="filterItem" class="form-control">
-                                        <option value="">Filter by Item Name</option>
-                                        <?php foreach ($items as $item) {?>
-                                        <option value="<?=$item->scrap_name?>"><?=$item->scrap_name?></option>
-                                        <?php } ?>
-                                        <!-- add more -->
-                                        </select>
+                                    <div class="col-md-3">
+                                        <div class="row">
+                                            <div class="col-md-12 my-2">
+                                                <select id="sortOption" class="form-control ms-auto" style="width:150px;">
+                                                    <option value="">Sort By</option>
+                                                    <option value="rate_asc">Rate: Low → High</option>
+                                                    <option value="rate_desc">Rate: High → Low</option>
+                                                    <option value="qty_asc">Quantity: Low → High</option>
+                                                    <option value="qty_desc">Quantity: High → Low</option>
+                                                </select>
+                                            </div> 
+                                        </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <button id="applyFilter" class="btn btn-outline-secondary">Apply Filter</button>
-                                        <button id="resetFilter" class="btn btn-secondary" disabled>Reset</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <select id="sortOption" class="form-control" style="width:150px;">
-                                            <option value="">Sort By</option>
-                                            <option value="rate_asc">Rate: Low → High</option>
-                                            <option value="rate_desc">Rate: High → Low</option>
-                                            <option value="qty_asc">Quantity: Low → High</option>
-                                            <option value="qty_desc">Quantity: High → Low</option>
-                                        </select>
-                                    </div> 
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="row mb-3">
                            
                         </div>
@@ -192,103 +211,151 @@ $userType           = $session->user_type;
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <script>
-const baseUrl = '<?= base_url() ?>';
-let table;
+    document.addEventListener("DOMContentLoaded", function () {
+    const rowsPerPage = 10;
+    const table = document.getElementById("simpletable1");
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+    let filteredRows = [...rows]; // initial data (no filter)
+    let currentPage = 1;
+    let totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+    let currentSort = "";
 
-$(function () {
-  table = $('#simpletable1').DataTable({
-    pageLength: 10,
-    lengthMenu: [10, 25, 50, 100],
-    language: { emptyTable: 'No data found' },
-    columnDefs: [
-      { targets: 0, orderable: false, searchable: false }, // serial #
-      { targets: 10, orderable: false }                    // Action
-    ],
-    deferRender: true
-  });
+    function displayRows(page) {
+        tbody.innerHTML = "";
+        // 🔹 Sort before pagination
+        let sortedRows = [...filteredRows];
+        if (sortOption) {
+            sortedRows.sort((a, b) => {
+                const rateA = parseFloat(a.cells[3]?.innerText) || 0;
+                const rateB = parseFloat(b.cells[3]?.innerText) || 0;
+                const qtyA = parseFloat(a.cells[4]?.innerText) || 0;
+                const qtyB = parseFloat(b.cells[4]?.innerText) || 0;
 
-  // Auto numbering
-  table.on('draw.dt', function () {
-    const info = table.page.info();
-    table.column(0, { search: 'applied', order: 'applied' })
-      .nodes()
-      .each((cell, i) => { cell.innerHTML = info.start + i + 1; });
-  }).draw(false);
+                switch (sortOption) {
+                    case "rate_asc": return rateA - rateB;
+                    case "rate_desc": return rateB - rateA;
+                    case "qty_asc": return qtyA - qtyB;
+                    case "qty_desc": return qtyB - qtyA;
+                    default: return 0;
+                }
+            });
+        }
 
-  // 🔹 Watch dropdown changes to enable/disable Reset button
-  $('#filterLocation, #filterItem').on('change', function () {
-    const hasFilter = $('#filterLocation').val() || $('#filterItem').val();
-    $('#resetFilter').prop('disabled', !hasFilter);
-  });
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        // rows.forEach(row => row.style.display = "none"); // hide all
+        // filteredRows.slice(start, end).forEach(row => row.style.display = ""); // show only page rows
+        const paginatedRows = sortedRows.slice(start, end);
 
-  $('#applyFilter').on('click', function () {
-    const loc  = $('#filterLocation').val() || '';
-    const item = $('#filterItem').val() || '';
-    getStateLocation(loc, item);
-  });
-  // 🔹 Reset Filter button
-  $('#resetFilter').on('click', function () {
-    $('#filterLocation').val('');
-    $('#filterItem').val('');
-    $('#resetFilter').prop('disabled', true);
+        paginatedRows.forEach(row => tbody.appendChild(row));
 
-     location.reload();
-  });
-});
-
-function getStateLocation(loc, item) {
-  $('#tableLoader').show();
-
-  $.ajax({
-    type: 'POST',
-    url: baseUrl + 'admin/get-state-location',
-    dataType: 'json',
-    data: { loc, item },
-    success:function (res) {
-        console.log('Response data:', res.data);
-
-      if (res && res.success && Array.isArray(res.data) && res.data.length) {
-        const rows = res.data.map((row, index) => ([
-          index + 1,
-          `<h5>${row.quotation_no}</h5>`,
-          `<h5>${row.scrap_name}</h5>`,
-          `<h5>${parseFloat(row.rate).toFixed(2)} /${row.unit}</h5>`,
-          `<h5>${parseFloat(row.qty).toFixed(2)} ${row.unit}</h5>`,
-          `<h5>${row.location}</h5>`,
-          `<h5>${row.current_location}</h5>`,
-          `<h5>${row.vendor_name}</h5>`,
-          `<h5>${row.contact_no}</h5>`,
-          `<h6>${row.created_at ? formatDate(row.created_at) : ''}</h6>`,
-          `<a href="${baseUrl}admin/quotations/view-detail/${row.id}" 
-              class="btn btn-outline-info btn-sm">
-              <i class="fa fa-info-circle"></i> View
-           </a>`
-        ]));
-
-        table.clear();
-        table.rows.add(rows);
-        table.page('first').draw(false);
-      } else {
-        table.clear().draw(false);
-      }
-    },
-    error: function () {
-      table.clear().draw(false);
-    },
-    complete: function () {
-      $('#tableLoader').hide();
+        totalPages = Math.ceil(sortedRows.length / rowsPerPage) || 1;
+        updatePaginationInfo();
     }
-  });
-}
 
-function formatDate(dateStr) {
-  const d = new Date(dateStr);
-  if (isNaN(d)) return '';
-  return d.toLocaleString('en-US', {
-    month: 'short', day: '2-digit', year: 'numeric',
-    hour: '2-digit', minute: '2-digit', hour12: true
-  });
-}
+    function updatePaginationInfo() {
+        const pageInfo = document.querySelector(".pagination-info");
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+        document.getElementById("prevBtn").disabled = currentPage === 1;
+        document.getElementById("nextBtn").disabled = currentPage === totalPages;
+    }
 
+    function setupPagination() {
+        const paginationContainer = document.createElement("div");
+        paginationContainer.classList.add("pagination-container");
+        paginationContainer.style.textAlign = "center";
+        paginationContainer.style.marginTop = "20px";
+
+        paginationContainer.innerHTML = `
+        <button id="prevBtn" class="btn btn-outline-secondary btn-sm">« Prev</button>
+        <span class="pagination-info" style="margin:0 10px;">Page ${currentPage} of ${totalPages}</span>
+        <button id="nextBtn" class="btn btn-outline-secondary btn-sm">Next »</button>
+        `;
+
+        table.parentNode.appendChild(paginationContainer);
+
+        document.getElementById("prevBtn").addEventListener("click", function () {
+        if (currentPage > 1) {
+            currentPage--;
+            displayRows(currentPage);
+            updatePaginationInfo();
+        }
+        });
+
+        document.getElementById("nextBtn").addEventListener("click", function () {
+        if (currentPage < totalPages) {
+            currentPage++;
+            displayRows(currentPage);
+            updatePaginationInfo();
+        }
+        });
+    }
+
+    function applyFilter() {
+        const locationVal = document.getElementById("filterLocation").value.toLowerCase();
+        const itemVal = document.getElementById("filterItem").value.toLowerCase();
+        const resetBtn = document.getElementById("resetFilter");
+
+        filteredRows = rows.filter(row => {
+            const locationText = row.cells[5]?.innerText.toLowerCase() || ""; // 6th column = Location
+            const itemText = row.cells[2]?.innerText.toLowerCase() || "";     // 3rd column = Item Name
+
+            const matchLocation = !locationVal || locationText.includes(locationVal);
+            const matchItem = !itemVal || itemText.includes(itemVal);
+            return matchLocation && matchItem;
+        });
+
+        currentPage = 1;
+        totalPages = Math.ceil(filteredRows.length / rowsPerPage) || 1;
+        displayRows(currentPage);
+        updatePaginationInfo();
+
+        // ✅ Enable reset button only if filters were used
+        if (locationVal || itemVal) {
+            resetBtn.disabled = false;
+            resetBtn.classList.remove("btn-secondary");
+            resetBtn.classList.add("btn-danger");
+        } else {
+            resetBtn.disabled = true;
+            resetBtn.classList.remove("btn-danger");
+            resetBtn.classList.add("btn-secondary");
+        }
+    }
+
+    function resetFilter() {
+        document.getElementById("filterLocation").value = "";
+        document.getElementById("filterItem").value = "";
+        filteredRows = [...rows];
+        currentPage = 1;
+        totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+        displayRows(currentPage);
+        updatePaginationInfo();
+
+        // ✅ Disable Reset button after reset
+        const resetBtn = document.getElementById("resetFilter");
+        resetBtn.disabled = true;
+        resetBtn.classList.remove("btn-outline-danger");
+        resetBtn.classList.add("btn-secondary");
+    }
+
+    // 🔹 Sorting handler
+    document.getElementById("sortOption").addEventListener("change", function () {
+        sortOption = this.value;
+        currentPage = 1;
+        displayRows(currentPage);
+    });
+    
+    // Setup events
+    document.getElementById("applyFilter").addEventListener("click", applyFilter);
+    document.getElementById("resetFilter").addEventListener("click", resetFilter);
+    // document.getElementById("sortOption").addEventListener("change", applySorting);
+
+    // Initialize
+    setupPagination();
+    displayRows(currentPage);
+    });
 </script>
+
+
 
