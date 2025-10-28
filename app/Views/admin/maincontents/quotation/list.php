@@ -132,12 +132,12 @@ $userType           = $session->user_type;
                                                 
                                                 <td>
                                                     <?php if ($common_model->checkModuleFunctionAccess(23, 109)) { ?>
-                                                        <a href="<?= base_url('admin/' . $controller_route . '/view-detail/' . encoded($row->id)) ?>" class="btn btn-outline-info btn-sm" title="View <?= $title ?>"><i class="fa fa-info-circle"></i> View Details</a>
+                                                        <a href="<?= base_url('admin/' . $controller_route . '/view-detail/' . encoded($row->id)) ?>" class="btn btn-outline-info btn-sm" title="View <?= $title ?>"><i class="fa fa-info-circle"></i></a>
                                                     <?php } ?> 
                                                     <?php if ($common_model->checkModuleFunctionAccess(23, 107)) { ?>
                                                         <?php if ($userType == 'MA') { 
                                                             if($row->quotation_item_status != 1) {?>
-                                                            <a href="<?= base_url('admin/' . $controller_route . '/delete/' . encoded($row->id). '/' . encoded($row->quotation_item_id)) ?>" class="btn btn-outline-danger btn-sm" title="Delete <?= $title ?>" onclick="return confirm('Do You Want To Delete This <?= $title ?>');"><i class="fa fa-trash"></i> Delete</a>
+                                                            <a href="<?= base_url('admin/' . $controller_route . '/delete/' . encoded($row->id). '/' . encoded($row->quotation_item_id)) ?>" class="btn btn-outline-danger btn-sm" title="Delete <?= $title ?>" onclick="return confirm('Do You Want To Delete This <?= $title ?>');"><i class="fa fa-trash"></i></a>
                                                             <br>
                                                         <?php } } ?>
                                                     <?php } ?> 
@@ -155,9 +155,9 @@ $userType           = $session->user_type;
                                                         <?php } ?>                                                        
                                                     <?php } else { ?>
                                                         <?php if ($row->quotation_item_status == 1) { ?>
-                                                            <h6 class="badge bg-success mt-2"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
+                                                            <!-- <h6 class="badge bg-success mt-2"><i class="fa fa-check-circle"></i> ACCEPTED</h6> -->
                                                         <?php } elseif ($row->quotation_item_status == 2) { ?>
-                                                            <h6 class="badge bg-danger mt-2"><i class="fa fa-times-circle"></i> REJECTED</h6>
+                                                            <!-- <h6 class="badge bg-danger mt-2"><i class="fa fa-times-circle"></i> REJECTED</h6> -->
                                                         <?php } ?>
                                                         <!-- <p>?= (($row->accepted_date != '') ? date_format(date_create($row->accepted_date), "M d, Y h:i A") : '') ?></p> -->
                                                     <?php } ?>                                                  

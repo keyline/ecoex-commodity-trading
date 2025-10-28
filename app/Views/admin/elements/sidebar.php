@@ -382,7 +382,7 @@ if ($userType == 'MA') {
             <ul id="quotation-nav" class="nav-content collapse <?= (($pageSegment == 'quotation') ? 'show' : '') ?>" data-bs-parent="#sidebar-nav">
                 <li>
                     <a class="<?= ((($pageSegment == 'quotation') && (decoded($paramerId) == 0)) ? 'active' : '') ?>" href="<?= base_url('admin/quotation/list/') ?>">
-                        <i class="fa fa-arrow-right"></i><span>Quotation List</span>
+                        <i class="fa fa-arrow-right"></i><span>Pending List</span>
                     </a>
                 </li>                
             </ul>
