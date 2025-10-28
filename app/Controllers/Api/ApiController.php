@@ -760,7 +760,7 @@ class ApiController extends BaseController
                                 $scrap_image = getenv('app.uploadsURL') . 'enquiry/' .$new_product_image[0];
                             }
 
-                            if($selected_scrap){
+                            if($selected_scrap == ''){
                                 $scraps[] = [
                                     'scrap_id'      => $getEnquiryItem->enquiry_product_id,
                                     'scrap_name'    => $scrap_name,
