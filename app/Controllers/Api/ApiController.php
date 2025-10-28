@@ -703,6 +703,113 @@ class ApiController extends BaseController
         }
         $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
     }
+    public function quotationNew()
+    {
+        $apiStatus          = TRUE;
+        $apiMessage         = '';
+        $apiResponse        = [];
+        $apiExtraField      = '';
+        $apiExtraData       = '';
+        $this->isJSON(file_get_contents('php://input'));
+        $requestData        = $this->extract_json(file_get_contents('php://input'));
+        $requiredFields     = [];
+        
+        $headerData         = $this->request->headers();
+        if (!$this->validateArray($requiredFields, $requestData)) {
+            http_response_code(406);
+            $apiStatus          = FALSE;
+            $apiMessage         = $this->getResponseCode(http_response_code());
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        }
+        
+        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+            $selected_scrap = $requestData['selected_scrap'];
+
+            $groupBy[0] = 'ecomm_users.state';
+            $join[0]  = ['table' => 'ecomm_users', 'field' => 'id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'plant_id', 'type' => 'INNER'];
+            $join[1]  = ['table' => 'ecomm_enquiry_products', 'field' => 'enq_id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'id', 'type' => 'INNER'];
+            $join[2]  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'type' => 'INNER'];
+            $orderBy[0] = ['field' => 'ecomm_enquires.id', 'type' => 'DESC'];
+            
+            if($selected_scrap != ''){
+                $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status<=' => 6, 'ecomm_company_items.item_name_ecoex' => $selected_scrap], 'ecomm_enquires.plant_id,ecomm_users.state', $join, $groupBy, $orderBy);
+            } else {
+                $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status<=' => 6], 'ecomm_enquires.plant_id,ecomm_users.state', $join, $groupBy, $orderBy);
+            }
+
+            $response = [];
+            if($requestNotSubmittedEnquiries){
+                foreach($requestNotSubmittedEnquiries as $requestNotSubmittedEnquiry){
+                    
+                    $join[0]  = ['table' => 'ecomm_enquires', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'enq_id', 'type' => 'INNER'];
+                    $join[1]  = ['table' => 'ecomm_users', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'plant_id', 'type' => 'INNER'];
+                    $join[2]  = ['table' => 'ecomm_units', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'type' => 'INNER'];
+                    $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquires.status<=' => 6, 'ecomm_users.state' => $requestNotSubmittedEnquiry->state], 'ecomm_users.state, ecomm_enquiry_products.product_id, ecomm_enquiry_products.new_product_name, ecomm_enquiry_products.qty, ecomm_units.name as unit_name,ecomm_enquiry_products.new_product_image, ecomm_enquiry_products.id as enquiry_product_id', $join, '', $orderBy);
+                    
+                    $scraps = [];
+                    if($getEnquiryItems){
+                        foreach($getEnquiryItems as $getEnquiryItem){
+                            if($getEnquiryItem->product_id <= 0){
+                                $scrap_name = $getEnquiryItem->new_product_name;
+                            } else {
+                                $getItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $getEnquiryItem->product_id], 'item_name_ecoex');
+                                $scrap_name = (($getItem)?$getItem->item_name_ecoex:'');
+                            }
+
+                            $new_product_image = json_decode($getEnquiryItem->new_product_image);
+                            if(empty($new_product_image)){
+                                $scrap_image = getenv('app.NOIMAGE');
+                            } else {
+                                $scrap_image = getenv('app.uploadsURL') . 'enquiry/' .$new_product_image[0];
+                            }
+
+                            if($selected_scrap == ''){
+                                $scraps[] = [
+                                    'scrap_id'      => $getEnquiryItem->enquiry_product_id,
+                                    'scrap_name'    => $scrap_name,
+                                    'scrap_qty'     => $getEnquiryItem->qty,
+                                    'scrap_unit'    => $getEnquiryItem->unit_name,
+                                    'scrap_image'   => $scrap_image,
+                                    'state_name'    => $requestNotSubmittedEnquiry->state,
+                                ];
+                            } else {
+                                if($selected_scrap == $scrap_name){
+                                    $scraps[] = [
+                                        'scrap_id'      => $getEnquiryItem->enquiry_product_id,
+                                        'scrap_name'    => $scrap_name,
+                                        'scrap_qty'     => $getEnquiryItem->qty,
+                                        'scrap_unit'    => $getEnquiryItem->unit_name,
+                                        'scrap_image'   => $scrap_image,
+                                        'state_name'    => $requestNotSubmittedEnquiry->state,
+                                    ];
+                                }
+                            }
+                        }
+                    }
+
+                    $response[] = [
+                        'state'     => $requestNotSubmittedEnquiry->state,
+                        'scraps'    => $scraps,
+                    ];
+                }
+            }
+
+            $apiResponse        = $response;
+            http_response_code(200);
+            $apiStatus          = TRUE;
+            $apiMessage         = $this->getResponseCode(http_response_code());
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        } else {
+            http_response_code(400);
+            $apiStatus          = FALSE;
+            $apiMessage         = $this->getResponseCode(http_response_code());
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        }
+        $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
+    }
     public function quotationSubmit()
     {
         $apiStatus          = TRUE;
