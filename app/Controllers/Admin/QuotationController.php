@@ -54,9 +54,113 @@ class QuotationController extends BaseController
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');                
         // $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
         $data['rows']               =$this->db->table('quotations q')
-                                    ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit')
+                                    ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time')
                                     ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
-                                    ->where(' qi.status !=', 3)
+                                    ->where(' qi.status', 0)
+                                    ->orderBy('q.quotation_no', 'ASC')
+                                    ->get()
+                                    ->getResult();
+                                    // pr($data['rows']);                                   
+
+        $query                      = $this->db->query("SELECT DISTINCT location FROM quotations");
+        $data['locations']          = $query->getResult();  
+        
+        $query                      = $this->db->query("SELECT DISTINCT scrap_name FROM quotation_items");
+        $data['items']              = $query->getResult();  
+        // pr($result);
+        //get whatsapp notification status per enquiry
+
+        // $enquiryIds = array_column($data['rows'], 'id');
+
+        // $w_select = 'id, enquiry_id, status';
+
+        // $statusList = $this->data['model']->find_where_in(
+        //     'ecomm_whatsapp_workers',                          // table name
+        //     'enquiry_id',                                      // column for WHERE IN
+        //     $enquiryIds,                               // array of values
+        //     'result-array',                        // return type (as array)
+        //     $w_select                      // specific fields to select
+        // );
+
+
+        // $data['statusMap']  = array_column($statusList, 'status', 'enquiry_id');
+
+        echo $this->layout_after_login($title, $page_name, $data);
+    }
+    public function Acceptlist()
+    {
+        // if (!$this->common_model->checkModuleFunctionAccess(29, 104)) {
+        //     $data['action']             = 'Access Forbidden';
+        //     $title                      = $data['action'] . ' ' . $this->data['title'];
+        //     $page_name                  = 'access-forbidden';
+        //     echo $this->layout_after_login($title, $page_name, $data);
+        //     exit;
+        // }
+
+        $userType                   = $this->session->user_type;
+        $company_id                 = $this->session->company_id;        
+        $data['moduleDetail']       = $this->data;        
+        $title                      = 'Manage ' . $this->data['title'] . ' List';
+        $page_name                  = 'quotation/list';
+
+        $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');                
+        // $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+        $data['rows']               =$this->db->table('quotations q')
+                                    ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time')
+                                    ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
+                                    ->where(' qi.status', 1)
+                                    ->orderBy('q.quotation_no', 'ASC')
+                                    ->get()
+                                    ->getResult();
+                                    // pr($data['rows']);        
+
+        $query                      = $this->db->query("SELECT DISTINCT location FROM quotations");
+        $data['locations']          = $query->getResult();  
+        
+        $query                      = $this->db->query("SELECT DISTINCT scrap_name FROM quotation_items");
+        $data['items']              = $query->getResult();  
+        // pr($result);
+        //get whatsapp notification status per enquiry
+
+        // $enquiryIds = array_column($data['rows'], 'id');
+
+        // $w_select = 'id, enquiry_id, status';
+
+        // $statusList = $this->data['model']->find_where_in(
+        //     'ecomm_whatsapp_workers',                          // table name
+        //     'enquiry_id',                                      // column for WHERE IN
+        //     $enquiryIds,                               // array of values
+        //     'result-array',                        // return type (as array)
+        //     $w_select                      // specific fields to select
+        // );
+
+
+        // $data['statusMap']  = array_column($statusList, 'status', 'enquiry_id');
+
+        echo $this->layout_after_login($title, $page_name, $data);
+    }
+    public function Rejectlist()
+    {
+        // if (!$this->common_model->checkModuleFunctionAccess(29, 104)) {
+        //     $data['action']             = 'Access Forbidden';
+        //     $title                      = $data['action'] . ' ' . $this->data['title'];
+        //     $page_name                  = 'access-forbidden';
+        //     echo $this->layout_after_login($title, $page_name, $data);
+        //     exit;
+        // }
+
+        $userType                   = $this->session->user_type;
+        $company_id                 = $this->session->company_id;        
+        $data['moduleDetail']       = $this->data;        
+        $title                      = 'Manage ' . $this->data['title'] . ' List';
+        $page_name                  = 'quotation/list';
+
+        $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');                
+        // $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+        $data['rows']               =$this->db->table('quotations q')
+                                    ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time')
+                                    ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
+                                    ->where(' qi.status', 2)
                                     ->orderBy('q.quotation_no', 'ASC')
                                     ->get()
                                     ->getResult();
@@ -183,7 +287,7 @@ class QuotationController extends BaseController
         $item = $this->request->getPost('item');
 
         $builder = $this->db->table('quotations q');
-        $builder->select('q.*, qi.scrap_name, qi.rate, qi.qty, qi.unit');
+        $builder->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit');
         $builder->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner');
 
         if ($loc) {
@@ -195,6 +299,7 @@ class QuotationController extends BaseController
 
         $query = $builder->get();
         $result = $query->getResult();
+        // pr($result);
 
         if (count($result) > 0) {
             return $this->response->setJSON([
@@ -327,12 +432,13 @@ class QuotationController extends BaseController
         }
         $id                         = decoded($id);
         $postData = array(
-            'status' => 1
+            'status' => 1,
+            'active_time' => date('Y-m-d H:i:s'),
         );
         // pr($postData);
         $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);       
         $this->session->setFlashdata('success_message', $this->data['title'] . ' accepted successfully');
-        return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/');
+        return redirect()->to('/admin/' . $this->data['controller_route'] . '/accept-list/');
     }
     public function reject_request($id)
     {
@@ -345,12 +451,13 @@ class QuotationController extends BaseController
         }
         $id                         = decoded($id);
         $postData = array(
-            'status' => 2
+            'status' => 2,
+            'reject_time' => date('Y-m-d H:i:s'),
         );
         // pr($postData);
         $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);       
         $this->session->setFlashdata('success_message', $this->data['title'] . ' rejected successfully');
-        return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/');
+        return redirect()->to('/admin/' . $this->data['controller_route'] . '/reject-list/');
     }
     public function getRejectModal()
     {

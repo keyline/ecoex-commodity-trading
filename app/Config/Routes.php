@@ -183,6 +183,8 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     // delete account requests
     //quotation
     $routes->match(['get'], "quotation/list", "QuotationController::list");
+    $routes->match(['get'], "quotation/accept-list", "QuotationController::Acceptlist");
+    $routes->match(['get'], "quotation/reject-list", "QuotationController::Rejectlist");
     $routes->match(['get', 'post'], "quotation/view-detail/(:any)", "QuotationController::viewDetail/$1");
     $routes->match(['get', 'post'], "quotation/delete/(:any)/(:any)", "QuotationController::confirm_delete/$1/$2");
     $routes->match(['get', 'post'], "quotation/accept-request/(:any)", "QuotationController::accept_request/$1");

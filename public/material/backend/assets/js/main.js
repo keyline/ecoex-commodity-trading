@@ -328,6 +328,7 @@
    */
   const datatables = select(".datatable", true);
   datatables.forEach((datatable) => {
+     if (datatable.id === 'simpletable1') return;
     try {
       new simpleDatatables.DataTable(datatable);
     } catch (error) {

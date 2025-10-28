@@ -8,7 +8,7 @@ if ($baseUrl == 'https://commodity.ecoex.market/') {
 } else {
     $currentLink    = current_url();
     $uri            = new \CodeIgniter\HTTP\URI($currentLink);
-    $pageSegment    = $uri->getSegment(2);
+    $pageSegment    = $uri->getSegment(2);    
     $pageFunction    = $uri->getSegment(3);
 }
 
@@ -382,7 +382,21 @@ if ($userType == 'MA') {
             <ul id="quotation-nav" class="nav-content collapse <?= (($pageSegment == 'quotation') ? 'show' : '') ?>" data-bs-parent="#sidebar-nav">
                 <li>
                     <a class="<?= ((($pageSegment == 'quotation') && (decoded($paramerId) == 0)) ? 'active' : '') ?>" href="<?= base_url('admin/quotation/list/') ?>">
-                        <i class="fa fa-arrow-right"></i><span>Quotation List</span>
+                        <i class="fa fa-arrow-right"></i><span>Pending List</span>
+                    </a>
+                </li>                
+            </ul>
+            <ul id="quotation-nav" class="nav-content collapse <?= (($pageSegment == 'quotation') ? 'show' : '') ?>" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="<?= ((($pageSegment == 'quotation') && (decoded($paramerId) == 0)) ? 'active' : '') ?>" href="<?= base_url('admin/quotation/accept-list/') ?>">
+                        <i class="fa fa-arrow-right"></i><span>Accepted List</span>
+                    </a>
+                </li>                
+            </ul>
+            <ul id="quotation-nav" class="nav-content collapse <?= (($pageSegment == 'quotation') ? 'show' : '') ?>" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="<?= ((($pageSegment == 'quotation') && (decoded($paramerId) == 0)) ? 'active' : '') ?>" href="<?= base_url('admin/quotation/reject-list/') ?>">
+                        <i class="fa fa-arrow-right"></i><span>Rejected List</span>
                     </a>
                 </li>                
             </ul>
