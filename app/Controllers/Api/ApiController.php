@@ -737,7 +737,7 @@ class ApiController extends BaseController
             } else {
                 $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status<=' => 6], 'ecomm_enquires.plant_id,ecomm_users.state', $join, $groupBy, $orderBy);
             }
-            pr($requestNotSubmittedEnquiries);
+            // pr($requestNotSubmittedEnquiries);
 
             $response = [];
             if($requestNotSubmittedEnquiries){
