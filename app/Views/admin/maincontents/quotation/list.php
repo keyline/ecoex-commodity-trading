@@ -151,7 +151,7 @@ $userType           = $session->user_type;
                                                 
                                                 <td>
                                                     <?php if ($common_model->checkModuleFunctionAccess(23, 109)) { ?>
-                                                        <a href="<?= base_url('admin/' . $controller_route . '/view-detail/' . encoded($row->id)) ?>" class="btn btn-outline-info btn-sm" title="View <?= $title ?>"><i class="fa fa-info-circle"></i></a>
+                                                        <a href="<?= base_url('admin/' . $controller_route . '/view-detail/' . encoded($row->id)) ?>" class="btn btn-outline-info btn-sm" title="View <?= $title ?>" target="_blank"><i class="fa fa-info-circle"></i></a>
                                                     <?php } ?> 
                                                     <?php if ($common_model->checkModuleFunctionAccess(23, 107)) { ?>
                                                         <?php if ($userType == 'MA') { 
