@@ -733,11 +733,10 @@ class ApiController extends BaseController
             $orderBy[0] = ['field' => 'ecomm_enquires.id', 'type' => 'DESC'];
             
             if($selected_scrap != ''){
-                $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_company_items.item_name_ecoex' => $selected_scrap], 'ecomm_enquires.plant_id,ecomm_users.state', $join, $groupBy, $orderBy);
+                $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status<=' => 12, 'ecomm_company_items.item_name_ecoex' => $selected_scrap], 'ecomm_enquires.plant_id,ecomm_users.state', $join, $groupBy, $orderBy);
             } else {
-                $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status<=' => 6], 'ecomm_enquires.plant_id,ecomm_users.state', $join, $groupBy, $orderBy);
+                $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status<=' => 12], 'ecomm_enquires.plant_id,ecomm_users.state', $join, $groupBy, $orderBy);
             }
-            // pr($requestNotSubmittedEnquiries);
 
             $response = [];
             if($requestNotSubmittedEnquiries){
@@ -746,7 +745,7 @@ class ApiController extends BaseController
                     $join[0]  = ['table' => 'ecomm_enquires', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'enq_id', 'type' => 'INNER'];
                     $join[1]  = ['table' => 'ecomm_users', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'plant_id', 'type' => 'INNER'];
                     $join[2]  = ['table' => 'ecomm_units', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'type' => 'INNER'];
-                    $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquires.status<=' => 6, 'ecomm_users.state' => $requestNotSubmittedEnquiry->state], 'ecomm_users.state, ecomm_enquiry_products.product_id, ecomm_enquiry_products.new_product_name, ecomm_enquiry_products.qty, ecomm_units.name as unit_name,ecomm_enquiry_products.new_product_image, ecomm_enquiry_products.id as enquiry_product_id', $join, '', $orderBy);
+                    $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquires.status<=' => 12, 'ecomm_users.state' => $requestNotSubmittedEnquiry->state], 'ecomm_users.state, ecomm_enquiry_products.product_id, ecomm_enquiry_products.new_product_name, ecomm_enquiry_products.qty, ecomm_units.name as unit_name,ecomm_enquiry_products.new_product_image, ecomm_enquiry_products.id as enquiry_product_id', $join, '', $orderBy);
                     
                     $scraps = [];
                     if($getEnquiryItems){
