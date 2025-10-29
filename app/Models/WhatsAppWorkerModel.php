@@ -13,7 +13,7 @@ class WhatsAppWorkerModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['enquiry_id','status','enquiry_meta','created_at','started_at','finished_at','last_error', 'total_recipients', 'total_messages', 'failed'];
+    protected $allowedFields    = ['send_type','enquiry_id','status','enquiry_meta','created_at','started_at','finished_at','last_error', 'total_recipients', 'total_messages', 'failed'];
 
     // Dates
     protected $useTimestamps = false;
@@ -86,8 +86,9 @@ class WhatsAppWorkerModel extends Model
     }
 
     //Check enquiry exists
-    public function enquiryExists($enquiryId): bool
+    public function enquiryExists($enquiryId, $type): bool
     {
-        return $this->where('enquiry_id', $enquiryId)->countAllResults() > 0;
+        return $this->where('enquiry_id', $enquiryId)
+                ->where('send_type', $type)->countAllResults() > 0;
     }
 }

@@ -287,7 +287,7 @@ class QuotationController extends BaseController
         $item = $this->request->getPost('item');
 
         $builder = $this->db->table('quotations q');
-        $builder->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit');
+        $builder->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time');
         $builder->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner');
 
         if ($loc) {

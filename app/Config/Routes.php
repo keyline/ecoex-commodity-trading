@@ -226,7 +226,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     //Send WhatsApp notification to vendors/subscribers
     //$routes->match(['get', 'post'], "enquiry-requests/send-whatsapp-notification/(:any)", "EnquiryRequestController::sendWhatsAppNotification/$1");
 
-    $routes->match(['get', 'post'], "enquiry-requests/send-whatsapp-notification/(:any)", "EnquiryRequestController::sendWhatsappWithSparkCmdV2/$1");
+    $routes->match(['post'], "enquiry-requests/send-whatsapp-notification", "EnquiryRequestController::sendWhatsappWithSparkCmdV2");
 
 
 
@@ -293,6 +293,12 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 
     $routes->match(['get'], 'whatsapp-interactions', 'WhatsappMessageController::interactionList');
 
+    $routes->match(['get'], 'whatsapp-notification/report/(:num)', 'WhatsappMessageController::viewReport/$1');
+
+
+    $routes->match(['get'], 'notification-report/tabdata', 'WhatsappMessageController::tabData');
+
+
 
 });
 /* ADMIN PANEL */
@@ -307,6 +313,7 @@ $routes->group("api", ["namespace" => "App\Controllers\Api",], function ($routes
     $routes->match(['get'], "get-state", "ApiController::getState");
     $routes->match(['post'], "price-list", "ApiController::priceList");
     $routes->match(['get'], "quotation", "ApiController::quotation");
+    $routes->match(['post'], "quotation-new", "ApiController::quotationNew");
     $routes->match(['post'], "quotation-submit", "ApiController::quotationSubmit");
     // before login
     // authentication

@@ -89,16 +89,16 @@ class ProcessWhatsappJobsV2 extends BaseCommand
                 $result = $query->getRow();
 
 
-                $sql = "SELECT phone, 'vendor' as source, state
-                FROM ecomm_users 
-                WHERE type = 'VENDOR' 
+                /*$sql = "SELECT phone, 'vendor' as source, state
+                FROM ecomm_users
+                WHERE type = 'VENDOR'
                   AND phone <> ''
                   AND state =?
-                
+
                 UNION
-                
+
                 SELECT phone, 'subscriber' as source, state
-                FROM subscribers 
+                FROM subscribers
                 WHERE phone <> ''
                 AND state =?";
 
@@ -107,8 +107,51 @@ class ProcessWhatsappJobsV2 extends BaseCommand
                 $query = $this->db->query($sql, [$result->state, $result->state]);
                 //$query = $this->db->query($sql);
                 $recipientResult = $query->getResultArray();
-                $recipients = array_column($recipientResult, 'phone');
-                $recipients = ['919903985585', '916289339520']; //test number
+                $recipients = array_column($recipientResult, 'phone');*/
+
+                $recipients = [];
+
+                if ($job['send_type'] === 'state' && !empty($result->state)) {
+                    // ✅ Send to vendors/subscribers from same state
+                    $sql = "
+                            SELECT phone, 'vendor' AS source, state
+                            FROM ecomm_users 
+                            WHERE type = 'VENDOR' 
+                            AND phone <> ''
+                            AND state = ?
+
+                            UNION
+
+                            SELECT phone, 'subscriber' AS source, state
+                            FROM subscribers 
+                            WHERE phone <> ''
+                            AND state = ?
+                        ";
+
+                    $query = $this->db->query($sql, [$result->state, $result->state]);
+                    $recipientResult = $query->getResultArray();
+                    $recipients = array_column($recipientResult, 'phone');
+                } else {
+                    // ✅ send_type = pan_India → no state filter (nationwide)
+                    $sql = "
+                            SELECT phone, 'vendor' AS source, state
+                            FROM ecomm_users 
+                            WHERE type = 'VENDOR' 
+                            AND phone <> ''
+
+                            UNION
+
+                            SELECT phone, 'subscriber' AS source, state
+                            FROM subscribers 
+                            WHERE phone <> ''
+                        ";
+
+                    $query = $this->db->query($sql);
+                    $recipientResult = $query->getResultArray();
+                    $recipients = array_column($recipientResult, 'phone');
+                }
+                // For testing, override recipients
+                $recipients = ['919903985585',]; //test number
 
                 //getting items send in message
                 //one item per message

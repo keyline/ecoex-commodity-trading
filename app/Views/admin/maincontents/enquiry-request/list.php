@@ -70,7 +70,11 @@ $userType           = $session->user_type;
                                             <tr>
                                                 <th scope="row"><?= $sl++ ?></th>
                                                 <td>
-                                                    <h5><?= $row->enquiry_no ?></h5>
+                                                    <h5>
+                                                        <a href="<?= site_url('admin/whatsapp-notification/report/' . $row->id) ?>">
+                                                            <?= esc($row->enquiry_no) ?> </a>
+                                                    </h5>
+
                                                     <h6 class="badge bg-success"><?= $approveProductCount ?> approved products</h6>
                                                     <br>
                                                     <h6 class="badge bg-danger"><?= $disapproveProductCount ?> pending approval</h6>
@@ -154,14 +158,25 @@ $userType           = $session->user_type;
                                                                 <a href="javascript:void(0);" class="btn btn-danger btn-sm mt-2" title="Reject <?= $title ?>" onclick="getRejectModal(<?= $row->$primary_key ?>);"><i class="fa fa-times"></i> Click To Reject</a>
                                                             <?php } ?>
                                                         <?php } ?>
+                                                        <br>
                                                         <?php if ($common_model->checkModuleFunctionAccess(23, 149)) { ?>
                                                             <?php if ($userType == 'MA') { ?>
                                                                 <!-- <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification/' . encoded(97)) ?>" class="btn btn-success btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa fa-whatsapp" aria-hidden="true"></i> Click To Send Notification</a> -->
-                                                                 <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification/'. encoded($row->$primary_key)) ?>" style="display:inline;">
+                                                                 <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
                                                                     <?= csrf_field() ?>
                                                                     <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
-                                                                    <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]) && ($statusMap[$row->id] == 'processing' || $statusMap[$row->id] == 'pending')) ? 'disabled' : '' ?>>
-                                                                        <i class="fa fa-whatsapp" aria-hidden="true"></i> Click To Send Notification (<?= $statusMap[$row->id] ?? '' ?>)
+                                                                    <input type="hidden" name="send_type" value="state">
+                                                                    <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]['state']) && ($statusMap[$row->id]['state'] == 'processing' || $statusMap[$row->id]['state'] == 'pending')) ? 'disabled' : '' ?>>
+                                                                        <i class="fa fa-whatsapp" aria-hidden="true"></i> Send Notification To <?= $stateMap[$row->id] ?? '' ?> (<?= $statusMap[$row->id]['state'] ?? '' ?>)
+                                                                    </button>
+                                                                </form>
+                                                                <br>
+                                                                <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
+                                                                    <?= csrf_field() ?>
+                                                                    <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
+                                                                    <input type="hidden" name="send_type" value="pan_india">
+                                                                    <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]['pan_India']) && ($statusMap[$row->id]['pan_India'] == 'processing' || $statusMap[$row->id]['pan_India'] == 'pending')) ? 'disabled' : '' ?>>
+                                                                        <i class="fa fa-whatsapp" aria-hidden="true"></i> Send Notification To Pan India (<?= $statusMap[$row->id]['pan_India'] ?? '' ?>)
                                                                     </button>
                                                                 </form>
                                                                 
