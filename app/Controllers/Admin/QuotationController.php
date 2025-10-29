@@ -57,7 +57,7 @@ class QuotationController extends BaseController
                                     ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time')
                                     ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
                                     ->where(' qi.status', 0)
-                                    ->orderBy('q.quotation_no', 'ASC')
+                                    ->orderBy('q.quotation_no', 'DESC')
                                     ->get()
                                     ->getResult();
                                     // pr($data['rows']);                                   
@@ -109,7 +109,7 @@ class QuotationController extends BaseController
                                     ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time')
                                     ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
                                     ->where(' qi.status', 1)
-                                    ->orderBy('q.quotation_no', 'ASC')
+                                    ->orderBy('q.quotation_no', 'DESC')
                                     ->get()
                                     ->getResult();
                                     // pr($data['rows']);        
@@ -161,7 +161,7 @@ class QuotationController extends BaseController
                                     ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time')
                                     ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
                                     ->where(' qi.status', 2)
-                                    ->orderBy('q.quotation_no', 'ASC')
+                                    ->orderBy('q.quotation_no', 'DESC')
                                     ->get()
                                     ->getResult();
                                     // pr($data['rows']);
@@ -331,6 +331,29 @@ class QuotationController extends BaseController
         $this->common_model->save_data($this->data['table_name'], $postData, $quotationItemId, $this->data['primary_key']);       
         $this->session->setFlashdata('success_message', $this->data['title'] . ' deleted successfully');
         return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/');
+    }
+
+    public function update_rate()
+    {
+        $id = $this->request->getPost('id');
+        $rate = $this->request->getPost('rate');
+
+        // pr($this->request->getPost());
+
+        if ($id && $rate !== null) {
+            $this->db->table('quotation_items')->where('id', $id)->update(['rate' => $rate]);
+
+            // ✅ set a flash message in session
+            session()->setFlashdata('success_message', 'Rate updated successfully.');
+
+            return $this->response->setJSON([
+                'status' => true,
+                'new_rate' => intval($rate)
+            ]);
+        } else {
+            session()->setFlashdata('error_message', 'Failed to update rate.');
+            return $this->response->setJSON(['status' => false]);
+        }
     }
     public function change_status($id)
     {

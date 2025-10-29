@@ -104,6 +104,34 @@ $userType           = $session->user_type;
                         <div class="row mb-3">
                            
                         </div>
+
+                        <div style="width:60%; margin:auto;">
+                            <canvas id="quotationChart"></canvas>
+                        </div>
+                        <?php
+                            // Step 1: Prepare data
+                            $vendors = [];
+                            $items = [];
+                            $dataMap = [];                           
+
+                            foreach ($rows as $row) {                                
+                                $vendor = $row->vendor_name;
+                                $item = $row->scrap_name;
+                                $rate  = (float)$row->rate;
+
+                                if (!in_array($vendor, $vendors)) $vendors[] = $vendor;
+                                if (!in_array($item, $items)) $items[] = $item;
+
+                                // $dataMap[$vendor][$item] = $rate;              
+                                if (!isset($dataMap[$vendor][$item]) || $rate > $dataMap[$vendor][$item]) {
+                                    $dataMap[$vendor][$item] = $rate;
+                                }                  
+                            }
+                            // echo "<pre>";
+                            //     print_r($dataMap);
+                            //     echo "</pre>";
+                            ?>
+
                         <div class="table-responsive">
                             <table id="simpletable1" class="table globel_table nowrap" style="width: 100%">
                                 <thead>
@@ -209,9 +237,59 @@ $userType           = $session->user_type;
 </div>
 <!-- reject request modal -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const items = <?= json_encode($items) ?>;
+    const vendors = <?= json_encode($vendors) ?>;
+    const dataMap = <?= json_encode($dataMap) ?>;
+    // console.log(dataMap);
+
+    // Step 2: Prepare datasets dynamically
+    const datasets = vendors.map((vendor, i) => ({
+        label: vendor,
+        data: items.map(item => dataMap[vendor]?.[item] ?? 0),
+        backgroundColor: `hsl(${i * 60}, 70%, 50%)`
+    }));
+
+    // Step 3: Render chart
+    const ctx = document.getElementById('quotationChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: items,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Rates by item Name and Vendor'
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Rate'
+                    }
+                }
+            }
+        }
+    });
+
+
+
+</script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        let quotationChart = null;
     const rowsPerPage = 10;
     const table = document.getElementById("simpletable1");
     const tbody = table.querySelector("tbody");
@@ -221,8 +299,13 @@ $userType           = $session->user_type;
     let totalPages = Math.ceil(filteredRows.length / rowsPerPage);
     let currentSort = "";
 
+    // ===============================
+    // Display rows (pagination + sort)
+    // ===============================
+
     function displayRows(page) {
         tbody.innerHTML = "";
+
         // 🔹 Sort before pagination
         let sortedRows = [...filteredRows];
         if (sortOption) {
@@ -243,16 +326,19 @@ $userType           = $session->user_type;
         }
 
         const start = (page - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-        // rows.forEach(row => row.style.display = "none"); // hide all
-        // filteredRows.slice(start, end).forEach(row => row.style.display = ""); // show only page rows
+        const end = start + rowsPerPage;        
         const paginatedRows = sortedRows.slice(start, end);
-
         paginatedRows.forEach(row => tbody.appendChild(row));
 
         totalPages = Math.ceil(sortedRows.length / rowsPerPage) || 1;
         updatePaginationInfo();
+       // ✅ Wait for next tick, then update chart
+        requestAnimationFrame(() => updateChart());
     }
+
+    // ===============================
+    // Pagination setup
+    // ===============================
 
     function updatePaginationInfo() {
         const pageInfo = document.querySelector(".pagination-info");
@@ -291,7 +377,11 @@ $userType           = $session->user_type;
         }
         });
     }
-
+    
+    
+    // ===============================
+    // Filtering logic
+    // ===============================
     function applyFilter() {
         const locationVal = document.getElementById("filterLocation").value.toLowerCase();
         const itemVal = document.getElementById("filterItem").value.toLowerCase();
@@ -310,6 +400,7 @@ $userType           = $session->user_type;
         totalPages = Math.ceil(filteredRows.length / rowsPerPage) || 1;
         displayRows(currentPage);
         updatePaginationInfo();
+        updateChart();
 
         // ✅ Enable reset button only if filters were used
         if (locationVal || itemVal) {
@@ -322,6 +413,10 @@ $userType           = $session->user_type;
             resetBtn.classList.add("btn-secondary");
         }
     }
+
+    // ===============================
+    // Reset filters
+    // ===============================
 
     function resetFilter() {
         document.getElementById("filterLocation").value = "";
@@ -337,13 +432,124 @@ $userType           = $session->user_type;
         resetBtn.disabled = true;
         resetBtn.classList.remove("btn-outline-danger");
         resetBtn.classList.add("btn-secondary");
+
+        // ✅ Small delay to ensure DOM re-render
+        setTimeout(() => updateChart(), 50);
     }
 
-    // 🔹 Sorting handler
+    
+    // ===============================
+    // Chart Update Logic
+    // ===============================
+
+    // function updateChart() {
+    //     // Collect visible table data (after filter & pagination)
+    //     const visibleRows = Array.from(document.querySelectorAll("#simpletable1 tbody tr"));
+    //     const chartData = {};
+
+    //     visibleRows.forEach(row => {
+    //         const vendor = row.cells[7]?.innerText.trim(); // Adjust index for vendor_name
+    //         const item = row.cells[2]?.innerText.trim();  // Adjust index for scrap_name
+    //         const rate = parseFloat(row.cells[3]?.innerText) || 0;
+
+    //         if (!chartData[item]) chartData[item] = {};
+    //         // chartData[item][vendor] = rate;
+    //         // Store only the highest rate for each vendor–item
+    //         if (!chartData[item][vendor] || rate > chartData[item][vendor]) {
+    //             chartData[item][vendor] = rate;
+    //         }
+    //     });
+
+    //     console.log("Chart Data Map:", chartData);
+
+    //     // Prepare chart structure
+    //     const scraps = Object.keys(chartData);
+    //     const vendors = [...new Set(visibleRows.map(r => r.cells[7]?.innerText.trim()))];
+
+    //     const datasets = vendors.map((vendor, i) => ({
+    //         label: vendor,
+    //         data: scraps.map(item => chartData[item][vendor] || 0),
+    //         backgroundColor: `hsl(${i * 60}, 70%, 50%)`
+    //     }));
+
+    //     // If chart exists, destroy and recreate
+    //     const ctx = document.getElementById("quotationChart").getContext("2d");
+    //     if (quotationChart) quotationChart.destroy();
+
+    //     quotationChart = new Chart(ctx, {
+    //         type: "bar",
+    //         data: { labels: scraps, datasets },
+    //         options: {
+    //             responsive: true,
+    //             plugins: {
+    //                 title: { display: true, text: "Rates by Item Name and Vendor" },
+    //                 legend: { position: "bottom" }
+    //             },
+    //             scales: {
+    //                 y: {
+    //                     beginAtZero: true,
+    //                     title: { display: true, text: "Rate" }
+    //                 }
+    //             }
+    //         }
+    //     });
+    // }
+
+    function updateChart(useAll = false) {
+        const targetRows = useAll ? rows : Array.from(document.querySelectorAll("#simpletable1 tbody tr"));
+        const chartData = {};
+
+        targetRows.forEach(row => {
+            const vendor = row.cells[7]?.innerText.trim(); // vendor_name
+            const item = row.cells[2]?.innerText.trim();   // scrap_name
+            const rate = parseFloat(row.cells[3]?.innerText) || 0;
+
+            if (!chartData[item]) chartData[item] = {};
+            if (!chartData[item][vendor] || rate > chartData[item][vendor]) {
+                chartData[item][vendor] = rate;
+            }
+        });
+
+        const scraps = Object.keys(chartData);
+        const vendors = [...new Set(targetRows.map(r => r.cells[7]?.innerText.trim()))];
+
+        const datasets = vendors.map((vendor, i) => ({
+            label: vendor,
+            data: scraps.map(item => chartData[item][vendor] || 0),
+            backgroundColor: `hsl(${i * 60}, 70%, 50%)`
+        }));
+
+        const ctx = document.getElementById("quotationChart").getContext("2d");
+        if (quotationChart) quotationChart.destroy();
+
+        quotationChart = new Chart(ctx, {
+            type: "bar",
+            data: { labels: scraps, datasets },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: { display: true, text: "Rates by Item Name and Vendor" },
+                    legend: { position: "bottom" }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: "Rate" }
+                    }
+                }
+            }
+        });
+    }
+
+    
+    // ===============================
+    // Sorting
+    // ===============================
+
     document.getElementById("sortOption").addEventListener("change", function () {
         sortOption = this.value;
         currentPage = 1;
-        displayRows(currentPage);
+        displayRows(currentPage);        
     });
     
     // Setup events
@@ -356,6 +562,7 @@ $userType           = $session->user_type;
     displayRows(currentPage);
     });
 </script>
+
 
 
 

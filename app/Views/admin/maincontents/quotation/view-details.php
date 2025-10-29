@@ -240,7 +240,20 @@
                                                 <tr style="background-color: #0080001a;">
                                                     <th><?=$slNo++?></th>
                                                     <td><?=$row->contact_no?></td>
-                                                    <td><?=intval($quotation_item->rate)?>/<?=$quotation_item->unit?> </td>
+                                                    <!-- <td>?=intval($quotation_item->rate)?>/?=$quotation_item->unit?> <a href="?= base_url('admin/' . $controller_route . '/edit_rate/' . encoded($quotation_item->id)) ?>"> <i class="fa-solid fa-pen-to-square"></i></a></td> -->
+                                                    <td>
+                                                        <span class="rate-text"><?= intval($quotation_item->rate) ?>/<?= $quotation_item->unit ?></span>
+                                                        <a href="javascript:void(0);" class="edit-rate" data-id="<?= $quotation_item->id ?>">
+                                                            <i class="fa-solid fa-pen-to-square"></i>
+                                                        </a>
+
+                                                        <form class="rate-form d-none" method="post" action="<?= base_url('admin/update_rate') ?>">
+                                                            <input type="hidden" name="id" value="<?= $quotation_item->id ?>">
+                                                            <input type="number" name="rate" value="<?= intval($quotation_item->rate) ?>" class="form-control form-control-sm rate-input" style="width: 80px; display:inline-block;">
+                                                            <button type="submit" class="btn btn-sm btn-success save-rate"><i class="fa-solid fa-check"></i></button>
+                                                            <button type="button" class="btn btn-sm btn-secondary cancel-rate"><i class="fa-solid fa-xmark"></i></button>
+                                                        </form>
+                                                    </td>
                                                     <td><?=$row->location?></td>
                                                     <td><?=intval($quotation_item->qty)?> <?=$quotation_item->unit?></td>
                                                     <td><?=date_format(date_create($row->created_at), "M d, Y")?></td>
@@ -277,4 +290,49 @@
             renderChoiceLimit:30
         });     
     });
+</script>
+<script>
+    $(document).on('click', '.edit-rate', function() {
+        let td = $(this).closest('td');
+        td.find('.rate-text').hide();
+        td.find('.edit-rate').hide();
+        td.find('.rate-form').removeClass('d-none');
+    });
+
+    $(document).on('click', '.cancel-rate', function() {
+        let td = $(this).closest('td');
+        td.find('.rate-form').addClass('d-none');
+        td.find('.rate-text').show();
+        td.find('.edit-rate').show();
+    });
+
+    $(document).on('submit', '.rate-form', function(e) {
+        e.preventDefault();
+        let form = $(this);
+        let id = form.find('input[name="id"]').val();
+        let rate = form.find('input[name="rate"]').val();
+
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: { id: id, rate: rate },
+            success: function(response) {
+                try {
+                    let res = (typeof response === 'object') ? response : JSON.parse(response);
+                    if (res.status) {
+                        // ✅ Reload page to show updated rate + success message
+                        location.reload();
+                    } else {
+                        alert("Failed to update rate.");
+                    }
+                } catch (err) {
+                    console.error("Invalid JSON response:", response);
+                }
+            },
+            error: function() {
+                alert("Error occurred while updating rate.");
+            }
+        });
+    });
+
 </script>
