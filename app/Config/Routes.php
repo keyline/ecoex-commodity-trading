@@ -186,10 +186,12 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     $routes->match(['get'], "quotation/accept-list", "QuotationController::Acceptlist");
     $routes->match(['get'], "quotation/reject-list", "QuotationController::Rejectlist");
     $routes->match(['get', 'post'], "quotation/view-detail/(:any)", "QuotationController::viewDetail/$1");
+    // $routes->match(['get', 'post'], "quotation/edit_rate/(:any)", "QuotationController::editRate/$1");
     $routes->match(['get', 'post'], "quotation/delete/(:any)/(:any)", "QuotationController::confirm_delete/$1/$2");
     $routes->match(['get', 'post'], "quotation/accept-request/(:any)", "QuotationController::accept_request/$1");
     $routes->match(['get', 'post'], "quotation/reject-request/(:any)", "QuotationController::reject_request/$1");
     $routes->match(['post'], "get-state-location", "QuotationController::get_state_location");
+    $routes->match(['post'], 'update_rate', 'QuotationController::update_rate');
     // enquiry requests
     $routes->match(['get'], "enquiry-requests/list/(:any)", "EnquiryRequestController::list/$1");
     $routes->match(['get', 'post'], "enquiry-requests/view-detail/(:any)", "EnquiryRequestController::viewDetail/$1");
