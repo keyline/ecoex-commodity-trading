@@ -575,6 +575,49 @@ $userType           = $session->user_type;
     });
 </script>
 
+<script>
+    document.getElementById("exportExcel").addEventListener("click", function () {
+        const table = document.getElementById("simpletable1");
+        const rows = table.querySelectorAll("tbody tr");
+        
+        // Detect if any rows are hidden by filters
+        let hiddenCount = 0;
+        rows.forEach(tr => {
+            if (tr.style.display === "none") hiddenCount++;
+        });
+
+        // If all visible → export filtered data, else export all
+        const exportFiltered = hiddenCount > 0;
+
+        const wb = XLSX.utils.book_new();
+        const ws_data = [];
+
+        // Get table headers
+        const headers = [];
+        table.querySelectorAll("thead th").forEach(th => {
+            headers.push(th.innerText.trim());
+        });
+        ws_data.push(headers);
+
+        // Get appropriate rows (filtered or all)
+        rows.forEach(tr => {
+            if (!exportFiltered || tr.style.display !== "none") {
+                const rowData = [];
+                tr.querySelectorAll("td, th").forEach(td => {
+                    rowData.push(td.innerText.trim());
+                });
+                ws_data.push(rowData);
+            }
+        });
+
+        const ws = XLSX.utils.aoa_to_sheet(ws_data);
+        XLSX.utils.book_append_sheet(wb, ws, "Data");
+
+        const filename = exportFiltered ? "Filtered_Quotation_Data.xlsx" : "All_Quotation_Data.xlsx";
+        XLSX.writeFile(wb, filename);
+    });
+</script>
+
 
 
 
