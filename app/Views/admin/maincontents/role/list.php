@@ -61,7 +61,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 if (!empty($plant_ids)) {
                                                     // sanitize
                                                     $plant_ids = array_map('intval', $plant_ids);
-                                                    $db = \Config\Database::connect();
+                                                    $this->db = \Config\Database::connect();
                                                     $plants_q = $this->db
                                                         ->select('plant_name')
                                                         ->where_in('id', $plant_ids)
