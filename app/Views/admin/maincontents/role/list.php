@@ -52,6 +52,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <th scope="row" class="text-center"><?=$sl++?></th>
                                     <td><?=$row->role_name?></td>
                                     <td>
+                                        <a href="<?=base_url('admin/' . $controller_route . '/access-plant/'.encoded($row->$primary_key))?>" class="btn btn-warning btn-sm" title="Access Plant"><i class="fa fa-universal-access"></i></a><br><br>
                                         <?php
                                         $plant_ids = (($row->plant_ids != '')?json_decode($row->plant_ids):[]);
                                         if(!empty($plant_ids)){
@@ -64,7 +65,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                             }
                                             echo implode(', ', $plant_names);
                                         } else {
-                                            echo 'All Plants';
+                                            echo 'No Plants';
                                         }
                                         ?>
                                     </td>

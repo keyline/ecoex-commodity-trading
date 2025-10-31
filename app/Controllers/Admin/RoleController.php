@@ -145,4 +145,27 @@ class RoleController extends BaseController {
         $this->session->setFlashdata('success_message', $this->data['title'].' '.$msg.' successfully');
         return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
     }
+    public function access_plant($id)
+    {
+        $id                         = decoded($id);
+        $data['moduleDetail']       = $this->data;
+        $data['action']             = 'Edit';
+        $title                      = $data['action'].' '.$this->data['title'];
+        $page_name                  = 'role/access-plant';
+        
+        $conditions                 = array($this->data['primary_key']=>$id);
+        $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
+
+        $orderBy[0]                 = ['field' => 'plant_name', 'type' => 'ASC'];
+        $data['plants']             = $this->common_model->find_data('ecomm_users', 'array', ['type' => 'PLANT', 'status' => 1], 'id,plant_name,full_address,state', '', '', $orderBy);
+
+        if($this->request->getMethod() == 'post') {
+            pr($this->request->getPost());
+            
+            $this->session->setFlashdata('success_message', $this->data['title'].' updated successfully');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+        }
+
+        echo $this->layout_after_login($title,$page_name,$data);
+    }
 }
