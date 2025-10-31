@@ -187,4 +187,32 @@ class AdminSubUserController extends BaseController {
         $this->session->setFlashdata('success_message', 'Signin Credential Sent Successfully !!!');
         return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
     }
+    public function access_plant($id)
+    {
+        $id                         = decoded($id);
+        $data['moduleDetail']       = $this->data;
+
+        $conditions                 = array($this->data['primary_key']=>$id);
+        $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
+
+        $data['action']             = 'Access';
+        $title                      = $data['action'].' Plants for '.$this->data['title'] . ' : ' . $data['row']->name;
+        $page_name                  = 'sub-users/access-plant';
+
+        $orderBy[0]                 = ['field' => 'plant_name', 'type' => 'ASC'];
+        $data['plantLists']             = $this->common_model->find_data('ecomm_users', 'array', ['type' => 'PLANT', 'status>=' => 1, 'status<=' => 2], 'id,plant_name,full_address,state', '', '', $orderBy);
+
+        if($this->request->getMethod() == 'post') {
+            // pr($this->request->getPost());
+            $fields = [
+                'plant_ids'             => $this->request->getPost('plant_ids_json'),
+            ];
+            $this->common_model->save_data('ecoex_admin_user', $fields, $id, 'id');
+            
+            $this->session->setFlashdata('success_message', 'Plant access updated successfully');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+        }
+
+        echo $this->layout_after_login($title,$page_name,$data);
+    }
 }

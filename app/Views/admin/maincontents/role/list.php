@@ -53,7 +53,6 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <tr>
                                     <th class="text-center" width="7%">#</th>
                                     <th>Role Name</th>
-                                    <th>Access Plants</th>
                                     <th class="text-center" width="12%">Action</th>
                                 </tr>
                             </thead>
@@ -64,23 +63,6 @@ $controller_route   = $moduleDetail['controller_route'];
                                         <tr>
                                             <th scope="row" class="text-center"><?= $sl++ ?></th>
                                             <td><?= $row->role_name ?></td>
-                                            <td>
-                                                <a href="<?= base_url('admin/' . $controller_route . '/access-plant/' . encoded($row->$primary_key)) ?>" class="btn btn-warning btn-sm" title="Access Plant"><i class="fa fa-universal-access"></i> Access Plant</a><br><br>
-                                                
-                                                <?php
-                                                $plant_ids = ($row->plant_ids != '') ? json_decode($row->plant_ids, true) : [];
-                                                if (!empty($plant_ids)) {
-                                                    echo '<ul class="plant-list">';
-                                                    for($k=0;$k<count($plant_ids);$k++) {
-                                                        $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $plant_ids[$k]], 'plant_name');
-                                                        echo '<li>' . (($getPlant)?$getPlant->plant_name:'') . '</li>';
-                                                    }
-                                                    echo '</ul>';
-                                                } else {
-                                                    echo 'No Plants';
-                                                }
-                                                ?>
-                                            </td>
                                             <td class="text-center">
                                                 <a href="<?= base_url('admin/' . $controller_route . '/edit/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-primary btn-sm" title="Edit <?= $title ?>"><i class="fa fa-edit"></i></a>
                                                 <a href="<?= base_url('admin/' . $controller_route . '/delete/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-danger btn-sm" title="Delete <?= $title ?>" onclick="return confirm('Do You Want To Delete This <?= $title ?>');"><i class="fa fa-trash"></i></a>
