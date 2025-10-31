@@ -120,7 +120,7 @@ $userType           = $session->user_type;
                            
                         </div>
 
-                        <div style="width:60%; margin:auto;">
+                        <div id="chartContainer" style="display:none;" style="width:60%; margin:auto;">
                             <canvas id="quotationChart"></canvas>
                         </div>
                         <?php
@@ -483,6 +483,7 @@ $userType           = $session->user_type;
     // ===============================    
 
     function updateChart(useAll = false) {
+        const chartContainer = document.getElementById("chartContainer"); // parent div of chart
         const targetRows = useAll ? rows : Array.from(document.querySelectorAll("#simpletable1 tbody tr"));
         const chartData = {};
 
@@ -508,6 +509,15 @@ $userType           = $session->user_type;
         });
 
         const scraps = Object.keys(chartData);
+        // ✅ If no items (no KG data or no filter matches), hide chart and exit
+        if (scraps.length === 0) {
+            if (quotationChart) quotationChart.destroy();
+            chartContainer.style.display = "none"; // hide graph section
+            return;
+        } else {
+            chartContainer.style.display = "block"; // show when data exists
+        }
+        
         const vendors = [...new Set(targetRows.map(r => r.cells[7]?.innerText.trim()))];
 
         const datasets = vendors.map((vendor, i) => ({
