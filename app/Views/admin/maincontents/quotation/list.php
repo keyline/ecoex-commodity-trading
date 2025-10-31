@@ -576,62 +576,74 @@ $userType           = $session->user_type;
 </script>
 
 <script>
-    document.getElementById("exportExcel").addEventListener("click", function () {
-        const table = document.getElementById("simpletable1");
-        const rows = Array.from(table.querySelectorAll("tbody tr")); // ✅ ensure it's an Array
-        const headerCells = table.querySelectorAll("thead th");
-        
-        
-        // Count visible rows
-        const visibleRows = rows.filter(tr => {
-            const style = window.getComputedStyle(tr);
-            return style.display !== "none" && style.visibility !== "hidden";
-        });
+   document.getElementById("exportExcel").addEventListener("click", function () {
+    const table = document.getElementById("simpletable1");
+    const headerCells = table.querySelectorAll("thead th");
+    const allRows = Array.from(table.querySelectorAll("tbody tr"));
 
-        // Detect if filter applied (some rows hidden)
-        const exportFiltered = visibleRows.length < rows.length;
+    // Collect all rows, including hidden ones
+    let filteredRows = [];
+    let isFiltered = false;
 
-        // Prepare workbook & worksheet data
-        const wb = XLSX.utils.book_new();
-        const ws_data = [];
+    allRows.forEach(tr => {
+        const style = window.getComputedStyle(tr);
+        const isVisible = style.display !== "none" && style.visibility !== "hidden";
+        if (isVisible) {
+            filteredRows.push(tr);
+        }
+    });
 
-        // Get table headers (exclude "Action")
-        const headers = [];
-        headerCells.forEach(th => {
-            const headerText = th.innerText.trim();
-            if (headerText.toLowerCase() !== "action") {
-                headers.push(headerText);
+    // If filtered rows are fewer than all, filtering is active
+    if (filteredRows.length < allRows.length) {
+        isFiltered = true;
+    } else {
+        // No filter applied → export all rows
+        filteredRows = allRows;
+    }
+
+    if (filteredRows.length === 0) {
+        alert("No data to export!");
+        return;
+    }
+
+    // Prepare workbook and worksheet data
+    const wb = XLSX.utils.book_new();
+    const ws_data = [];
+
+    // Extract headers (excluding Action)
+    const headers = [];
+    headerCells.forEach(th => {
+        const headerText = th.innerText.trim();
+        if (headerText.toLowerCase() !== "action") {
+            headers.push(headerText);
+        }
+    });
+    ws_data.push(headers);
+
+    // Add row data
+    filteredRows.forEach(tr => {
+        const rowData = [];
+        const cells = tr.querySelectorAll("td, th");
+        cells.forEach((td, index) => {
+            const headerText = headerCells[index]?.innerText.trim().toLowerCase();
+            if (headerText !== "action") {
+                rowData.push(td.innerText.trim());
             }
         });
-        ws_data.push(headers);
-
-        // Choose which rows to export
-        const exportRows = exportFiltered ? visibleRows : rows;
-
-        // Add only visible rows
-        exportRows.forEach(tr => {
-            const rowData = [];
-            const cells = tr.querySelectorAll("td, th");
-            cells.forEach((td, index) => {
-                const headerText = headerCells[index]?.innerText.trim().toLowerCase();
-                if (headerText !== "action") {
-                    rowData.push(td.innerText.trim());
-                }
-            });
-                ws_data.push(rowData);            
-        });
-        // Stop if no visible data
-        if (ws_data.length <= 1) {
-            alert("No data available to export.");
-            return;
-        }
-
-        const ws = XLSX.utils.aoa_to_sheet(ws_data);
-        XLSX.utils.book_append_sheet(wb, ws, "Quotation_Data");
-
-        const filename = exportFiltered ? "Filtered_Quotation_Data.xlsx" : "All_Quotation_Data.xlsx";
-        XLSX.writeFile(wb, filename);
+        ws_data.push(rowData);
     });
+
+    // Create worksheet and file
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    XLSX.utils.book_append_sheet(wb, ws, "Quotation_Data");
+
+    const filename = isFiltered
+        ? "Filtered_Quotation_Data.xlsx"
+        : "All_Quotation_Data.xlsx";
+
+    XLSX.writeFile(wb, filename);
+});
+
 </script>
 
 
