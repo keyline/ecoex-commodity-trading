@@ -7,7 +7,7 @@ $controller_route   = $moduleDetail['controller_route'];
     .plant-list {
         list-style-type: disc;     /* Use dots as bullets */
         list-style-position: inside; /* Place dots inside content */
-        font-size: 13px;           /* Smaller text */
+        font-size: 10px;           /* Smaller text */
         line-height: 1.4;          /* Slightly tighter spacing */
         margin: 0;                 /* Remove outer spacing */
         padding: 0;                /* Remove default padding */
