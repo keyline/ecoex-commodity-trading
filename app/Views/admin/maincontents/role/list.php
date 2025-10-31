@@ -60,7 +60,8 @@ $controller_route   = $moduleDetail['controller_route'];
                                                
                                                 if (!empty($plant_ids)) {
                                                     // sanitize
-                                                    echo $plant_ids = array_map('intval', $plant_ids);
+                                                    $plant_ids = array_map('intval', $plant_ids);
+                                                    pr($plant_ids);
                                                     $db = \Config\Database::connect();
                                                     $builder = $db->table('ecomm_users');
                                                     $builder->select('plant_name');
