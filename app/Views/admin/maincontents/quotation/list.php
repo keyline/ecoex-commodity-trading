@@ -576,56 +576,100 @@ $userType           = $session->user_type;
 </script>
 
 <script>
-   document.getElementById("exportExcel").addEventListener("click", function () {
+//    document.getElementById("exportExcel").addEventListener("click", function () {
+//     const table = document.getElementById("simpletable1");
+//     const headerCells = table.querySelectorAll("thead th");
+//     const allRows = Array.from(table.querySelectorAll("tbody tr"));
+
+//     // Collect all rows, including hidden ones
+//     let filteredRows = [];
+//     let isFiltered = false;
+
+//     allRows.forEach(tr => {
+//         const style = window.getComputedStyle(tr);
+//         const isVisible = style.display !== "none" && style.visibility !== "hidden";
+//         if (isVisible) {
+//             filteredRows.push(tr);
+//         }
+//     });
+
+//     // If filtered rows are fewer than all, filtering is active
+//     if (filteredRows.length < allRows.length) {
+//         isFiltered = true;
+//     } else {
+//         // No filter applied → export all rows
+//         filteredRows = allRows;
+//     }
+
+//     if (filteredRows.length === 0) {
+//         alert("No data to export!");
+//         return;
+//     }
+
+//     // Prepare workbook and worksheet data
+//     const wb = XLSX.utils.book_new();
+//     const ws_data = [];
+
+//     // Extract headers (excluding Action)
+//     const headers = [];
+//     headerCells.forEach(th => {
+//         const headerText = th.innerText.trim();
+//         if (headerText.toLowerCase() !== "action") {
+//             headers.push(headerText);
+//         }
+//     });
+//     ws_data.push(headers);
+
+//     // Add row data
+//     filteredRows.forEach(tr => {
+//         const rowData = [];
+//         const cells = tr.querySelectorAll("td, th");
+//         cells.forEach((td, index) => {
+//             const headerText = headerCells[index]?.innerText.trim().toLowerCase();
+//             if (headerText !== "action") {
+//                 rowData.push(td.innerText.trim());
+//             }
+//         });
+//         ws_data.push(rowData);
+//     });
+
+//     // Create worksheet and file
+//     const ws = XLSX.utils.aoa_to_sheet(ws_data);
+//     XLSX.utils.book_append_sheet(wb, ws, "Quotation_Data");
+
+//     const filename = isFiltered
+//         ? "Filtered_Quotation_Data.xlsx"
+//         : "All_Quotation_Data.xlsx";
+
+//     XLSX.writeFile(wb, filename);
+// });
+
+document.getElementById("exportExcel").addEventListener("click", function () {
     const table = document.getElementById("simpletable1");
     const headerCells = table.querySelectorAll("thead th");
-    const allRows = Array.from(table.querySelectorAll("tbody tr"));
-
-    // Collect all rows, including hidden ones
-    let filteredRows = [];
-    let isFiltered = false;
-
-    allRows.forEach(tr => {
-        const style = window.getComputedStyle(tr);
-        const isVisible = style.display !== "none" && style.visibility !== "hidden";
-        if (isVisible) {
-            filteredRows.push(tr);
-        }
-    });
-
-    // If filtered rows are fewer than all, filtering is active
-    if (filteredRows.length < allRows.length) {
-        isFiltered = true;
-    } else {
-        // No filter applied → export all rows
-        filteredRows = allRows;
-    }
-
-    if (filteredRows.length === 0) {
-        alert("No data to export!");
-        return;
-    }
-
-    // Prepare workbook and worksheet data
     const wb = XLSX.utils.book_new();
     const ws_data = [];
 
-    // Extract headers (excluding Action)
+    // 🔹 Collect headers except "Action"
     const headers = [];
     headerCells.forEach(th => {
-        const headerText = th.innerText.trim();
-        if (headerText.toLowerCase() !== "action") {
-            headers.push(headerText);
-        }
+        const text = th.innerText.trim();
+        if (text.toLowerCase() !== "action") headers.push(text);
     });
     ws_data.push(headers);
 
-    // Add row data
-    filteredRows.forEach(tr => {
+    // 🔹 Determine which rows to export
+    // Use your existing JS arrays, not DOM
+    // 'filteredRows' contains all visible (filtered) rows
+    // 'rows' contains all rows (original data)
+    let exportRows = filteredRows.length ? filteredRows : rows;
+
+    // 🔹 Add each row's cell text (skip Action column)
+    exportRows.forEach(tr => {
         const rowData = [];
         const cells = tr.querySelectorAll("td, th");
-        cells.forEach((td, index) => {
-            const headerText = headerCells[index]?.innerText.trim().toLowerCase();
+        cells.forEach((td, i) => {
+            const headerText = headerCells[i]?.innerText.trim().toLowerCase();
             if (headerText !== "action") {
                 rowData.push(td.innerText.trim());
             }
@@ -633,16 +677,24 @@ $userType           = $session->user_type;
         ws_data.push(rowData);
     });
 
-    // Create worksheet and file
+    // 🔹 Stop if no data
+    if (ws_data.length <= 1) {
+        alert("No data available to export.");
+        return;
+    }
+
+    // 🔹 Create Excel sheet
     const ws = XLSX.utils.aoa_to_sheet(ws_data);
     XLSX.utils.book_append_sheet(wb, ws, "Quotation_Data");
 
-    const filename = isFiltered
+    // 🔹 File name changes automatically
+    const filename = (filteredRows.length && filteredRows.length !== rows.length)
         ? "Filtered_Quotation_Data.xlsx"
         : "All_Quotation_Data.xlsx";
 
     XLSX.writeFile(wb, filename);
 });
+
 
 </script>
 
