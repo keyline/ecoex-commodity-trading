@@ -3,6 +3,18 @@ $title              = $moduleDetail['title'];
 $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
 ?>
+<style>
+    .plant-list {
+        list-style-type: disc;     /* Use dots as bullets */
+        list-style-position: inside; /* Place dots inside content */
+        font-size: 9px;           /* Smaller text */
+        line-height: 1.4;          /* Slightly tighter spacing */
+        margin: 0;                 /* Remove outer spacing */
+        padding: 0;                /* Remove default padding */
+        color: #333;               /* Optional - dark gray text */
+    }
+</style>
+
 <div class="container-fluid">
     <div class="pagetitle">
         <h1><?=$page_header?></h1>
