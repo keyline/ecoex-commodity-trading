@@ -285,7 +285,7 @@ $userType           = $session->user_type;
             plugins: {
                 title: {
                     display: true,
-                    text: 'Rates by item Name and Vendor'
+                    text: 'Rates by item Name and Vendor (Unit: KG)'
                 },
                 legend: {
                     position: 'bottom'
@@ -540,7 +540,7 @@ $userType           = $session->user_type;
             options: {
                 responsive: true,
                 plugins: {
-                    title: { display: true, text: "Rates by Item Name and Vendor (Unit: KG)" },
+                    title: { display: true, text: "Rates by Item Name and Vendor (Unit: KG) (filtered)" },
                     legend: { position: "bottom" }
                 },
                 scales: {
@@ -594,8 +594,12 @@ $userType           = $session->user_type;
 
         // Get table headers
         const headers = [];
-        table.querySelectorAll("thead th").forEach(th => {
-            headers.push(th.innerText.trim());
+        const headerCells = table.querySelectorAll("thead th");
+        headerCells.forEach((th, index) => {
+            const headerText = th.innerText.trim();
+            if (headerText.toLowerCase() !== "action") {
+                headers.push(headerText);
+            }
         });
         ws_data.push(headers);
 
@@ -603,15 +607,25 @@ $userType           = $session->user_type;
         rows.forEach(tr => {
             if (!exportFiltered || tr.style.display !== "none") {
                 const rowData = [];
-                tr.querySelectorAll("td, th").forEach(td => {
-                    rowData.push(td.innerText.trim());
+                const cells = tr.querySelectorAll("td, th");
+                cells.forEach((td, index) => {
+                    // Skip the last column if it’s 'Action'
+                    const headerText = headerCells[index]?.innerText.trim().toLowerCase();
+                    if (headerText !== "action") {
+                        rowData.push(td.innerText.trim());
+                    }
                 });
                 ws_data.push(rowData);
             }
         });
+        // Stop if no visible data
+        if (ws_data.length <= 1) {
+            alert("No data available to export.");
+            return;
+        }
 
         const ws = XLSX.utils.aoa_to_sheet(ws_data);
-        XLSX.utils.book_append_sheet(wb, ws, "Data");
+        XLSX.utils.book_append_sheet(wb, ws, "Quotation_Data");
 
         const filename = exportFiltered ? "Filtered_Quotation_Data.xlsx" : "All_Quotation_Data.xlsx";
         XLSX.writeFile(wb, filename);
