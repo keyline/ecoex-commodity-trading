@@ -161,15 +161,13 @@ class RoleController extends BaseController {
         $data['plantLists']             = $this->common_model->find_data('ecomm_users', 'array', ['type' => 'PLANT', 'status>=' => 1, 'status<=' => 2], 'id,plant_name,full_address,state', '', '', $orderBy);
 
         if($this->request->getMethod() == 'post') {
-            echo $id;
+            // pr($this->request->getPost());
             $fields = [
                 'plant_ids'             => $this->request->getPost('plant_ids_json'),
             ];
-            pr($fields);
-            // $this->common_model->save_data('ecoex_roles', $fields, $id, 'id');
-            // pr($this->request->getPost());
+            $this->common_model->save_data('ecoex_roles', $fields, $id, 'id');
             
-            $this->session->setFlashdata('success_message', $this->data['title'].' updated successfully');
+            $this->session->setFlashdata('success_message', 'Plant access updated successfully');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
         }
 
