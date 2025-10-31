@@ -149,12 +149,13 @@ class RoleController extends BaseController {
     {
         $id                         = decoded($id);
         $data['moduleDetail']       = $this->data;
-        $data['action']             = 'Access';
-        $title                      = $data['action'].' Plants for '.$this->data['title'];
-        $page_name                  = 'role/access-plant';
 
         $conditions                 = array($this->data['primary_key']=>$id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
+
+        $data['action']             = 'Access';
+        $title                      = $data['action'].' Plants for '.$this->data['title'] . ' : ' . $data['row']->role_name;
+        $page_name                  = 'role/access-plant';        
 
         $orderBy[0]                 = ['field' => 'plant_name', 'type' => 'ASC'];
         $data['plantLists']             = $this->common_model->find_data('ecomm_users', 'array', ['type' => 'PLANT', 'status>=' => 1, 'status<=' => 2], 'id,plant_name,full_address,state', '', '', $orderBy);
