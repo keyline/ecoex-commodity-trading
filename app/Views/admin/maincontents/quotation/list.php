@@ -578,7 +578,7 @@ $userType           = $session->user_type;
 <script>
     document.getElementById("exportExcel").addEventListener("click", function () {
         const table = document.getElementById("simpletable1");
-        const rows = table.querySelectorAll("tbody tr");
+        const rows = Array.from(table.querySelectorAll("tbody tr")); // ✅ ensure it's an Array
         const headerCells = table.querySelectorAll("thead th");
         
         
