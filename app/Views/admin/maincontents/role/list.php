@@ -69,6 +69,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                                     $query = $builder->get();
 
                                                     $plants = $query->getResult();
+                                                    pr($plants);
                                                     $plant_names = [];
 
                                                     foreach ($plants as $p) {
