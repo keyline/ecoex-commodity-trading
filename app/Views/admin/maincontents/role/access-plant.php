@@ -35,46 +35,53 @@ $controller_route   = $moduleDetail['controller_route'];
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <!-- 🔍 Search Filters -->
-                        <div class="mb-3">
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <input type="text" id="searchPlantName" class="form-control" placeholder="Search Plant Name" style="width: 25%;">
-                                <input type="text" id="searchAddress" class="form-control" placeholder="Search Address" style="width: 25%;">
-                                <input type="text" id="searchState" class="form-control" placeholder="Search State" style="width: 25%;">
-                                <button type="button" class="btn btn-secondary" onclick="clearPlantSearch()">Clear</button>
+                        <form id="plantForm" method="post">
+                            <!-- 🔍 Search Filters -->
+                            <div class="mb-3">
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="text" id="searchPlantName" class="form-control" placeholder="Search Plant Name" style="width: 25%;">
+                                    <input type="text" id="searchAddress" class="form-control" placeholder="Search Address" style="width: 25%;">
+                                    <input type="text" id="searchState" class="form-control" placeholder="Search State" style="width: 25%;">
+                                    <button type="button" class="btn btn-secondary" onclick="clearPlantSearch()">Clear</button>
+                                </div>
                             </div>
-                        </div>
 
-                        <table class="table globel_table nowrap" style="width: 100%">
-                            <thead>
-                                <tr>
-                                    <th class="text-center" width="7%">
-                                        #
-                                        <input type="checkbox" id="select_all_plants" onclick="toggleSelectAllPlants(this)">
-                                    </th>
-                                    <th>Plant Name</th>
-                                    <th>Plant Address</th>
-                                    <th>Plant State</th>
-                                </tr>
-                            </thead>
-                            <tbody id="plantTableBody">
-                                <?php if ($plantLists) {
-                                    $sl = 1;
-                                    foreach ($plantLists as $plant) { ?>
-                                        <tr>
-                                            <th scope="row" class="text-center">
-                                                <?= $sl++ ?><br><br>
-                                                <input type="checkbox" class="plant_checkbox" name="plant_ids[]" value="<?= $plant->id ?>"
-                                                    <?= (in_array($plant->id, (($row->plant_ids != '') ? json_decode($row->plant_ids) : [])) ? 'checked' : '') ?>>
-                                            </th>
-                                            <td><?= $plant->plant_name ?></td>
-                                            <td><?= $plant->full_address ?></td>
-                                            <td><?= $plant->state ?></td>
-                                        </tr>
-                                <?php }
-                                } ?>
-                            </tbody>
-                        </table>
+                            <table class="table globel_table nowrap" style="width: 100%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" width="7%">
+                                            #
+                                            <input type="checkbox" id="select_all_plants" onclick="toggleSelectAllPlants(this)">
+                                        </th>
+                                        <th>Plant Name</th>
+                                        <th>Plant Address</th>
+                                        <th>Plant State</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="plantTableBody">
+                                    <?php if ($plantLists) {
+                                        $sl = 1;
+                                        foreach ($plantLists as $plant) { ?>
+                                            <tr>
+                                                <th scope="row" class="text-center">
+                                                    <?= $sl++ ?><br><br>
+                                                    <input type="checkbox" class="plant_checkbox" name="plant_ids[]" value="<?= $plant->id ?>"
+                                                        <?= (in_array($plant->id, (($row->plant_ids != '') ? json_decode($row->plant_ids) : [])) ? 'checked' : '') ?>>
+                                                </th>
+                                                <td><?= $plant->plant_name ?></td>
+                                                <td><?= $plant->full_address ?></td>
+                                                <td><?= $plant->state ?></td>
+                                            </tr>
+                                    <?php }
+                                    } ?>
+                                </tbody>
+                            </table>
+
+                            <!-- Hidden field to store JSON -->
+                            <input type="hidden" name="plant_ids_json" id="plant_ids_json">
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -133,4 +140,11 @@ $controller_route   = $moduleDetail['controller_route'];
         searchState.value = '';
         filterPlants();
     }
+
+    // ✅ Before submit — store selected plant_ids as JSON
+    document.getElementById('plantForm').addEventListener('submit', function(e) {
+        const selected = Array.from(document.querySelectorAll('.plant_checkbox:checked'))
+            .map(chk => chk.value);
+        document.getElementById('plant_ids_json').value = JSON.stringify(selected);
+    });
 </script>
