@@ -57,10 +57,10 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 <a href="<?= base_url('admin/' . $controller_route . '/access-plant/' . encoded($row->$primary_key)) ?>" class="btn btn-warning btn-sm" title="Access Plant"><i class="fa fa-universal-access"></i> Access Plant</a><br><br>
                                                 <?php
                                                 $plant_ids = ($row->plant_ids != '') ? json_decode($row->plant_ids, true) : [];
-
+                                               
                                                 if (!empty($plant_ids)) {
                                                     // sanitize
-                                                    $plant_ids = array_map('intval', $plant_ids);
+                                                    echo $plant_ids = array_map('intval', $plant_ids);
                                                     $db = \Config\Database::connect();
                                                     $builder = $db->table('ecomm_users');
                                                     $builder->select('plant_name');
