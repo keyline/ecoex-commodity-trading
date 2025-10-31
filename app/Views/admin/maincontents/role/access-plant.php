@@ -9,6 +9,7 @@ $controller_route   = $moduleDetail['controller_route'];
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="<?=base_url('admin/dashboard')?>">Home</a></li>
+                <li class="breadcrumb-item active"><a href="<?=base_url('admin/' . $controller_route . '/list/')?>"><?=$title?> List</a></li>
                 <li class="breadcrumb-item active"><?=$page_header?></li>
             </ol>
         </nav>
@@ -38,8 +39,8 @@ $controller_route   = $moduleDetail['controller_route'];
                             <thead>
                                 <tr>
                                     <th class="text-center" width="7%">
-                                        #
                                         <input type="checkbox" id="select_all_plants" onclick="toggleSelectAllPlants(this)">
+                                        #
                                     </th>
                                     <th>Plant Name</th>
                                     <th>Plant Address</th>
