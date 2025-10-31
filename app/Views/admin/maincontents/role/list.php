@@ -61,15 +61,17 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 if (!empty($plant_ids)) {
                                                     // sanitize
                                                     $plant_ids = array_map('intval', $plant_ids);
-                                                    $this->db = \Config\Database::connect();
-                                                    $plants_q = $this->db
-                                                        ->select('plant_name')
-                                                        ->where_in('id', $plant_ids)
-                                                        ->where('status', 1)
-                                                        ->get('ecomm_users');
+                                                    $db = \Config\Database::connect();
+                                                    $builder = $db->table('ecomm_users');
+                                                    $builder->select('plant_name');
+                                                    $builder->whereIn('id', $plant_ids);
+                                                    $builder->where('status', 1);
+                                                    $query = $builder->get();
 
+                                                    $plants = $query->getResult();
                                                     $plant_names = [];
-                                                    foreach ($plants_q->result() as $p) {
+
+                                                    foreach ($plants as $p) {
                                                         $plant_names[] = $p->plant_name;
                                                     }
 
