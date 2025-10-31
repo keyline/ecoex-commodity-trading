@@ -77,7 +77,7 @@ class QuotationController extends BaseController
         $query1                      = $this->db->query("SELECT DISTINCT scrap_name FROM quotation_items");
         $data['items']              = $query1->getResult(); 
         
-        $query2                      = $this->db->query("SELECT vendor_name FROM quotations");
+        $query2                      = $this->db->query("SELECT vendor_name FROM quotations where vendor_name IS NOT NULL");
         $data['vendors']          = $query2->getResult();
         // pr($result);
         //get whatsapp notification status per enquiry
