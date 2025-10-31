@@ -150,7 +150,7 @@ class RoleController extends BaseController {
         $id                         = decoded($id);
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Access';
-        $title                      = $data['action'].' Plant for '.$this->data['title'];
+        $title                      = $data['action'].' Plants for '.$this->data['title'];
         $page_name                  = 'role/access-plant';
 
         $conditions                 = array($this->data['primary_key']=>$id);
