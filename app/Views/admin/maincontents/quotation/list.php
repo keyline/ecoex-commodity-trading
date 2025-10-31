@@ -123,6 +123,10 @@ $userType           = $session->user_type;
                         <div id="chartContainer" style="display:none;" style="width:60%; margin:auto;">
                             <canvas id="quotationChart"></canvas>
                         </div>
+
+                        <button id="exportExcel" class="btn btn-success mb-3">
+                            <i class="fa fa-file-excel"></i> Export to Excel
+                        </button>
                         <?php
                             // Step 1: Prepare data
                             $vendors = [];
@@ -253,6 +257,7 @@ $userType           = $session->user_type;
 <!-- reject request modal -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
     const items = <?= json_encode($items) ?>;
