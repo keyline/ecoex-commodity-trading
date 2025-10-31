@@ -56,7 +56,8 @@ $controller_route   = $moduleDetail['controller_route'];
                                         <?php
                                         $plant_ids = (($row->plant_ids != '')?json_decode($row->plant_ids):[]);
                                         if(!empty($plant_ids)){
-                                            $plants = $moduleDetail['model']->find_data('ecomm_users', 'array', ['id IN' => $plant_ids, 'status' => 1]);
+                                            $plant_id_string = implode(',', $plant_ids);
+                                            $plants = $moduleDetail['model']->find_data('ecomm_users', 'array', ['id IN' => '(' . $plant_id_string . ')', 'status' => 1]);
                                             $plant_names = [];
                                             if($plants){
                                                 foreach($plants as $plant){
