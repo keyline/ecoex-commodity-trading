@@ -49,8 +49,8 @@ $controller_route   = $moduleDetail['controller_route'];
                             <thead>
                                 <tr>
                                     <th class="text-center" width="7%">
-                                        <input type="checkbox" id="select_all_plants" onclick="toggleSelectAllPlants(this)">
                                         #
+                                        <input type="checkbox" id="select_all_plants" onclick="toggleSelectAllPlants(this)">
                                     </th>
                                     <th>Plant Name</th>
                                     <th>Plant Address</th>
@@ -64,7 +64,8 @@ $controller_route   = $moduleDetail['controller_route'];
                                         <tr>
                                             <th scope="row" class="text-center">
                                                 <?= $sl++ ?><br><br>
-                                                <input type="checkbox" class="plant_checkbox" name="plant_ids[]" value="<?= $plant->id ?>" <?= (in_array($plant->id, (($row->plant_ids != '') ? json_decode($row->plant_ids) : [])) ? 'checked' : '') ?>>
+                                                <input type="checkbox" class="plant_checkbox" name="plant_ids[]" value="<?= $plant->id ?>"
+                                                    <?= (in_array($plant->id, (($row->plant_ids != '') ? json_decode($row->plant_ids) : [])) ? 'checked' : '') ?>>
                                             </th>
                                             <td><?= $plant->plant_name ?></td>
                                             <td><?= $plant->full_address ?></td>
@@ -80,24 +81,21 @@ $controller_route   = $moduleDetail['controller_route'];
         </div>
     </div>
 </section>
+
 <script>
-    // ✅ Toggle select/deselect all plants
+    // ✅ Select/Deselect All
     function toggleSelectAllPlants(source) {
         const checkboxes = document.querySelectorAll('.plant_checkbox');
-        checkboxes.forEach(checkbox => checkbox.checked = source.checked);
+        checkboxes.forEach(chk => chk.checked = source.checked);
     }
 
-    // ✅ Optional: Update "Select All" checkbox automatically 
-    // when individual checkboxes are changed
+    // ✅ Keep Select All synced
     document.addEventListener('DOMContentLoaded', function() {
         const selectAll = document.getElementById('select_all_plants');
         const checkboxes = document.querySelectorAll('.plant_checkbox');
-
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                // If any box unchecked → uncheck "Select All"
-                // If all boxes checked → check "Select All"
-                selectAll.checked = Array.from(checkboxes).every(chk => chk.checked);
+        checkboxes.forEach(chk => {
+            chk.addEventListener('change', () => {
+                selectAll.checked = Array.from(checkboxes).every(c => c.checked);
             });
         });
     });
