@@ -29,7 +29,6 @@ class RoleController extends BaseController {
         $page_name                  = 'role/list';
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
         $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['published!=' => 3], '', '', '', $order_by);
-        pr($data['rows']);
         echo $this->layout_after_login($title,$page_name,$data);
     }
     public function add()
