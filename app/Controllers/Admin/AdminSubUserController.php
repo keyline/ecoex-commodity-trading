@@ -22,8 +22,8 @@ class AdminSubUserController extends BaseController {
             'primary_key'           => 'id'
         );
     }
-    public function list()
-    {
+
+    public function list(){
         $data['moduleDetail']       = $this->data;
         $title                      = 'Manage '.$this->data['title'];
         $page_name                  = 'sub-users/list';
@@ -44,7 +44,7 @@ class AdminSubUserController extends BaseController {
             // pr($this->request->getPost());
             /* inquiry number generate */
                 $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
-                $checkEmployee = $this->common_model->find_data('ecoex_admin_user', 'row', '', '', '', '', $orderBy);
+                $checkEmployee = $this->common_model->find_data('ecoex_admin_user', 'row', ['user_type' => 'COMPANY'], '', '', '', $orderBy);
                 if($checkEmployee){
                     $slNo = $checkEmployee->sl_no+1;
                     $employee_nos = str_pad($slNo,4,0,STR_PAD_LEFT);
