@@ -48,7 +48,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <tr>
                                     <th scope="row" class="text-center">
                                         <?=$sl++?><br><br>
-                                        <input type="checkbox" class="form-control" name="plant_ids[]" value="<?=$plant->id?>" <?=(in_array($plant->id, (($row->plant_ids != '')?json_decode($row->plant_ids):[]))?'checked':'')?>>
+                                        <input type="checkbox" name="plant_ids[]" value="<?=$plant->id?>" <?=(in_array($plant->id, (($row->plant_ids != '')?json_decode($row->plant_ids):[]))?'checked':'')?>>
                                     </th>
                                     <td><?=$plant->plant_name?></td>
                                     <td><?=$plant->full_address?></td>
