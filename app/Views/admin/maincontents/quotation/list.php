@@ -79,6 +79,21 @@ $userType           = $session->user_type;
                                                 </select>
                                             </div>
                                             <div class="col-md-4 my-2">
+                                                <select id="filterVendor" class="form-control">
+                                                <option value="">Filter by Vendor Name</option>
+                                                <?php foreach ($vendors as $vendor) {?>
+                                                <option value="<?=$vendor->vendor_name?>"><?=$vendor->vendor_name?></option>
+                                                <?php } ?>
+                                                <!-- add more -->
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3 my-2">
+                                                <input type="date" id="filterStartDate" class="form-control" placeholder="Start Date">
+                                            </div>
+                                            <div class="col-md-3 my-2">
+                                                <input type="date" id="filterEndDate" class="form-control" placeholder="End Date">
+                                            </div>
+                                            <div class="col-md-4 my-2">
                                                 <button id="applyFilter" class="btn btn-outline-secondary">Apply Filter</button>
                                                 <button id="resetFilter" class="btn btn-secondary" disabled>Reset</button>
                                             </div>
@@ -114,10 +129,10 @@ $userType           = $session->user_type;
                             $items = [];
                             $dataMap = [];                           
 
-                            foreach ($rows as $row) {                                
-                                $vendor = $row->vendor_name;
-                                $item = $row->scrap_name;
-                                $rate  = (float)$row->rate;
+                            foreach ($graphs as $graph) {                                
+                                $vendor = $graph->vendor_name;
+                                $item = $graph->scrap_name;
+                                $rate  = (float)$graph->rate;
 
                                 if (!in_array($vendor, $vendors)) $vendors[] = $vendor;
                                 if (!in_array($item, $items)) $items[] = $item;
@@ -170,7 +185,7 @@ $userType           = $session->user_type;
                                                 <td><h5><?= ($row->current_location) ?> </h5></td>
                                                 <td><h5><?= ($row->vendor_name) ?> </h5></td>
                                                 <td><h5><?= ($row->contact_no) ?> </h5></td>                                                                                             
-                                                <td><h6><?= (($row->created_at != '') ? date_format(date_create($row->created_at), "M d, Y h:i A") : '') ?></h6></td>    
+                                                <td><h6><?= (($row->quotation_item_created_at != '') ? date_format(date_create($row->quotation_item_created_at), "M d, Y h:i A") : '') ?></h6></td>    
                                                 <?php if($itemStatus == 1) {?>
                                                 <td><h6><?= (($row->quotation_item_status == 1) ? date_format(date_create($row->active_time), "M d, Y h:i A") : '') ?></h6></td>
                                                 <?php }elseif($itemStatus == 2) { ?>
@@ -179,7 +194,7 @@ $userType           = $session->user_type;
                                                 
                                                 <td>
                                                     <?php if ($common_model->checkModuleFunctionAccess(23, 109)) { ?>
-                                                        <a href="<?= base_url('admin/' . $controller_route . '/view-detail/' . encoded($row->id)) ?>" class="btn btn-outline-info btn-sm" title="View <?= $title ?>" target="_blank"><i class="fa fa-info-circle"></i></a>
+                                                        <a href="<?= base_url('admin/' . $controller_route . '/view-detail/' . encoded($row->id). '/' . encoded($row->quotation_item_id)) ?>" class="btn btn-outline-info btn-sm" title="View <?= $title ?>" target="_blank"><i class="fa fa-info-circle"></i></a>
                                                     <?php } ?> 
                                                     <?php if ($common_model->checkModuleFunctionAccess(23, 107)) { ?>
                                                         <?php if ($userType == 'MA') { 
@@ -385,16 +400,38 @@ $userType           = $session->user_type;
     function applyFilter() {
         const locationVal = document.getElementById("filterLocation").value.toLowerCase();
         const itemVal = document.getElementById("filterItem").value.toLowerCase();
+        const vendorVal = document.getElementById("filterVendor").value.toLowerCase();
+        const startDateVal = document.getElementById("filterStartDate").value;
+        const endDateVal = document.getElementById("filterEndDate").value;
         const resetBtn = document.getElementById("resetFilter");
 
         filteredRows = rows.filter(row => {
             const locationText = row.cells[5]?.innerText.toLowerCase() || ""; // 6th column = Location
             const itemText = row.cells[2]?.innerText.toLowerCase() || "";     // 3rd column = Item Name
+            const vendorText = row.cells[7]?.innerText.toLowerCase() || "";     // 8th column = Item Name
+            const dateText = row.cells[9]?.innerText.trim() || ""; // 10th column = Quotation Submitted
+            
+            // 🗓️ Convert date string (2025-10-29 17:00:43) into Date object
+            let rowDate = null;
+            if (dateText) {
+                // Replace space with 'T' to make it ISO-compatible for Safari/Firefox
+                rowDate = new Date(dateText.replace(" ", "T"));
+            }
+
+            const startDate = startDateVal ? new Date(startDateVal + "T00:00:00") : null;
+            const endDate = endDateVal ? new Date(endDateVal + "T23:59:59") : null;
 
             const matchLocation = !locationVal || locationText.includes(locationVal);
             const matchItem = !itemVal || itemText.includes(itemVal);
-            return matchLocation && matchItem;
-        });
+            const matchVendor = !vendorVal || vendorText.includes(vendorVal);
+            let matchDate = true;
+            if (startDate && rowDate) matchDate = rowDate >= startDate;
+            if (endDate && rowDate) matchDate = matchDate && rowDate <= endDate;
+            if ((startDate || endDate) && !rowDate) matchDate = false;
+
+            return matchLocation && matchItem && matchVendor && matchDate;
+
+            });
 
         currentPage = 1;
         totalPages = Math.ceil(filteredRows.length / rowsPerPage) || 1;
@@ -403,7 +440,7 @@ $userType           = $session->user_type;
         updateChart();
 
         // ✅ Enable reset button only if filters were used
-        if (locationVal || itemVal) {
+        if (locationVal || itemVal || vendorVal || startDateVal || endDateVal) {
             resetBtn.disabled = false;
             resetBtn.classList.remove("btn-secondary");
             resetBtn.classList.add("btn-danger");
@@ -421,6 +458,9 @@ $userType           = $session->user_type;
     function resetFilter() {
         document.getElementById("filterLocation").value = "";
         document.getElementById("filterItem").value = "";
+        document.getElementById("filterVendor").value = "";
+        document.getElementById("filterStartDate").value = "";
+        document.getElementById("filterEndDate").value = "";
         filteredRows = [...rows];
         currentPage = 1;
         totalPages = Math.ceil(filteredRows.length / rowsPerPage);
@@ -440,60 +480,7 @@ $userType           = $session->user_type;
     
     // ===============================
     // Chart Update Logic
-    // ===============================
-
-    // function updateChart() {
-    //     // Collect visible table data (after filter & pagination)
-    //     const visibleRows = Array.from(document.querySelectorAll("#simpletable1 tbody tr"));
-    //     const chartData = {};
-
-    //     visibleRows.forEach(row => {
-    //         const vendor = row.cells[7]?.innerText.trim(); // Adjust index for vendor_name
-    //         const item = row.cells[2]?.innerText.trim();  // Adjust index for scrap_name
-    //         const rate = parseFloat(row.cells[3]?.innerText) || 0;
-
-    //         if (!chartData[item]) chartData[item] = {};
-    //         // chartData[item][vendor] = rate;
-    //         // Store only the highest rate for each vendor–item
-    //         if (!chartData[item][vendor] || rate > chartData[item][vendor]) {
-    //             chartData[item][vendor] = rate;
-    //         }
-    //     });
-
-    //     console.log("Chart Data Map:", chartData);
-
-    //     // Prepare chart structure
-    //     const scraps = Object.keys(chartData);
-    //     const vendors = [...new Set(visibleRows.map(r => r.cells[7]?.innerText.trim()))];
-
-    //     const datasets = vendors.map((vendor, i) => ({
-    //         label: vendor,
-    //         data: scraps.map(item => chartData[item][vendor] || 0),
-    //         backgroundColor: `hsl(${i * 60}, 70%, 50%)`
-    //     }));
-
-    //     // If chart exists, destroy and recreate
-    //     const ctx = document.getElementById("quotationChart").getContext("2d");
-    //     if (quotationChart) quotationChart.destroy();
-
-    //     quotationChart = new Chart(ctx, {
-    //         type: "bar",
-    //         data: { labels: scraps, datasets },
-    //         options: {
-    //             responsive: true,
-    //             plugins: {
-    //                 title: { display: true, text: "Rates by Item Name and Vendor" },
-    //                 legend: { position: "bottom" }
-    //             },
-    //             scales: {
-    //                 y: {
-    //                     beginAtZero: true,
-    //                     title: { display: true, text: "Rate" }
-    //                 }
-    //             }
-    //         }
-    //     });
-    // }
+    // ===============================    
 
     function updateChart(useAll = false) {
         const targetRows = useAll ? rows : Array.from(document.querySelectorAll("#simpletable1 tbody tr"));

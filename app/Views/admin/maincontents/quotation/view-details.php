@@ -243,10 +243,12 @@
                                                     <!-- <td>?=intval($quotation_item->rate)?>/?=$quotation_item->unit?> <a href="?= base_url('admin/' . $controller_route . '/edit_rate/' . encoded($quotation_item->id)) ?>"> <i class="fa-solid fa-pen-to-square"></i></a></td> -->
                                                     <td>
                                                         <span class="rate-text"><?= intval($quotation_item->rate) ?>/<?= $quotation_item->unit ?></span>
-                                                        <a href="javascript:void(0);" class="edit-rate" data-id="<?= $quotation_item->id ?>">
-                                                            <i class="fa-solid fa-pen-to-square"></i>
-                                                        </a>
-
+                                                        <?php 
+                                                            if($quotation_item->status != 2){ ?>
+                                                                <a href="javascript:void(0);" class="edit-rate" data-id="<?= $quotation_item->id ?>">
+                                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                                </a>
+                                                            <?php } ?>                                                    
                                                         <form class="rate-form d-none" method="post" action="<?= base_url('admin/update_rate') ?>">
                                                             <input type="hidden" name="id" value="<?= $quotation_item->id ?>">
                                                             <input type="number" name="rate" value="<?= intval($quotation_item->rate) ?>" class="form-control form-control-sm rate-input" style="width: 80px; display:inline-block;">

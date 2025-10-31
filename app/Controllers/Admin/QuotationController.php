@@ -54,19 +54,31 @@ class QuotationController extends BaseController
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');                
         // $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
         $data['rows']               =$this->db->table('quotations q')
-                                    ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time')
+                                    ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time, qi.created_at as quotation_item_created_at, qi.updated_at as quotation_item_updated_at')
                                     ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
                                     ->where(' qi.status', 0)
                                     ->orderBy('q.quotation_no', 'DESC')
                                     ->get()
                                     ->getResult();
-                                    // pr($data['rows']);                                   
+                                    // pr($data['rows']);      
+        
+        $data['graphs']               =$this->db->table('quotations q')
+                                    ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time, qi.created_at as quotation_item_created_at, qi.updated_at as quotation_item_updated_at')
+                                    ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
+                                    ->where('qi.status', 0)
+                                    ->where('qi.unit', 'kg')
+                                    ->orderBy('q.quotation_no', 'DESC')
+                                    ->get()
+                                    ->getResult();                                    
 
         $query                      = $this->db->query("SELECT DISTINCT location FROM quotations");
         $data['locations']          = $query->getResult();  
         
-        $query                      = $this->db->query("SELECT DISTINCT scrap_name FROM quotation_items");
-        $data['items']              = $query->getResult();  
+        $query1                      = $this->db->query("SELECT DISTINCT scrap_name FROM quotation_items");
+        $data['items']              = $query1->getResult(); 
+        
+        $query2                      = $this->db->query("SELECT vendor_name FROM quotations");
+        $data['vendors']          = $query2->getResult();
         // pr($result);
         //get whatsapp notification status per enquiry
 
@@ -106,19 +118,30 @@ class QuotationController extends BaseController
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');                
         // $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
         $data['rows']               =$this->db->table('quotations q')
-                                    ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time')
+                                    ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time, qi.created_at as quotation_item_created_at, qi.updated_at as quotation_item_updated_at')
                                     ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
                                     ->where(' qi.status', 1)
                                     ->orderBy('q.quotation_no', 'DESC')
                                     ->get()
                                     ->getResult();
-                                    // pr($data['rows']);        
+                                    // pr($data['rows']);   
+        $data['graphs']               =$this->db->table('quotations q')
+                                    ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time, qi.created_at as quotation_item_created_at, qi.updated_at as quotation_item_updated_at')
+                                    ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
+                                    ->where('qi.status', 0)
+                                    ->where('qi.unit', 'kg')
+                                    ->orderBy('q.quotation_no', 'DESC')
+                                    ->get()
+                                    ->getResult();       
 
         $query                      = $this->db->query("SELECT DISTINCT location FROM quotations");
         $data['locations']          = $query->getResult();  
         
-        $query                      = $this->db->query("SELECT DISTINCT scrap_name FROM quotation_items");
-        $data['items']              = $query->getResult();  
+        $query1                      = $this->db->query("SELECT DISTINCT scrap_name FROM quotation_items");
+        $data['items']              = $query1->getResult(); 
+        
+        $query2                      = $this->db->query("SELECT vendor_name FROM quotations");
+        $data['vendors']             = $query2->getResult();
         // pr($result);
         //get whatsapp notification status per enquiry
 
@@ -158,19 +181,30 @@ class QuotationController extends BaseController
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');                
         // $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
         $data['rows']               =$this->db->table('quotations q')
-                                    ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time')
+                                    ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time, qi.created_at as quotation_item_created_at, qi.updated_at as quotation_item_updated_at')
                                     ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
                                     ->where(' qi.status', 2)
                                     ->orderBy('q.quotation_no', 'DESC')
                                     ->get()
                                     ->getResult();
                                     // pr($data['rows']);
+        $data['graphs']               =$this->db->table('quotations q')
+                                    ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time, qi.created_at as quotation_item_created_at, qi.updated_at as quotation_item_updated_at')
+                                    ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
+                                    ->where('qi.status', 0)
+                                    ->where('qi.unit', 'kg')
+                                    ->orderBy('q.quotation_no', 'DESC')
+                                    ->get()
+                                    ->getResult();  
 
         $query                      = $this->db->query("SELECT DISTINCT location FROM quotations");
         $data['locations']          = $query->getResult();  
         
-        $query                      = $this->db->query("SELECT DISTINCT scrap_name FROM quotation_items");
-        $data['items']              = $query->getResult();  
+        $query1                      = $this->db->query("SELECT DISTINCT scrap_name FROM quotation_items");
+        $data['items']              = $query1->getResult(); 
+        
+        $query2                      = $this->db->query("SELECT vendor_name FROM quotations");
+        $data['vendors']          = $query2->getResult();  
         // pr($result);
         //get whatsapp notification status per enquiry
 
@@ -191,7 +225,7 @@ class QuotationController extends BaseController
 
         echo $this->layout_after_login($title, $page_name, $data);
     }
-    public function viewDetail($enq_id)
+    public function viewDetail($enq_id, $quotation_item_id)
     {
         if (!$this->common_model->checkModuleFunctionAccess(23, 109)) {
             $data['action']             = 'Access Forbidden';
@@ -201,9 +235,10 @@ class QuotationController extends BaseController
             exit;
         }
         $enq_id                     = decoded($enq_id);
+        $quotation_item_id          = decoded($quotation_item_id);
         $data['enq_id']             = $enq_id;
         $data['row']                = $this->data['model']->find_data('quotations', 'row', ['id' => $enq_id]);
-        $data['quotation_items']    = $this->data['model']->find_data('quotation_items', 'array', ['quotation_id' => $enq_id]);
+        $data['quotation_items']    = $this->data['model']->find_data('quotation_items', 'array', ['id' => $quotation_item_id]);
         // pr($data['quotation_items']);
         $data['moduleDetail']       = $this->data;        
         if ($this->request->getMethod() == 'post') {
