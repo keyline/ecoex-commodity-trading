@@ -60,7 +60,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 $plant_ids = ($row->plant_ids != '') ? json_decode($row->plant_ids, true) : [];
                                                 if (!empty($plant_ids)) {
                                                     echo '<ul>';
-                                                    for($k=0;$k<count($plants);$k++) {
+                                                    for($k=0;$k<count($plant_ids);$k++) {
                                                         $getPlant = $this->common_model->find_data('ecomm_users', 'row', ['id' => $plant_ids[$k]], 'plant_name');
                                                         echo '<li>' . (($getPlant)?$getPlant->plant_name:'') . '</li>';
                                                     }
