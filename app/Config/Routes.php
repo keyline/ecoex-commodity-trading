@@ -65,7 +65,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     $routes->match(['get', 'post'], "roles/edit/(:any)", "RoleController::edit/$1");
     $routes->match(['get', 'post'], "roles/delete/(:any)", "RoleController::confirm_delete/$1");
     $routes->match(['get', 'post'], "roles/change-status/(:any)", "RoleController::change_status/$1");
-    $routes->match(['get', 'post'], "roles/access-plant/(:any)", "RoleController::access-plant/$1");
+    $routes->match(['get', 'post'], "roles/access-plant/(:any)", "RoleController::access_plant/$1");
     /* roles */
     /* admin sub users */
     $routes->match(['get'], "sub-users/list", "AdminSubUserController::list");
