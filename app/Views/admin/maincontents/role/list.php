@@ -55,29 +55,16 @@ $controller_route   = $moduleDetail['controller_route'];
                                             <td><?= $row->role_name ?></td>
                                             <td>
                                                 <a href="<?= base_url('admin/' . $controller_route . '/access-plant/' . encoded($row->$primary_key)) ?>" class="btn btn-warning btn-sm" title="Access Plant"><i class="fa fa-universal-access"></i> Access Plant</a><br><br>
+                                                
                                                 <?php
                                                 $plant_ids = ($row->plant_ids != '') ? json_decode($row->plant_ids, true) : [];
-                                               
                                                 if (!empty($plant_ids)) {
-                                                    // sanitize
-                                                    $plant_ids = array_map('intval', $plant_ids);
-                                                    $plant_id_string = implode(',', $plant_ids);
-                                                    $db = \Config\Database::connect();
-                                                    $builder = $db->table('ecomm_users');
-                                                    $builder->select('plant_name');
-                                                    $builder->whereIn('id', $plant_id_string);
-                                                    $builder->where('status', 1);
-                                                    $query = $builder->get();
-
-                                                    $plants = $query->getResult();
-                                                    pr($plants);
-                                                    $plant_names = [];
-
-                                                    foreach ($plants as $p) {
-                                                        $plant_names[] = $p->plant_name;
+                                                    echo '<ul>';
+                                                    for($k=0;$k<count($plants);$k++) {
+                                                        $getPlant = $this->common_model->find_data('ecomm_users', 'row', ['id' => $plant_ids[$k]], 'plant_name');
+                                                        echo '<li>' . (($getPlant)?$getPlant->plant_name:'') . '</li>';
                                                     }
-
-                                                    echo !empty($plant_names) ? implode(', ', $plant_names) : 'No Plants';
+                                                    echo '</ul>';
                                                 } else {
                                                     echo 'No Plants';
                                                 }
