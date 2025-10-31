@@ -57,7 +57,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <th>Plant State</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="plantTableBody">
                                 <?php if ($plantLists) {
                                     $sl = 1;
                                     foreach ($plantLists as $plant) { ?>
