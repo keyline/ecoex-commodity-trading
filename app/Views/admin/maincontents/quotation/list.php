@@ -489,7 +489,17 @@ $userType           = $session->user_type;
         targetRows.forEach(row => {
             const vendor = row.cells[7]?.innerText.trim(); // vendor_name
             const item = row.cells[2]?.innerText.trim();   // scrap_name
-            const rate = parseFloat(row.cells[3]?.innerText) || 0;
+            const rateText = row.cells[3]?.innerText.trim(); // Quoted Rate (e.g. "23 /KG")
+
+            // ✅ Extract numeric rate and unit
+            const match = rateText.match(/([\d.]+)\s*\/?\s*([a-zA-Z]+)/);
+            if (!match) return;
+
+            const rate = parseFloat(match[1]);
+            const unit = match[2].toLowerCase();
+
+            // ✅ Include only if unit is "kg"
+            if (unit !== 'kg') return;
 
             if (!chartData[item]) chartData[item] = {};
             if (!chartData[item][vendor] || rate > chartData[item][vendor]) {
@@ -515,7 +525,7 @@ $userType           = $session->user_type;
             options: {
                 responsive: true,
                 plugins: {
-                    title: { display: true, text: "Rates by Item Name and Vendor" },
+                    title: { display: true, text: "Rates by Item Name and Vendor (Unit: KG)" },
                     legend: { position: "bottom" }
                 },
                 scales: {
