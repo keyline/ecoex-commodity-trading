@@ -61,7 +61,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 if (!empty($plant_ids)) {
                                                     echo '<ul>';
                                                     for($k=0;$k<count($plant_ids);$k++) {
-                                                        $getPlant = $this->common_model->find_data('ecomm_users', 'row', ['id' => $plant_ids[$k]], 'plant_name');
+                                                        $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $plant_ids[$k]], 'plant_name');
                                                         echo '<li>' . (($getPlant)?$getPlant->plant_name:'') . '</li>';
                                                     }
                                                     echo '</ul>';
