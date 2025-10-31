@@ -588,8 +588,8 @@ $userType           = $session->user_type;
             return style.display !== "none" && style.visibility !== "hidden";
         });
 
-        // If all visible → export filtered data, else export all
-        const exportFiltered = visibleRows.length > 0 && visibleRows.length < rows.length;
+        // Detect if filter applied (some rows hidden)
+        const exportFiltered = visibleRows.length < rows.length;
 
         // Prepare workbook & worksheet data
         const wb = XLSX.utils.book_new();
