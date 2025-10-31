@@ -96,12 +96,29 @@ $controller_route   = $moduleDetail['controller_route'];
         checkboxes.forEach(chk => chk.checked = source.checked);
     }
 
-    // ✅ Keep Select All synced
+    // ✅ Keep "Select All" synced
     document.addEventListener('DOMContentLoaded', function() {
         const selectAll = document.getElementById('select_all_plants');
         const checkboxes = document.querySelectorAll('.plant_checkbox');
+        const rows = document.querySelectorAll('#plantTableBody tr');
+
+        // Keep "Select All" synced when individual boxes change
         checkboxes.forEach(chk => {
             chk.addEventListener('change', () => {
+                selectAll.checked = Array.from(checkboxes).every(c => c.checked);
+            });
+        });
+
+        // ✅ Make entire row clickable
+        rows.forEach(row => {
+            row.addEventListener('click', function(e) {
+                // Prevent double-toggle when clicking directly on checkbox
+                if (e.target.type === 'checkbox') return;
+
+                const checkbox = this.querySelector('.plant_checkbox');
+                checkbox.checked = !checkbox.checked;
+
+                // Update select all checkbox
                 selectAll.checked = Array.from(checkboxes).every(c => c.checked);
             });
         });
