@@ -579,23 +579,25 @@ $userType           = $session->user_type;
     document.getElementById("exportExcel").addEventListener("click", function () {
         const table = document.getElementById("simpletable1");
         const rows = table.querySelectorAll("tbody tr");
+        const headerCells = table.querySelectorAll("thead th");
         
-        // Detect if any rows are hidden by filters
-        let hiddenCount = 0;
-        rows.forEach(tr => {
-            if (tr.style.display === "none") hiddenCount++;
+        
+        // Count visible rows
+        const visibleRows = rows.filter(tr => {
+            const style = window.getComputedStyle(tr);
+            return style.display !== "none" && style.visibility !== "hidden";
         });
 
         // If all visible → export filtered data, else export all
-        const exportFiltered = hiddenCount > 0;
+        const exportFiltered = visibleRows.length > 0 && visibleRows.length < rows.length;
 
+        // Prepare workbook & worksheet data
         const wb = XLSX.utils.book_new();
         const ws_data = [];
 
-        // Get table headers
+        // Get table headers (exclude "Action")
         const headers = [];
-        const headerCells = table.querySelectorAll("thead th");
-        headerCells.forEach((th, index) => {
+        headerCells.forEach(th => {
             const headerText = th.innerText.trim();
             if (headerText.toLowerCase() !== "action") {
                 headers.push(headerText);
@@ -603,20 +605,20 @@ $userType           = $session->user_type;
         });
         ws_data.push(headers);
 
-        // Get appropriate rows (filtered or all)
-        rows.forEach(tr => {
-            if (!exportFiltered || tr.style.display !== "none") {
-                const rowData = [];
-                const cells = tr.querySelectorAll("td, th");
-                cells.forEach((td, index) => {
-                    // Skip the last column if it’s 'Action'
-                    const headerText = headerCells[index]?.innerText.trim().toLowerCase();
-                    if (headerText !== "action") {
-                        rowData.push(td.innerText.trim());
-                    }
-                });
-                ws_data.push(rowData);
-            }
+        // Choose which rows to export
+        const exportRows = exportFiltered ? visibleRows : rows;
+
+        // Add only visible rows
+        exportRows.forEach(tr => {
+            const rowData = [];
+            const cells = tr.querySelectorAll("td, th");
+            cells.forEach((td, index) => {
+                const headerText = headerCells[index]?.innerText.trim().toLowerCase();
+                if (headerText !== "action") {
+                    rowData.push(td.innerText.trim());
+                }
+            });
+                ws_data.push(rowData);            
         });
         // Stop if no visible data
         if (ws_data.length <= 1) {
