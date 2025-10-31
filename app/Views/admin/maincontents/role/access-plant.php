@@ -34,7 +34,7 @@ $controller_route   = $moduleDetail['controller_route'];
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <table id="simpletable" class="table globel_table nowrap" style="width: 100%">
+                        <table class="table globel_table nowrap" style="width: 100%">
                             <thead>
                                 <tr>
                                     <th class="text-center" width="7%">#</th>
