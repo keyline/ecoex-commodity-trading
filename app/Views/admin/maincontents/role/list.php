@@ -61,11 +61,11 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 if (!empty($plant_ids)) {
                                                     // sanitize
                                                     $plant_ids = array_map('intval', $plant_ids);
-                                                    pr($plant_ids);
+                                                    $plant_id_string = implode(',', $plant_ids);
                                                     $db = \Config\Database::connect();
                                                     $builder = $db->table('ecomm_users');
                                                     $builder->select('plant_name');
-                                                    $builder->whereIn('id', $plant_ids);
+                                                    $builder->whereIn('id', $plant_id_string);
                                                     $builder->where('status', 1);
                                                     $query = $builder->get();
 
