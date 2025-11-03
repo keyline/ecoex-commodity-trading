@@ -639,8 +639,8 @@ $userType           = $session->user_type;
         if (currentURL.includes("reject-list")) {
             console.log("Updating chart for reject-list");
             updateChart(true);
-        } else if (currentURL.includes("active-list")) {
-            console.log("Updating chart for active-list");
+        } else if (currentURL.includes("accept-list")) {
+            console.log("Updating chart for accept-list");
             updateChart(true);
         }
     });    
