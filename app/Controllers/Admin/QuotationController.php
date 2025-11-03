@@ -37,13 +37,13 @@ class QuotationController extends BaseController
     }
     public function list()
     {
-        // if (!$this->common_model->checkModuleFunctionAccess(29, 104)) {
-        //     $data['action']             = 'Access Forbidden';
-        //     $title                      = $data['action'] . ' ' . $this->data['title'];
-        //     $page_name                  = 'access-forbidden';
-        //     echo $this->layout_after_login($title, $page_name, $data);
-        //     exit;
-        // }
+        if (!$this->common_model->checkModuleFunctionAccess(29, 150)) {
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'] . ' ' . $this->data['title'];
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
+            exit;
+        }
 
         $userType                   = $this->session->user_type;
         $company_id                 = $this->session->company_id;        
@@ -77,7 +77,7 @@ class QuotationController extends BaseController
         $query1                      = $this->db->query("SELECT DISTINCT scrap_name FROM quotation_items");
         $data['items']              = $query1->getResult(); 
         
-        $query2                      = $this->db->query("SELECT vendor_name FROM quotations");
+        $query2                      = $this->db->query("SELECT vendor_name FROM quotations where vendor_name IS NOT NULL");
         $data['vendors']          = $query2->getResult();
         // pr($result);
         //get whatsapp notification status per enquiry
@@ -101,13 +101,13 @@ class QuotationController extends BaseController
     }
     public function Acceptlist()
     {
-        // if (!$this->common_model->checkModuleFunctionAccess(29, 104)) {
-        //     $data['action']             = 'Access Forbidden';
-        //     $title                      = $data['action'] . ' ' . $this->data['title'];
-        //     $page_name                  = 'access-forbidden';
-        //     echo $this->layout_after_login($title, $page_name, $data);
-        //     exit;
-        // }
+        if (!$this->common_model->checkModuleFunctionAccess(29, 150)) {
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'] . ' ' . $this->data['title'];
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
+            exit;
+        }
 
         $userType                   = $this->session->user_type;
         $company_id                 = $this->session->company_id;        
@@ -164,13 +164,13 @@ class QuotationController extends BaseController
     }
     public function Rejectlist()
     {
-        // if (!$this->common_model->checkModuleFunctionAccess(29, 104)) {
-        //     $data['action']             = 'Access Forbidden';
-        //     $title                      = $data['action'] . ' ' . $this->data['title'];
-        //     $page_name                  = 'access-forbidden';
-        //     echo $this->layout_after_login($title, $page_name, $data);
-        //     exit;
-        // }
+        if (!$this->common_model->checkModuleFunctionAccess(29, 150)) {
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'] . ' ' . $this->data['title'];
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
+            exit;
+        }
 
         $userType                   = $this->session->user_type;
         $company_id                 = $this->session->company_id;        
@@ -227,7 +227,7 @@ class QuotationController extends BaseController
     }
     public function viewDetail($enq_id, $quotation_item_id)
     {
-        if (!$this->common_model->checkModuleFunctionAccess(23, 109)) {
+        if (!$this->common_model->checkModuleFunctionAccess(29, 150)) {
             $data['action']             = 'Access Forbidden';
             $title                      = $data['action'] . ' ' . $this->data['title'];
             $page_name                  = 'access-forbidden';
@@ -350,7 +350,7 @@ class QuotationController extends BaseController
     }
     public function confirm_delete($quotationId, $quotationItemId)
     {
-        if (!$this->common_model->checkModuleFunctionAccess(23, 107)) {
+        if (!$this->common_model->checkModuleFunctionAccess(29, 150)) {
             $data['action']             = 'Access Forbidden';
             $title                      = $data['action'] . ' ' . $this->data['title'];
             $page_name                  = 'access-forbidden';
@@ -481,7 +481,7 @@ class QuotationController extends BaseController
     }
     public function accept_request($id)
     {
-        if (!$this->common_model->checkModuleFunctionAccess(23, 110)) {
+        if (!$this->common_model->checkModuleFunctionAccess(29, 150)) {
             $data['action']             = 'Access Forbidden';
             $title                      = $data['action'] . ' ' . $this->data['title'];
             $page_name                  = 'access-forbidden';

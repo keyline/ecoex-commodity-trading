@@ -73,6 +73,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     $routes->match(['get', 'post'], "sub-users/delete/(:any)", "AdminSubUserController::confirm_delete/$1");
     $routes->match(['get', 'post'], "sub-users/change-status/(:any)", "AdminSubUserController::change_status/$1");
     $routes->match(['get', 'post'], "sub-users/send-credentials/(:any)", "AdminSubUserController::send_credentials/$1");
+    $routes->match(['get', 'post'], "sub-users/access-plant/(:any)", "AdminSubUserController::access_plant/$1");
     /* admin sub users */
     // access & permission
     // master

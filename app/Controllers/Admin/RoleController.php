@@ -145,4 +145,5 @@ class RoleController extends BaseController {
         $this->session->setFlashdata('success_message', $this->data['title'].' '.$msg.' successfully');
         return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
     }
+    
 }

@@ -120,9 +120,13 @@ $userType           = $session->user_type;
                            
                         </div>
 
-                        <div style="width:60%; margin:auto;">
+                        <div id="chartContainer" style="display:none;" style="width:60%; margin:auto;">
                             <canvas id="quotationChart"></canvas>
                         </div>
+
+                        <button id="exportExcel" class="btn btn-success mb-3">
+                            <i class="fa fa-file-excel"></i> Export to Excel
+                        </button>
                         <?php
                             // Step 1: Prepare data
                             $vendors = [];
@@ -253,6 +257,7 @@ $userType           = $session->user_type;
 <!-- reject request modal -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
     const items = <?= json_encode($items) ?>;
@@ -280,7 +285,7 @@ $userType           = $session->user_type;
             plugins: {
                 title: {
                     display: true,
-                    text: 'Rates by item Name and Vendor'
+                    text: 'Rates by item Name and Vendor (Unit: KG)'
                 },
                 legend: {
                     position: 'bottom'
@@ -483,13 +488,24 @@ $userType           = $session->user_type;
     // ===============================    
 
     function updateChart(useAll = false) {
+        const chartContainer = document.getElementById("chartContainer"); // parent div of chart
         const targetRows = useAll ? rows : Array.from(document.querySelectorAll("#simpletable1 tbody tr"));
         const chartData = {};
 
         targetRows.forEach(row => {
             const vendor = row.cells[7]?.innerText.trim(); // vendor_name
             const item = row.cells[2]?.innerText.trim();   // scrap_name
-            const rate = parseFloat(row.cells[3]?.innerText) || 0;
+            const rateText = row.cells[3]?.innerText.trim(); // Quoted Rate (e.g. "23 /KG")
+
+            // ✅ Extract numeric rate and unit
+            const match = rateText.match(/([\d.]+)\s*\/?\s*([a-zA-Z]+)/);
+            if (!match) return;
+
+            const rate = parseFloat(match[1]);
+            const unit = match[2].toLowerCase();
+
+            // ✅ Include only if unit is "kg"
+            if (unit !== 'kg') return;
 
             if (!chartData[item]) chartData[item] = {};
             if (!chartData[item][vendor] || rate > chartData[item][vendor]) {
@@ -498,6 +514,15 @@ $userType           = $session->user_type;
         });
 
         const scraps = Object.keys(chartData);
+        // ✅ If no items (no KG data or no filter matches), hide chart and exit
+        if (scraps.length === 0) {
+            if (quotationChart) quotationChart.destroy();
+            chartContainer.style.display = "none"; // hide graph section
+            return;
+        } else {
+            chartContainer.style.display = "block"; // show when data exists
+        }
+        
         const vendors = [...new Set(targetRows.map(r => r.cells[7]?.innerText.trim()))];
 
         const datasets = vendors.map((vendor, i) => ({
@@ -515,7 +540,7 @@ $userType           = $session->user_type;
             options: {
                 responsive: true,
                 plugins: {
-                    title: { display: true, text: "Rates by Item Name and Vendor" },
+                    title: { display: true, text: "Rates by Item Name and Vendor (Unit: KG) (filtered)" },
                     legend: { position: "bottom" }
                 },
                 scales: {
@@ -548,6 +573,131 @@ $userType           = $session->user_type;
     setupPagination();
     displayRows(currentPage);
     });
+
+    document.getElementById("exportExcel").addEventListener("click", function () {
+    const table = document.getElementById("simpletable1");
+    const headerCells = table.querySelectorAll("thead th");
+    const wb = XLSX.utils.book_new();
+    const ws_data = [];
+
+    // 🔹 Collect headers except "Action"
+    const headers = [];
+    headerCells.forEach(th => {
+        const text = th.innerText.trim();
+        if (text.toLowerCase() !== "action") headers.push(text);
+    });
+    ws_data.push(headers);
+
+    // 🔹 Determine which rows to export
+    // Use your existing JS arrays, not DOM
+    // 'filteredRows' contains all visible (filtered) rows
+    // 'rows' contains all rows (original data)
+    let exportRows = filteredRows.length ? filteredRows : rows;
+
+    // 🔹 Add each row's cell text (skip Action column)
+    exportRows.forEach(tr => {
+        const rowData = [];
+        const cells = tr.querySelectorAll("td, th");
+        cells.forEach((td, i) => {
+            const headerText = headerCells[i]?.innerText.trim().toLowerCase();
+            if (headerText !== "action") {
+                rowData.push(td.innerText.trim());
+            }
+        });
+        ws_data.push(rowData);
+    });
+
+    // 🔹 Stop if no data
+    if (ws_data.length <= 1) {
+        alert("No data available to export.");
+        return;
+    }
+
+    // 🔹 Create Excel sheet
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    XLSX.utils.book_append_sheet(wb, ws, "Quotation_Data");
+
+    // 🔹 File name changes automatically
+    const filename = (filteredRows.length && filteredRows.length !== rows.length)
+        ? "Filtered_Quotation_Data.xlsx"
+        : "All_Quotation_Data.xlsx";
+
+    XLSX.writeFile(wb, filename);
+});
+</script>
+
+<script>
+//    document.getElementById("exportExcel").addEventListener("click", function () {
+//     const table = document.getElementById("simpletable1");
+//     const headerCells = table.querySelectorAll("thead th");
+//     const allRows = Array.from(table.querySelectorAll("tbody tr"));
+
+//     // Collect all rows, including hidden ones
+//     let filteredRows = [];
+//     let isFiltered = false;
+
+//     allRows.forEach(tr => {
+//         const style = window.getComputedStyle(tr);
+//         const isVisible = style.display !== "none" && style.visibility !== "hidden";
+//         if (isVisible) {
+//             filteredRows.push(tr);
+//         }
+//     });
+
+//     // If filtered rows are fewer than all, filtering is active
+//     if (filteredRows.length < allRows.length) {
+//         isFiltered = true;
+//     } else {
+//         // No filter applied → export all rows
+//         filteredRows = allRows;
+//     }
+
+//     if (filteredRows.length === 0) {
+//         alert("No data to export!");
+//         return;
+//     }
+
+//     // Prepare workbook and worksheet data
+//     const wb = XLSX.utils.book_new();
+//     const ws_data = [];
+
+//     // Extract headers (excluding Action)
+//     const headers = [];
+//     headerCells.forEach(th => {
+//         const headerText = th.innerText.trim();
+//         if (headerText.toLowerCase() !== "action") {
+//             headers.push(headerText);
+//         }
+//     });
+//     ws_data.push(headers);
+
+//     // Add row data
+//     filteredRows.forEach(tr => {
+//         const rowData = [];
+//         const cells = tr.querySelectorAll("td, th");
+//         cells.forEach((td, index) => {
+//             const headerText = headerCells[index]?.innerText.trim().toLowerCase();
+//             if (headerText !== "action") {
+//                 rowData.push(td.innerText.trim());
+//             }
+//         });
+//         ws_data.push(rowData);
+//     });
+
+//     // Create worksheet and file
+//     const ws = XLSX.utils.aoa_to_sheet(ws_data);
+//     XLSX.utils.book_append_sheet(wb, ws, "Quotation_Data");
+
+//     const filename = isFiltered
+//         ? "Filtered_Quotation_Data.xlsx"
+//         : "All_Quotation_Data.xlsx";
+
+//     XLSX.writeFile(wb, filename);
+// });
+
+
+
+
 </script>
 
 
