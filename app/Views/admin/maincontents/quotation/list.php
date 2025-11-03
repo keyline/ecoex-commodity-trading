@@ -475,7 +475,7 @@ $userType           = $session->user_type;
         resetBtn.classList.add("btn-secondary");
 
         // ✅ Small delay to ensure DOM re-render
-        setTimeout(() => updateChart(true), 50);
+        // setTimeout(() => updateChart(true), 50);
     }
 
     
