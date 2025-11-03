@@ -265,13 +265,13 @@ $userType           = $session->user_type;
     const items = <?= json_encode($items) ?>;
     const vendors = <?= json_encode($vendors) ?>;
     const dataMap = <?= json_encode($dataMap) ?>;
-    // console.log(dataMap);
+    const totalVendors = vendors.length;
 
     // Step 2: Prepare datasets dynamically
     const datasets = vendors.map((vendor, i) => ({
         label: vendor,
         data: items.map(item => dataMap[vendor]?.[item] ?? 0),
-        backgroundColor: `hsl(${i * 60}, 70%, 50%)`
+        backgroundColor: `hsl(${(i * 360) / totalVendors}, 70%, 50%)`
     }));
 
     // Step 3: Render chart
