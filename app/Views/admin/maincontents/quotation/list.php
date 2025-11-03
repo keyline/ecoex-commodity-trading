@@ -306,7 +306,7 @@ $userType           = $session->user_type;
         });
     }
     // ✅ Call once on page load
-    // document.addEventListener("DOMContentLoaded", renderMainChart);
+    document.addEventListener("DOMContentLoaded", renderMainChart);
 </script>
 
 <script>
