@@ -155,22 +155,22 @@ $userType           = $session->user_type;
                                 <thead>
                                     <tr>
                                         <th>#</th>                                        
-                                        <th style="width: 5%;">Quotation No.</th>
-                                        <th style="width: 5%;">Quotation Item Name</th>
-                                        <th style="width: 5%;">Quoted Rate</th>
-                                        <th style="width: 5%;">Quantity</th>
-                                        <th style="width: 5%;">Location</th>
-                                        <th style="width: 5%;">Current Location</th>
-                                        <th style="width: 5%;">Vendor Name</th>
-                                        <th style="width: 5%;">Contact No.</th>                                                                              
-                                        <th>Quotation Submitted</th>     
+                                        <th style="width: 8%;">Quotation No.</th>
+                                        <th style="width: 8%;">Quotation Item Name</th>
+                                        <th style="width: 8%;">Quoted Rate</th>
+                                        <th style="width: 8%;">Quantity</th>
+                                        <th style="width: 8%;">Location</th>
+                                        <th style="width: 8%;">Current Location</th>
+                                        <th style="width: 8%;">Vendor Name</th>
+                                        <th style="width: 8%;">Contact No.</th>                                                                              
+                                        <th style="width: 8%;">Quotation Submitted</th>     
                                         <?php foreach ($rows as $row) {
                                             $itemStatus = $row->quotation_item_status;
                                         }
                                             if($itemStatus == 1) {?>
-                                            <th>Active Timestamp</th>
+                                            <th style="width: 8%;">Active Timestamp</th>
                                        <?php }elseif($itemStatus == 2) { ?>
-                                            <th>Reject Timestamp</th>
+                                            <th style="width: 8%;">Reject Timestamp</th>
                                       <?php } ?>
                                         <th>Action</th>
                                     </tr>
