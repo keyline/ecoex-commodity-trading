@@ -331,18 +331,25 @@ $userType           = $session->user_type;
             const tableCheck = setInterval(() => {
                 const rowsLoaded = document.querySelectorAll("#simpletable1 tbody tr").length;
                 if (rowsLoaded > 0) {
-                    // ✅ Check if any row contains "KG" in its rate column
-                    const hasKgUnit = Array.from(rows).some(row => {
+                        // ✅ Check if any row contains "KG" in its rate column
+                    const kgRows = Array.from(rows).filter(row => {
                         const rateText = row.cells[3]?.innerText.trim() || "";
-                        return /\/?\s*kg(s)?/i.test(rateText); // match "KG" or "KGS" case-insensitive
+                        const match = rateText.match(/([\d.]+)\s*\/?\s*([a-zA-Z]+)/);
+                        if (!match) return false;
+                        const unit = match[2].toLowerCase();
+                        return unit === "kg"; // ✅ Only KG allowed
                     });
 
-                    if (hasKgUnit) {
+                    if (kgRows.length > 0) {
                         clearInterval(tableCheck);
-                        console.log("✅ KG unit rows detected, updating chart...");
-                        updateChart(false); // show chart only for KG-unit rows
+                        console.log(`✅ Found ${kgRows.length} KG rows — updating chart...`);
+
+                        // ✅ Temporarily override updateChart() to use only KG rows
+                        updateChart(false, kgRows);
                     } else {
-                        console.log("⚠️ No KG unit rows found — chart not updated.");
+                        console.log("⚠️ No KG rows found — hiding chart.");
+                        const chartContainer = document.getElementById("chartContainer");
+                        if (chartContainer) chartContainer.style.display = "none";
                     }
                 }
             }, 300);
