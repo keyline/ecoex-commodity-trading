@@ -542,10 +542,13 @@ $userType           = $session->user_type;
         // const ctx = document.getElementById("quotationChart").getContext("2d");
         // if (quotationChart) quotationChart.destroy();
         // ✅ Destroy any previous chart before rendering a new one
-        if (quotationChart) {
-            quotationChart.destroy();
-            quotationChart = null;
+        if (mainChart) {
+            mainChart.destroy();
+            mainChart = null;
         }
+
+        // ✅ Destroy old filtered chart before recreating
+        if (quotationChart) quotationChart.destroy();
 
          // ✅ Create new chart instance
         quotationChart = new Chart(ctx, {
