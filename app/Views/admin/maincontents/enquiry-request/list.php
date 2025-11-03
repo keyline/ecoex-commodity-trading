@@ -51,8 +51,11 @@ $userType           = $session->user_type;
                                         <th style="width: 5%;">Plant</th>
                                         <th>Tentative Collection Date</th>
                                         <th>Created At<br>Created By<br>Updated At<br>Updated By</th>
+                                        <!-- ?php if ($rows) {
+                                            if ($rows[0]->status >= 11 && $rows[0]->status <= 12) { ?><th>Ecoex Payment<br>Approve Status<br>HO Approve<br>Enquiry Complete</th>?php }
+                                            } ?> -->
                                         <?php if ($rows) {
-                                            if ($rows[0]->status >= 11 && $rows[0]->status <= 12) { ?><th>Ecoex Payment<br>Approve Status<br>HO Approve<br>Enquiry Complete</th><?php }
+                                            if ($rows[0]->status >= 10) { ?><th>Ecoex Payment<br>Approve Status<br>HO Approve<br>Enquiry Complete</th><?php }
                                             } ?>
                                         <th>Action</th>
                                     </tr>
