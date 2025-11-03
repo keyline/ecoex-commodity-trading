@@ -631,6 +631,15 @@ $userType           = $session->user_type;
 
             XLSX.writeFile(wb, filename);
         });
+
+        // Auto-detect URL and update chart
+        const currentURL = window.location.pathname;
+
+        if (currentURL.includes("/reject-list")) {
+            updateChart(true);
+        } else if (currentURL.includes("/active-list")) {
+            updateChart(true);
+        }
     });    
 </script>
 
