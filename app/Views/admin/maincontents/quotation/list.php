@@ -331,9 +331,19 @@ $userType           = $session->user_type;
             const tableCheck = setInterval(() => {
                 const rowsLoaded = document.querySelectorAll("#simpletable1 tbody tr").length;
                 if (rowsLoaded > 0) {
-                    clearInterval(tableCheck);
-                    console.log("✅ Table detected, updating chart...");
-                    updateChart(false); // 👈 use visible table data only
+                    // ✅ Check if any row contains "KG" in its rate column
+                    const hasKgUnit = Array.from(rows).some(row => {
+                        const rateText = row.cells[3]?.innerText.trim() || "";
+                        return /\/?\s*kg(s)?/i.test(rateText); // match "KG" or "KGS" case-insensitive
+                    });
+
+                    if (hasKgUnit) {
+                        clearInterval(tableCheck);
+                        console.log("✅ KG unit rows detected, updating chart...");
+                        updateChart(false); // show chart only for KG-unit rows
+                    } else {
+                        console.log("⚠️ No KG unit rows found — chart not updated.");
+                    }
                 }
             }, 300);
         }
@@ -651,80 +661,6 @@ $userType           = $session->user_type;
             XLSX.writeFile(wb, filename);
         });        
     });    
-</script>
-
-<script>
-//    document.getElementById("exportExcel").addEventListener("click", function () {
-//     const table = document.getElementById("simpletable1");
-//     const headerCells = table.querySelectorAll("thead th");
-//     const allRows = Array.from(table.querySelectorAll("tbody tr"));
-
-//     // Collect all rows, including hidden ones
-//     let filteredRows = [];
-//     let isFiltered = false;
-
-//     allRows.forEach(tr => {
-//         const style = window.getComputedStyle(tr);
-//         const isVisible = style.display !== "none" && style.visibility !== "hidden";
-//         if (isVisible) {
-//             filteredRows.push(tr);
-//         }
-//     });
-
-//     // If filtered rows are fewer than all, filtering is active
-//     if (filteredRows.length < allRows.length) {
-//         isFiltered = true;
-//     } else {
-//         // No filter applied → export all rows
-//         filteredRows = allRows;
-//     }
-
-//     if (filteredRows.length === 0) {
-//         alert("No data to export!");
-//         return;
-//     }
-
-//     // Prepare workbook and worksheet data
-//     const wb = XLSX.utils.book_new();
-//     const ws_data = [];
-
-//     // Extract headers (excluding Action)
-//     const headers = [];
-//     headerCells.forEach(th => {
-//         const headerText = th.innerText.trim();
-//         if (headerText.toLowerCase() !== "action") {
-//             headers.push(headerText);
-//         }
-//     });
-//     ws_data.push(headers);
-
-//     // Add row data
-//     filteredRows.forEach(tr => {
-//         const rowData = [];
-//         const cells = tr.querySelectorAll("td, th");
-//         cells.forEach((td, index) => {
-//             const headerText = headerCells[index]?.innerText.trim().toLowerCase();
-//             if (headerText !== "action") {
-//                 rowData.push(td.innerText.trim());
-//             }
-//         });
-//         ws_data.push(rowData);
-//     });
-
-//     // Create worksheet and file
-//     const ws = XLSX.utils.aoa_to_sheet(ws_data);
-//     XLSX.utils.book_append_sheet(wb, ws, "Quotation_Data");
-
-//     const filename = isFiltered
-//         ? "Filtered_Quotation_Data.xlsx"
-//         : "All_Quotation_Data.xlsx";
-
-//     XLSX.writeFile(wb, filename);
-// });
-
-
-
-
 </script>
 
 
