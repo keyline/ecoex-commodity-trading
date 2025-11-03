@@ -117,10 +117,11 @@ $userType           = $session->user_type;
                                                         <?php }?>
                                                     </h6>
                                                 </td>
+                                                <?php echo $row->status; ?>
                                                 <?php if ($row->status >= 11 && $row->status <= 12) { ?>
                                                     <td>
                                                         <h6><?= (($row->ecoex_submitted_date != '') ? date_format(date_create($row->ecoex_submitted_date), "M d, Y h:i A") : '') ?></h6>
-                                                        <?php echo $row->status; ?>
+                                                        
                                                         <?php if ($row->is_ho_approve_ecoex_payment) { ?>
                                                             <h6 class="badge bg-success">APPROVED</h6>
                                                             <h6><?= (($row->ho_approve_date != '') ? date_format(date_create($row->ho_approve_date), "M d, Y h:i A") : '') ?></h6>
