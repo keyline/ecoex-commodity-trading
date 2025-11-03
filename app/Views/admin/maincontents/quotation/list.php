@@ -636,10 +636,10 @@ $userType           = $session->user_type;
         const currentURL = window.location.pathname;
         console.log("Current URL:", currentURL);
 
-        if (currentURL.includes("/reject-list")) {
+        if (currentURL.includes("reject-list")) {
             console.log("Updating chart for reject-list");
             updateChart(true);
-        } else if (currentURL.includes("/active-list")) {
+        } else if (currentURL.includes("active-list")) {
             console.log("Updating chart for active-list");
             updateChart(true);
         }
