@@ -316,6 +316,28 @@ $userType           = $session->user_type;
         let totalPages = Math.ceil(filteredRows.length / rowsPerPage);
         let currentSort = "";
 
+        const currentURL = window.location.pathname;
+        console.log("Current URL:", currentURL);
+
+        // Run chart update only for specific list pages
+        if (
+            currentURL.includes("/accept-list") ||
+            currentURL.includes("/active-list") ||
+            currentURL.includes("/reject-list")
+        ) {
+            console.log("Detected list page — waiting for table to load...");
+
+            // Wait until table rows exist before running chart update
+            const tableCheck = setInterval(() => {
+                const rowsLoaded = document.querySelectorAll("#simpletable1 tbody tr").length;
+                if (rowsLoaded > 0) {
+                    clearInterval(tableCheck);
+                    console.log("✅ Table detected, updating chart...");
+                    updateChart(false); // 👈 use visible table data only
+                }
+            }, 300);
+        }
+
         // ===============================
         // Display rows (pagination + sort)
         // ===============================
@@ -393,8 +415,7 @@ $userType           = $session->user_type;
                 updatePaginationInfo();
             }
             });
-        }
-        
+        }        
         
         // ===============================
         // Filtering logic
@@ -478,7 +499,6 @@ $userType           = $session->user_type;
             // ✅ Small delay to ensure DOM re-render
             setTimeout(() => updateChart(true), 50);
         }
-
         
         // ===============================
         // Chart Update Logic
@@ -560,7 +580,6 @@ $userType           = $session->user_type;
                 }
             });
         }
-
         
         // ===============================
         // Sorting
@@ -630,19 +649,7 @@ $userType           = $session->user_type;
                 : "All_Quotation_Data.xlsx";
 
             XLSX.writeFile(wb, filename);
-        });
-
-        // Auto-detect URL and update chart
-        const currentURL = window.location.pathname;
-        console.log("Current URL:", currentURL);
-
-        if (currentURL.includes("reject-list")) {
-            console.log("Updating chart for reject-list");
-            updateChart();
-        } else if (currentURL.includes("accept-list")) {
-            console.log("Updating chart for accept-list");
-            updateChart();
-        }
+        });        
     });    
 </script>
 
