@@ -329,10 +329,10 @@ $userType           = $session->user_type;
 
             // Wait until table rows exist before running chart update
             const tableCheck = setInterval(() => {
-                const rowsLoaded = document.querySelectorAll("#simpletable1 tbody tr").length;
-                if (rowsLoaded > 0) {
+                const rows = document.querySelectorAll("#simpletable1 tbody tr").length;
+                if (rows > 0) {
                         // ✅ Check if any row contains "KG" in its rate column
-                    const kgRows = Array.from(rowsLoaded).filter(row => {
+                    const kgRows = Array.from(rows).filter(row => {
                         const rateText = row.cells[3]?.innerText.trim() || "";
                         const match = rateText.match(/([\d.]+)\s*\/?\s*([a-zA-Z]+)/);
                         if (!match) return false;
