@@ -634,6 +634,7 @@ $userType           = $session->user_type;
 
         // Auto-detect URL and update chart
         const currentURL = window.location.pathname;
+        console.log("Current URL:", currentURL);
 
         if (currentURL.includes("/reject-list")) {
             updateChart(true);
