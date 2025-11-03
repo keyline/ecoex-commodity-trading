@@ -638,10 +638,10 @@ $userType           = $session->user_type;
 
         if (currentURL.includes("reject-list")) {
             console.log("Updating chart for reject-list");
-            updateChart(true);
+            updateChart();
         } else if (currentURL.includes("accept-list")) {
             console.log("Updating chart for accept-list");
-            updateChart(true);
+            updateChart();
         }
     });    
 </script>
