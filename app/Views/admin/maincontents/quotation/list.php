@@ -485,6 +485,7 @@ $userType           = $session->user_type;
 
     function updateChart(useAll = false) {
         const chartContainer = document.getElementById("chartContainer"); // parent div of chart
+        const ctx = document.getElementById("quotationChart").getContext("2d");
         const targetRows = useAll ? rows : Array.from(document.querySelectorAll("#simpletable1 tbody tr"));
         const chartData = {};
 
@@ -520,16 +521,23 @@ $userType           = $session->user_type;
         }
         
         const vendors = [...new Set(targetRows.map(r => r.cells[7]?.innerText.trim()))];
+        const totalVendors = vendors.length;
 
         const datasets = vendors.map((vendor, i) => ({
             label: vendor,
             data: scraps.map(item => chartData[item][vendor] || 0),
-            backgroundColor: `hsl(${i * 60}, 70%, 50%)`
+            backgroundColor: `hsl(${(i * 360) / totalVendors}, 70%, 50%)`
         }));
 
-        const ctx = document.getElementById("quotationChart").getContext("2d");
-        if (quotationChart) quotationChart.destroy();
+        // const ctx = document.getElementById("quotationChart").getContext("2d");
+        // if (quotationChart) quotationChart.destroy();
+        // ✅ Destroy any previous chart before rendering a new one
+        if (quotationChart) {
+            quotationChart.destroy();
+            quotationChart = null;
+        }
 
+         // ✅ Create new chart instance
         quotationChart = new Chart(ctx, {
             type: "bar",
             data: { labels: scraps, datasets },
@@ -537,7 +545,10 @@ $userType           = $session->user_type;
                 responsive: true,
                 plugins: {
                     title: { display: true, text: "Rates by Item Name and Vendor (Unit: KG) (filtered)" },
-                    legend: { position: "bottom" }
+                    legend: { position: "bottom" },
+                    tooltip: {
+                        enabled: true
+                    }
                 },
                 scales: {
                     y: {
