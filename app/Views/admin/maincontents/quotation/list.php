@@ -259,48 +259,54 @@ $userType           = $session->user_type;
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
+    let mainChart;  
+
     const items = <?= json_encode($items) ?>;
     const vendors = <?= json_encode($vendors) ?>;
     const dataMap = <?= json_encode($dataMap) ?>;
     const totalVendors = vendors.length;
 
     // Step 2: Prepare datasets dynamically
-    const datasets = vendors.map((vendor, i) => ({
-        label: vendor,
-        data: items.map(item => dataMap[vendor]?.[item] ?? 0),
-        backgroundColor: `hsl(${(i * 360) / totalVendors}, 70%, 50%)`
-    }));
+    function renderMainChart() {
+        const datasets = vendors.map((vendor, i) => ({
+            label: vendor,
+            data: items.map(item => dataMap[vendor]?.[item] ?? 0),
+            backgroundColor: `hsl(${(i * 360) / totalVendors}, 70%, 50%)`
+        }));
 
-    // Step 3: Render chart
-    const ctx = document.getElementById('quotationChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: items,
-            datasets: datasets
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Rates by item Name and Vendor (Unit: KG)'
-                },
-                legend: {
-                    position: 'bottom'
-                }
+        // Step 3: Render chart
+        const ctx = document.getElementById('quotationChart').getContext('2d');
+        mainChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: items,
+                datasets: datasets
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
+            options: {
+                responsive: true,
+                plugins: {
                     title: {
                         display: true,
-                        text: 'Rate'
+                        text: 'Rates by item Name and Vendor (Unit: KG)'
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Rate'
+                        }
                     }
                 }
             }
-        }
-    });
+        });
+    }
+    // ✅ Call once on page load
+    document.addEventListener("DOMContentLoaded", renderMainChart);
 </script>
 
 <script>
@@ -462,6 +468,7 @@ $userType           = $session->user_type;
         document.getElementById("filterVendor").value = "";
         document.getElementById("filterStartDate").value = "";
         document.getElementById("filterEndDate").value = "";
+
         filteredRows = [...rows];
         currentPage = 1;
         totalPages = Math.ceil(filteredRows.length / rowsPerPage);
@@ -473,6 +480,9 @@ $userType           = $session->user_type;
         resetBtn.disabled = true;
         resetBtn.classList.remove("btn-danger");
         resetBtn.classList.add("btn-secondary");
+
+        // ✅ Restore main chart from other script
+        renderMainChart();
 
         // ✅ Small delay to ensure DOM re-render
         // setTimeout(() => updateChart(true), 50);
