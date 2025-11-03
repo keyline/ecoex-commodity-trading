@@ -119,13 +119,10 @@ $userType           = $session->user_type;
                         <div class="row mb-3">
                            
                         </div>
-<div>
-<div id="chartContainer"  style="width:60%; margin:auto; display:none;">
+                        <div   div id="chartContainer"  style="width:60%; margin:auto; display:none;">
                             <canvas id="quotationChart"></canvas>
                         </div>
-</div>
                         
-
                         <button id="exportExcel" class="btn btn-success mb-3">
                             <i class="fa fa-file-excel"></i> Export to Excel
                         </button>
@@ -304,9 +301,6 @@ $userType           = $session->user_type;
             }
         }
     });
-
-
-
 </script>
 
 <script>
