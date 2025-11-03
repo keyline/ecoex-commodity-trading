@@ -166,11 +166,12 @@ $userType           = $session->user_type;
                                         <th>Quotation Submitted</th>     
                                         <?php foreach ($rows as $row) {
                                             $itemStatus = $row->quotation_item_status;
+                                        }
                                             if($itemStatus == 1) {?>
                                             <th>Active Timestamp</th>
                                        <?php }elseif($itemStatus == 2) { ?>
                                             <th>Reject Timestamp</th>
-                                      <?php } }?>
+                                      <?php } ?>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
