@@ -329,28 +329,11 @@ $userType           = $session->user_type;
 
             // Wait until table rows exist before running chart update
             const tableCheck = setInterval(() => {
-                const rows = document.querySelectorAll("#simpletable1 tbody tr").length;
-                if (rows > 0) {
-                        // ✅ Check if any row contains "KG" in its rate column
-                    const kgRows = Array.from(rows).filter(row => {
-                        const rateText = row.cells[3]?.innerText.trim() || "";
-                        const match = rateText.match(/([\d.]+)\s*\/?\s*([a-zA-Z]+)/);
-                        if (!match) return false;
-                        const unit = match[2].toLowerCase();
-                        return unit === "kg"; // ✅ Only KG allowed
-                    });
-
-                    if (kgRows.length > 0) {
-                        clearInterval(tableCheck);
-                        console.log(`✅ Found ${kgRows.length} KG rows — updating chart...`);
-
-                        // ✅ Temporarily override updateChart() to use only KG rows
-                        updateChart(false, kgRows);
-                    } else {
-                        console.log("⚠️ No KG rows found — hiding chart.");
-                        const chartContainer = document.getElementById("chartContainer");
-                        if (chartContainer) chartContainer.style.display = "none";
-                    }
+                const rowsLoaded = document.querySelectorAll("#simpletable1 tbody tr").length;
+                if (rowsLoaded > 0) {
+                    clearInterval(tableCheck);
+                    console.log("✅ Table detected, updating chart...");
+                    updateChart(false); // 👈 use visible table data only
                 }
             }, 300);
         }
