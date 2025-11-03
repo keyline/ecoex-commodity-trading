@@ -594,7 +594,7 @@ $userType           = $session->user_type;
         // Initialize
         setupPagination();
         displayRows(currentPage);
-        isInitialLoad = false; // ✅ Mark that first load is done
+        // isInitialLoad = false; // ✅ Mark that first load is done
     });
 
     document.getElementById("exportExcel").addEventListener("click", function () {
