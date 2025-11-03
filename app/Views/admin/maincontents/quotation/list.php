@@ -471,7 +471,7 @@ $userType           = $session->user_type;
         // ✅ Disable Reset button after reset
         const resetBtn = document.getElementById("resetFilter");
         resetBtn.disabled = true;
-        resetBtn.classList.remove("btn-outline-danger");
+        resetBtn.classList.remove("btn-danger");
         resetBtn.classList.add("btn-secondary");
 
         // ✅ Small delay to ensure DOM re-render
