@@ -259,342 +259,326 @@ $userType           = $session->user_type;
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
-    let mainChart;  
-
     const items = <?= json_encode($items) ?>;
     const vendors = <?= json_encode($vendors) ?>;
     const dataMap = <?= json_encode($dataMap) ?>;
     const totalVendors = vendors.length;
 
     // Step 2: Prepare datasets dynamically
-    function renderMainChart() {
+    const datasets = vendors.map((vendor, i) => ({
+        label: vendor,
+        data: items.map(item => dataMap[vendor]?.[item] ?? 0),
+        backgroundColor: `hsl(${(i * 360) / totalVendors}, 70%, 50%)`
+    }));
+
+    // Step 3: Render chart
+    const ctx = document.getElementById('quotationChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: items,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Rates by item Name and Vendor (Unit: KG)'
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Rate'
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let quotationChart = null;
+    const rowsPerPage = 10;
+    const table = document.getElementById("simpletable1");
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+    let filteredRows = [...rows]; // initial data (no filter)
+    let currentPage = 1;
+    let totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+    let currentSort = "";
+
+    // ===============================
+    // Display rows (pagination + sort)
+    // ===============================
+
+    function displayRows(page) {
+        tbody.innerHTML = "";
+
+        // 🔹 Sort before pagination
+        let sortedRows = [...filteredRows];
+        if (sortOption) {
+            sortedRows.sort((a, b) => {
+                const rateA = parseFloat(a.cells[3]?.innerText) || 0;
+                const rateB = parseFloat(b.cells[3]?.innerText) || 0;
+                const qtyA = parseFloat(a.cells[4]?.innerText) || 0;
+                const qtyB = parseFloat(b.cells[4]?.innerText) || 0;
+
+                switch (sortOption) {
+                    case "rate_asc": return rateA - rateB;
+                    case "rate_desc": return rateB - rateA;
+                    case "qty_asc": return qtyA - qtyB;
+                    case "qty_desc": return qtyB - qtyA;
+                    default: return 0;
+                }
+            });
+        }
+
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;        
+        const paginatedRows = sortedRows.slice(start, end);
+        paginatedRows.forEach(row => tbody.appendChild(row));
+
+        totalPages = Math.ceil(sortedRows.length / rowsPerPage) || 1;
+        updatePaginationInfo();
+       // ✅ Wait for next tick, then update chart
+        requestAnimationFrame(() => updateChart());
+    }
+
+    // ===============================
+    // Pagination setup
+    // ===============================
+
+    function updatePaginationInfo() {
+        const pageInfo = document.querySelector(".pagination-info");
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+        document.getElementById("prevBtn").disabled = currentPage === 1;
+        document.getElementById("nextBtn").disabled = currentPage === totalPages;
+    }
+
+    function setupPagination() {
+        const paginationContainer = document.createElement("div");
+        paginationContainer.classList.add("pagination-container");
+        paginationContainer.style.textAlign = "center";
+        paginationContainer.style.marginTop = "20px";
+
+        paginationContainer.innerHTML = `
+        <button id="prevBtn" class="btn btn-outline-secondary btn-sm">« Prev</button>
+        <span class="pagination-info" style="margin:0 10px;">Page ${currentPage} of ${totalPages}</span>
+        <button id="nextBtn" class="btn btn-outline-secondary btn-sm">Next »</button>
+        `;
+
+        table.parentNode.appendChild(paginationContainer);
+
+        document.getElementById("prevBtn").addEventListener("click", function () {
+        if (currentPage > 1) {
+            currentPage--;
+            displayRows(currentPage);
+            updatePaginationInfo();
+        }
+        });
+
+        document.getElementById("nextBtn").addEventListener("click", function () {
+        if (currentPage < totalPages) {
+            currentPage++;
+            displayRows(currentPage);
+            updatePaginationInfo();
+        }
+        });
+    }
+    
+    
+    // ===============================
+    // Filtering logic
+    // ===============================
+    function applyFilter() {
+        const locationVal = document.getElementById("filterLocation").value.toLowerCase();
+        const itemVal = document.getElementById("filterItem").value.toLowerCase();
+        const vendorVal = document.getElementById("filterVendor").value.toLowerCase();
+        const startDateVal = document.getElementById("filterStartDate").value;
+        const endDateVal = document.getElementById("filterEndDate").value;
+        const resetBtn = document.getElementById("resetFilter");
+
+        filteredRows = rows.filter(row => {
+            const locationText = row.cells[5]?.innerText.toLowerCase() || ""; // 6th column = Location
+            const itemText = row.cells[2]?.innerText.toLowerCase() || "";     // 3rd column = Item Name
+            const vendorText = row.cells[7]?.innerText.toLowerCase() || "";     // 8th column = Item Name
+            const dateText = row.cells[9]?.innerText.trim() || ""; // 10th column = Quotation Submitted
+            
+            // 🗓️ Convert date string (2025-10-29 17:00:43) into Date object
+            let rowDate = null;
+            if (dateText) {
+                // Replace space with 'T' to make it ISO-compatible for Safari/Firefox
+                rowDate = new Date(dateText.replace(" ", "T"));
+            }
+
+            const startDate = startDateVal ? new Date(startDateVal + "T00:00:00") : null;
+            const endDate = endDateVal ? new Date(endDateVal + "T23:59:59") : null;
+
+            const matchLocation = !locationVal || locationText.includes(locationVal);
+            const matchItem = !itemVal || itemText.includes(itemVal);
+            const matchVendor = !vendorVal || vendorText.includes(vendorVal);
+            let matchDate = true;
+            if (startDate && rowDate) matchDate = rowDate >= startDate;
+            if (endDate && rowDate) matchDate = matchDate && rowDate <= endDate;
+            if ((startDate || endDate) && !rowDate) matchDate = false;
+
+            return matchLocation && matchItem && matchVendor && matchDate;
+
+            });
+
+        currentPage = 1;
+        totalPages = Math.ceil(filteredRows.length / rowsPerPage) || 1;
+        displayRows(currentPage);
+        updatePaginationInfo();
+        updateChart();
+
+        // ✅ Enable reset button only if filters were used
+        if (locationVal || itemVal || vendorVal || startDateVal || endDateVal) {
+            resetBtn.disabled = false;
+            resetBtn.classList.remove("btn-secondary");
+            resetBtn.classList.add("btn-danger");
+        } else {
+            resetBtn.disabled = true;
+            resetBtn.classList.remove("btn-danger");
+            resetBtn.classList.add("btn-secondary");
+        }
+    }
+
+    // ===============================
+    // Reset filters
+    // ===============================
+
+    function resetFilter() {
+        document.getElementById("filterLocation").value = "";
+        document.getElementById("filterItem").value = "";
+        document.getElementById("filterVendor").value = "";
+        document.getElementById("filterStartDate").value = "";
+        document.getElementById("filterEndDate").value = "";
+        filteredRows = [...rows];
+        currentPage = 1;
+        totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+        displayRows(currentPage);
+        updatePaginationInfo();
+
+        // ✅ Disable Reset button after reset
+        const resetBtn = document.getElementById("resetFilter");
+        resetBtn.disabled = true;
+        resetBtn.classList.remove("btn-outline-danger");
+        resetBtn.classList.add("btn-secondary");
+
+        // ✅ Small delay to ensure DOM re-render
+        setTimeout(() => updateChart(true), 50);
+    }
+
+    
+    // ===============================
+    // Chart Update Logic
+    // ===============================    
+
+    function updateChart(useAll = false) {
+        const chartContainer = document.getElementById("chartContainer"); // parent div of chart
+        const ctx = document.getElementById("quotationChart").getContext("2d");
+        const targetRows = useAll ? rows : Array.from(document.querySelectorAll("#simpletable1 tbody tr"));
+        const chartData = {};
+
+        targetRows.forEach(row => {
+            const vendor = row.cells[7]?.innerText.trim(); // vendor_name
+            const item = row.cells[2]?.innerText.trim();   // scrap_name
+            const rateText = row.cells[3]?.innerText.trim(); // Quoted Rate (e.g. "23 /KG")
+
+            // ✅ Extract numeric rate and unit
+            const match = rateText.match(/([\d.]+)\s*\/?\s*([a-zA-Z]+)/);
+            if (!match) return;
+
+            const rate = parseFloat(match[1]);
+            const unit = match[2].toLowerCase();
+
+            // ✅ Include only if unit is "kg"
+            if (unit !== 'kg') return;
+
+            if (!chartData[item]) chartData[item] = {};
+            if (!chartData[item][vendor] || rate > chartData[item][vendor]) {
+                chartData[item][vendor] = rate;
+            }
+        });
+
+        const scraps = Object.keys(chartData);
+        // ✅ If no items (no KG data or no filter matches), hide chart and exit
+        if (scraps.length === 0) {
+            if (quotationChart) quotationChart.destroy();
+            chartContainer.style.display = "none"; // hide graph section
+            return;
+        } else {
+            chartContainer.style.display = "block"; // show when data exists
+        }
+        
+        const vendors = [...new Set(targetRows.map(r => r.cells[7]?.innerText.trim()))];
+        const totalVendors = vendors.length;
+
         const datasets = vendors.map((vendor, i) => ({
             label: vendor,
-            data: items.map(item => dataMap[vendor]?.[item] ?? 0),
+            data: scraps.map(item => chartData[item][vendor] || 0),
             backgroundColor: `hsl(${(i * 360) / totalVendors}, 70%, 50%)`
         }));
 
-        // Step 3: Render chart
-        const ctx = document.getElementById('quotationChart').getContext('2d');
-        mainChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: items,
-                datasets: datasets
-            },
+        // const ctx = document.getElementById("quotationChart").getContext("2d");
+        // if (quotationChart) quotationChart.destroy();
+        // ✅ Destroy any previous chart before rendering a new one
+        if (quotationChart) {
+            quotationChart.destroy();
+            quotationChart = null;
+        }
+
+         // ✅ Create new chart instance
+        quotationChart = new Chart(ctx, {
+            type: "bar",
+            data: { labels: scraps, datasets },
             options: {
                 responsive: true,
                 plugins: {
-                    title: {
-                        display: true,
-                        text: 'Rates by item Name and Vendor (Unit: KG)'
-                    },
-                    legend: {
-                        position: 'bottom'
+                    title: { display: true, text: "Rates by Item Name and Vendor (Unit: KG) (filtered)" },
+                    legend: { position: "bottom" },
+                    tooltip: {
+                        enabled: true
                     }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Rate'
-                        }
+                        title: { display: true, text: "Rate" }
                     }
                 }
             }
         });
     }
-    // ✅ Call once on page load
-    document.addEventListener("DOMContentLoaded", renderMainChart);
-</script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let isInitialLoad = true;
-        let quotationChart = null;
-        const rowsPerPage = 10;
-        const table = document.getElementById("simpletable1");
-        const tbody = table.querySelector("tbody");
-        const rows = Array.from(tbody.querySelectorAll("tr"));
-        let filteredRows = [...rows]; // initial data (no filter)
-        let currentPage = 1;
-        let totalPages = Math.ceil(filteredRows.length / rowsPerPage);
-        let currentSort = "";
-
-        // ===============================
-        // Display rows (pagination + sort)
-        // ===============================
-
-        function displayRows(page) {
-            tbody.innerHTML = "";
-
-            // 🔹 Sort before pagination
-            let sortedRows = [...filteredRows];
-            if (sortOption) {
-                sortedRows.sort((a, b) => {
-                    const rateA = parseFloat(a.cells[3]?.innerText) || 0;
-                    const rateB = parseFloat(b.cells[3]?.innerText) || 0;
-                    const qtyA = parseFloat(a.cells[4]?.innerText) || 0;
-                    const qtyB = parseFloat(b.cells[4]?.innerText) || 0;
-
-                    switch (sortOption) {
-                        case "rate_asc": return rateA - rateB;
-                        case "rate_desc": return rateB - rateA;
-                        case "qty_asc": return qtyA - qtyB;
-                        case "qty_desc": return qtyB - qtyA;
-                        default: return 0;
-                    }
-                });
-            }
-
-            const start = (page - 1) * rowsPerPage;
-            const end = start + rowsPerPage;        
-            const paginatedRows = sortedRows.slice(start, end);
-            paginatedRows.forEach(row => tbody.appendChild(row));
-
-            totalPages = Math.ceil(sortedRows.length / rowsPerPage) || 1;
-            updatePaginationInfo();
-        // ✅ Wait for next tick, then update chart
-            // requestAnimationFrame(() => updateChart());
-            // ✅ Only update chart after filtering or pagination changes — not on initial load
-            if (!isInitialLoad) {
-                requestAnimationFrame(() => updateChart());
-            }
-        }
-
-        // ===============================
-        // Pagination setup
-        // ===============================
-
-        function updatePaginationInfo() {
-            const pageInfo = document.querySelector(".pagination-info");
-            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-            document.getElementById("prevBtn").disabled = currentPage === 1;
-            document.getElementById("nextBtn").disabled = currentPage === totalPages;
-        }
-
-        function setupPagination() {
-            const paginationContainer = document.createElement("div");
-            paginationContainer.classList.add("pagination-container");
-            paginationContainer.style.textAlign = "center";
-            paginationContainer.style.marginTop = "20px";
-
-            paginationContainer.innerHTML = `
-            <button id="prevBtn" class="btn btn-outline-secondary btn-sm">« Prev</button>
-            <span class="pagination-info" style="margin:0 10px;">Page ${currentPage} of ${totalPages}</span>
-            <button id="nextBtn" class="btn btn-outline-secondary btn-sm">Next »</button>
-            `;
-
-            table.parentNode.appendChild(paginationContainer);
-
-            document.getElementById("prevBtn").addEventListener("click", function () {
-            if (currentPage > 1) {
-                currentPage--;
-                displayRows(currentPage);
-                updatePaginationInfo();
-            }
-            });
-
-            document.getElementById("nextBtn").addEventListener("click", function () {
-            if (currentPage < totalPages) {
-                currentPage++;
-                displayRows(currentPage);
-                updatePaginationInfo();
-            }
-            });
-        }
-            
-        // ===============================
-        // Filtering logic
-        // ===============================
-        function applyFilter() {
-            const locationVal = document.getElementById("filterLocation").value.toLowerCase();
-            const itemVal = document.getElementById("filterItem").value.toLowerCase();
-            const vendorVal = document.getElementById("filterVendor").value.toLowerCase();
-            const startDateVal = document.getElementById("filterStartDate").value;
-            const endDateVal = document.getElementById("filterEndDate").value;
-            const resetBtn = document.getElementById("resetFilter");
-
-            filteredRows = rows.filter(row => {
-                const locationText = row.cells[5]?.innerText.toLowerCase() || ""; // 6th column = Location
-                const itemText = row.cells[2]?.innerText.toLowerCase() || "";     // 3rd column = Item Name
-                const vendorText = row.cells[7]?.innerText.toLowerCase() || "";     // 8th column = Item Name
-                const dateText = row.cells[9]?.innerText.trim() || ""; // 10th column = Quotation Submitted
-                
-                // 🗓️ Convert date string (2025-10-29 17:00:43) into Date object
-                let rowDate = null;
-                if (dateText) {
-                    // Replace space with 'T' to make it ISO-compatible for Safari/Firefox
-                    rowDate = new Date(dateText.replace(" ", "T"));
-                }
-
-                const startDate = startDateVal ? new Date(startDateVal + "T00:00:00") : null;
-                const endDate = endDateVal ? new Date(endDateVal + "T23:59:59") : null;
-
-                const matchLocation = !locationVal || locationText.includes(locationVal);
-                const matchItem = !itemVal || itemText.includes(itemVal);
-                const matchVendor = !vendorVal || vendorText.includes(vendorVal);
-                let matchDate = true;
-                if (startDate && rowDate) matchDate = rowDate >= startDate;
-                if (endDate && rowDate) matchDate = matchDate && rowDate <= endDate;
-                if ((startDate || endDate) && !rowDate) matchDate = false;
-
-                return matchLocation && matchItem && matchVendor && matchDate;
-
-                });
-
-            currentPage = 1;
-            totalPages = Math.ceil(filteredRows.length / rowsPerPage) || 1;
-            displayRows(currentPage);
-            updatePaginationInfo();
-            updateChart();
-
-            // ✅ Enable reset button only if filters were used
-            if (locationVal || itemVal || vendorVal || startDateVal || endDateVal) {
-                resetBtn.disabled = false;
-                resetBtn.classList.remove("btn-secondary");
-                resetBtn.classList.add("btn-danger");
-            } else {
-                resetBtn.disabled = true;
-                resetBtn.classList.remove("btn-danger");
-                resetBtn.classList.add("btn-secondary");
-            }
-        }
-
-        // ===============================
-        // Reset filters
-        // ===============================
-
-        function resetFilter() {
-            document.getElementById("filterLocation").value = "";
-            document.getElementById("filterItem").value = "";
-            document.getElementById("filterVendor").value = "";
-            document.getElementById("filterStartDate").value = "";
-            document.getElementById("filterEndDate").value = "";
-
-            filteredRows = [...rows];
-            currentPage = 1;
-            totalPages = Math.ceil(filteredRows.length / rowsPerPage);
-            displayRows(currentPage);
-            updatePaginationInfo();
-
-            // ✅ Disable Reset button after reset
-            const resetBtn = document.getElementById("resetFilter");
-            resetBtn.disabled = true;
-            resetBtn.classList.remove("btn-danger");
-            resetBtn.classList.add("btn-secondary");
-
-            // ✅ Restore main chart from other script
-            renderMainChart();
-
-            // ✅ Small delay to ensure DOM re-render
-            // setTimeout(() => updateChart(true), 50);
-        }
-
-        // ===============================
-        // Chart Update Logic
-        // ===============================    
-
-        function updateChart(useAll = false) {
-            const chartContainer = document.getElementById("chartContainer"); // parent div of chart
-            const ctx = document.getElementById("quotationChart").getContext("2d");
-            const targetRows = useAll ? rows : Array.from(document.querySelectorAll("#simpletable1 tbody tr"));
-            const chartData = {};
-
-            targetRows.forEach(row => {
-                const vendor = row.cells[7]?.innerText.trim(); // vendor_name
-                const item = row.cells[2]?.innerText.trim();   // scrap_name
-                const rateText = row.cells[3]?.innerText.trim(); // Quoted Rate (e.g. "23 /KG")
-
-                // ✅ Extract numeric rate and unit
-                const match = rateText.match(/([\d.]+)\s*\/?\s*([a-zA-Z]+)/);
-                if (!match) return;
-
-                const rate = parseFloat(match[1]);
-                const unit = match[2].toLowerCase();
-
-                // ✅ Include only if unit is "kg"
-                if (unit !== 'kg') return;
-
-                if (!chartData[item]) chartData[item] = {};
-                if (!chartData[item][vendor] || rate > chartData[item][vendor]) {
-                    chartData[item][vendor] = rate;
-                }
-            });
-
-            const scraps = Object.keys(chartData);
-            // ✅ If no items (no KG data or no filter matches), hide chart and exit
-            if (scraps.length === 0) {
-                if (quotationChart) quotationChart.destroy();
-                chartContainer.style.display = "none"; // hide graph section
-                return;
-            } else {
-                chartContainer.style.display = "block"; // show when data exists
-            }
-            
-            const vendors = [...new Set(targetRows.map(r => r.cells[7]?.innerText.trim()))];
-            const totalVendors = vendors.length;
-
-            const datasets = vendors.map((vendor, i) => ({
-                label: vendor,
-                data: scraps.map(item => chartData[item][vendor] || 0),
-                backgroundColor: `hsl(${(i * 360) / totalVendors}, 70%, 50%)`
-            }));
-
-            // const ctx = document.getElementById("quotationChart").getContext("2d");
-            // if (quotationChart) quotationChart.destroy();
-            // ✅ Destroy any previous chart before rendering a new one
-            if (mainChart) {
-                mainChart.destroy();
-                mainChart = null;
-            }
-
-            // ✅ Destroy old filtered chart before recreating
-            if (quotationChart) quotationChart.destroy();
-
-            // ✅ Create new chart instance
-            quotationChart = new Chart(ctx, {
-                type: "bar",
-                data: { labels: scraps, datasets },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: { display: true, text: "Rates by Item Name and Vendor (Unit: KG) (filtered)" },
-                        legend: { position: "bottom" },
-                        tooltip: {
-                            enabled: true
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: { display: true, text: "Rate" }
-                        }
-                    }
-                }
-            });
-        }
     
-        // ===============================
-        // Sorting
-        // ===============================
+    // ===============================
+    // Sorting
+    // ===============================
 
-        document.getElementById("sortOption").addEventListener("change", function () {
-            sortOption = this.value;
-            currentPage = 1;
-            displayRows(currentPage);        
-        });
-        
-        // Setup events
-        document.getElementById("applyFilter").addEventListener("click", applyFilter);
-        document.getElementById("resetFilter").addEventListener("click", resetFilter);
-        // document.getElementById("sortOption").addEventListener("change", applySorting);
+    document.getElementById("sortOption").addEventListener("change", function () {
+        sortOption = this.value;
+        currentPage = 1;
+        displayRows(currentPage);        
+    });
+    
+    // Setup events
+    document.getElementById("applyFilter").addEventListener("click", applyFilter);
+    document.getElementById("resetFilter").addEventListener("click", resetFilter);
+    // document.getElementById("sortOption").addEventListener("change", applySorting);
 
-        // Initialize
-        setupPagination();
-        displayRows(currentPage);
-        // isInitialLoad = false; // ✅ Mark that first load is done
+    // Initialize
+    setupPagination();
+    displayRows(currentPage);
     });
 
     document.getElementById("exportExcel").addEventListener("click", function () {
