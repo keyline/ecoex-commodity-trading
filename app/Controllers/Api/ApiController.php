@@ -3697,6 +3697,12 @@ class ApiController extends BaseController
         $requiredFields     = ['requestList', 'gps_image', 'collection_date', 'latitude', 'longitude', 'device_brand', 'device_model'];
         $headerData         = $this->request->headers();
 
+        // Step 3: Compress all base64 images recursively before anything else
+        if (!empty($requestData)) {
+            $requestData = $this->compressAllBase64InPayload($requestData, 800, 800, 60);
+        }
+        pr($requestData);
+
         if (!$this->validateArray($requiredFields, $requestData)) {
             $apiStatus  = FALSE;
             $apiMessage = 'All Data Are Not Present !!!';
@@ -3913,19 +3919,44 @@ class ApiController extends BaseController
     }
 
     /**
-     * 🔹 Compress & resize any Base64 image before decoding
+     * 🔹 Compress all base64 images recursively inside payload array
+     */
+    private function compressAllBase64InPayload($data, $maxWidth = 800, $maxHeight = 800, $quality = 60)
+    {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $data[$key] = $this->compressAllBase64InPayload($value, $maxWidth, $maxHeight, $quality);
+            } elseif (is_string($value) && $this->isBase64Image($value)) {
+                $data[$key] = $this->compressBase64Image($value, $maxWidth, $maxHeight, $quality);
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * Check if string looks like Base64 image
+     */
+    private function isBase64Image($string)
+    {
+        return (bool) preg_match('/^data:image\/(png|jpg|jpeg);base64,/', $string) || 
+            (bool) preg_match('/^[A-Za-z0-9+\/=]+$/', substr($string, 0, 100));
+    }
+
+    /**
+     * Compress and resize single base64 image
      */
     private function compressBase64Image($base64, $maxWidth = 800, $maxHeight = 800, $quality = 60)
     {
         $base64 = preg_replace('#^data:image/\w+;base64,#i', '', $base64);
         $data = base64_decode($base64);
-        $src = imagecreatefromstring($data);
+        $src = @imagecreatefromstring($data);
         if (!$src) return $base64;
 
-        $width  = imagesx($src);
+        $width = imagesx($src);
         $height = imagesy($src);
-        $ratio  = min($maxWidth / $width, $maxHeight / $height, 1);
-        $newWidth  = $width * $ratio;
+
+        $ratio = min($maxWidth / $width, $maxHeight / $height, 1);
+        $newWidth = $width * $ratio;
         $newHeight = $height * $ratio;
 
         $dst = imagecreatetruecolor($newWidth, $newHeight);
