@@ -6,6 +6,7 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
+$routes->get('/phpinfo', 'Home::info');
 $routes->get('/enquiry-request/(:any)', 'Home::enquiryRequest/$1');
 $routes->get('/delete-account-request', 'Home::deleteAccountRequest');
 $routes->post('/delete-account-request', 'Home::deleteAccountRequest');

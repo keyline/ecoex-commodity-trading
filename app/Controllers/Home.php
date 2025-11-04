@@ -4,8 +4,6 @@ namespace App\Controllers;
 
 use App\Services\UpcomingCollections\UpcomingCollectionService;
 
-
-
 class Home extends BaseController
 {
     public function index()
@@ -164,5 +162,10 @@ class Home extends BaseController
             dd($e->getMessage());
             throw $e->getMessage();
         }
+    }
+
+    public function info()
+    {
+        phpinfo();
     }
 }
