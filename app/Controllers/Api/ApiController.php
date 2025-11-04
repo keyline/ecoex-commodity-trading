@@ -3710,7 +3710,7 @@ class ApiController extends BaseController
         //     $apiMessage = 'All Data Are Not Present !!!';
         // }
         $headerData     = $this->request->headers();
-        $requestData    = $his->request->getPost();
+        $requestData    = $this->request->getPost();
         pr($requestData);
 
         if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
