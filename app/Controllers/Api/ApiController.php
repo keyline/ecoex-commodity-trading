@@ -3692,23 +3692,26 @@ class ApiController extends BaseController
         $apiResponse = [];
         $address     = '';
 
-        // Step 1 – Get raw body
-        $rawBody = file_get_contents('php://input');
-        $this->isJSON($rawBody);
-        $requestData = $this->extract_json($rawBody);
+        // // Step 1 – Get raw body
+        // $rawBody = file_get_contents('php://input');
+        // $this->isJSON($rawBody);
+        // $requestData = $this->extract_json($rawBody);
 
-        // ✅ Step 2 – Compress & resize all Base64 images before any further use
-        if (!empty($requestData)) {
-            $requestData = $this->compressAllBase64InPayload($requestData, 800, 800, 60);
-        }
+        // // ✅ Step 2 – Compress & resize all Base64 images before any further use
+        // if (!empty($requestData)) {
+        //     $requestData = $this->compressAllBase64InPayload($requestData, 800, 800, 60);
+        // }
 
-        $requiredFields = ['requestList', 'gps_image', 'collection_date', 'latitude', 'longitude', 'device_brand', 'device_model'];
+        // $requiredFields = ['requestList', 'gps_image', 'collection_date', 'latitude', 'longitude', 'device_brand', 'device_model'];
+        // $headerData     = $this->request->headers();
+
+        // if (!$this->validateArray($requiredFields, $requestData)) {
+        //     $apiStatus  = FALSE;
+        //     $apiMessage = 'All Data Are Not Present !!!';
+        // }
         $headerData     = $this->request->headers();
-
-        if (!$this->validateArray($requiredFields, $requestData)) {
-            $apiStatus  = FALSE;
-            $apiMessage = 'All Data Are Not Present !!!';
-        }
+        $requestData    = $his->request->getPost();
+        pr($requestData);
 
         if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
             $Authorization    = $headerData['Authorization'];
