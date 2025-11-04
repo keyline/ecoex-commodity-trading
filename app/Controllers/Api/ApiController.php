@@ -3693,7 +3693,9 @@ class ApiController extends BaseController
         $address            = '';
 
         $this->isJSON(file_get_contents('php://input'));
-        $requestData        = $this->extract_json(file_get_contents('php://input'));
+        // $requestData        = $this->extract_json(file_get_contents('php://input'));
+        // Step 2: Decode JSON
+        $requestData = json_decode($raw, true);
         $requiredFields     = ['requestList', 'gps_image', 'collection_date', 'latitude', 'longitude', 'device_brand', 'device_model'];
         $headerData         = $this->request->headers();
 
