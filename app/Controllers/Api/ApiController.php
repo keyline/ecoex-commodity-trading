@@ -3687,23 +3687,23 @@ class ApiController extends BaseController
     // }
     public function processRequestAdd()
     {
-        $apiStatus          = TRUE;
-        $apiMessage         = '';
-        $apiResponse        = [];
-        $address            = '';
+        $apiStatus   = TRUE;
+        $apiMessage  = '';
+        $apiResponse = [];
+        $address     = '';
 
-        $this->isJSON(file_get_contents('php://input'));
-        // $requestData        = $this->extract_json(file_get_contents('php://input'));
-        // Step 2: Decode JSON
-        $requestData = json_decode($raw, true);
-        $requiredFields     = ['requestList', 'gps_image', 'collection_date', 'latitude', 'longitude', 'device_brand', 'device_model'];
-        $headerData         = $this->request->headers();
+        // Step 1 – Get raw body
+        $rawBody = file_get_contents('php://input');
+        $this->isJSON($rawBody);
+        $requestData = $this->extract_json($rawBody);
 
-        // Step 3: Compress all base64 images recursively before anything else
+        // ✅ Step 2 – Compress & resize all Base64 images before any further use
         if (!empty($requestData)) {
             $requestData = $this->compressAllBase64InPayload($requestData, 800, 800, 60);
         }
-        pr($requestData);
+
+        $requiredFields = ['requestList', 'gps_image', 'collection_date', 'latitude', 'longitude', 'device_brand', 'device_model'];
+        $headerData     = $this->request->headers();
 
         if (!$this->validateArray($requiredFields, $requestData)) {
             $apiStatus  = FALSE;
@@ -3717,7 +3717,6 @@ class ApiController extends BaseController
 
             if ($getTokenValue['status']) {
                 $uId        = $getTokenValue['data'][1];
-                $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                 $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                 $plat_location = $getUser->location . ',' . $getUser->state;
 
@@ -3725,63 +3724,48 @@ class ApiController extends BaseController
                     $plant_id   = $getUser->id;
                     $company_id = $getUser->parent_id;
 
-                    /* sl no */
+                    /* Generate enquiry number */
                     $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
                     $checkEnq = $this->common_model->find_data('ecomm_enquires', 'row', '', 'sl_no', '', '', $orderBy);
-                    if ($checkEnq) {
-                        $sl_no = $checkEnq->sl_no;
-                        $next_sl_no = $sl_no + 1;
-                        $next_sl_no_string = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
-                        $enquiry_no = 'ECOMM-' . $next_sl_no_string;
-                    } else {
-                        $next_sl_no = 1;
-                        $next_sl_no_string = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
-                        $enquiry_no = 'ECOMM-' . $next_sl_no_string;
-                    }
+                    $next_sl_no = ($checkEnq) ? ($checkEnq->sl_no + 1) : 1;
+                    $enquiry_no = 'ECOMM-' . str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
 
-                    /* gps track image */
+                    /* GPS tracking image */
                     $gps_tracking_image_payload = $requestData['gps_image'];
                     if (!empty($gps_tracking_image_payload)) {
-                        $gps_tracking_image = $gps_tracking_image_payload;
-                        $upload_type        = $gps_tracking_image['type'];
-
-                        if ($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png') {
+                        $upload_type = $gps_tracking_image_payload['type'];
+                        if (!in_array($upload_type, ['image/jpeg', 'image/jpg', 'image/png'])) {
                             $apiStatus  = FALSE;
                             http_response_code(404);
                             $apiMessage = 'Please Upload GPS Image !!!';
-                            $apiExtraField = 'response_code';
-                            $apiExtraData  = http_response_code();
                         } else {
-                            // 🔹 Compress & resize GPS image at runtime
-                            $upload_base64  = $gps_tracking_image['base64'];
-                            $upload_base64  = $this->compressBase64Image($upload_base64, 800, 800, 60);
+                            $upload_base64 = $gps_tracking_image_payload['base64'];
+                            $data = base64_decode($upload_base64);
+                            $fileName = uniqid() . '.jpg';
+                            $file     = 'public/uploads/enquiry/' . $fileName;
+                            file_put_contents($file, $data);
+                            $gps_tracking = $fileName;
 
-                            $data           = base64_decode($upload_base64);
-                            $fileName       = uniqid() . '.jpg';
-                            $file           = 'public/uploads/enquiry/' . $fileName;
-                            $success        = file_put_contents($file, $data);
-                            $gps_tracking   = $fileName;
-
-                            // Get address from lat-long
                             try {
                                 $address = $this->getAddressFromLatLong($requestData['latitude'], $requestData['longitude']);
                             } catch (\Exception $e) {
-                                throw $e->getMessage();
+                                $address = '';
                             }
 
-                            // Add watermark text
-                            $imagePath    = $file;
-                            $outputPath   = $file;
-                            $latitude     = $requestData['latitude'];
-                            $longitude    = $requestData['longitude'];
-                            $locationName = $address;
-                            $dateTime     = date('M d, Y h:i A');
-                            $this->addGpsDataToImage($imagePath, $outputPath, $latitude, $longitude, $locationName, $dateTime);
+                            $this->addGpsDataToImage(
+                                $file,
+                                $file,
+                                $requestData['latitude'],
+                                $requestData['longitude'],
+                                $address,
+                                date('M d, Y h:i A')
+                            );
                         }
                     } else {
                         $gps_tracking = '';
                     }
 
+                    /* Save enquiry */
                     $fields1 = [
                         'plant_id'                  => $plant_id,
                         'company_id'                => $company_id,
@@ -3796,7 +3780,6 @@ class ApiController extends BaseController
                         'created_by'                => $uId,
                     ];
 
-                    /* email notification */
                     $plantName      = $getUser->plant_name;
                     $generalSetting = $this->common_model->find_data('general_settings', 'row');
                     $company        = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $company_id]);
@@ -3806,47 +3789,35 @@ class ApiController extends BaseController
 
                     $enq_id = $this->common_model->save_data('ecomm_enquires', $fields1, '', 'id');
 
+                    /* Request list products */
                     $requestList = $requestData['requestList'];
                     if (!empty($requestList)) {
-                        for ($k = 0; $k < count($requestList); $k++) {
-                            /* product image(s) */
-                            $product_image = $requestList[$k]['product_image'];
-                            $item_images   = [];
-
-                            if (!empty($product_image)) {
-                                for ($p = 0; $p < count($product_image); $p++) {
-                                    $upload_type = $product_image[$p]['type'];
-                                    if ($upload_type != 'image/jpeg' && $upload_type != 'image/jpg' && $upload_type != 'image/png') {
-                                        $apiStatus  = FALSE;
-                                        http_response_code(404);
-                                        $apiMessage = 'Please Upload Product Image !!!';
-                                        $apiExtraField = 'response_code';
-                                        $apiExtraData  = http_response_code();
-                                    } else {
-                                        // 🔹 Compress & resize each product image
-                                        $upload_base64 = $product_image[$p]['base64'];
-                                        $upload_base64 = $this->compressBase64Image($upload_base64, 800, 800, 60);
-
-                                        $data      = base64_decode($upload_base64);
-                                        $fileName  = uniqid() . '.jpg';
-                                        $file      = 'public/uploads/enquiry/' . $fileName;
-                                        $success   = file_put_contents($file, $data);
-                                        $item_images[] = $fileName;
-                                    }
+                        foreach ($requestList as $req) {
+                            $item_images = [];
+                            $product_image = $req['product_image'] ?? [];
+                            foreach ($product_image as $img) {
+                                $upload_type = $img['type'];
+                                if (in_array($upload_type, ['image/jpeg', 'image/jpg', 'image/png'])) {
+                                    $upload_base64 = $img['base64'];
+                                    $data = base64_decode($upload_base64);
+                                    $fileName = uniqid() . '.jpg';
+                                    $file = 'public/uploads/enquiry/' . $fileName;
+                                    file_put_contents($file, $data);
+                                    $item_images[] = $fileName;
                                 }
                             }
 
-                            if ($requestList[$k]['new_product']) {
+                            if ($req['new_product']) {
                                 $fields2 = [
                                     'enq_id'            => $enq_id,
                                     'plant_id'          => $plant_id,
                                     'company_id'        => $company_id,
                                     'sl_no'             => $next_sl_no,
                                     'new_product'       => 1,
-                                    'new_product_name'  => $requestList[$k]['product_name'],
-                                    'new_hsn'           => $requestList[$k]['hsn'],
-                                    'qty'               => (($requestList[$k]['qty'] != '') ? $requestList[$k]['qty'] : 0.00),
-                                    'unit'              => (($requestList[$k]['unit'] != '') ? $requestList[$k]['unit'] : 0),
+                                    'new_product_name'  => $req['product_name'],
+                                    'new_hsn'           => $req['hsn'],
+                                    'qty'               => $req['qty'] ?: 0.00,
+                                    'unit'              => $req['unit'] ?: 0,
                                     'new_product_image' => json_encode($item_images),
                                     'status'            => 0,
                                 ];
@@ -3856,24 +3827,24 @@ class ApiController extends BaseController
                                     'company_id'      => $company_id,
                                     'enq_id'          => $enq_id,
                                     'enq_product_id'  => $enq_product_id,
-                                    'item_name_ecoex' => $requestList[$k]['product_name'],
-                                    'hsn'             => $requestList[$k]['hsn'],
+                                    'item_name_ecoex' => $req['product_name'],
+                                    'hsn'             => $req['hsn'],
                                     'item_images'     => json_encode($item_images),
                                     'created_by'      => $uId,
                                 ];
                                 $this->common_model->save_data('ecomm_company_items', $fields3, '', 'id');
                             } else {
-                                $getCompanyProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $requestList[$k]['product_id']], 'id,unit,hsn');
+                                $getCompanyProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $req['product_id']], 'id,unit,hsn');
                                 $fields2 = [
                                     'enq_id'            => $enq_id,
                                     'plant_id'          => $plant_id,
                                     'company_id'        => $company_id,
                                     'sl_no'             => $next_sl_no,
                                     'new_product'       => 0,
-                                    'product_id'        => $requestList[$k]['product_id'],
-                                    'hsn'               => (($getCompanyProduct) ? $getCompanyProduct->hsn : ''),
-                                    'qty'               => (($requestList[$k]['qty'] != '') ? $requestList[$k]['qty'] : 0.00),
-                                    'unit'              => (($getCompanyProduct) ? $getCompanyProduct->unit : 0),
+                                    'product_id'        => $req['product_id'],
+                                    'hsn'               => $getCompanyProduct->hsn ?? '',
+                                    'qty'               => $req['qty'] ?: 0.00,
+                                    'unit'              => $getCompanyProduct->unit ?? 0,
                                     'new_product_image' => json_encode($item_images),
                                     'status'            => 1,
                                     'approved_date'     => date('Y-m-d H:i:s'),
@@ -3886,43 +3857,34 @@ class ApiController extends BaseController
                         $apiStatus  = TRUE;
                         http_response_code(200);
                         $apiMessage = 'Request Submitted Successfully !!!';
-                        $apiExtraField = 'response_code';
-                        $apiExtraData  = http_response_code();
                     } else {
                         $apiStatus  = FALSE;
                         http_response_code(200);
                         $apiMessage = 'Minimum One Product Needs To Be Select !!!';
-                        $apiExtraField = 'response_code';
-                        $apiExtraData  = http_response_code();
                     }
                 } else {
                     $apiStatus  = FALSE;
                     http_response_code(404);
                     $apiMessage = 'User Not Found !!!';
-                    $apiExtraField = 'response_code';
-                    $apiExtraData  = http_response_code();
                 }
             } else {
                 http_response_code($getTokenValue['data'][2]);
-                $apiStatus      = FALSE;
-                $apiMessage     = $this->getResponseCode(http_response_code());
-                $apiExtraField  = 'response_code';
-                $apiExtraData   = http_response_code();
+                $apiStatus  = FALSE;
+                $apiMessage = $this->getResponseCode(http_response_code());
             }
         } else {
             http_response_code(400);
-            $apiStatus      = FALSE;
-            $apiMessage     = $this->getResponseCode(http_response_code());
-            $apiExtraField  = 'response_code';
-            $apiExtraData   = http_response_code();
+            $apiStatus  = FALSE;
+            $apiMessage = $this->getResponseCode(http_response_code());
         }
 
         $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
     }
 
-    /**
-     * 🔹 Compress all base64 images recursively inside payload array
-     */
+    /* -------------------------------------------------------------------------- */
+    /* 🔹 Helpers: Compress all Base64 images in payload before usage             */
+    /* -------------------------------------------------------------------------- */
+
     private function compressAllBase64InPayload($data, $maxWidth = 800, $maxHeight = 800, $quality = 60)
     {
         foreach ($data as $key => $value) {
@@ -3935,18 +3897,12 @@ class ApiController extends BaseController
         return $data;
     }
 
-    /**
-     * Check if string looks like Base64 image
-     */
     private function isBase64Image($string)
     {
-        return (bool) preg_match('/^data:image\/(png|jpg|jpeg);base64,/', $string) || 
+        return (bool) preg_match('/^data:image\/(png|jpg|jpeg);base64,/', $string) ||
             (bool) preg_match('/^[A-Za-z0-9+\/=]+$/', substr($string, 0, 100));
     }
 
-    /**
-     * Compress and resize single base64 image
-     */
     private function compressBase64Image($base64, $maxWidth = 800, $maxHeight = 800, $quality = 60)
     {
         $base64 = preg_replace('#^data:image/\w+;base64,#i', '', $base64);
@@ -3956,9 +3912,8 @@ class ApiController extends BaseController
 
         $width = imagesx($src);
         $height = imagesy($src);
-
         $ratio = min($maxWidth / $width, $maxHeight / $height, 1);
-        $newWidth = $width * $ratio;
+        $newWidth  = $width * $ratio;
         $newHeight = $height * $ratio;
 
         $dst = imagecreatetruecolor($newWidth, $newHeight);
