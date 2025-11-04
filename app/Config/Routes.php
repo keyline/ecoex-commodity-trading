@@ -278,6 +278,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     // reports
     $routes->match(['get', 'post'], "reports/analytics-report", "ReportController::analyticsReport");
     $routes->match(['get', 'post'], "reports/get-company-product", "ReportController::getCompanyProduct");
+    $routes->match(['get', 'post'], "enquiry-report", "ReportController::enquiryReport");
     $routes->match(['get', 'post'], "company-report", "ReportController::companyReport");
     $routes->get('company-report-export/pdf', 'ReportController::companyReportExportPdf');
     $routes->get('company-report-export/excel', 'ReportController::companyReportExportExcel');

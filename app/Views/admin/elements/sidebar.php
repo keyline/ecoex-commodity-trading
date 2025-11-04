@@ -432,6 +432,14 @@ if ($userType == 'MA') {
                     </li>
                     <!-- plant report end -->
                 <?php } ?>
+                <?php if ($common_model->checkModuleAccess(27)) { ?>
+                    <li>
+                        <a class="<?= (($pageSegment == 'enquiry-report') ? 'active' : '') ?>" href="<?= base_url('admin/enquiry-report') ?>">
+                            <i class="fa fa-arrow-right"></i><span>Enquiry Report</span>
+                        </a>
+                    </li>
+                    <!-- enquiry report end -->
+                <?php } ?>
             </ul>
         </li>
     <?php } ?>

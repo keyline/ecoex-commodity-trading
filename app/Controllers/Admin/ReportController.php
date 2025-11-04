@@ -304,6 +304,116 @@ class ReportController extends BaseController
         echo $this->layout_after_login($title, $page_name, $data);
     }
 
+    public function enquiryReport()
+    {
+        $user_type                          = session('user_type');        
+        $title                              = 'Manage Enquiry Reports';
+        $page_name                          = 'reports/enquiry-report';        
+
+        $data['is_search']                  = 0;        
+        $data['is_date_range']              = 0;        
+
+
+        $data['search_range_from']          = '';
+        $data['search_range_to']            = '';
+        $data['response']                   = [];
+
+        if ($this->request->getGet('mode') == 'advance_search') {
+            $records                = [];
+            $details_data           = [];
+            $requestData            = $this->request->getGet();  
+            // pr($requestData);   
+            $from_date = $requestData['search_range_from'];
+            $to_date   = $requestData['search_range_to'];               
+
+            $sql1 = "SELECT 
+                        eq.*, 
+                        esq.vendor_id,                        
+                        esq.item_id, 
+                        esq.weighted_qty, 
+                        esq.vehicle_registration_nos,
+                        ec.company_name AS company_name,
+                        eci.item_name_ecoex AS item_name,
+                        euv.company_name AS vendor_name,
+                        eup.company_name AS plant_name
+                    FROM ecomm_enquires eq
+                    LEFT JOIN ecomm_sub_enquires esq ON eq.id = esq.enq_id
+                    LEFT JOIN ecoex_companies ec ON eq.company_id = ec.id
+                    LEFT JOIN ecomm_company_items eci ON esq.item_id = eci.id
+                    LEFT JOIN ecomm_users euv ON esq.vendor_id = euv.id   -- vendor
+                    LEFT JOIN ecomm_users eup ON eq.plant_id = eup.id     -- plant
+                    WHERE DATE(eq.created_at) BETWEEN '$from_date' AND '$to_date' order by eq.enquiry_no ASC";
+
+            $query = $this->db->query($sql1);
+            $results = $query->getResult();
+            // $date_param             = $this->plantService->buildReportParams($requestData);
+            // $details_data           = $this->plantService->getEnquires($search_company_id, $date_param['from_date'], $date_param['to_date']);
+
+            // pr($details_data);
+
+            $mergedData = [];
+
+            foreach ($results as $row) {
+                $enquiryNo = $row->enquiry_no;
+
+                if (!isset($mergedData[$enquiryNo])) {
+                    // initialize
+                    $mergedData[$enquiryNo] = [
+                        'id' => $row->id,
+                        'enquiry_no' => $row->enquiry_no,                        
+                        'vendor_names' => [],
+                        'plant_names' => [],
+                        'company_names' => [],
+                        'item_names' => [],
+                        'weighted_qtys' => [],
+                        'vehicle_registration_nos' => [],
+                    ];
+                }
+
+                // push array values
+                $mergedData[$enquiryNo]['vendor_names'][] = $row->vendor_name;
+                $mergedData[$enquiryNo]['plant_names'][] = $row->plant_name;
+                $mergedData[$enquiryNo]['company_names'][] = $row->company_name;
+                $mergedData[$enquiryNo]['item_names'][] = $row->item_name;
+                $mergedData[$enquiryNo]['weighted_qtys'][] = $row->weighted_qty;
+
+                $vehicles = json_decode($row->vehicle_registration_nos, true);
+                if (!empty($vehicles)) {
+                    $mergedData[$enquiryNo]['vehicle_registration_nos'] = array_merge(
+                        $mergedData[$enquiryNo]['vehicle_registration_nos'],
+                        $vehicles
+                    );
+                }
+            }
+
+            // ✅ Remove duplicates from repeated fields
+            foreach ($mergedData as &$data) {
+                $data['vendor_names'] = array_values(array_unique($data['vendor_names']));
+                $data['plant_names'] = array_values(array_unique($data['plant_names']));
+                $data['company_names'] = array_values(array_unique($data['company_names']));
+                $data['item_names'] = array_values(array_unique($data['item_names']));
+                $data['vehicle_registration_nos'] = array_values(array_unique($data['vehicle_registration_nos']));
+            }
+
+            // reset to numeric array
+            $finalData = array_values($mergedData);
+
+            pr($finalData);
+
+            $response = [
+                'graph_title'       => 'Enquiry Report',
+                'details_data'      => $finalData,
+            ];
+            // pr($response);
+            $data['is_search']                  = 1;                                  
+            $data['search_range_from']          = $requestData['search_range_from'];
+            $data['search_range_to']            = $requestData['search_range_to'];
+            $data['response']                   = $response;
+        }
+
+        echo $this->layout_after_login($title, $page_name, $data);
+    }
+
     public function companyReportExportPdf()
     {
         $page_name              = 'Views/admin/maincontents/reports/pdf_report_template';
