@@ -96,7 +96,9 @@ class EnquiryRequestController extends BaseController
         }
         $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
         $bugArray                   = $data['rows'];
-        $plantIds = [1, 32, 6, 222, 34, 342];
+
+        echo $user_id                    = session('user_id');
+        $plantIds                   = [1, 32, 6, 222, 34, 342];
 
         // Filter the array
         $filtered = array_filter($bugArray, function($item) use ($plantIds) {
