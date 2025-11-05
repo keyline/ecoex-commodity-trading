@@ -97,8 +97,9 @@ class EnquiryRequestController extends BaseController
         $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
         $bugArray                   = $data['rows'];
 
-        echo $user_id                    = session('user_id');
-        $plantIds                   = [1, 32, 6, 222, 34, 342];
+        $user_id                    = session('user_id');
+        $getAdminUser               = $this->data['model']->find_data($this->data['table_name'], 'row', ['id' => $user_id], 'plant_ids');
+        $plantIds                   = (($getAdminUser)?json_decode($getAdminUser->plant_ids):[]);
 
         // Filter the array
         $filtered = array_filter($bugArray, function($item) use ($plantIds) {
