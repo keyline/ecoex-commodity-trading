@@ -95,6 +95,8 @@ class EnquiryRequestController extends BaseController
             $conditions                 = ['status' => $status, 'company_id' => $company_id];
         }
         $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+        pr($data['rows']);
+        
         //get whatsapp notification status per enquiry
         if (!empty($data['rows'])) {
 
@@ -1927,8 +1929,7 @@ class EnquiryRequestController extends BaseController
         INNER JOIN ecomm_users 
             ON ecomm_sub_enquires.vendor_id = ecomm_users.id
         WHERE ecomm_sub_enquires.enq_id = ?
-        GROUP BY ecomm_sub_enquires.vendor_id
-    ";
+        GROUP BY ecomm_sub_enquires.vendor_id";
 
         $query = $this->db->query($sql, [$enq_id]);
 
