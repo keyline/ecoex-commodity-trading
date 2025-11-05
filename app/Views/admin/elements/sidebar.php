@@ -18,6 +18,21 @@ if ($segmentCount > 3) {
 } else {
     $paramerId = '';
 }
+
+// 1️⃣ Define reusable function
+function filterByPlantId($dataArray, $plantIds)
+{
+    $filtered = array_filter($dataArray, function($item) use ($plantIds) {
+        return in_array($item['plant_id'], $plantIds); // use array key since find_data returns array
+    });
+
+    return array_values($filtered);
+}
+
+$user_id                    = $session->user_id;
+$getAdminUser               = $common_model->find_data('ecoex_admin_user', 'row', ['id' => $user_id], 'plant_ids');
+$plantIds                   = (($getAdminUser)?json_decode($getAdminUser->plant_ids):[]);
+
 $userType           = $session->user_type;
 $userId             = $session->user_id;
 $company_id         = $session->company_id;
@@ -40,22 +55,54 @@ if ($userType == 'MA') {
 
     $step13_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 13]);
 } elseif ($userType == 'U') {
-    $step0_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 0]);
-    $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
-    $step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2]);
+    // $step0_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 0]);
+    // $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
+    // $step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2]);
 
-    $step3_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 3]);
-    $step4_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 4]);
-    $step5_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 5]);
-    $step6_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 6]);
-    $step7_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 7]);
-    $step8_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 8]);
-    $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 9]);
-    $step10_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 10]);
-    $step11_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 11]);
-    $step12_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 12]);
+    // $step3_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 3]);
+    // $step4_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 4]);
+    // $step5_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 5]);
+    // $step6_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 6]);
+    // $step7_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 7]);
+    // $step8_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 8]);
+    // $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 9]);
+    // $step10_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 10]);
+    // $step11_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 11]);
+    // $step12_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 12]);
 
-    $step13_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 13]);
+    // $step13_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 13]);
+
+    // $bugArray0          = $common_model->find_data('ecomm_enquires', 'array', ['status' => 0], 'id,sl_no,plant_id');
+    // $bugArray1          = $common_model->find_data('ecomm_enquires', 'array', ['status' => 1], 'id,sl_no,plant_id');
+    // $bugArray2          = $common_model->find_data('ecomm_enquires', 'array', ['status' => 2], 'id,sl_no,plant_id');
+    // $bugArray3          = $common_model->find_data('ecomm_enquires', 'array', ['status' => 3], 'id,sl_no,plant_id');
+    // $bugArray4          = $common_model->find_data('ecomm_enquires', 'array', ['status' => 4], 'id,sl_no,plant_id');
+    // $bugArray5          = $common_model->find_data('ecomm_enquires', 'array', ['status' => 5], 'id,sl_no,plant_id');
+    // $bugArray6          = $common_model->find_data('ecomm_enquires', 'array', ['status' => 6], 'id,sl_no,plant_id');
+    // $bugArray7          = $common_model->find_data('ecomm_enquires', 'array', ['status' => 7], 'id,sl_no,plant_id');
+    // $bugArray8          = $common_model->find_data('ecomm_enquires', 'array', ['status' => 8], 'id,sl_no,plant_id');
+    // $bugArray9          = $common_model->find_data('ecomm_enquires', 'array', ['status' => 9], 'id,sl_no,plant_id');
+    // $bugArray10          = $common_model->find_data('ecomm_enquires', 'array', ['status' => 10], 'id,sl_no,plant_id');
+    // $bugArray11          = $common_model->find_data('ecomm_enquires', 'array', ['status' => 11], 'id,sl_no,plant_id');
+    // $bugArray12          = $common_model->find_data('ecomm_enquires', 'array', ['status' => 12], 'id,sl_no,plant_id');
+    // $bugArray13          = $common_model->find_data('ecomm_enquires', 'array', ['status' => 13], 'id,sl_no,plant_id');
+
+    // $filtered0 = array_filter($bugArray0, function($item) use ($plantIds) {
+    //     return in_array($item->plant_id, $plantIds);
+    // });
+    // $filtered0          = array_values($filtered0);
+    // $step0_count        = count($filtered0);
+
+    // 3️⃣ Fetch all status-based arrays
+    for ($i = 0; $i <= 13; $i++) {
+        ${"bugArray$i"} = $common_model->find_data('ecomm_enquires', 'array', ['status' => $i], 'id,sl_no,plant_id');
+
+        // Filter them dynamically
+        ${"filteredArray$i"} = filterByPlantId(${"bugArray$i"}, $plantIds);
+
+        ${"step{$i}_count"} = count(${"filteredArray$i"});
+    }
+    
 } else {
     $step0_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 0, 'company_id' => $company_id]);
     $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1, 'company_id' => $company_id]);
@@ -74,6 +121,8 @@ if ($userType == 'MA') {
 
     $step13_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 13, 'company_id' => $company_id]);
 }
+
+
 ?>
 <style type="text/css">
     a.nav-link.active {
