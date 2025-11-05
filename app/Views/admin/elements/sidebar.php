@@ -23,7 +23,7 @@ if ($segmentCount > 3) {
 function filterByPlantId($dataArray, $plantIds)
 {
     $filtered = array_filter($dataArray, function($item) use ($plantIds) {
-        return in_array($item['plant_id'], $plantIds); // use array key since find_data returns array
+        return in_array($item->plant_id, $plantIds); // use array key since find_data returns array
     });
 
     return array_values($filtered);
