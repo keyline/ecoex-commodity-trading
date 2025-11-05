@@ -200,7 +200,7 @@ class AdminSubUserController extends BaseController {
         $page_name                  = 'sub-users/access-plant';
 
         $orderBy[0]                 = ['field' => 'plant_name', 'type' => 'ASC'];
-        $data['plantLists']             = $this->common_model->find_data('ecomm_users', 'array', ['type' => 'PLANT', 'status>=' => 1, 'status<=' => 2], 'id,plant_name,full_address,state', '', '', $orderBy);
+        $data['plantLists']         = $this->common_model->find_data('ecomm_users', 'array', ['type' => 'PLANT', 'status>=' => 1, 'status<=' => 2], 'id,plant_name,full_address,state,parent_id', '', '', $orderBy);
 
         if($this->request->getMethod() == 'post') {
             // pr($this->request->getPost());

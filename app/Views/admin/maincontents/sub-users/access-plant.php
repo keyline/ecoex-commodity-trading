@@ -39,6 +39,7 @@ $controller_route   = $moduleDetail['controller_route'];
                             <!-- 🔍 Search Filters -->
                             <div class="mb-3">
                                 <div style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="text" id="searchCompanyName" class="form-control" placeholder="Search Company Name" style="width: 25%;">
                                     <input type="text" id="searchPlantName" class="form-control" placeholder="Search Plant Name" style="width: 25%;">
                                     <input type="text" id="searchAddress" class="form-control" placeholder="Search Address" style="width: 25%;">
                                     <input type="text" id="searchState" class="form-control" placeholder="Search State" style="width: 25%;">
@@ -53,6 +54,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                             #
                                             <input type="checkbox" id="select_all_plants" onclick="toggleSelectAllPlants(this)">
                                         </th>
+                                        <th>Company Name</th>
                                         <th>Plant Name</th>
                                         <th>Plant Address</th>
                                         <th>Plant State</th>
@@ -68,6 +70,12 @@ $controller_route   = $moduleDetail['controller_route'];
                                                     <input type="checkbox" class="plant_checkbox" name="plant_ids[]" value="<?= $plant->id ?>"
                                                         <?= (in_array($plant->id, (($row->plant_ids != '') ? json_decode($row->plant_ids) : [])) ? 'checked' : '') ?>>
                                                 </th>
+                                                <td>
+                                                    <?php
+                                                    $getCompany = $common_model->find_data('ecoex_companies', 'row', ['id' => $plant->parent_id], 'company_name');
+                                                    echo (($getCompany)?$getCompany->company_name:'');
+                                                    ?>
+                                                </td>
                                                 <td><?= $plant->plant_name ?></td>
                                                 <td><?= $plant->full_address ?></td>
                                                 <td><?= $plant->state ?></td>
@@ -125,11 +133,13 @@ $controller_route   = $moduleDetail['controller_route'];
     });
 
     // ✅ Column-wise filtering
+    const searchCompanyName = document.getElementById('searchCompanyName');
     const searchPlantName = document.getElementById('searchPlantName');
     const searchAddress = document.getElementById('searchAddress');
     const searchState = document.getElementById('searchState');
 
     function filterPlants() {
+        const companyVal = searchCompanyName.value.toLowerCase();
         const nameVal = searchPlantName.value.toLowerCase();
         const addressVal = searchAddress.value.toLowerCase();
         const stateVal = searchState.value.toLowerCase();
@@ -147,11 +157,12 @@ $controller_route   = $moduleDetail['controller_route'];
         });
     }
 
-    [searchPlantName, searchAddress, searchState].forEach(input => {
+    [searchCompanyName, searchPlantName, searchAddress, searchState].forEach(input => {
         input.addEventListener('keyup', filterPlants);
     });
 
     function clearPlantSearch() {
+        searchCompanyName.value = '';
         searchPlantName.value = '';
         searchAddress.value = '';
         searchState.value = '';
