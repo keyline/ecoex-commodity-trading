@@ -107,12 +107,12 @@ class EnquiryRequestController extends BaseController
         $filtered = array_values($filtered);
 
         // Output result
-        // pr($filtered);
+        $data['rows']               = $filtered;
 
         //get whatsapp notification status per enquiry
-        if (!empty($data['rows'])) {
+        if (!empty($filtered)) {
 
-            $enquiryIds = array_column($data['rows'], 'id');
+            $enquiryIds = array_column($filtered, 'id');
 
             $w_select = 'id, enquiry_id, send_type, status';
 
