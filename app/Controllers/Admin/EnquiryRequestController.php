@@ -95,8 +95,8 @@ class EnquiryRequestController extends BaseController
             $conditions                 = ['status' => $status, 'company_id' => $company_id];
         }
         $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
-        pr($data['rows']);
-        
+        // pr($data['rows']);
+
         //get whatsapp notification status per enquiry
         if (!empty($data['rows'])) {
 
