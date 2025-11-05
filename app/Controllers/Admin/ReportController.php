@@ -12,11 +12,13 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use Config\Database;
 
 class ReportController extends BaseController
 {
     protected $plantService;
     private $model;  //This can be accessed by all class methods
+    protected $db;
     public function __construct()
     {
         $session = \Config\Services::session();
@@ -35,6 +37,9 @@ class ReportController extends BaseController
         );
 
         $this->plantService = new PlantReportService();
+
+        $this->db = Database::connect();
+
     }
     public function analyticsReport()
     {
@@ -57,6 +62,8 @@ class ReportController extends BaseController
         $data['search_range_from']          = '';
         $data['search_range_to']            = '';
         $data['response']                   = [];
+        $data['search_user_id']             = '';
+        $data['search_user_type']           = '';
 
         if ($this->request->getGet('mode') == 'advance_search') {
             $records                = [];
@@ -66,19 +73,107 @@ class ReportController extends BaseController
             $search_unit_id         = $requestData['search_unit_id'];
             $search_product_id      = $requestData['search_product_id'];
             $getCompany             = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $search_company_id]);
+            $user_type              = $requestData['search_user_type'] ?? '';
+
+            $plantIdFilter = '';
+            $allowedPlantIds = [];
+
+
+            switch ($user_type) {
+                case 'all':
+                    // No additional filter
+
+
+                    $userData = null;
+
+
+                    break;
+
+                case 'commodity_manager_vp':
+                    // No additional filter for now
+
+
+                    $userData = $this->db->table('ecoex_admin_user')
+                                            ->select('plant_ids')
+                                            ->whereIn('role_id', [17])
+                                            ->where('user_type', 'U')
+                                            ->get()
+                                            ->getRow();
+
+
+                    break;
+
+                case 'industrial_commodity_user':
+                    // No additional filter for now
+
+
+                    $userData = $this->db->table('ecoex_admin_user')
+                                            ->select('plant_ids')
+                                            ->whereIn('role_id', [16])
+                                            ->where('user_type', 'U')
+                                            ->get()
+                                            ->getRow();
+
+
+                    break;
+
+                default:
+                    // No filter selected
+                    $user_type = '';
+                    break;
+            }
+
+
+            // ----------------------------------------------------
+            // STEP 3: Parse plant IDs if available
+            // ----------------------------------------------------
+            if ($userData && !empty($userData->plant_ids)) {
+                $allowedPlantIds = json_decode($userData->plant_ids, true);
+                $allowedPlantIds = array_filter($allowedPlantIds);
+
+                if (!empty($allowedPlantIds)) {
+                    // Build SQL-safe filter string
+                    $plantIdFilter = " AND plant_id IN (" . implode(',', array_map('intval', $allowedPlantIds)) . ")";
+                }
+            }
+
 
             if (array_key_exists('is_date_range', $requestData)) {
-                $search_range_from  = explode("-", $requestData['search_range_from']);
-                $search_range_to    = explode("-", $requestData['search_range_to']);
-                $currentMonth       = (int)$search_range_to[1];
-                $lastDay            = lastdayMonth($currentMonth);
-                $from_date          = $search_range_from[0] . '-' . $search_range_from[1] . '-01';
-                $to_date            = $search_range_to[0] . '-' . $search_range_to[1] . '-' . $lastDay;
+                //$search_range_from  = explode("-", $requestData['search_range_from']);
+                //$search_range_to    = explode("-", $requestData['search_range_to']);
+                //$currentMonth       = (int)$search_range_to[1];
+                //$lastDay            = lastdayMonth($currentMonth);
+                //$from_date          = $search_range_from[0] . '-' . $search_range_from[1] . '-01';
+                //$to_date            = $search_range_to[0] . '-' . $search_range_to[1] . '-' . $lastDay;
                 $is_date_range      = 1;
-                $graph_title        = (($getCompany) ? $getCompany->company_name : '') . " " . $this->common_model->monthShortName($search_range_from[1]) . "-" . $search_range_from[0] . " to " . $this->common_model->monthShortName($search_range_to[1]) . "-" . $search_range_to[0];
+                //$graph_title        = (($getCompany) ? $getCompany->company_name : '') . " " . $this->common_model->monthShortName($search_range_from[1]) . "-" . $search_range_from[0] . " to " . $this->common_model->monthShortName($search_range_to[1]) . "-" . $search_range_to[0];
+                $search_range_from  = $requestData['search_range_from'];
+                $search_range_to    = $requestData['search_range_to'];
+
+
+                // Custom backend check: from <= to
+                if (strtotime($search_range_from) > strtotime($search_range_to)) {
+                    return redirect()->back()->with('error_message', "'From' date cannot be later than 'To' date.");
+                }
+
+                // Optional: ensure both <= today
+                if (strtotime($search_range_to) > strtotime(date('Y-m-d'))) {
+                    return redirect()->back()->with('error_message', "'To' date cannot be in the future.");
+                }
+
+
+                $graph_title        = (($getCompany) ? $getCompany->company_name : '');
+
+                $graph_title .= ' ' .
+                        date('d-M-Y', strtotime($search_range_from)) .
+                        ' to ' .
+                        date('d-M-Y', strtotime($search_range_to));
+
+
             } else {
                 $search_day_id      = $requestData['search_day_id'];
-                if ($search_day_id == 'this_month') {
+                $getCompanyName = ($getCompany) ? $getCompany->company_name : '';
+                /*if ($search_day_id == 'this_month') {
                     $currentMonth       = (int)date('m');
                     $lastDay            = lastdayMonth($currentMonth);
                     $from_date          = date('Y') . '-' . date('m') . '-01';
@@ -88,10 +183,92 @@ class ReportController extends BaseController
                     $from_date          = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, 1));
                     $to_date            = date("Y-m-d", mktime(0, 0, 0, date("m"), 0));
                     $graph_title        = (($getCompany) ? $getCompany->company_name : '') . " " . $this->common_model->monthShortName(date("m", mktime(0, 0, 0, date("m") - 1, 1))) . "-" . date('Y');
+                } elseif ($search_day_id == 'today') {
+
+                    $from_date = $to_date = date('Y-m-d');
+                    $graph_title = "$getCompanyName Today (" . date('d-M-Y') . ")";
+
+                }*/
+
+                switch ($search_day_id) {
+                    case 'today':
+                        $from_date = $to_date = date('Y-m-d');
+                        $graph_title = "$getCompanyName Today (" . date('d-M-Y') . ")";
+                        break;
+
+                    case 'yesterday':
+                        $from_date = $to_date = date('Y-m-d', strtotime('-1 day'));
+                        $graph_title = "$getCompanyName Yesterday (" . date('d-M-Y', strtotime('-1 day')) . ")";
+                        break;
+
+                    case 'this_week':
+                        // Week starts on Monday by ISO standard
+                        $from_date = date('Y-m-d', strtotime('monday this week'));
+                        $to_date   = date('Y-m-d', strtotime('sunday this week'));
+                        $graph_title = "$getCompanyName This Week (" . date('d M', strtotime($from_date)) . " - " . date('d M') . ")";
+                        break;
+
+                    case 'last_week':
+                        $from_date = date('Y-m-d', strtotime('monday last week'));
+                        $to_date   = date('Y-m-d', strtotime('sunday last week'));
+                        $graph_title = "$getCompanyName Last Week (" . date('d M', strtotime($from_date)) . " - " . date('d M', strtotime($to_date)) . ")";
+                        break;
+
+                    case 'this_month':
+                        $currentMonth = (int)date('m');
+                        $lastDay = lastdayMonth($currentMonth);
+                        $from_date = date('Y') . '-' . date('m') . '-01';
+                        $to_date = date('Y') . '-' . date('m') . '-' . $lastDay;
+                        $graph_title = "$getCompanyName " . $this->common_model->monthShortName(date('m')) . "-" . date('Y');
+                        break;
+
+                    case 'last_month':
+                        $from_date = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, 1));
+                        $to_date = date("Y-m-d", mktime(0, 0, 0, date("m"), 0));
+                        $graph_title = "$getCompanyName " . $this->common_model->monthShortName(date("m", mktime(0, 0, 0, date("m") - 1, 1))) . "-" . date('Y');
+                        break;
+
+                    case 'last_six_month':
+                        $from_date = date("Y-m-d", strtotime("-6 months"));
+                        $to_date = date("Y-m-d");
+                        $fromLabel = $this->common_model->monthShortName(date("m", strtotime($from_date))) . "-" . date("Y", strtotime($from_date));
+                        $toLabel = $this->common_model->monthShortName(date("m")) . "-" . date("Y");
+                        $graph_title = "$getCompanyName $fromLabel to $toLabel";
+                        break;
+
+                    case 'this_fy_year':
+                        // Assuming financial year = April to March
+                        $currentYear = date('Y');
+                        $currentMonth = date('n');
+                        if ($currentMonth >= 4) {
+                            // FY starts April this year
+                            $from_date = "$currentYear-04-01";
+                            $to_date = "$currentYear-03-31"; // placeholder
+                            $fyLabel = $currentYear . '-' . ($currentYear + 1);
+                            $to_date = date('Y-m-d'); // limit to current date if FY ongoing
+                        } else {
+                            // FY started last year
+                            $from_date = ($currentYear - 1) . "-04-01";
+                            $to_date = "$currentYear-03-31";
+                            $fyLabel = ($currentYear - 1) . '-' . $currentYear;
+                        }
+                        $graph_title = "$getCompanyName FY $fyLabel";
+                        break;
+
+                    default:
+                        // No filter selected
+                        $from_date = null;
+                        $to_date = null;
+                        $graph_title = $getCompanyName ?: 'Overall Report';
+                        break;
                 }
+
                 $is_date_range      = 0;
+
+                $monthList          = $this->getMonthsInRange($from_date, $to_date);
+
             }
-            $monthList          = $this->getMonthsInRange($from_date, $to_date);
+
             if (!empty($monthList)) {
                 for ($m = 0; $m < count($monthList); $m++) {
                     $currentMonth       = (int)$monthList[$m]['month'];
@@ -100,9 +277,19 @@ class ReportController extends BaseController
                     $fdate              = $monthList[$m]['year'] . '-' . $monthList[$m]['month'] . '-01';
                     $tdate              = $monthList[$m]['year'] . '-' . $monthList[$m]['month'] . '-' . $lastDay;
 
-                    $sql                = "SELECT id,enquiry_no,plant_id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate' group by plant_id";
+
+                    // Trim to actual date range if start/end are partial
+                    if ($fdate < $from_date) {
+                        $fdate = $from_date;
+                    }
+                    if ($tdate > $to_date) {
+                        $tdate = $to_date;
+                    }
+
+
+                    $sql                = "SELECT id,enquiry_no,plant_id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate' $plantIdFilter group by plant_id";
                     $plantCount         = $this->db->query($sql)->getNumRows();
-                    $enquires           = $this->db->query("SELECT id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate' AND status < 13")->getResult();
+                    $enquires           = $this->db->query("SELECT id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$fdate' AND created_at <= '$tdate' AND status < 13 $plantIdFilter")->getResult();
                     // pr($enquires);
                     $vehicles           = [];
                     $weightMatQty       = [];
@@ -185,6 +372,99 @@ class ReportController extends BaseController
                         'vehicle_count'     => count($vehicles)
                     ];
                 }
+            } else {
+
+                $sql                = "SELECT id,enquiry_no,plant_id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$search_range_from' AND created_at <= '$search_range_to' $plantIdFilter group by plant_id";
+                $plantCount         = $this->db->query($sql)->getNumRows();
+                $enquires           = $this->db->query("SELECT id FROM ecomm_enquires where company_id = '$search_company_id' AND created_at >= '$search_range_from' AND created_at <= '$search_range_to' AND status < 13 $plantIdFilter")->getResult();
+                // pr($enquires);
+                $vehicles           = [];
+                $weightMatQty       = [];
+                $convertedUnit      = 'MT';
+
+
+                if ($enquires) {
+                    foreach ($enquires as $enquiry) {
+                        if ($search_product_id == 'all') {
+                            if ($search_unit_id == 'PCS') {
+                                $subEnquiries = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enquiry->id, 'weighted_unit' => $search_unit_id], 'vehicle_registration_nos,weighted_qty,item_id,weighted_unit,enquiry_no,sub_enquiry_no,enq_id');
+                            } else {
+                                $subEnquiries = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enquiry->id, 'weighted_unit!=' => 'PCS'], 'vehicle_registration_nos,weighted_qty,item_id,weighted_unit,enquiry_no,sub_enquiry_no,enq_id');
+                            }
+                        } else {
+                            if ($search_unit_id == 'PCS') {
+                                $subEnquiries = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enquiry->id, 'weighted_unit' => $search_unit_id, 'item_id' => $search_product_id], 'vehicle_registration_nos,weighted_qty,item_id,weighted_unit,enquiry_no,sub_enquiry_no,enq_id');
+                            } else {
+                                $subEnquiries = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enquiry->id, 'weighted_unit!=' => 'PCS', 'item_id' => $search_product_id], 'vehicle_registration_nos,weighted_qty,item_id,weighted_unit,enquiry_no,sub_enquiry_no,enq_id');
+                            }
+                        }
+
+                        if ($subEnquiries) {
+                            foreach ($subEnquiries as $subEnquiry) {
+                                $vehicle_registration_nos = json_decode($subEnquiry->vehicle_registration_nos);
+                                if (!empty($vehicle_registration_nos)) {
+                                    for ($v = 0; $v < count($vehicle_registration_nos); $v++) {
+                                        if (!in_array($vehicle_registration_nos[$v], $vehicles)) {
+                                            $vehicles[] = $vehicle_registration_nos[$v];
+                                        }
+                                    }
+                                }
+
+                                if ($search_unit_id == 'PCS') {
+                                    $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                    $convertedUnit          = $search_unit_id;
+                                } else {
+                                    if ($subEnquiry->weighted_unit == 'MT') {
+                                        $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                        $convertedUnit          = $search_unit_id;
+                                    } else {
+                                        if ($search_unit_id == 'MT') {
+                                            $weightMatQty[]         = weightConversion($subEnquiry->weighted_qty, 'KG', 'MT');
+                                        } else {
+                                            $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                        }
+                                        $convertedUnit          = $search_unit_id;
+                                    }
+                                }
+                                // if($search_unit_id == 'KG'){
+                                //     $weightMatQty[]         = weightConversion($subEnquiry->weighted_qty, 'KG', 'MT');
+                                //     // $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                //     $convertedUnit          = $search_unit_id;
+                                // } elseif($search_unit_id == 'MT'){
+                                //     $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                //     $convertedUnit          = $search_unit_id;
+                                // } elseif($search_unit_id == 'PCS'){
+                                //     $weightMatQty[]         = $subEnquiry->weighted_qty;
+                                //     $convertedUnit          = $search_unit_id;
+                                // }
+
+                                /* details data for table */
+                                $getItem        = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $subEnquiry->item_id], 'item_name_ecoex');
+                                $details_data[] = [
+                                    'enq_id'            => $subEnquiry->enq_id,
+                                    'enquiry_no'        => $subEnquiry->enquiry_no,
+                                    'sub_enquiry_no'    => $subEnquiry->sub_enquiry_no,
+                                    'item_name'         => (($getItem) ? $getItem->item_name_ecoex : ''),
+                                    'weighted_qty'      => (($subEnquiry->weighted_unit == 'KG') ? $subEnquiry->weighted_qty : weightConversion($subEnquiry->weighted_qty, 'MT', 'KG')),
+                                    // 'weighted_unit'     => $subEnquiry->weighted_unit,
+                                    'weighted_unit'     => 'KG',
+                                ];
+                                /* details data for table */
+                            }
+                        }
+                    }
+                }
+
+
+                $records[]         = [
+                                        'month_year_name'   => "'" . $graph_title . "'",
+                                        'scrap_qty'         => round(array_sum($weightMatQty)),
+                                        'no_of_plant'       => $plantCount,
+                                        'vehicle_count'     => count($vehicles)
+                                    ];
+
+
+
             }
             $response = [
                 'graph_title'       => $graph_title,
@@ -202,6 +482,7 @@ class ReportController extends BaseController
             $data['search_range_from']          = $requestData['search_range_from'];
             $data['search_range_to']            = $requestData['search_range_to'];
             $data['response']                   = $response;
+            $data['search_user_type']           = $user_type;
             // pr($response);
         }
 
@@ -225,7 +506,7 @@ class ReportController extends BaseController
     }
     public function getCompanyProduct()
     {
-        $apiStatus          = TRUE;
+        $apiStatus          = true;
         $apiMessage         = '';
         $apiResponse        = [];
         $apiExtraField      = '';
@@ -245,7 +526,7 @@ class ReportController extends BaseController
             }
         }
         http_response_code(200);
-        $apiStatus          = TRUE;
+        $apiStatus          = true;
         $apiMessage         = 'Data Available !!!';
         $apiExtraField      = 'response_code';
         $apiExtraData       = http_response_code();
@@ -261,7 +542,7 @@ class ReportController extends BaseController
         $title                              = 'Manage Company Reports';
         $page_name                          = 'reports/plants-report';
 
-        if($user_type == 'COMPANY'){
+        if ($user_type == 'COMPANY') {
             $data['companies']  = $this->common_model->find_data('ecoex_companies', 'result-array', ['status>=' => 2, 'id' => $company_id], 'id,company_name');
         } else {
             $data['companies']                  = $this->plantService->getCompanies();
@@ -398,7 +679,7 @@ class ReportController extends BaseController
                 $vendorDates = array_map(function ($inv) {
                     return date('d-m-Y', strtotime($inv['date']));
                 }, $sub['invoice']);
-                $vendorNums  = array_map(fn($inv) => esc($inv['number']), $sub['invoice']);
+                $vendorNums  = array_map(fn ($inv) => esc($inv['number']), $sub['invoice']);
                 $vehicles    = implode(', ', array_map('esc', $sub['vehicles']));
 
                 $vendorDatesStr = implode(', ', $vendorDates);
@@ -456,5 +737,93 @@ class ReportController extends BaseController
         $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
         exit;
+    }
+
+    public function getCompaniesByUserType()
+    {
+        $userType = $this->request->getPost('user_type');
+        $db = \Config\Database::connect();
+
+        if ($userType == 'commodity_manager_vp') {
+            $role_id = 17;
+        } elseif ($userType == 'industrial_commodity_user') {
+            $role_id = 16;
+        } else {
+            $role_id = '';
+        }
+
+
+        // --------------------------------------------------
+        // STEP 2: If user type = all → return all companies
+        // --------------------------------------------------
+        if ($userType == 'all' || empty($userType)) {
+            $companies = $db->table('ecoex_companies')
+                ->select('id, company_name')
+                ->where(['type' => 'COMPANY', 'status>=' => 1, 'status<=' => 2])
+                ->orderBy('company_name', 'ASC')
+                ->get()
+                ->getResultArray();
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'data'   => $companies
+            ]);
+        }
+
+
+        // STEP 1: Get the user(s) with this user_type
+        $userData = $db->table('ecoex_admin_user')
+            ->select('plant_ids')
+            ->where('user_type', 'U')
+            ->where('role_id', $role_id)
+            ->get()
+            ->getResult();
+
+        if (!$userData) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'data'   => [],
+                'message' => 'No users found for this type'
+            ]);
+        }
+
+        // STEP 2: Collect all plant IDs from those users
+        $plantIds = [];
+        foreach ($userData as $user) {
+            $ids = json_decode($user->plant_ids, true);
+            if (is_array($ids)) {
+                $plantIds = array_merge($plantIds, $ids);
+            }
+        }
+
+        $plantIds = array_unique(array_filter($plantIds));
+
+        if (empty($plantIds)) {
+            return $this->response->setJSON([
+                'status' => 'success',
+                'data'   => [],
+                'message' => 'No plant IDs linked for this user type'
+            ]);
+        }
+
+        // STEP 3: Fetch unique companies linked to those plants
+        // assuming: table `ecoex_plants` has columns `id` (plant_id) and `company_id`
+        $companies = $db->table('ecoex_companies c')
+            ->select('c.id, c.company_name')
+            ->join('ecomm_users u', 'u.parent_id = c.id')
+            ->where('u.type', 'PLANT')
+            ->where('c.type', 'COMPANY')
+            ->where('c.status>=', 1)
+            ->where('c.status<=', 2)
+            ->whereIn('u.id', $plantIds)
+            ->groupBy('c.id')
+            ->orderBy('c.company_name', 'ASC')
+            ->get()
+            ->getResultArray();
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'data'   => $companies
+        ]);
     }
 }
