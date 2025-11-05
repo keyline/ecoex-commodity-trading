@@ -302,6 +302,8 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 
     $routes->match(['get'], 'notification-report/tabdata', 'WhatsappMessageController::tabData');
 
+    $routes->match(['post'], 'getCompaniesByUserType', 'ReportController::getCompaniesByUserType');
+
 
 
 });
