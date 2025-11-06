@@ -702,7 +702,7 @@ class PlantController extends BaseController {
         $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => $parent_id], 'id,item_name_ecoex', '', '', $orderBy2);
 
         if($this->request->getMethod() == 'post') {
-            pr($this->request->getPost());
+            // pr($this->request->getPost());
             $item_id            = $this->request->getPost('item_id');
             $qty                = $this->request->getPost('qty');
             $uploadedFiles      = $this->request->getFileMultiple('new_product_image');
@@ -745,7 +745,21 @@ class PlantController extends BaseController {
                 }
             /* sl no*/
             /* gps track image */
-                $gps_tracking = '';
+                $file = $this->request->getFile('gps_tracking_image');
+                $originalName = $file->getClientName();
+                $fieldName = 'gps_tracking_image';
+                if($file!='') {
+                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'enquiry','image');
+                    if($upload_array['status']) {
+                        $gps_tracking_image = $upload_array['newFilename'];
+                    } else {
+                        $this->session->setFlashdata('error_message', 'GPS image required');
+                        return redirect(current_url());
+                    }
+                } else {
+                    $this->session->setFlashdata('error_message', 'GPS image required');
+                    return redirect(current_url());
+                }
             /* gps track image */
 
             $fields1            = [
@@ -753,15 +767,15 @@ class PlantController extends BaseController {
                 'company_id'                => $company_id,
                 'sl_no'                     => $next_sl_no,
                 'enquiry_no'                => $enquiry_no,
-                'gps_tracking_image'        => $gps_tracking,
-                'tentative_collection_date' => '',
+                'gps_tracking_image'        => $gps_tracking_image,
+                'tentative_collection_date' => $this->request->getPost('tentative_collection_date'),
                 'latitude'                  => '',
                 'longitude'                 => '',
                 'device_brand'              => '',
                 'device_model'              => '',
                 'created_by'                => 0,
             ];
-            // pr($fields1,0);
+            pr($fields1,0);die;
             $enq_id = $this->data['model']->save_data('ecomm_enquires', $fields1, '', 'id');            
 
             if (!empty($item_id)) {
