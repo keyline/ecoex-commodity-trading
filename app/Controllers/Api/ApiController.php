@@ -3697,7 +3697,7 @@ class ApiController extends BaseController
 
         // ✅ Make sure upload directories exist
         $gpsDir     = FCPATH . 'public/uploads/enquiry/';
-        $productDir = FCPATH . 'public/uploads/products/';
+        $productDir = FCPATH . 'public/uploads/enquiry/';
         if (!is_dir($gpsDir)) mkdir($gpsDir, 0777, true);
         if (!is_dir($productDir)) mkdir($productDir, 0777, true);
 
