@@ -3692,32 +3692,11 @@ class ApiController extends BaseController
         $apiResponse = [];
         $address     = '';
 
-        // // Step 1 – Get raw body
-        // $rawBody = file_get_contents('php://input');
-        // $this->isJSON($rawBody);
-        // $requestData = $this->extract_json($rawBody);
-
-        // // ✅ Step 2 – Compress & resize all Base64 images before any further use
-        // if (!empty($requestData)) {
-        //     $requestData = $this->compressAllBase64InPayload($requestData, 800, 800, 60);
-        // }
-
-        // $requiredFields = ['requestList', 'gps_image', 'collection_date', 'latitude', 'longitude', 'device_brand', 'device_model'];
-        // $headerData     = $this->request->headers();
-
-        // if (!$this->validateArray($requiredFields, $requestData)) {
-        //     $apiStatus  = FALSE;
-        //     $apiMessage = 'All Data Are Not Present !!!';
-        // }
-        // $headerData     = $this->request->headers();
-
-
+        $headerData     = $this->request->headers();
         $requestData    = $this->request->getPost();
         // Capture uploaded file
         $requestFile = $this->request->getFiles();
-        pr($requestData,0);
-        pr($requestFile,0);
-        die;
+        
 
         if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
             $Authorization    = $headerData['Authorization'];
@@ -3739,40 +3718,40 @@ class ApiController extends BaseController
                     $next_sl_no = ($checkEnq) ? ($checkEnq->sl_no + 1) : 1;
                     $enquiry_no = 'ECOMM-' . str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
 
-                    /* GPS tracking image */
-                    $gps_tracking_image_payload = $requestData['gps_image'];
-                    if (!empty($gps_tracking_image_payload)) {
-                        $upload_type = $gps_tracking_image_payload['type'];
-                        if (!in_array($upload_type, ['image/jpeg', 'image/jpg', 'image/png'])) {
-                            $apiStatus  = FALSE;
-                            http_response_code(404);
-                            $apiMessage = 'Please Upload GPS Image !!!';
-                        } else {
-                            $upload_base64 = $gps_tracking_image_payload['base64'];
-                            $data = base64_decode($upload_base64);
-                            $fileName = uniqid() . '.jpg';
-                            $file     = 'public/uploads/enquiry/' . $fileName;
-                            file_put_contents($file, $data);
-                            $gps_tracking = $fileName;
+                    // Capture simple fields
+                    $collection_date = $this->request->getPost('collection_date');
+                    $latitude         = $this->request->getPost('latitude');
+                    $longitude        = $this->request->getPost('longitude');
+                    $device_model     = $this->request->getPost('device_model');
+                    $device_brand     = $this->request->getPost('device_brand');
 
-                            try {
-                                $address = $this->getAddressFromLatLong($requestData['latitude'], $requestData['longitude']);
-                            } catch (\Exception $e) {
-                                $address = '';
-                            }
+                    // Capture nested request list (CodeIgniter will parse arrays)
+                    $requestList = $this->request->getPost('requestList');
 
-                            $this->addGpsDataToImage(
-                                $file,
-                                $file,
-                                $requestData['latitude'],
-                                $requestData['longitude'],
-                                $address,
-                                date('M d, Y h:i A')
-                            );
-                        }
-                    } else {
-                        $gps_tracking = '';
+                    // Capture single GPS image
+                    $gpsImage = $this->request->getFile('gps_image');
+                    $gpsImagePath = null;
+
+                    if ($gpsImage && $gpsImage->isValid() && !$gpsImage->hasMoved()) {
+                        $gpsImageName = $gpsImage->getRandomName();
+                        $gpsImage->move(FCPATH . 'uploads/enquiry', $gpsImageName);
+                        $gpsImagePath = 'uploads/enquiry/' . $gpsImageName;
                     }
+
+                    // Capture product images
+                    $productImages = $this->request->getFiles();
+
+                    $uploadedProducts = [];
+
+                    if (isset($productImages['requestList'][0]['product_image'])) {
+                        foreach ($productImages['requestList'][0]['product_image'] as $img) {
+                            if ($img->isValid() && !$img->hasMoved()) {
+                                $newName = $img->getRandomName();
+                                $img->move(FCPATH . 'uploads/products', $newName);
+                                $uploadedProducts[] = 'uploads/products/' . $newName;
+                            }
+                        }
+                    }                    
 
                     /* Save enquiry */
                     $fields1 = [
@@ -3780,21 +3759,22 @@ class ApiController extends BaseController
                         'company_id'                => $company_id,
                         'sl_no'                     => $next_sl_no,
                         'enquiry_no'                => $enquiry_no,
-                        'gps_tracking_image'        => $gps_tracking,
-                        'tentative_collection_date' => date_format(date_create($requestData['collection_date']), "Y-m-d"),
-                        'latitude'                  => $requestData['latitude'],
-                        'longitude'                 => $requestData['longitude'],
-                        'device_brand'              => $requestData['device_brand'],
-                        'device_model'              => $requestData['device_model'],
+                        'gps_tracking_image'        => $gpsImageName,
+                        'tentative_collection_date' => date_format(date_create($collection_date), "Y-m-d"),
+                        'latitude'                  => $latitude,
+                        'longitude'                 => $longitude,
+                        'device_brand'              => $device_brand,
+                        'device_model'              => $device_model,
                         'created_by'                => $uId,
                     ];
+                    pr($fields1);
 
                     $plantName      = $getUser->plant_name;
                     $generalSetting = $this->common_model->find_data('general_settings', 'row');
                     $company        = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $company_id]);
                     $subject        = $generalSetting->site_name . ' :: Request Submitted (' . $plantName . ') ' . (($company) ? $company->company_name : '');
                     $message        = view('email-templates/enquiry1', $fields1);
-                    $this->sendMail($generalSetting->system_email, $subject, $message);
+                    // $this->sendMail($generalSetting->system_email, $subject, $message);
 
                     $enq_id = $this->common_model->save_data('ecomm_enquires', $fields1, '', 'id');
 
