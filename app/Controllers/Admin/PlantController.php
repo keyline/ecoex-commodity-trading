@@ -702,7 +702,6 @@ class PlantController extends BaseController {
         $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => $parent_id], 'id,item_name_ecoex', '', '', $orderBy2);
 
         if($this->request->getMethod() == 'post') {
-            // pr($this->request->getPost());
             $item_id            = $this->request->getPost('item_id');
             $qty                = $this->request->getPost('qty');
             $uploadedFiles      = $this->request->getFileMultiple('new_product_image');
@@ -775,7 +774,6 @@ class PlantController extends BaseController {
                 'device_model'              => '',
                 'created_by'                => 0,
             ];
-            // pr($fields1,0);die;
             $enq_id = $this->data['model']->save_data('ecomm_enquires', $fields1, '', 'id');            
 
             if (!empty($item_id)) {
@@ -794,9 +792,8 @@ class PlantController extends BaseController {
                         'qty'                           => $qty[$k],
                         'unit'                          => (($getItem)?$getItem->unit:0),
                         'new_product_image'             => json_encode($item_images),
-                        'status'                        => 0,
+                        'status'                        => 1,
                     ];
-                    // pr($fields2,0);
                     $this->data['model']->save_data('ecomm_enquiry_products', $fields2, '', 'id');
                 }
             }
