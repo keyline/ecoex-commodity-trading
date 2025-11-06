@@ -42,7 +42,15 @@ $company_id                 = $session->company_id;
                     <div class="card-body pt-3">
                         <small class="text-danger mb-0 mb-md-2 d-block">* (star) marks fields are mandatory</small>
                         <form method="POST" action="" enctype="multipart/form-data">
-                            
+                            <div class="col-md-6 mb-4 text-center">
+                                <label>Company</label>
+                                <h6><?=(($company)?$company->company_name:'')?></h6>
+                            </div>
+                            <div class="col-md-6 mb-4 text-center">
+                                <label>Plant</label>
+                                <h6><?=(($plant)?$plant->plant_name:'')?></h6>
+                            </div>
+
                             <!-- items -->
                                 <div class="col-md-12 mb-4 text-center">
                                     <button type="button" class="btn btn-info btn-sm mt-4 add_button">Add Item For Enquiry</button>
@@ -53,6 +61,15 @@ $company_id                 = $session->company_id;
                                     </div>
                                 </div>
                             <!-- items -->
+
+                            <div class="col-md-6 mb-4 text-center">
+                                <label>Tentative Collection Date</label>
+                                <input type="date" name="tentative_collection_date" id="tentative_collection_date" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-4 text-center">
+                                <label>GPS Image</label>
+                                <input type="file" name="gps_tracking_image" id="gps_tracking_image" class="form-control" required>
+                            </div>
                                 
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">Create</button>

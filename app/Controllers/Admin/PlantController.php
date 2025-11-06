@@ -577,8 +577,8 @@ class PlantController extends BaseController {
         }
         $id                         = decoded($id);
         $data['moduleDetail']       = $this->data;
-        $data['action']             = 'Add';
-        $title                      = $data['action'].' Temporary '.$this->data['title'];
+        $data['action']             = 'Create';
+        $title                      = $data['action'].' Temporary '.$this->data['title'] . ' Enquiry';
         $page_name                  = 'plant/create-temporary-enquiry';
         
         $conditions                 = array($this->data['primary_key']=>$id);
@@ -690,12 +690,13 @@ class PlantController extends BaseController {
         $id                         = decoded($id);
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Add';
-        $title                      = $data['action'].' Temporary '.$this->data['title'];
+        $title                      = $data['action'].' Final '.$this->data['title'] . ' Enquiry';
         $page_name                  = 'plant/create-enquiry';
         
         $conditions                 = array($this->data['primary_key']=>$id);
         $data['plant']              = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
         $parent_id                  = (($data['plant'])?$data['plant']->parent_id:0);
+        $data['company']            = $this->data['model']->find_data('ecoex_companies', 'row', ['id' => $parent_id], 'company_name');
 
         $orderBy2[0]                = ['field' => 'item_name_ecoex', 'type' => 'ASC'];
         $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => $parent_id], 'id,item_name_ecoex', '', '', $orderBy2);
