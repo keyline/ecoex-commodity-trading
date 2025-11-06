@@ -45,39 +45,94 @@ class QuotationController extends BaseController
             exit;
         }
 
+        // pr($this->session->get());
         $userType                   = $this->session->user_type;
-        $company_id                 = $this->session->company_id;        
+        $data['userType']           = $userType;
+        $company_id                 = $this->session->company_id;
+        $userId                   = $this->session->user_id;
+        $user_data                = $this->db->table('ecoex_admin_user eau')
+                                    ->select ('eau.plant_ids')
+                                    ->where('eau.id', $userId)
+                                    ->get()
+                                    ->getRow();
+        // pr($user_data);    
+        $plant_ids                  = json_decode($user_data->plant_ids, true);
+        // pr($plant_ids);    
+        $state_ids                  = $this->db->table('ecomm_users')
+                                    ->select ('state')
+                                    ->whereIn('id',$plant_ids)
+                                    ->get()
+                                    ->getResultArray();
+                                    // pr($state_ids);
         $data['moduleDetail']       = $this->data;        
         $title                      = 'Manage ' . $this->data['title'] . ' List';
         $page_name                  = 'quotation/list';
 
-        $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');                
-        // $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
-        $data['rows']               =$this->db->table('quotations q')
+        $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');      
+        $stateNames                 = array_column($state_ids, 'state');  
+        
+        if($userType == 'U'){
+            $data['rows']            =$this->db->table('quotations q')
                                     ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time, qi.created_at as quotation_item_created_at, qi.updated_at as quotation_item_updated_at')
                                     ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
                                     ->where(' qi.status', 0)
+                                    ->whereIn('q.location', $stateNames)
+                                    ->orderBy('q.quotation_no', 'DESC')
+                                    ->get()
+                                    ->getResult();        
+                                    // pr($data['rows']);  
+            $data['graphs']          =$this->db->table('quotations q')
+                                    ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time, qi.created_at as quotation_item_created_at, qi.updated_at as quotation_item_updated_at')
+                                    ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
+                                    ->where('qi.status', 0)
+                                    ->where('qi.unit', 'kg')
+                                    ->whereIn('q.location', $stateNames)
                                     ->orderBy('q.quotation_no', 'DESC')
                                     ->get()
                                     ->getResult();
-                                    // pr($data['rows']);      
-        
-        $data['graphs']               =$this->db->table('quotations q')
+
+            
+            $location_names    = array_column($data['rows'], 'location');
+            $unique_location_names = array_unique($location_names);
+            $unique_location_names = array_values($unique_location_names);
+            $data['locations']          = $unique_location_names;
+
+            // pr($data['locations']);
+
+            $scrap_names    = array_column($data['rows'], 'scrap_name');                      
+            // Remove duplicates
+            $unique_scrap_names = array_unique($scrap_names);
+            // Re-index array (optional, makes keys 0,1,2,...)
+            $unique_scrap_names = array_values($unique_scrap_names);   
+            $data['items']              = $unique_scrap_names;  
+            // pr($unique_scrap_names);          
+
+        }elseif($userType == 'MA'){
+            $data['rows']            =$this->db->table('quotations q')
+                                    ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time, qi.created_at as quotation_item_created_at, qi.updated_at as quotation_item_updated_at')
+                                    ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
+                                    ->where(' qi.status', 0)                                    
+                                    ->orderBy('q.quotation_no', 'DESC')
+                                    ->get()
+                                    ->getResult();
+
+            $data['graphs']          =$this->db->table('quotations q')
                                     ->select('q.*,q.id as quotation_id, qi.id as quotation_item_id, q.status as quotation_status, qi.status as quotation_item_status, qi.scrap_name, qi.rate, qi.qty, qi.unit, qi.active_time, qi.reject_time, qi.created_at as quotation_item_created_at, qi.updated_at as quotation_item_updated_at')
                                     ->join('quotation_items qi', 'qi.quotation_id = q.id', 'inner')
                                     ->where('qi.status', 0)
                                     ->where('qi.unit', 'kg')
                                     ->orderBy('q.quotation_no', 'DESC')
                                     ->get()
-                                    ->getResult();                                    
+                                    ->getResult();
 
-        $query                      = $this->db->query("SELECT DISTINCT location FROM quotations");
-        $data['locations']          = $query->getResult();  
-        
-        $query1                      = $this->db->query("SELECT DISTINCT scrap_name FROM quotation_items");
-        $data['items']              = $query1->getResult(); 
-        
-        $query2                      = $this->db->query("SELECT vendor_name FROM quotations where vendor_name IS NOT NULL");
+            $query                      = $this->db->query("SELECT DISTINCT location FROM quotations");
+            $data['locations']          = $query->getResult();
+
+            $query1                      = $this->db->query("SELECT DISTINCT scrap_name FROM quotation_items");
+            $data['items']              = $query1->getResult();
+        }                         
+                         
+        $query2                      = $this->db->query("SELECT DISTINCT vendor_name FROM quotations where vendor_name IS NOT NULL");
         $data['vendors']          = $query2->getResult();
         // pr($result);
         //get whatsapp notification status per enquiry
