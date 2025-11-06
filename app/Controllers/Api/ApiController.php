@@ -3761,6 +3761,15 @@ class ApiController extends BaseController
 
                 $enq_id = $this->common_model->save_data('ecomm_enquires', $fields1, '', 'id');
 
+                /* email notification */
+                    $plantName                  = $getUser->plant_name;
+                    $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                    $company                    = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $company_id]);
+                    $subject                    = $generalSetting->site_name . ' :: Request Submitted (' . $plantName . ') ' . (($company) ? $company->company_name : '');
+                    $message                    = view('email-templates/enquiry1', $fields1);
+                    $this->sendMail($generalSetting->system_email, $subject, $message);
+                /* email notification */
+
                 /* ---------- PROCESS REQUEST LIST ---------- */
                 if (!empty($requestList) && is_array($requestList)) {
                     foreach ($requestList as $index => $req) {
