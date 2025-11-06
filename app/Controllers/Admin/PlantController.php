@@ -775,7 +775,7 @@ class PlantController extends BaseController {
                 'device_model'              => '',
                 'created_by'                => 0,
             ];
-            pr($fields1,0);die;
+            // pr($fields1,0);die;
             $enq_id = $this->data['model']->save_data('ecomm_enquires', $fields1, '', 'id');            
 
             if (!empty($item_id)) {
