@@ -63,18 +63,25 @@ $userType           = $session->user_type;
                                             <div class="col-md-4 my-2">                                
                                                 <select id="filterLocation" class="form-control">
                                                 <option value="">Filter by Location</option>
-                                                <?php foreach ($locations as $location) {?>
+                                                <?php                                                
+                                                    foreach ($locations as $location) {
+                                                        if($userType == 'MA') { ?>
                                                 <option value="<?=$location->location?>"><?=$location->location?></option>                                
-                                                <?php } ?>
+                                                <?php }  elseif($userType == 'U') {?>
+                                                    <option value="<?=$location?>"><?=$location?></option>  
+                                                <?php } } ?> 
                                                 <!-- add more -->
                                                 </select>
                                             </div>
                                             <div class="col-md-4 my-2">
                                                 <select id="filterItem" class="form-control">
                                                 <option value="">Filter by Item Name</option>
-                                                <?php foreach ($items as $item) {?>
+                                                <?php foreach ($items as $item) {
+                                                    if($userType == 'MA') { ?>
                                                 <option value="<?=$item->scrap_name?>"><?=$item->scrap_name?></option>
-                                                <?php } ?>
+                                                <?php }  elseif($userType == 'U') {?>
+                                                    <option value="<?=$item?>"><?=$item?></option>
+                                                <?php } } ?>
                                                 <!-- add more -->
                                                 </select>
                                             </div>
