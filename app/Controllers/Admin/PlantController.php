@@ -43,27 +43,42 @@ class PlantController extends BaseController
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
         if ($userType == 'MA') {
             $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'gst_no!=' => ''];
+
+            $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+
         } elseif ($userType == 'U') {
             $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'gst_no!=' => ''];
+
+
+            $allowedPlantIds = getAllowedPlantIds(session('user_id'));
+
+            $data['allowedPlantIds']   = $allowedPlantIds;
+
+
+            if (!empty($allowedPlantIds)) {
+
+                $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+
+                $data['rows'] = array_filter($data['rows'], function ($row) use ($allowedPlantIds) {
+                    return in_array($row->id, $allowedPlantIds);
+                });
+
+                // Re-index array numerically (optional, for clean JSON)
+                $data['rows'] = array_values($data['rows']);
+            } else {
+                $data['rows'] = [];
+            }
+
         } else {
             $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'parent_id' => $company_id, 'gst_no!=' => ''];
+
+            $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+
         }
-        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
 
 
-        $allowedPlantIds = getAllowedPlantIds(session('user_id'));
-
-        $data['allowedPlantIds']   = $allowedPlantIds;
 
 
-        if (!empty($allowedPlantIds) && !empty($data['rows'])) {
-            $data['rows'] = array_filter($data['rows'], function ($row) use ($allowedPlantIds) {
-                return in_array($row->id, $allowedPlantIds);
-            });
-
-            // Re-index array numerically (optional, for clean JSON)
-            $data['rows'] = array_values($data['rows']);
-        }
 
 
 
@@ -699,6 +714,6 @@ class PlantController extends BaseController
             $this->session->setFlashdata('success_message', $this->data['title'].' enquiry created successfully');
             return redirect()->to('/admin/enquiry-requests/list/' . encoded(0));
         }
-        echo $this->layout_after_login($title,$page_name,$data);
+        echo $this->layout_after_login($title, $page_name, $data);
     }
 }

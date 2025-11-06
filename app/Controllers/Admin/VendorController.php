@@ -45,27 +45,46 @@ class VendorController extends BaseController
 
         if ($userType == 'MA') {
             $conditions                 = ['status!=' => 3, 'type' => 'VENDOR', 'gst_no!=' => ''];
+
+            $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+
         } elseif ($userType == 'U') {
             $conditions                 = ['status!=' => 3, 'type' => 'VENDOR', ]; //'gst_no!=' => ''
+
+
+
+
+            $allowedVendorIds = getAllowedVendorIds(session('user_id'));
+
+            $data['allowedVendorIds']   = $allowedVendorIds;
+
+
+            if (!empty($allowedVendorIds)) {
+
+                $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+
+                $data['rows'] = array_filter($data['rows'], function ($row) use ($allowedVendorIds) {
+                    return in_array($row->id, $allowedVendorIds);
+                });
+
+                // Re-index array numerically (optional, for clean JSON)
+                $data['rows'] = array_values($data['rows']);
+            } else {
+                $data['rows'] = [];
+
+            }
+
+
         } else {
             $conditions                 = ['status!=' => 3, 'type' => 'VENDOR', 'parent_id' => $company_id, 'gst_no!=' => ''];
+
+            $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+
         }
 
-        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
-
-        $allowedVendorIds = getAllowedVendorIds(session('user_id'));
-
-        $data['allowedVendorIds']   = $allowedVendorIds;
 
 
-        if (!empty($allowedVendorIds) && !empty($data['rows'])) {
-            $data['rows'] = array_filter($data['rows'], function ($row) use ($allowedVendorIds) {
-                return in_array($row->id, $allowedVendorIds);
-            });
 
-            // Re-index array numerically (optional, for clean JSON)
-            $data['rows'] = array_values($data['rows']);
-        }
 
 
         echo $this->layout_after_login($title, $page_name, $data);
