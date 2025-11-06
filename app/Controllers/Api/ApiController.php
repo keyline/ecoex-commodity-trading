@@ -3793,7 +3793,7 @@ class ApiController extends BaseController
                                 'enq_product_id'  => $enq_product_id,
                                 'item_name_ecoex' => $req['product_name'] ?? '',
                                 'hsn'             => $req['hsn'] ?? '',
-                                'unit'            => $req['unit'] ?? 0,
+                                // 'unit'            => $req['unit'] ?? 0,
                                 'item_images'     => json_encode($item_images),
                                 'created_by'      => $uId,
                             ];
