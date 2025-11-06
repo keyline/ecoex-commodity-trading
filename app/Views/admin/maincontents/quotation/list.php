@@ -63,11 +63,12 @@ $userType           = $session->user_type;
                                             <div class="col-md-4 my-2">                                
                                                 <select id="filterLocation" class="form-control">
                                                 <option value="">Filter by Location</option>
-                                                <?php                                                
-                                                    foreach ($locations as $location) {
-                                                        if($userType == 'MA') { ?>
+                                                <?php                                                                                                    
+                                                    if($userType == 'MA') { 
+                                                        foreach ($locations as $location) {?>
                                                 <option value="<?=$location->location?>"><?=$location->location?></option>                                
-                                                <?php }  elseif($userType == 'U') {?>
+                                                <?php } } elseif($userType == 'U') {
+                                                    foreach ($locations as $location) {?>
                                                     <option value="<?=$location?>"><?=$location?></option>  
                                                 <?php } } ?> 
                                                 <!-- add more -->
@@ -171,7 +172,7 @@ $userType           = $session->user_type;
                                         <th style="width: 8%;">Vendor Name</th>
                                         <th style="width: 8%;">Contact No.</th>                                                                              
                                         <th style="width: 8%;">Quotation Submitted</th>     
-                                        <?php foreach ($rows as $row) {
+                                        <?php $itemStatus = null; foreach ($rows as $row) {
                                             $itemStatus = $row->quotation_item_status;
                                         }
                                             if($itemStatus == 1) {?>
@@ -185,6 +186,7 @@ $userType           = $session->user_type;
                                 <tbody>
                                     <?php if ($rows) {
                                         $sl = 1;
+                                        $itemStatus = null;
                                         foreach ($rows as $row) { $itemStatus = $row->quotation_item_status;?>                                            
                                             <tr>
                                                 <th scope="row"><?= $sl++ ?></th>
