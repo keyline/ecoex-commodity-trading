@@ -3727,6 +3727,7 @@ class ApiController extends BaseController
 
                     // Capture nested request list (CodeIgniter will parse arrays)
                     $requestList = $this->request->getPost('requestList');
+                    $uploadedFiles = $this->request->getFiles();
 
                     // Capture single GPS image
                     $gpsImage = $this->request->getFile('gps_image');
@@ -3767,9 +3768,7 @@ class ApiController extends BaseController
                         'device_model'              => $device_model,
                         'created_by'                => $uId,
                     ];
-                    pr($fields1,0);
-                    pr($requestList,0);
-                    die;
+                    // pr($fields1,0);
 
                     $plantName      = $getUser->plant_name;
                     $generalSetting = $this->common_model->find_data('general_settings', 'row');
@@ -3781,34 +3780,114 @@ class ApiController extends BaseController
                     $enq_id = $this->common_model->save_data('ecomm_enquires', $fields1, '', 'id');
 
                     /* Request list products */
-                    $requestList = $requestData['requestList'];
+                    // if (!empty($requestList)) {
+                    //     foreach ($requestList as $req) {
+                    //         $item_images = [];
+                    //         $product_image = $req['product_image'] ?? [];
+                    //         foreach ($product_image as $img) {
+                    //             $upload_type = $img['type'];
+                    //             if (in_array($upload_type, ['image/jpeg', 'image/jpg', 'image/png'])) {
+                    //                 $upload_base64 = $img['base64'];
+                    //                 $data = base64_decode($upload_base64);
+                    //                 $fileName = uniqid() . '.jpg';
+                    //                 $file = 'public/uploads/enquiry/' . $fileName;
+                    //                 file_put_contents($file, $data);
+                    //                 $item_images[] = $fileName;
+                    //             }
+                    //         }
+
+                    //         if ($req['new_product']) {
+                    //             $fields2 = [
+                    //                 'enq_id'            => $enq_id,
+                    //                 'plant_id'          => $plant_id,
+                    //                 'company_id'        => $company_id,
+                    //                 'sl_no'             => $next_sl_no,
+                    //                 'new_product'       => 1,
+                    //                 'new_product_name'  => $req['product_name'],
+                    //                 'new_hsn'           => $req['hsn'],
+                    //                 'qty'               => $req['qty'] ?: 0.00,
+                    //                 'unit'              => $req['unit'] ?: 0,
+                    //                 'new_product_image' => json_encode($item_images),
+                    //                 'status'            => 0,
+                    //             ];
+                    //             $enq_product_id = $this->common_model->save_data('ecomm_enquiry_products', $fields2, '', 'id');
+
+                    //             $fields3 = [
+                    //                 'company_id'      => $company_id,
+                    //                 'enq_id'          => $enq_id,
+                    //                 'enq_product_id'  => $enq_product_id,
+                    //                 'item_name_ecoex' => $req['product_name'],
+                    //                 'hsn'             => $req['hsn'],
+                    //                 'item_images'     => json_encode($item_images),
+                    //                 'created_by'      => $uId,
+                    //             ];
+                    //             $this->common_model->save_data('ecomm_company_items', $fields3, '', 'id');
+                    //         } else {
+                    //             $getCompanyProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $req['product_id']], 'id,unit,hsn');
+                    //             $fields2 = [
+                    //                 'enq_id'            => $enq_id,
+                    //                 'plant_id'          => $plant_id,
+                    //                 'company_id'        => $company_id,
+                    //                 'sl_no'             => $next_sl_no,
+                    //                 'new_product'       => 0,
+                    //                 'product_id'        => $req['product_id'],
+                    //                 'hsn'               => $getCompanyProduct->hsn ?? '',
+                    //                 'qty'               => $req['qty'] ?: 0.00,
+                    //                 'unit'              => $getCompanyProduct->unit ?? 0,
+                    //                 'new_product_image' => json_encode($item_images),
+                    //                 'status'            => 1,
+                    //                 'approved_date'     => date('Y-m-d H:i:s'),
+                    //                 'remarks'           => 'Approved By Admin',
+                    //             ];
+                    //             $this->common_model->save_data('ecomm_enquiry_products', $fields2, '', 'id');
+                    //         }
+                    //     }
+
+                    //     $apiStatus  = TRUE;
+                    //     http_response_code(200);
+                    //     $apiMessage = 'Request Submitted Successfully !!!';
+                    // } else {
+                    //     $apiStatus  = FALSE;
+                    //     http_response_code(200);
+                    //     $apiMessage = 'Minimum One Product Needs To Be Select !!!';
+                    // }
+
                     if (!empty($requestList)) {
-                        foreach ($requestList as $req) {
+                        foreach ($requestList as $index => $req) {
                             $item_images = [];
-                            $product_image = $req['product_image'] ?? [];
-                            foreach ($product_image as $img) {
-                                $upload_type = $img['type'];
-                                if (in_array($upload_type, ['image/jpeg', 'image/jpg', 'image/png'])) {
-                                    $upload_base64 = $img['base64'];
-                                    $data = base64_decode($upload_base64);
-                                    $fileName = uniqid() . '.jpg';
-                                    $file = 'public/uploads/enquiry/' . $fileName;
-                                    file_put_contents($file, $data);
-                                    $item_images[] = $fileName;
+
+                            // Get product image(s) from multipart form data
+                            if (isset($uploadedFiles['requestList'][$index]['product_image'])) {
+                                $product_images = $uploadedFiles['requestList'][$index]['product_image'];
+
+                                // It could be a single file or an array
+                                if (!is_array($product_images)) {
+                                    $product_images = [$product_images];
+                                }
+
+                                foreach ($product_images as $img) {
+                                    if ($img->isValid() && !$img->hasMoved()) {
+                                        $ext = $img->getExtension();
+                                        $fileName = uniqid() . '.' . $ext;
+                                        $uploadPath = FCPATH . 'public/uploads/enquiry/';
+                                        $img->move($uploadPath, $fileName);
+                                        $item_images[] = $fileName;
+                                    }
                                 }
                             }
 
-                            if ($req['new_product']) {
+                            // === Save to database (same logic you had) ===
+                            if (!empty($req['new_product']) && $req['new_product']) {
                                 $fields2 = [
                                     'enq_id'            => $enq_id,
                                     'plant_id'          => $plant_id,
                                     'company_id'        => $company_id,
                                     'sl_no'             => $next_sl_no,
                                     'new_product'       => 1,
-                                    'new_product_name'  => $req['product_name'],
-                                    'new_hsn'           => $req['hsn'],
-                                    'qty'               => $req['qty'] ?: 0.00,
-                                    'unit'              => $req['unit'] ?: 0,
+                                    'new_product_name'  => $req['product_name'] ?? '',
+                                    'new_hsn'           => $req['hsn'] ?? '',
+                                    'qty'               => $req['qty'] ?? 0.00,
+                                    'unit'              => $req['unit'] ?? 0,
                                     'new_product_image' => json_encode($item_images),
                                     'status'            => 0,
                                 ];
@@ -3818,23 +3897,24 @@ class ApiController extends BaseController
                                     'company_id'      => $company_id,
                                     'enq_id'          => $enq_id,
                                     'enq_product_id'  => $enq_product_id,
-                                    'item_name_ecoex' => $req['product_name'],
-                                    'hsn'             => $req['hsn'],
+                                    'item_name_ecoex' => $req['product_name'] ?? '',
+                                    'hsn'             => $req['hsn'] ?? '',
                                     'item_images'     => json_encode($item_images),
                                     'created_by'      => $uId,
                                 ];
                                 $this->common_model->save_data('ecomm_company_items', $fields3, '', 'id');
                             } else {
                                 $getCompanyProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $req['product_id']], 'id,unit,hsn');
+
                                 $fields2 = [
                                     'enq_id'            => $enq_id,
                                     'plant_id'          => $plant_id,
                                     'company_id'        => $company_id,
                                     'sl_no'             => $next_sl_no,
                                     'new_product'       => 0,
-                                    'product_id'        => $req['product_id'],
+                                    'product_id'        => $req['product_id'] ?? 0,
                                     'hsn'               => $getCompanyProduct->hsn ?? '',
-                                    'qty'               => $req['qty'] ?: 0.00,
+                                    'qty'               => $req['qty'] ?? 0.00,
                                     'unit'              => $getCompanyProduct->unit ?? 0,
                                     'new_product_image' => json_encode($item_images),
                                     'status'            => 1,
