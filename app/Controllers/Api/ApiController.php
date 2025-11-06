@@ -3692,251 +3692,165 @@ class ApiController extends BaseController
         $apiResponse = [];
         $address     = '';
 
-        $headerData     = $this->request->headers();
-        $requestData    = $this->request->getPost();
-        // Capture uploaded file
-        $requestFile = $this->request->getFiles();
-        
+        $headerData  = $this->request->headers();
+        $requestData = $this->request->getPost();
 
-        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-            $Authorization    = $headerData['Authorization'];
+        // ✅ Make sure upload directories exist
+        $gpsDir     = FCPATH . 'public/uploads/enquiry/';
+        $productDir = FCPATH . 'public/uploads/products/';
+        if (!is_dir($gpsDir)) mkdir($gpsDir, 0777, true);
+        if (!is_dir($productDir)) mkdir($productDir, 0777, true);
+
+        if (isset($headerData['Key']) && $headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+
+            $Authorization    = $headerData['Authorization'] ?? '';
             $app_access_token = $this->extractToken($Authorization);
             $getTokenValue    = $this->tokenAuth($app_access_token);
 
             if ($getTokenValue['status']) {
-                $uId        = $getTokenValue['data'][1];
-                $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
-                $plat_location = $getUser->location . ',' . $getUser->state;
 
-                if ($getUser) {
-                    $plant_id   = $getUser->id;
-                    $company_id = $getUser->parent_id;
+                $uId      = $getTokenValue['data'][1];
+                $getUser  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
 
-                    /* Generate enquiry number */
-                    $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
-                    $checkEnq = $this->common_model->find_data('ecomm_enquires', 'row', '', 'sl_no', '', '', $orderBy);
-                    $next_sl_no = ($checkEnq) ? ($checkEnq->sl_no + 1) : 1;
-                    $enquiry_no = 'ECOMM-' . str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
+                if (!$getUser) {
+                    http_response_code(404);
+                    return $this->response_to_json(FALSE, 'User Not Found !!!', []);
+                }
 
-                    // Capture simple fields
-                    $collection_date = $this->request->getPost('collection_date');
-                    $latitude         = $this->request->getPost('latitude');
-                    $longitude        = $this->request->getPost('longitude');
-                    $device_model     = $this->request->getPost('device_model');
-                    $device_brand     = $this->request->getPost('device_brand');
+                $plant_id   = $getUser->id;
+                $company_id = $getUser->parent_id;
 
-                    // Capture nested request list (CodeIgniter will parse arrays)
-                    $requestList = $this->request->getPost('requestList');
-                    $uploadedFiles = $this->request->getFiles();
+                /* Generate enquiry number */
+                $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
+                $checkEnq   = $this->common_model->find_data('ecomm_enquires', 'row', '', 'sl_no', '', '', $orderBy);
+                $next_sl_no = ($checkEnq) ? ($checkEnq->sl_no + 1) : 1;
+                $enquiry_no = 'ECOMM-' . str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
 
-                    // Capture single GPS image
-                    $gpsImage = $this->request->getFile('gps_image');
-                    $gpsImagePath = null;
+                // Capture fields
+                $collection_date = $this->request->getPost('collection_date');
+                $latitude        = $this->request->getPost('latitude');
+                $longitude       = $this->request->getPost('longitude');
+                $device_model    = $this->request->getPost('device_model');
+                $device_brand    = $this->request->getPost('device_brand');
+                $requestList     = $this->request->getPost('requestList');
+                $uploadedFiles   = $this->request->getFiles();
 
-                    if ($gpsImage && $gpsImage->isValid() && !$gpsImage->hasMoved()) {
-                        $gpsImageName = $gpsImage->getRandomName();
-                        $gpsImage->move(FCPATH . 'uploads/enquiry', $gpsImageName);
-                        $gpsImagePath = 'uploads/enquiry/' . $gpsImageName;
-                    }
+                /* ---------- GPS IMAGE UPLOAD ---------- */
+                $gpsImagePath = null;
+                $gpsImage     = $this->request->getFile('gps_image');
+                if ($gpsImage && $gpsImage->isValid() && !$gpsImage->hasMoved()) {
+                    $gpsImageName = $gpsImage->getRandomName();
+                    $gpsImage->move($gpsDir, $gpsImageName);
+                    $gpsImagePath = 'public/uploads/enquiry/' . $gpsImageName;
+                }
 
-                    // Capture product images
-                    $productImages = $this->request->getFiles();
+                /* ---------- SAVE ENQUIRY ---------- */
+                $fields1 = [
+                    'plant_id'                  => $plant_id,
+                    'company_id'                => $company_id,
+                    'sl_no'                     => $next_sl_no,
+                    'enquiry_no'                => $enquiry_no,
+                    'gps_tracking_image'        => basename($gpsImagePath),
+                    'tentative_collection_date' => date_format(date_create($collection_date), "Y-m-d"),
+                    'latitude'                  => $latitude,
+                    'longitude'                 => $longitude,
+                    'device_brand'              => $device_brand,
+                    'device_model'              => $device_model,
+                    'created_by'                => $uId,
+                ];
 
-                    $uploadedProducts = [];
+                $enq_id = $this->common_model->save_data('ecomm_enquires', $fields1, '', 'id');
 
-                    if (isset($productImages['requestList'][0]['product_image'])) {
-                        foreach ($productImages['requestList'][0]['product_image'] as $img) {
-                            if ($img->isValid() && !$img->hasMoved()) {
-                                $newName = $img->getRandomName();
-                                $img->move(FCPATH . 'uploads/products', $newName);
-                                $uploadedProducts[] = 'uploads/products/' . $newName;
-                            }
-                        }
-                    }                    
+                /* ---------- PROCESS REQUEST LIST ---------- */
+                if (!empty($requestList) && is_array($requestList)) {
+                    foreach ($requestList as $index => $req) {
+                        $item_images = [];
 
-                    /* Save enquiry */
-                    $fields1 = [
-                        'plant_id'                  => $plant_id,
-                        'company_id'                => $company_id,
-                        'sl_no'                     => $next_sl_no,
-                        'enquiry_no'                => $enquiry_no,
-                        'gps_tracking_image'        => $gpsImageName,
-                        'tentative_collection_date' => date_format(date_create($collection_date), "Y-m-d"),
-                        'latitude'                  => $latitude,
-                        'longitude'                 => $longitude,
-                        'device_brand'              => $device_brand,
-                        'device_model'              => $device_model,
-                        'created_by'                => $uId,
-                    ];
-                    // pr($fields1,0);
-
-                    $plantName      = $getUser->plant_name;
-                    $generalSetting = $this->common_model->find_data('general_settings', 'row');
-                    $company        = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $company_id]);
-                    $subject        = $generalSetting->site_name . ' :: Request Submitted (' . $plantName . ') ' . (($company) ? $company->company_name : '');
-                    $message        = view('email-templates/enquiry1', $fields1);
-                    // $this->sendMail($generalSetting->system_email, $subject, $message);
-
-                    $enq_id = $this->common_model->save_data('ecomm_enquires', $fields1, '', 'id');
-
-                    /* Request list products */
-                    // if (!empty($requestList)) {
-                    //     foreach ($requestList as $req) {
-                    //         $item_images = [];
-                    //         $product_image = $req['product_image'] ?? [];
-                    //         foreach ($product_image as $img) {
-                    //             $upload_type = $img['type'];
-                    //             if (in_array($upload_type, ['image/jpeg', 'image/jpg', 'image/png'])) {
-                    //                 $upload_base64 = $img['base64'];
-                    //                 $data = base64_decode($upload_base64);
-                    //                 $fileName = uniqid() . '.jpg';
-                    //                 $file = 'public/uploads/enquiry/' . $fileName;
-                    //                 file_put_contents($file, $data);
-                    //                 $item_images[] = $fileName;
-                    //             }
-                    //         }
-
-                    //         if ($req['new_product']) {
-                    //             $fields2 = [
-                    //                 'enq_id'            => $enq_id,
-                    //                 'plant_id'          => $plant_id,
-                    //                 'company_id'        => $company_id,
-                    //                 'sl_no'             => $next_sl_no,
-                    //                 'new_product'       => 1,
-                    //                 'new_product_name'  => $req['product_name'],
-                    //                 'new_hsn'           => $req['hsn'],
-                    //                 'qty'               => $req['qty'] ?: 0.00,
-                    //                 'unit'              => $req['unit'] ?: 0,
-                    //                 'new_product_image' => json_encode($item_images),
-                    //                 'status'            => 0,
-                    //             ];
-                    //             $enq_product_id = $this->common_model->save_data('ecomm_enquiry_products', $fields2, '', 'id');
-
-                    //             $fields3 = [
-                    //                 'company_id'      => $company_id,
-                    //                 'enq_id'          => $enq_id,
-                    //                 'enq_product_id'  => $enq_product_id,
-                    //                 'item_name_ecoex' => $req['product_name'],
-                    //                 'hsn'             => $req['hsn'],
-                    //                 'item_images'     => json_encode($item_images),
-                    //                 'created_by'      => $uId,
-                    //             ];
-                    //             $this->common_model->save_data('ecomm_company_items', $fields3, '', 'id');
-                    //         } else {
-                    //             $getCompanyProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $req['product_id']], 'id,unit,hsn');
-                    //             $fields2 = [
-                    //                 'enq_id'            => $enq_id,
-                    //                 'plant_id'          => $plant_id,
-                    //                 'company_id'        => $company_id,
-                    //                 'sl_no'             => $next_sl_no,
-                    //                 'new_product'       => 0,
-                    //                 'product_id'        => $req['product_id'],
-                    //                 'hsn'               => $getCompanyProduct->hsn ?? '',
-                    //                 'qty'               => $req['qty'] ?: 0.00,
-                    //                 'unit'              => $getCompanyProduct->unit ?? 0,
-                    //                 'new_product_image' => json_encode($item_images),
-                    //                 'status'            => 1,
-                    //                 'approved_date'     => date('Y-m-d H:i:s'),
-                    //                 'remarks'           => 'Approved By Admin',
-                    //             ];
-                    //             $this->common_model->save_data('ecomm_enquiry_products', $fields2, '', 'id');
-                    //         }
-                    //     }
-
-                    //     $apiStatus  = TRUE;
-                    //     http_response_code(200);
-                    //     $apiMessage = 'Request Submitted Successfully !!!';
-                    // } else {
-                    //     $apiStatus  = FALSE;
-                    //     http_response_code(200);
-                    //     $apiMessage = 'Minimum One Product Needs To Be Select !!!';
-                    // }
-
-                    if (!empty($requestList)) {
-                        foreach ($requestList as $index => $req) {
-                            $item_images = [];
-
-                            // Get product image(s) from multipart form data
-                            if (isset($uploadedFiles['requestList'][$index]['product_image'])) {
-                                $product_images = $uploadedFiles['requestList'][$index]['product_image'];
-
-                                // It could be a single file or an array
-                                if (!is_array($product_images)) {
-                                    $product_images = [$product_images];
-                                }
-
-                                foreach ($product_images as $img) {
-                                    if ($img->isValid() && !$img->hasMoved()) {
-                                        $ext = $img->getExtension();
-                                        $fileName = uniqid() . '.' . $ext;
-                                        $uploadPath = FCPATH . 'public/uploads/enquiry/';
-                                        $img->move($uploadPath, $fileName);
-                                        $item_images[] = $fileName;
-                                    }
-                                }
+                        // Handle uploaded product images
+                        if (isset($uploadedFiles['requestList'][$index]['product_image'])) {
+                            $product_images = $uploadedFiles['requestList'][$index]['product_image'];
+                            if (!is_array($product_images)) {
+                                $product_images = [$product_images];
                             }
 
-                            // === Save to database (same logic you had) ===
-                            if (!empty($req['new_product']) && $req['new_product']) {
-                                $fields2 = [
-                                    'enq_id'            => $enq_id,
-                                    'plant_id'          => $plant_id,
-                                    'company_id'        => $company_id,
-                                    'sl_no'             => $next_sl_no,
-                                    'new_product'       => 1,
-                                    'new_product_name'  => $req['product_name'] ?? '',
-                                    'new_hsn'           => $req['hsn'] ?? '',
-                                    'qty'               => $req['qty'] ?? 0.00,
-                                    'unit'              => $req['unit'] ?? 0,
-                                    'new_product_image' => json_encode($item_images),
-                                    'status'            => 0,
-                                ];
-                                $enq_product_id = $this->common_model->save_data('ecomm_enquiry_products', $fields2, '', 'id');
-
-                                $fields3 = [
-                                    'company_id'      => $company_id,
-                                    'enq_id'          => $enq_id,
-                                    'enq_product_id'  => $enq_product_id,
-                                    'item_name_ecoex' => $req['product_name'] ?? '',
-                                    'hsn'             => $req['hsn'] ?? '',
-                                    'item_images'     => json_encode($item_images),
-                                    'created_by'      => $uId,
-                                ];
-                                $this->common_model->save_data('ecomm_company_items', $fields3, '', 'id');
-                            } else {
-                                $getCompanyProduct = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $req['product_id']], 'id,unit,hsn');
-
-                                $fields2 = [
-                                    'enq_id'            => $enq_id,
-                                    'plant_id'          => $plant_id,
-                                    'company_id'        => $company_id,
-                                    'sl_no'             => $next_sl_no,
-                                    'new_product'       => 0,
-                                    'product_id'        => $req['product_id'] ?? 0,
-                                    'hsn'               => $getCompanyProduct->hsn ?? '',
-                                    'qty'               => $req['qty'] ?? 0.00,
-                                    'unit'              => $getCompanyProduct->unit ?? 0,
-                                    'new_product_image' => json_encode($item_images),
-                                    'status'            => 1,
-                                    'approved_date'     => date('Y-m-d H:i:s'),
-                                    'remarks'           => 'Approved By Admin',
-                                ];
-                                $this->common_model->save_data('ecomm_enquiry_products', $fields2, '', 'id');
+                            foreach ($product_images as $img) {
+                                if ($img->isValid() && !$img->hasMoved()) {
+                                    $fileName = uniqid() . '.' . $img->getExtension();
+                                    $img->move($productDir, $fileName);
+                                    $item_images[] = $fileName;
+                                }
                             }
                         }
 
-                        $apiStatus  = TRUE;
-                        http_response_code(200);
-                        $apiMessage = 'Request Submitted Successfully !!!';
-                    } else {
-                        $apiStatus  = FALSE;
-                        http_response_code(200);
-                        $apiMessage = 'Minimum One Product Needs To Be Select !!!';
+                        // Convert 'new_product' safely to boolean
+                        $isNewProduct = filter_var($req['new_product'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+                        /* ---------- IF NEW PRODUCT ---------- */
+                        if ($isNewProduct) {
+                            $fields2 = [
+                                'enq_id'            => $enq_id,
+                                'plant_id'          => $plant_id,
+                                'company_id'        => $company_id,
+                                'sl_no'             => $next_sl_no,
+                                'new_product'       => 1,
+                                'new_product_name'  => $req['product_name'] ?? '',
+                                'new_hsn'           => $req['hsn'] ?? '',
+                                'qty'               => $req['qty'] ?? 0.00,
+                                'unit'              => $req['unit'] ?? 0,
+                                'new_product_image' => json_encode($item_images),
+                                'status'            => 0,
+                            ];
+
+                            $enq_product_id = $this->common_model->save_data('ecomm_enquiry_products', $fields2, '', 'id');
+
+                            $fields3 = [
+                                'company_id'      => $company_id,
+                                'enq_id'          => $enq_id,
+                                'enq_product_id'  => $enq_product_id,
+                                'item_name_ecoex' => $req['product_name'] ?? '',
+                                'hsn'             => $req['hsn'] ?? '',
+                                'item_images'     => json_encode($item_images),
+                                'created_by'      => $uId,
+                            ];
+
+                            $this->common_model->save_data('ecomm_company_items', $fields3, '', 'id');
+                        }
+                        /* ---------- IF EXISTING PRODUCT ---------- */
+                        else {
+                            $getCompanyProduct = $this->common_model->find_data(
+                                'ecomm_company_items',
+                                'row',
+                                ['id' => $req['product_id']],
+                                'id,unit,hsn'
+                            );
+
+                            $fields2 = [
+                                'enq_id'            => $enq_id,
+                                'plant_id'          => $plant_id,
+                                'company_id'        => $company_id,
+                                'sl_no'             => $next_sl_no,
+                                'new_product'       => 0,
+                                'product_id'        => $req['product_id'] ?? 0,
+                                'hsn'               => $getCompanyProduct->hsn ?? '',
+                                'qty'               => $req['qty'] ?? 0.00,
+                                'unit'              => $getCompanyProduct->unit ?? 0,
+                                'new_product_image' => json_encode($item_images),
+                                'status'            => 1,
+                                'approved_date'     => date('Y-m-d H:i:s'),
+                                'remarks'           => 'Approved By Admin',
+                            ];
+
+                            $this->common_model->save_data('ecomm_enquiry_products', $fields2, '', 'id');
+                        }
                     }
+
+                    $apiStatus  = TRUE;
+                    http_response_code(200);
+                    $apiMessage = 'Request Submitted Successfully !!!';
                 } else {
                     $apiStatus  = FALSE;
-                    http_response_code(404);
-                    $apiMessage = 'User Not Found !!!';
+                    http_response_code(200);
+                    $apiMessage = 'Minimum One Product Needs To Be Select !!!';
                 }
             } else {
                 http_response_code($getTokenValue['data'][2]);
