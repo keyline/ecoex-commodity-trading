@@ -3714,7 +3714,7 @@ class ApiController extends BaseController
 
         $requestData    = $this->request->getPost();
         // Capture uploaded file
-        $requestFile = $this->request->getFile();
+        $requestFile = $this->request->getFiles();
         pr($requestData,0);
         pr($requestFile,0);
         die;
