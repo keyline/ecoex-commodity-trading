@@ -3767,7 +3767,9 @@ class ApiController extends BaseController
                         'device_model'              => $device_model,
                         'created_by'                => $uId,
                     ];
-                    pr($fields1);
+                    pr($fields1,0);
+                    pr($requestList,0);
+                    die;
 
                     $plantName      = $getUser->plant_name;
                     $generalSetting = $this->common_model->find_data('general_settings', 'row');
