@@ -596,7 +596,7 @@ $request_edit_fields = [
 
                                                             if ($enquiryProduct->new_product) {
 
-                                                                $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $enquiryProduct->product_id], 'id,item_category,item_name_ecoex,alias_name,billing_name,item_images,hsn,gst,rate,unit');
+                                                                $getItem = $common_model->find_data('ecomm_company_items', 'row', ['enq_product_id' => $enquiryProduct->id], 'id,item_category,item_name_ecoex,alias_name,billing_name,item_images,hsn,gst,rate,unit');
 
                                                                 if ($getItem) {
                                                                     $productName    = (($getItem) ? $getItem->item_name_ecoex : '');
