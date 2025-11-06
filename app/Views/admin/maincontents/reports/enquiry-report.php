@@ -61,13 +61,13 @@
               <div class="row mt-3">
 
                 <div class="d-flex p-2">
-                  <a target="_blank" href="<?= base_url('admin/company-report-export/pdf') . '?' . $_SERVER['QUERY_STRING'] ?>" class="btn btn-primary me-2"
+                  <a target="_blank" href="<?= base_url('admin/enquiry-report-export/pdf') . '?' . $_SERVER['QUERY_STRING'] ?>" class="btn btn-primary me-2"
                     title="Download PDF"
                     aria-label="Download PDF">
                     <i class="fa-solid fa-file-pdf fa-lg"></i>
                   </a>
                   <a target="_blank"
-                    href="<?= base_url('admin/company-report-export/excel') . '?' . $_SERVER['QUERY_STRING'] ?>"
+                    href="<?= base_url('admin/enquiry-report-export/excel') . '?' . $_SERVER['QUERY_STRING'] ?>"
                     class="btn btn-success"
                     title="Download Excel"
                     aria-label="Download Excel">
@@ -90,31 +90,66 @@
                           <thead>
                             <tr>
                               <th>Sr. No.</th>
-                              <th>Assigned user</th>
+                              <th>Enquiry No.</th>
+                              <th>Company Name</th>
+                              <th>Plant Name</th>    
+                              <th>Assigned user</th>                              
                               <th>Vehicle No.</th>
                               <th>Material Lifted</th>
-                              <th>Quantity</th>
-                              <th>Company Name</th>
-                              <th>Plant Name</th>                              
-                              <th>Vendor</th>                                               
+                              <th>Quantity</th>                                                           
+                              <th>Vendor</th>                                                                          
                             </tr>
                           </thead>
                           <tbody>
-                            <?php 
-                            // pr($response['finalData']);
-                            $sr = 1;
-                            foreach($response['finalData'] as $data){ ?>
-                              <tr>
-                                <td><?= $sr++; ?></td>
-                                <td></td>
-                                <td><?= esc($data['enquiry_no']); ?></td>
-                                <td><?= implode('<br>', $data['vendor_names']); ?></td>
-                                <td><?= implode('<br>', $data['plant_names']); ?></td>
-                                <td><?= implode('<br>', $data['company_names']); ?></td>
-                                <td><?= implode('<br>', $data['item_names']); ?></td>
-                                <td><?= implode('<br>', $data['weighted_qtys']); ?></td>
-                                <td><?= implode('<br>', $data['vehicle_registration_nos']); ?></td>                            
-                              </tr>
+                            <?php                                                         
+                              $sr = 1;
+                              foreach($response['details_data'] as $data){ 
+                                // Ensure these are arrays, even if empty
+                                $vendor_names = $data['vendor_names'] ?? [];
+                                $item_names = $data['item_names'] ?? [];
+                                $weighted_qtys = $data['weighted_qtys'] ?? [];
+                                $weighted_units = $data['weighted_units'] ?? [];
+                                $vehicle_sets = $data['vehicle_registration_nos'] ?? [];
+
+                                // Find the max count across these arrays
+                                $rowCount = max(
+                                    count($vendor_names),
+                                    count($item_names),
+                                    count($weighted_qtys)                                    
+                                );
+
+                                // If no sub-data, still show one row
+                                if ($rowCount == 0) $rowCount = 1;
+                                ?>
+                                <?php for ($i = 0; $i < $rowCount; $i++) { ?>
+                                <tr>
+                                    <td><?= $sr++; ?></td>
+
+                                    <?php if ($i == 0) { ?>
+                                        <!-- Show enquiry-level data only once -->
+                                        <td rowspan="<?= $rowCount; ?>"><?= esc($data['enquiry_no']); ?></td>
+                                        <td rowspan="<?= $rowCount; ?>"><?= esc($data['company_names']); ?></td>
+                                        <td rowspan="<?= $rowCount; ?>"><?= esc($data['plant_names']); ?></td>
+                                        <td rowspan="<?= $rowCount; ?>"><?= esc($data['assigned_user']); ?></td>
+                                        <!-- <td></td> -->
+                                    <?php } ?>
+
+                                    <!-- Vehicle Numbers (each sub-enquiry has its own list) -->
+                                    <td>
+                                        <?php
+                                        $vehicles = $vehicle_sets[$i] ?? [];
+                                        if (!empty($vehicles)) {
+                                            echo implode('<br>', array_map('esc', $vehicles));
+                                        } else {
+                                            echo '-';
+                                        }
+                                        ?>
+                                    </td>
+                                    <td><?= esc($item_names[$i] ?? '-'); ?></td>
+                                    <td><?= esc($weighted_qtys[$i] ?? '-'); ?>/<?= esc($weighted_units[$i] ?? '-'); ?></td>
+                                    <td><?= esc($vendor_names[$i] ?? '-'); ?></td>
+                                </tr>
+                              <?php } ?>                              
                            <?php } ?>                            
                           </tbody>
                         </table>
