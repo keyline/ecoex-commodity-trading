@@ -1,14 +1,17 @@
 <?php
+
 namespace App\Controllers\admin;
+
 use App\Controllers\BaseController;
 use App\Models\CommonModel;
-class PlantController extends BaseController {
 
+class PlantController extends BaseController
+{
     private $model;  //This can be accessed by all class methods
-	public function __construct()
+    public function __construct()
     {
         $session = \Config\Services::session();
-        if(!$session->get('is_admin_login')) {
+        if (!$session->get('is_admin_login')) {
             return redirect()->to('/Administrator');
         }
         $model = new CommonModel();
@@ -24,11 +27,11 @@ class PlantController extends BaseController {
     }
     public function list()
     {
-        if(!$this->common_model->checkModuleFunctionAccess(15,75)){
+        if (!$this->common_model->checkModuleFunctionAccess(15, 75)) {
             $data['action']             = 'Access Forbidden';
             $title                      = $data['action'].' '.$this->data['title'];
-            $page_name                  = 'access-forbidden';        
-            echo $this->layout_after_login($title,$page_name,$data);
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
             exit;
         }
         $userType                   = $this->session->user_type;
@@ -38,23 +41,56 @@ class PlantController extends BaseController {
         $page_name                  = 'plant/list';
 
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
-        if($userType == 'MA'){
+        if ($userType == 'MA') {
             $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'gst_no!=' => ''];
-        } elseif($userType == 'U'){
+
+            $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+
+        } elseif ($userType == 'U') {
             $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'gst_no!=' => ''];
+
+
+            $allowedPlantIds = getAllowedPlantIds(session('user_id'));
+
+            $data['allowedPlantIds']   = $allowedPlantIds;
+
+
+            if (!empty($allowedPlantIds)) {
+
+                $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+
+                $data['rows'] = array_filter($data['rows'], function ($row) use ($allowedPlantIds) {
+                    return in_array($row->id, $allowedPlantIds);
+                });
+
+                // Re-index array numerically (optional, for clean JSON)
+                $data['rows'] = array_values($data['rows']);
+            } else {
+                $data['rows'] = [];
+            }
+
         } else {
             $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'parent_id' => $company_id, 'gst_no!=' => ''];
+
+            $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+
         }
-        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
-        echo $this->layout_after_login($title,$page_name,$data);
+
+
+
+
+
+
+
+        echo $this->layout_after_login($title, $page_name, $data);
     }
     public function temporaryList()
     {
-        if(!$this->common_model->checkModuleFunctionAccess(15,75)){
+        if (!$this->common_model->checkModuleFunctionAccess(15, 75)) {
             $data['action']             = 'Access Forbidden';
             $title                      = $data['action'].' '.$this->data['title'];
-            $page_name                  = 'access-forbidden';        
-            echo $this->layout_after_login($title,$page_name,$data);
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
             exit;
         }
         $userType                   = $this->session->user_type;
@@ -64,92 +100,92 @@ class PlantController extends BaseController {
         $page_name                  = 'plant/temporary-list';
 
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
-        if($userType == 'MA'){
-            $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'gst_no' => NULL];
-        } elseif($userType == 'U'){
-            $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'gst_no' => NULL];
+        if ($userType == 'MA') {
+            $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'gst_no' => null];
+        } elseif ($userType == 'U') {
+            $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'gst_no' => null];
         } else {
             $conditions                 = ['status!=' => 3, 'type' => 'PLANT', 'parent_id' => $company_id, 'gst_no' => ''];
         }
         $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
-        echo $this->layout_after_login($title,$page_name,$data);
+        echo $this->layout_after_login($title, $page_name, $data);
     }
     public function add()
     {
-        if(!$this->common_model->checkModuleFunctionAccess(15,115)){
+        if (!$this->common_model->checkModuleFunctionAccess(15, 115)) {
             $data['action']             = 'Access Forbidden';
             $title                      = $data['action'].' '.$this->data['title'];
-            $page_name                  = 'access-forbidden';        
-            echo $this->layout_after_login($title,$page_name,$data);
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
             exit;
         }
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Add';
         $title                      = $data['action'].' '.$this->data['title'];
-        $page_name                  = 'plant/add-edit';        
+        $page_name                  = 'plant/add-edit';
         $data['row']                = [];
         $orderBy[0]                 = ['field' => 'company_name', 'type' => 'ASC'];
         $data['companyList']        = $this->data['model']->find_data('ecoex_companies', 'array', ['status!=' => 3, 'parent_id' => 0], '', '', '', $orderBy);
-        if($this->request->getMethod() == 'post') {
+        if ($this->request->getMethod() == 'post') {
             /* profile image */
-                $file = $this->request->getFile('profile_image');
-                $originalName = $file->getClientName();
-                $fieldName = 'profile_image';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','image');
-                    if($upload_array['status']) {
-                        $profile_image = $upload_array['newFilename'];
-                    } else {
-                        $profile_image = '';
-                    }
+            $file = $this->request->getFile('profile_image');
+            $originalName = $file->getClientName();
+            $fieldName = 'profile_image';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'image');
+                if ($upload_array['status']) {
+                    $profile_image = $upload_array['newFilename'];
                 } else {
                     $profile_image = '';
                 }
+            } else {
+                $profile_image = '';
+            }
             /* profile image */
             /* GST CERTIFICATE */
-                $file = $this->request->getFile('gst_certificate');
-                $originalName = $file->getClientName();
-                $fieldName = 'gst_certificate';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $gst_certificate = $upload_array['newFilename'];
-                    } else {
-                        $gst_certificate = '';
-                    }
+            $file = $this->request->getFile('gst_certificate');
+            $originalName = $file->getClientName();
+            $fieldName = 'gst_certificate';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'pdf');
+                if ($upload_array['status']) {
+                    $gst_certificate = $upload_array['newFilename'];
                 } else {
                     $gst_certificate = '';
                 }
+            } else {
+                $gst_certificate = '';
+            }
             /* GST CERTIFICATE */
             /* PAN CARD */
-                $file = $this->request->getFile('contact_person_document');
-                $originalName = $file->getClientName();
-                $fieldName = 'contact_person_document';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $contact_person_document = $upload_array['newFilename'];
-                    } else {
-                        $contact_person_document = '';
-                    }
+            $file = $this->request->getFile('contact_person_document');
+            $originalName = $file->getClientName();
+            $fieldName = 'contact_person_document';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'pdf');
+                if ($upload_array['status']) {
+                    $contact_person_document = $upload_array['newFilename'];
                 } else {
                     $contact_person_document = '';
                 }
+            } else {
+                $contact_person_document = '';
+            }
             /* PAN CARD */
             /* cancelled cheque */
-                $file = $this->request->getFile('cancelled_cheque');
-                $originalName = $file->getClientName();
-                $fieldName = 'cancelled_cheque';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $cancelled_cheque = $upload_array['newFilename'];
-                    } else {
-                        $cancelled_cheque = '';
-                    }
+            $file = $this->request->getFile('cancelled_cheque');
+            $originalName = $file->getClientName();
+            $fieldName = 'cancelled_cheque';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'pdf');
+                if ($upload_array['status']) {
+                    $cancelled_cheque = $upload_array['newFilename'];
                 } else {
                     $cancelled_cheque = '';
                 }
+            } else {
+                $cancelled_cheque = '';
+            }
             /* cancelled cheque */
             $postData   = array(
                 'type'                  => 'PLANT',
@@ -187,93 +223,93 @@ class PlantController extends BaseController {
                 'status'                => 2,
             );
             // pr($postData);
-            $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);            
+            $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
             $this->session->setFlashdata('success_message', $this->data['title'].' inserted successfully');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
         }
-        echo $this->layout_after_login($title,$page_name,$data);
+        echo $this->layout_after_login($title, $page_name, $data);
     }
     public function edit($id)
     {
-        if(!$this->common_model->checkModuleFunctionAccess(15,79)){
+        if (!$this->common_model->checkModuleFunctionAccess(15, 79)) {
             $data['action']             = 'Access Forbidden';
             $title                      = $data['action'].' '.$this->data['title'];
-            $page_name                  = 'access-forbidden';        
-            echo $this->layout_after_login($title,$page_name,$data);
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
             exit;
         }
         $id                         = decoded($id);
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Edit';
         $title                      = $data['action'].' '.$this->data['title'];
-        $page_name                  = 'plant/add-edit';        
-        $conditions                 = array($this->data['primary_key']=>$id);
+        $page_name                  = 'plant/add-edit';
+        $conditions                 = array($this->data['primary_key'] => $id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
         $orderBy[0]                 = ['field' => 'company_name', 'type' => 'ASC'];
         $data['companyList']        = $this->data['model']->find_data('ecoex_companies', 'array', ['status!=' => 3, 'parent_id' => 0], '', '', '', $orderBy);
 
-        if($this->request->getMethod() == 'post') {
+        if ($this->request->getMethod() == 'post') {
             /* profile image */
-                $file = $this->request->getFile('profile_image');
-                $originalName = $file->getClientName();
-                $fieldName = 'profile_image';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','image');
-                    if($upload_array['status']) {
-                        $profile_image = $upload_array['newFilename'];
-                    } else {
-                        $profile_image = $data['row']->profile_image;
-                    }
+            $file = $this->request->getFile('profile_image');
+            $originalName = $file->getClientName();
+            $fieldName = 'profile_image';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'image');
+                if ($upload_array['status']) {
+                    $profile_image = $upload_array['newFilename'];
                 } else {
                     $profile_image = $data['row']->profile_image;
                 }
+            } else {
+                $profile_image = $data['row']->profile_image;
+            }
             /* profile image */
             /* GST CERTIFICATE */
-                $file = $this->request->getFile('gst_certificate');
-                $originalName = $file->getClientName();
-                $fieldName = 'gst_certificate';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $gst_certificate = $upload_array['newFilename'];
-                    } else {
-                        $gst_certificate = '';
-                    }
+            $file = $this->request->getFile('gst_certificate');
+            $originalName = $file->getClientName();
+            $fieldName = 'gst_certificate';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'pdf');
+                if ($upload_array['status']) {
+                    $gst_certificate = $upload_array['newFilename'];
                 } else {
-                    $gst_certificate = $data['row']->gst_certificate;
+                    $gst_certificate = '';
                 }
+            } else {
+                $gst_certificate = $data['row']->gst_certificate;
+            }
             /* GST CERTIFICATE */
             /* PAN CARD */
-                $file = $this->request->getFile('contact_person_document');
-                $originalName = $file->getClientName();
-                $fieldName = 'contact_person_document';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $contact_person_document = $upload_array['newFilename'];
-                    } else {
-                        $contact_person_document = '';
-                    }
+            $file = $this->request->getFile('contact_person_document');
+            $originalName = $file->getClientName();
+            $fieldName = 'contact_person_document';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'pdf');
+                if ($upload_array['status']) {
+                    $contact_person_document = $upload_array['newFilename'];
                 } else {
-                    $contact_person_document = $data['row']->contact_person_document;
+                    $contact_person_document = '';
                 }
+            } else {
+                $contact_person_document = $data['row']->contact_person_document;
+            }
             /* PAN CARD */
             /* cancelled cheque */
-                $file = $this->request->getFile('cancelled_cheque');
-                $originalName = $file->getClientName();
-                $fieldName = 'cancelled_cheque';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'user','pdf');
-                    if($upload_array['status']) {
-                        $cancelled_cheque = $upload_array['newFilename'];
-                    } else {
-                        $cancelled_cheque = '';
-                    }
+            $file = $this->request->getFile('cancelled_cheque');
+            $originalName = $file->getClientName();
+            $fieldName = 'cancelled_cheque';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'user', 'pdf');
+                if ($upload_array['status']) {
+                    $cancelled_cheque = $upload_array['newFilename'];
                 } else {
-                    $cancelled_cheque = $data['row']->cancelled_cheque;
+                    $cancelled_cheque = '';
                 }
+            } else {
+                $cancelled_cheque = $data['row']->cancelled_cheque;
+            }
             /* cancelled cheque */
-            if($this->request->getPost('password') != ''){
+            if ($this->request->getPost('password') != '') {
                 $postData   = array(
                     'parent_id'             => $this->request->getPost('parent_id'),
                     'gst_no'                => $this->request->getPost('gst_no'),
@@ -336,21 +372,21 @@ class PlantController extends BaseController {
             $record = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
             $this->session->setFlashdata('success_message', $this->data['title'].' updated successfully');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
-        }        
-        echo $this->layout_after_login($title,$page_name,$data);
+        }
+        echo $this->layout_after_login($title, $page_name, $data);
     }
     public function confirm_delete($id)
     {
         $id                         = decoded($id);
-        $conditions                 = array($this->data['primary_key']=>$id);
+        $conditions                 = array($this->data['primary_key'] => $id);
         $getPlant                   = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
-        if($getPlant){
+        if ($getPlant) {
             $postData = array(
                                 'status' => 3
                             );
-            $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
+            $updateData = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
 
-            if($getPlant->gst_no != ''){
+            if ($getPlant->gst_no != '') {
                 $this->session->setFlashdata('success_message', $this->data['title'].' deleted successfully');
                 return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
             } else {
@@ -365,14 +401,14 @@ class PlantController extends BaseController {
     public function change_status($id)
     {
         $id                         = decoded($id);
-        $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', [$this->data['primary_key']=>$id]);
-        if($data['row']->status){
+        $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', [$this->data['primary_key'] => $id]);
+        if ($data['row']->status) {
             $status  = 0;
             $msg        = 'Deactivated';
         } else {
             $email_verify           = $data['row']->email_verify;
             $phone_verify           = $data['row']->phone_verify;
-            if(($email_verify == 1) && ($phone_verify == 1)){
+            if (($email_verify == 1) && ($phone_verify == 1)) {
                 $status  = 2;
             } else {
                 $status  = 1;
@@ -380,37 +416,37 @@ class PlantController extends BaseController {
             $msg        = 'Activated';
 
             /* approve mail send */
-                $getUser = $data['row'];
-                $requestData = [
-                    'id'            => $getUser->id,
-                    'email'         => $getUser->email,
-                    'phone'         => $getUser->phone,
-                    'company_name'  => $getUser->company_name,
-                ];
-                /* send email */
-                    $generalSetting             = $this->common_model->find_data('general_settings', 'row');
-                    $subject                    = $generalSetting->site_name.' :: Account Approved';
-                    $message                    = view('email-templates/signup',$requestData);
-                    // echo $message;die;
-                    $this->sendMail($requestData['email'], $subject, $message);
-                /* send email */
-                /* email log save */
-                    $postData2 = [
-                        'name'                  => $getUser->company_name,
-                        'email'                 => $getUser->email,
-                        'subject'               => $subject,
-                        'message'               => $message
-                    ];
-                    $this->common_model->save_data('email_logs', $postData2, '', 'id');
-                /* email log save */
+            $getUser = $data['row'];
+            $requestData = [
+                'id'            => $getUser->id,
+                'email'         => $getUser->email,
+                'phone'         => $getUser->phone,
+                'company_name'  => $getUser->company_name,
+            ];
+            /* send email */
+            $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+            $subject                    = $generalSetting->site_name.' :: Account Approved';
+            $message                    = view('email-templates/signup', $requestData);
+            // echo $message;die;
+            $this->sendMail($requestData['email'], $subject, $message);
+            /* send email */
+            /* email log save */
+            $postData2 = [
+                'name'                  => $getUser->company_name,
+                'email'                 => $getUser->email,
+                'subject'               => $subject,
+                'message'               => $message
+            ];
+            $this->common_model->save_data('email_logs', $postData2, '', 'id');
+            /* email log save */
             /* approve mail send */
         }
         $postData = array(
                             'status' => $status
                         );
-        $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
+        $updateData = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
 
-        if($data['row']->gst_no != ''){
+        if ($data['row']->gst_no != '') {
             $this->session->setFlashdata('success_message', $this->data['title'].' '.$msg.' successfully');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
         } else {
@@ -420,98 +456,100 @@ class PlantController extends BaseController {
     }
     public function view($id)
     {
-        if(!$this->common_model->checkModuleFunctionAccess(15,80)){
+        if (!$this->common_model->checkModuleFunctionAccess(15, 80)) {
             $data['action']             = 'Access Forbidden';
             $title                      = $data['action'].' '.$this->data['title'];
-            $page_name                  = 'access-forbidden';        
-            echo $this->layout_after_login($title,$page_name,$data);
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
             exit;
         }
         $id                         = decoded($id);
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'View';
         $title                      = $data['action'].' '.$this->data['title'];
-        $page_name                  = 'plant/details';        
-        $conditions                 = array($this->data['primary_key']=>$id);
+        $page_name                  = 'plant/details';
+        $conditions                 = array($this->data['primary_key'] => $id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
-        echo $this->layout_after_login($title,$page_name,$data);
+        echo $this->layout_after_login($title, $page_name, $data);
     }
-    public function check_email(){
-        $apiStatus          = TRUE;
+    public function check_email()
+    {
+        $apiStatus          = true;
         $apiMessage         = '';
         $apiResponse        = [];
         $apiExtraField      = '';
         $apiExtraData       = '';
         $this->isJSON(file_get_contents('php://input'));
-        $requestData        = $this->extract_json(file_get_contents('php://input'));        
+        $requestData        = $this->extract_json(file_get_contents('php://input'));
         $requiredFields     = ['plant_email'];
         $headerData         = $this->request->headers();
-        if (!$this->validateArray($requiredFields, $requestData)){              
+        if (!$this->validateArray($requiredFields, $requestData)) {
             http_response_code(406);
-            $apiStatus          = FALSE;
+            $apiStatus          = false;
             $apiMessage         = $this->getResponseCode(http_response_code());
             $apiExtraField      = 'response_code';
             $apiExtraData       = http_response_code();
         }
-        if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+        if ($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')) {
             $checkData = $this->common_model->find_data('ecomm_users', 'count', ['email' => $requestData['plant_email'], 'status!=' => 3]);
-            if($checkData > 0){
+            if ($checkData > 0) {
                 http_response_code(200);
-                $apiStatus          = FALSE;
+                $apiStatus          = false;
                 $apiMessage         = 'Email Already Exists. Try Other Email !!!';
                 $apiExtraField      = 'response_code';
                 $apiExtraData       = http_response_code();
             } else {
                 http_response_code(200);
-                $apiStatus          = TRUE;
+                $apiStatus          = true;
                 $apiMessage         = 'Email Available !!!';
                 $apiExtraField      = 'response_code';
                 $apiExtraData       = http_response_code();
             }
         } else {
             http_response_code(400);
-            $apiStatus          = FALSE;
+            $apiStatus          = false;
             $apiMessage         = $this->getResponseCode(http_response_code());
             $apiExtraField      = 'response_code';
             $apiExtraData       = http_response_code();
         }
         $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
     }
-    public function check_phone(){
-        $apiStatus          = TRUE;
+    public function check_phone()
+    {
+        $apiStatus          = true;
         $apiMessage         = '';
         $apiResponse        = [];
         $apiExtraField      = '';
         $apiExtraData       = '';
         $this->isJSON(file_get_contents('php://input'));
-        $requestData        = $this->extract_json(file_get_contents('php://input'));        
+        $requestData        = $this->extract_json(file_get_contents('php://input'));
         $requiredFields     = ['plant_phone'];
         $headerData         = $this->request->headers();
-        if (!$this->validateArray($requiredFields, $requestData)){              
+        if (!$this->validateArray($requiredFields, $requestData)) {
             http_response_code(406);
-            $apiStatus          = FALSE;
+            $apiStatus          = false;
             $apiMessage         = $this->getResponseCode(http_response_code());
             $apiExtraField      = 'response_code';
             $apiExtraData       = http_response_code();
         }
-        if($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')){
+        if ($headerData['Key'] == 'Key: '.getenv('app.PROJECTKEY')) {
             $checkData = $this->common_model->find_data('ecomm_users', 'count', ['phone' => $requestData['plant_phone'], 'status!=' => 3]);
-            if($checkData > 0){
+            if ($checkData > 0) {
                 http_response_code(404);
-                $apiStatus          = TRUE;
+                $apiStatus          = true;
                 $apiMessage         = 'Phone Already Exists. Try Other Phone !!!';
                 $apiExtraField      = 'response_code';
                 $apiExtraData       = http_response_code();
             } else {
                 http_response_code(200);
-                $apiStatus          = TRUE;
+                $apiStatus          = true;
                 $apiMessage         = 'Phone Available !!!';
                 $apiExtraField      = 'response_code';
                 $apiExtraData       = http_response_code();
             }
         } else {
             http_response_code(400);
-            $apiStatus          = FALSE;
+            $apiStatus          = false;
             $apiMessage         = $this->getResponseCode(http_response_code());
             $apiExtraField      = 'response_code';
             $apiExtraData       = http_response_code();
@@ -521,11 +559,11 @@ class PlantController extends BaseController {
 
     public function addWithoutGST()
     {
-        if(!$this->common_model->checkModuleFunctionAccess(15,115)){
+        if (!$this->common_model->checkModuleFunctionAccess(15, 115)) {
             $data['action']             = 'Access Forbidden';
             $title                      = $data['action'].' '.$this->data['title'];
-            $page_name                  = 'access-forbidden';        
-            echo $this->layout_after_login($title,$page_name,$data);
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
             exit;
         }
         $data['moduleDetail']       = $this->data;
@@ -536,8 +574,8 @@ class PlantController extends BaseController {
         $orderBy[0]                 = ['field' => 'company_name', 'type' => 'ASC'];
         $data['companyList']        = $this->data['model']->find_data('ecoex_companies', 'array', ['status!=' => 3, 'parent_id' => 0, 'id' => 1], '', '', '', $orderBy);
 
-        if($this->request->getMethod() == 'post') {
-            
+        if ($this->request->getMethod() == 'post') {
+
 
             $postData   = array(
                 'type'                  => 'PLANT',
@@ -560,19 +598,19 @@ class PlantController extends BaseController {
                 'status'                => 2,
             );
             // pr($postData);
-            $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);            
+            $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
             $this->session->setFlashdata('success_message', $this->data['title'].' inserted successfully');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/temporary-list');
         }
-        echo $this->layout_after_login($title,$page_name,$data);
+        echo $this->layout_after_login($title, $page_name, $data);
     }
     public function createTemporaryEnquiry($id)
     {
-        if(!$this->common_model->checkModuleFunctionAccess(15,115)){
+        if (!$this->common_model->checkModuleFunctionAccess(15, 115)) {
             $data['action']             = 'Access Forbidden';
             $title                      = $data['action'].' '.$this->data['title'];
-            $page_name                  = 'access-forbidden';        
-            echo $this->layout_after_login($title,$page_name,$data);
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
             exit;
         }
         $id                         = decoded($id);
@@ -580,15 +618,15 @@ class PlantController extends BaseController {
         $data['action']             = 'Create';
         $title                      = $data['action'].' Temporary '.$this->data['title'] . ' Enquiry';
         $page_name                  = 'plant/create-temporary-enquiry';
-        
-        $conditions                 = array($this->data['primary_key']=>$id);
+
+        $conditions                 = array($this->data['primary_key'] => $id);
         $data['plant']              = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
-        $parent_id                  = (($data['plant'])?$data['plant']->parent_id:0);
+        $parent_id                  = (($data['plant']) ? $data['plant']->parent_id : 0);
 
         $orderBy2[0]                = ['field' => 'item_name_ecoex', 'type' => 'ASC'];
         $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => $parent_id], 'id,item_name_ecoex', '', '', $orderBy2);
 
-        if($this->request->getMethod() == 'post') {
+        if ($this->request->getMethod() == 'post') {
             $item_id            = $this->request->getPost('item_id');
             $qty                = $this->request->getPost('qty');
             $uploadedFiles      = $this->request->getFileMultiple('new_product_image');
@@ -615,23 +653,23 @@ class PlantController extends BaseController {
             $plant_id       = $id;
             $company_id     = $parent_id;
             /* sl no*/
-                $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
-                $checkEnq = $this->common_model->find_data('ecomm_enquires', 'row', '', 'sl_no', '', '', $orderBy);
-                if ($checkEnq) {
-                    // exist
-                    $sl_no              = $checkEnq->sl_no;
-                    $next_sl_no         = $sl_no + 1;
-                    $next_sl_no_string  = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
-                    $enquiry_no         = 'ECOMM-' . $next_sl_no_string;
-                } else {
-                    // not exist
-                    $next_sl_no         = 1;
-                    $next_sl_no_string  = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
-                    $enquiry_no         = 'ECOMM-' . $next_sl_no_string;
-                }
+            $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
+            $checkEnq = $this->common_model->find_data('ecomm_enquires', 'row', '', 'sl_no', '', '', $orderBy);
+            if ($checkEnq) {
+                // exist
+                $sl_no              = $checkEnq->sl_no;
+                $next_sl_no         = $sl_no + 1;
+                $next_sl_no_string  = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
+                $enquiry_no         = 'ECOMM-' . $next_sl_no_string;
+            } else {
+                // not exist
+                $next_sl_no         = 1;
+                $next_sl_no_string  = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
+                $enquiry_no         = 'ECOMM-' . $next_sl_no_string;
+            }
             /* sl no*/
             /* gps track image */
-                $gps_tracking = '';
+            $gps_tracking = '';
             /* gps track image */
 
             $fields1            = [
@@ -648,7 +686,7 @@ class PlantController extends BaseController {
                 'created_by'                => 0,
             ];
             // pr($fields1,0);
-            $enq_id = $this->data['model']->save_data('ecomm_enquires', $fields1, '', 'id');            
+            $enq_id = $this->data['model']->save_data('ecomm_enquires', $fields1, '', 'id');
 
             if (!empty($item_id)) {
                 for ($k = 0; $k < count($item_id); $k++) {
@@ -662,9 +700,9 @@ class PlantController extends BaseController {
                         'sl_no'                         => $next_sl_no,
                         'new_product'                   => 0,
                         'product_id'                    => $item_id[$k],
-                        'new_hsn'                       => (($getItem)?$getItem->hsn:''),
+                        'new_hsn'                       => (($getItem) ? $getItem->hsn : ''),
                         'qty'                           => $qty[$k],
-                        'unit'                          => (($getItem)?$getItem->unit:0),
+                        'unit'                          => (($getItem) ? $getItem->unit : 0),
                         'new_product_image'             => json_encode($item_images),
                         'status'                        => 0,
                     ];
@@ -672,19 +710,19 @@ class PlantController extends BaseController {
                     $this->data['model']->save_data('ecomm_enquiry_products', $fields2, '', 'id');
                 }
             }
-            
+
             $this->session->setFlashdata('success_message', $this->data['title'].' enquiry created successfully');
             return redirect()->to('/admin/enquiry-requests/list/' . encoded(0));
         }
-        echo $this->layout_after_login($title,$page_name,$data);
+        echo $this->layout_after_login($title, $page_name, $data);
     }
     public function createEnquiry($id)
     {
-        if(!$this->common_model->checkModuleFunctionAccess(15,115)){
+        if (!$this->common_model->checkModuleFunctionAccess(15, 115)) {
             $data['action']             = 'Access Forbidden';
             $title                      = $data['action'].' '.$this->data['title'];
-            $page_name                  = 'access-forbidden';        
-            echo $this->layout_after_login($title,$page_name,$data);
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
             exit;
         }
         $id                         = decoded($id);
@@ -692,16 +730,16 @@ class PlantController extends BaseController {
         $data['action']             = 'Add';
         $title                      = $data['action'].' Final '.$this->data['title'] . ' Enquiry';
         $page_name                  = 'plant/create-enquiry';
-        
-        $conditions                 = array($this->data['primary_key']=>$id);
+
+        $conditions                 = array($this->data['primary_key'] => $id);
         $data['plant']              = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
-        $parent_id                  = (($data['plant'])?$data['plant']->parent_id:0);
+        $parent_id                  = (($data['plant']) ? $data['plant']->parent_id : 0);
         $data['company']            = $this->data['model']->find_data('ecoex_companies', 'row', ['id' => $parent_id], 'company_name');
 
         $orderBy2[0]                = ['field' => 'item_name_ecoex', 'type' => 'ASC'];
         $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => $parent_id], 'id,item_name_ecoex', '', '', $orderBy2);
 
-        if($this->request->getMethod() == 'post') {
+        if ($this->request->getMethod() == 'post') {
             $item_id            = $this->request->getPost('item_id');
             $qty                = $this->request->getPost('qty');
             $uploadedFiles      = $this->request->getFileMultiple('new_product_image');
@@ -728,37 +766,37 @@ class PlantController extends BaseController {
             $plant_id       = $id;
             $company_id     = $parent_id;
             /* sl no*/
-                $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
-                $checkEnq = $this->common_model->find_data('ecomm_enquires', 'row', '', 'sl_no', '', '', $orderBy);
-                if ($checkEnq) {
-                    // exist
-                    $sl_no              = $checkEnq->sl_no;
-                    $next_sl_no         = $sl_no + 1;
-                    $next_sl_no_string  = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
-                    $enquiry_no         = 'ECOMM-' . $next_sl_no_string;
-                } else {
-                    // not exist
-                    $next_sl_no         = 1;
-                    $next_sl_no_string  = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
-                    $enquiry_no         = 'ECOMM-' . $next_sl_no_string;
-                }
+            $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
+            $checkEnq = $this->common_model->find_data('ecomm_enquires', 'row', '', 'sl_no', '', '', $orderBy);
+            if ($checkEnq) {
+                // exist
+                $sl_no              = $checkEnq->sl_no;
+                $next_sl_no         = $sl_no + 1;
+                $next_sl_no_string  = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
+                $enquiry_no         = 'ECOMM-' . $next_sl_no_string;
+            } else {
+                // not exist
+                $next_sl_no         = 1;
+                $next_sl_no_string  = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
+                $enquiry_no         = 'ECOMM-' . $next_sl_no_string;
+            }
             /* sl no*/
             /* gps track image */
-                $file = $this->request->getFile('gps_tracking_image');
-                $originalName = $file->getClientName();
-                $fieldName = 'gps_tracking_image';
-                if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'enquiry','image');
-                    if($upload_array['status']) {
-                        $gps_tracking_image = $upload_array['newFilename'];
-                    } else {
-                        $this->session->setFlashdata('error_message', 'GPS image required');
-                        return redirect(current_url());
-                    }
+            $file = $this->request->getFile('gps_tracking_image');
+            $originalName = $file->getClientName();
+            $fieldName = 'gps_tracking_image';
+            if ($file != '') {
+                $upload_array = $this->common_model->upload_single_file($fieldName, $originalName, 'enquiry', 'image');
+                if ($upload_array['status']) {
+                    $gps_tracking_image = $upload_array['newFilename'];
                 } else {
                     $this->session->setFlashdata('error_message', 'GPS image required');
                     return redirect(current_url());
                 }
+            } else {
+                $this->session->setFlashdata('error_message', 'GPS image required');
+                return redirect(current_url());
+            }
             /* gps track image */
 
             $fields1            = [
@@ -774,7 +812,7 @@ class PlantController extends BaseController {
                 'device_model'              => '',
                 'created_by'                => 0,
             ];
-            $enq_id = $this->data['model']->save_data('ecomm_enquires', $fields1, '', 'id');            
+            $enq_id = $this->data['model']->save_data('ecomm_enquires', $fields1, '', 'id');
 
             if (!empty($item_id)) {
                 for ($k = 0; $k < count($item_id); $k++) {
@@ -788,19 +826,19 @@ class PlantController extends BaseController {
                         'sl_no'                         => $next_sl_no,
                         'new_product'                   => 0,
                         'product_id'                    => $item_id[$k],
-                        'new_hsn'                       => (($getItem)?$getItem->hsn:''),
+                        'new_hsn'                       => (($getItem) ? $getItem->hsn : ''),
                         'qty'                           => $qty[$k],
-                        'unit'                          => (($getItem)?$getItem->unit:0),
+                        'unit'                          => (($getItem) ? $getItem->unit : 0),
                         'new_product_image'             => json_encode($item_images),
                         'status'                        => 1,
                     ];
                     $this->data['model']->save_data('ecomm_enquiry_products', $fields2, '', 'id');
                 }
             }
-            
+
             $this->session->setFlashdata('success_message', $this->data['title'].' enquiry created successfully');
             return redirect()->to('/admin/enquiry-requests/list/' . encoded(0));
         }
-        echo $this->layout_after_login($title,$page_name,$data);
+        echo $this->layout_after_login($title, $page_name, $data);
     }
 }
