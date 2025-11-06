@@ -566,6 +566,118 @@ class PlantController extends BaseController {
         }
         echo $this->layout_after_login($title,$page_name,$data);
     }
+    public function createTemporaryEnquiry($id)
+    {
+        if(!$this->common_model->checkModuleFunctionAccess(15,115)){
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'].' '.$this->data['title'];
+            $page_name                  = 'access-forbidden';        
+            echo $this->layout_after_login($title,$page_name,$data);
+            exit;
+        }
+        $id                         = decoded($id);
+        $data['moduleDetail']       = $this->data;
+        $data['action']             = 'Add';
+        $title                      = $data['action'].' Temporary '.$this->data['title'];
+        $page_name                  = 'plant/create-temporary-enquiry';
+        
+        $conditions                 = array($this->data['primary_key']=>$id);
+        $data['plant']              = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
+        $parent_id                  = (($data['plant'])?$data['plant']->parent_id:0);
+
+        $orderBy2[0]                = ['field' => 'item_name_ecoex', 'type' => 'ASC'];
+        $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => $parent_id], 'id,item_name_ecoex', '', '', $orderBy2);
+
+        if($this->request->getMethod() == 'post') {
+            $item_id            = $this->request->getPost('item_id');
+            $qty                = $this->request->getPost('qty');
+            $uploadedFiles      = $this->request->getFileMultiple('new_product_image');
+            $uploadPath         = FCPATH . 'uploads/enquiry/';
+
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            $imageNames = [];
+
+            if ($uploadedFiles && is_array($uploadedFiles)) {
+                foreach ($uploadedFiles as $file) {
+                    if ($file->isValid() && !$file->hasMoved()) {
+                        // Use random name (safe) or keep original with getClientName()
+                        $newName = $file->getRandomName();
+                        $file->move($uploadPath, $newName);
+
+                        $imageNames[] = $newName;
+                    }
+                }
+            }
+
+            $plant_id       = $id;
+            $company_id     = $parent_id;
+            /* sl no*/
+                $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
+                $checkEnq = $this->common_model->find_data('ecomm_enquires', 'row', '', 'sl_no', '', '', $orderBy);
+                if ($checkEnq) {
+                    // exist
+                    $sl_no              = $checkEnq->sl_no;
+                    $next_sl_no         = $sl_no + 1;
+                    $next_sl_no_string  = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
+                    $enquiry_no         = 'ECOMM-' . $next_sl_no_string;
+                } else {
+                    // not exist
+                    $next_sl_no         = 1;
+                    $next_sl_no_string  = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
+                    $enquiry_no         = 'ECOMM-' . $next_sl_no_string;
+                }
+            /* sl no*/
+            /* gps track image */
+                $gps_tracking = '';
+            /* gps track image */
+
+            $fields1            = [
+                'plant_id'                  => $plant_id,
+                'company_id'                => $company_id,
+                'sl_no'                     => $next_sl_no,
+                'enquiry_no'                => $enquiry_no,
+                'gps_tracking_image'        => $gps_tracking,
+                'tentative_collection_date' => '',
+                'latitude'                  => '',
+                'longitude'                 => '',
+                'device_brand'              => '',
+                'device_model'              => '',
+                'created_by'                => 0,
+            ];
+            // pr($fields1,0);
+            $enq_id = $this->data['model']->save_data('ecomm_enquires', $fields1, '', 'id');            
+
+            if (!empty($item_id)) {
+                for ($k = 0; $k < count($item_id); $k++) {
+                    $getItem = $this->data['model']->find_data('ecomm_company_items', 'row', ['id' => $item_id[$k]], 'item_name_ecoex,hsn,unit');
+                    $item_images = [];
+                    $item_images[] = $imageNames[$k];
+                    $fields2 = [
+                        'enq_id'                        => $enq_id,
+                        'plant_id'                      => $plant_id,
+                        'company_id'                    => $company_id,
+                        'sl_no'                         => $next_sl_no,
+                        'new_product'                   => 0,
+                        'product_id'                    => $item_id[$k],
+                        'new_hsn'                       => (($getItem)?$getItem->hsn:''),
+                        'qty'                           => $qty[$k],
+                        'unit'                          => (($getItem)?$getItem->unit:0),
+                        'new_product_image'             => json_encode($item_images),
+                        'status'                        => 0,
+                    ];
+                    // pr($fields2,0);
+                    $this->data['model']->save_data('ecomm_enquiry_products', $fields2, '', 'id');
+                }
+            }
+            
+            $this->session->setFlashdata('success_message', $this->data['title'].' enquiry created successfully');
+            return redirect()->to('/admin/enquiry-requests/list/' . encoded(0));
+        }
+        echo $this->layout_after_login($title,$page_name,$data);
+    }
     public function createEnquiry($id)
     {
         if(!$this->common_model->checkModuleFunctionAccess(15,115)){
@@ -589,6 +701,7 @@ class PlantController extends BaseController {
         $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => $parent_id], 'id,item_name_ecoex', '', '', $orderBy2);
 
         if($this->request->getMethod() == 'post') {
+            pr($this->request->getPost());
             $item_id            = $this->request->getPost('item_id');
             $qty                = $this->request->getPost('qty');
             $uploadedFiles      = $this->request->getFileMultiple('new_product_image');
