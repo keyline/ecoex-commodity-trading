@@ -3787,33 +3787,35 @@ class ApiController extends BaseController
 
                         /* ---------- IF NEW PRODUCT ---------- */
                         if ($isNewProduct) {
-                            $fields2 = [
-                                'enq_id'            => $enq_id,
-                                'plant_id'          => $plant_id,
-                                'company_id'        => $company_id,
-                                'sl_no'             => $next_sl_no,
-                                'new_product'       => 1,
-                                'new_product_name'  => $req['product_name'] ?? '',
-                                'new_hsn'           => $req['hsn'] ?? '',
-                                'qty'               => $req['qty'] ?? 0.00,
-                                'unit'              => $req['unit'] ?? 0,
-                                'new_product_image' => json_encode($item_images),
-                                'status'            => 0,
-                            ];
-
-                            $enq_product_id = $this->common_model->save_data('ecomm_enquiry_products', $fields2, '', 'id');
-
                             $fields3 = [
                                 'company_id'      => $company_id,
                                 'enq_id'          => $enq_id,
                                 'enq_product_id'  => $enq_product_id,
                                 'item_name_ecoex' => $req['product_name'] ?? '',
                                 'hsn'             => $req['hsn'] ?? '',
+                                'unit'            => $req['unit'] ?? 0,
                                 'item_images'     => json_encode($item_images),
                                 'created_by'      => $uId,
                             ];
 
-                            $this->common_model->save_data('ecomm_company_items', $fields3, '', 'id');
+                            $product_id = $this->common_model->save_data('ecomm_company_items', $fields3, '', 'id');
+
+                            $fields2 = [
+                                'enq_id'            => $enq_id,
+                                'plant_id'          => $plant_id,
+                                'company_id'        => $company_id,
+                                'sl_no'             => $next_sl_no,
+                                'new_product'       => 1,
+                                'product_id'        => $product_id,
+                                'new_product_name'  => $req['product_name'] ?? '',
+                                'new_hsn'           => $req['hsn'] ?? '',
+                                'qty'               => $req['qty'] ?? 0.00,
+                                'unit'              => $req['unit'] ?? 0,
+                                'new_product_image' => json_encode($item_images),
+                                'status'            => 1,
+                            ];
+
+                            $enq_product_id = $this->common_model->save_data('ecomm_enquiry_products', $fields2, '', 'id');
                         }
                         /* ---------- IF EXISTING PRODUCT ---------- */
                         else {
