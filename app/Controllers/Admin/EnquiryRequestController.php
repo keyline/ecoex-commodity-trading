@@ -100,7 +100,7 @@ class EnquiryRequestController extends BaseController
         $user_id                    = session('user_id');
         $getAdminUser               = $this->data['model']->find_data('ecoex_admin_user', 'row', ['id' => $user_id], 'plant_ids');
         $plantIds                   = (($getAdminUser)?json_decode($getAdminUser->plant_ids):[]);
-        Helper::pr($plantIds);
+        pr($plantIds);
 
         if(!empty($plantIds)){
             // Filter the array
