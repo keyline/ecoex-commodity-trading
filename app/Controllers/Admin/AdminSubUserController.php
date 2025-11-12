@@ -1,14 +1,17 @@
 <?php
+
 namespace App\Controllers\admin;
+
 use App\Controllers\BaseController;
 use App\Models\CommonModel;
-class AdminSubUserController extends BaseController {
 
+class AdminSubUserController extends BaseController
+{
     private $model;  //This can be accessed by all class methods
-	public function __construct()
+    public function __construct()
     {
         $session = \Config\Services::session();
-        if(!$session->get('is_admin_login')) {
+        if (!$session->get('is_admin_login')) {
             return redirect()->to('/Administrator');
         }
         $model = new CommonModel();
@@ -23,41 +26,42 @@ class AdminSubUserController extends BaseController {
         );
     }
 
-    public function list(){
+    public function list()
+    {
         $data['moduleDetail']       = $this->data;
         $title                      = 'Manage '.$this->data['title'];
         $page_name                  = 'sub-users/list';
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
         $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status!=' => 3], '', '', '', $order_by);
-        echo $this->layout_after_login($title,$page_name,$data);
+        echo $this->layout_after_login($title, $page_name, $data);
     }
     public function add()
     {
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Add';
         $title                      = $data['action'].' '.$this->data['title'];
-        $page_name                  = 'sub-users/add-edit';        
+        $page_name                  = 'sub-users/add-edit';
         $data['row']                = [];
         $data['roles']              = $this->common_model->find_data('ecoex_roles', 'array', ['published' => 1]);
         $data['subusers']           = $this->common_model->find_data('ecoex_admin_user', 'array', ['status' => 1, 'user_type!=' => 'MA']);
-        if($this->request->getMethod() == 'post') {
+        if ($this->request->getMethod() == 'post') {
             // pr($this->request->getPost());
             /* inquiry number generate */
-                $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
-                $checkEmployee = $this->common_model->find_data('ecoex_admin_user', 'row', ['user_type!=' => 'COMPANY'], '', '', '', $orderBy);
-                if($checkEmployee){
-                    $slNo = $checkEmployee->sl_no+1;
-                    $employee_nos = str_pad($slNo,4,0,STR_PAD_LEFT);
-                    $employee_id = 'ECOEX-'.$employee_nos;
-                } else {
-                    $slNo = 1;
-                    $employee_nos = str_pad($slNo,4,0,STR_PAD_LEFT);
-                    $employee_id = 'ECOEX-'.$employee_nos;
-                }
+            $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
+            $checkEmployee = $this->common_model->find_data('ecoex_admin_user', 'row', ['user_type!=' => 'COMPANY'], '', '', '', $orderBy);
+            if ($checkEmployee) {
+                $slNo = $checkEmployee->sl_no + 1;
+                $employee_nos = str_pad($slNo, 4, 0, STR_PAD_LEFT);
+                $employee_id = 'ECOEX-'.$employee_nos;
+            } else {
+                $slNo = 1;
+                $employee_nos = str_pad($slNo, 4, 0, STR_PAD_LEFT);
+                $employee_id = 'ECOEX-'.$employee_nos;
+            }
             /* inquiry number generate */
             $email = $this->request->getPost('email');
             $checkSubUser = $this->common_model->find_data('ecoex_admin_user', 'count', ['username' => $email]);
-            if($checkSubUser <= 0){
+            if ($checkSubUser <= 0) {
                 $team_members = $this->request->getPost('team_members');
                 $postData = [
                         'sl_no'                       => $slNo,
@@ -76,19 +80,19 @@ class AdminSubUserController extends BaseController {
                         'permanent_address'           => $this->request->getPost('permanent_address'),
                         ];
                 // pr($postData);
-                $addUserData=$this->common_model->save_data('ecoex_admin_user', $postData, '', 'id');
-                if($addUserData){
+                $addUserData = $this->common_model->save_data('ecoex_admin_user', $postData, '', 'id');
+                if ($addUserData) {
                     /* login credentials email */
-                        $base = base_url('/admin');
-                        $emailTemplate      = $this->common_model->find_data('ecoex_email_template', 'row', ['id' => 12]);
-                        $to2                = $this->request->getPost('email');
-                        $subject2           = "Welcome ".$this->request->getPost('name')." to Ecoex Commodity Trading Portal";                        
-                        $emailTemplate    = str_replace("{company}", $this->request->getPost('name'), $emailTemplate->content);
-                        $emailTemplate1   = str_replace("{customer_email}", $this->request->getPost('email'), $emailTemplate);
-                        $emailTemplate2   = str_replace("{password}", $this->request->getPost('password'), $emailTemplate1);
-                        $message2         = str_replace("{login_link}", $base , $emailTemplate2);
-                        // echo $message2;die;
-                        $this->sendMail($to2,$subject2,$message2);
+                    $base = base_url('/admin');
+                    $emailTemplate      = $this->common_model->find_data('ecoex_email_template', 'row', ['id' => 12]);
+                    $to2                = $this->request->getPost('email');
+                    $subject2           = "Welcome ".$this->request->getPost('name')." to Ecoex Commodity Trading Portal";
+                    $emailTemplate    = str_replace("{company}", $this->request->getPost('name'), $emailTemplate->content);
+                    $emailTemplate1   = str_replace("{customer_email}", $this->request->getPost('email'), $emailTemplate);
+                    $emailTemplate2   = str_replace("{password}", $this->request->getPost('password'), $emailTemplate1);
+                    $message2         = str_replace("{login_link}", $base, $emailTemplate2);
+                    // echo $message2;die;
+                    $this->sendMail($to2, $subject2, $message2);
                     /* login credentials email */
                 }
                 $this->session->setFlashdata('success_message', $this->data['title'].' inserted successfully');
@@ -98,7 +102,7 @@ class AdminSubUserController extends BaseController {
                 return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
             }
         }
-        echo $this->layout_after_login($title,$page_name,$data);
+        echo $this->layout_after_login($title, $page_name, $data);
     }
     public function edit($id)
     {
@@ -106,15 +110,15 @@ class AdminSubUserController extends BaseController {
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Edit';
         $title                      = $data['action'].' '.$this->data['title'];
-        $page_name                  = 'sub-users/add-edit';        
-        $conditions                 = array($this->data['primary_key']=>$id);
+        $page_name                  = 'sub-users/add-edit';
+        $conditions                 = array($this->data['primary_key'] => $id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
         $data['roles']              = $this->common_model->find_data('ecoex_roles', 'array', ['published' => 1]);
         $data['subusers']           = $this->common_model->find_data('ecoex_admin_user', 'array', ['status' => 1, 'user_type!=' => 'MA']);
-        if($this->request->getMethod() == 'post') {
+        if ($this->request->getMethod() == 'post') {
             $email = $this->request->getPost('email');
             $checkSubUser = $this->common_model->find_data('ecoex_admin_user', 'count', ['username' => $email, 'id!=' => $id]);
-            if($checkSubUser <= 0){
+            if ($checkSubUser <= 0) {
                 $team_members = $this->request->getPost('team_members');
                 $postData = [
                             'user_type'                   => $this->request->getPost('user_type'),
@@ -139,8 +143,8 @@ class AdminSubUserController extends BaseController {
                 $this->session->setFlashdata('success_message', $this->data['title'].' already exists');
                 return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
             }
-        }        
-        echo $this->layout_after_login($title,$page_name,$data);
+        }
+        echo $this->layout_after_login($title, $page_name, $data);
     }
     public function confirm_delete($id)
     {
@@ -148,15 +152,15 @@ class AdminSubUserController extends BaseController {
         $postData = array(
                             'status' => 3
                         );
-        $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
+        $updateData = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
         $this->session->setFlashdata('success_message', $this->data['title'].' deleted successfully');
         return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
     }
     public function change_status($id)
     {
         $id                         = decoded($id);
-        $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', [$this->data['primary_key']=>$id]);
-        if($data['row']->status){
+        $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', [$this->data['primary_key'] => $id]);
+        if ($data['row']->status) {
             $status  = 0;
             $msg        = 'Deactivated';
         } else {
@@ -166,7 +170,7 @@ class AdminSubUserController extends BaseController {
         $postData = array(
                             'status' => $status
                         );
-        $updateData = $this->common_model->save_data($this->data['table_name'],$postData,$id,$this->data['primary_key']);
+        $updateData = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
         $this->session->setFlashdata('success_message', $this->data['title'].' '.$msg.' successfully');
         return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
     }
@@ -175,16 +179,16 @@ class AdminSubUserController extends BaseController {
         $id                         = decoded($id);
         $getSubUser                 = $this->common_model->find_data('ecoex_admin_user', 'row', ['id' => $id]);
         /* login credentials email */
-            $base               = base_url('/admin');
-            $emailTemplate      = $this->common_model->find_data('ecoex_email_template', 'row', ['id' => 12]);
-            $to2                = (($getSubUser)?$getSubUser->email:'');
-            $subject2           = "Welcome ".(($getSubUser)?$getSubUser->name:'')." to Ecoex Commodity Trading Portal";                        
-            $emailTemplate    = str_replace("{company}", (($getSubUser)?$getSubUser->name:''), $emailTemplate->content);
-            $emailTemplate1   = str_replace("{customer_email}", (($getSubUser)?$getSubUser->email:''), $emailTemplate);
-            $emailTemplate2   = str_replace("{password}", (($getSubUser)?$getSubUser->original_password:''), $emailTemplate1);
-            $message2         = str_replace("{login_link}", $base , $emailTemplate2);
-            // echo $message2;die;
-            $this->sendMail($to2,$subject2,$message2);
+        $base               = base_url('/admin');
+        $emailTemplate      = $this->common_model->find_data('ecoex_email_template', 'row', ['id' => 12]);
+        $to2                = (($getSubUser) ? $getSubUser->email : '');
+        $subject2           = "Welcome ".(($getSubUser) ? $getSubUser->name : '')." to Ecoex Commodity Trading Portal";
+        $emailTemplate    = str_replace("{company}", (($getSubUser) ? $getSubUser->name : ''), $emailTemplate->content);
+        $emailTemplate1   = str_replace("{customer_email}", (($getSubUser) ? $getSubUser->email : ''), $emailTemplate);
+        $emailTemplate2   = str_replace("{password}", (($getSubUser) ? $getSubUser->original_password : ''), $emailTemplate1);
+        $message2         = str_replace("{login_link}", $base, $emailTemplate2);
+        // echo $message2;die;
+        $this->sendMail($to2, $subject2, $message2);
         /* login credentials email */
         $this->session->setFlashdata('success_message', 'Signin Credential Sent Successfully !!!');
         return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
@@ -194,7 +198,7 @@ class AdminSubUserController extends BaseController {
         $id                         = decoded($id);
         $data['moduleDetail']       = $this->data;
 
-        $conditions                 = array($this->data['primary_key']=>$id);
+        $conditions                 = array($this->data['primary_key'] => $id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
 
         $data['action']             = 'Access';
@@ -204,17 +208,46 @@ class AdminSubUserController extends BaseController {
         $orderBy[0]                 = ['field' => 'plant_name', 'type' => 'ASC'];
         $data['plantLists']         = $this->common_model->find_data('ecomm_users', 'array', ['type' => 'PLANT', 'status>=' => 1, 'status<=' => 2], 'id,plant_name,full_address,state,parent_id', '', '', $orderBy);
 
-        if($this->request->getMethod() == 'post') {
+        if ($this->request->getMethod() == 'post') {
             // pr($this->request->getPost());
             $fields = [
                 'plant_ids'             => $this->request->getPost('plant_ids_json'),
             ];
             $this->common_model->save_data('ecoex_admin_user', $fields, $id, 'id');
-            
+
             $this->session->setFlashdata('success_message', 'Plant access updated successfully');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
         }
 
-        echo $this->layout_after_login($title,$page_name,$data);
+        echo $this->layout_after_login($title, $page_name, $data);
+    }
+
+    public function access_vendor($id)
+    {
+        $id                         = decoded($id);
+        $data['moduleDetail']       = $this->data;
+
+        $conditions                 = array($this->data['primary_key'] => $id);
+        $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
+
+        $data['action']             = 'Access';
+        $title                      = $data['action'].' Vendors for '.$this->data['title'] . ' : ' . $data['row']->name;
+        $page_name                  = 'sub-users/access-vendor';
+
+        $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
+        $data['vendorLists']         = $this->common_model->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1, 'status<=' => 2], 'id,full_address,location,member_type,recycler_category_id,company_name,state', '', '', $orderBy);
+
+        if ($this->request->getMethod() == 'post') {
+            // pr($this->request->getPost());
+            $fields = [
+                'vendor_ids'             => $this->request->getPost('vendor_ids_json'),
+            ];
+            $this->common_model->save_data('ecoex_admin_user', $fields, $id, 'id');
+
+            $this->session->setFlashdata('success_message', 'Vendor access updated successfully');
+            return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
+        }
+
+        echo $this->layout_after_login($title, $page_name, $data);
     }
 }

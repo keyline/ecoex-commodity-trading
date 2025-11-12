@@ -7,7 +7,6 @@ use App\Models\CommonModel;
 
 class VendorController extends BaseController
 {
-
     private $model;  //This can be accessed by all class methods
     public function __construct()
     {
@@ -35,11 +34,59 @@ class VendorController extends BaseController
             echo $this->layout_after_login($title, $page_name, $data);
             exit;
         }
+        $userType                   = $this->session->user_type;
+
+        $company_id                 = $this->session->company_id;
+
         $data['moduleDetail']       = $this->data;
         $title                      = 'Manage ' . $this->data['title'];
         $page_name                  = 'member/list';
         $order_by[0]                = array('field' => $this->data['primary_key'], 'type' => 'desc');
-        $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', ['status!=' => 3, 'type' => 'VENDOR'], '', '', '', $order_by);
+
+        if ($userType == 'MA') {
+            $conditions                 = ['status!=' => 3, 'type' => 'VENDOR', 'gst_no!=' => ''];
+
+            $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+
+        } elseif ($userType == 'U') {
+            $conditions                 = ['status!=' => 3, 'type' => 'VENDOR', ]; //'gst_no!=' => ''
+
+
+
+
+            $allowedVendorIds = getAllowedVendorIds(session('user_id'));
+
+            $data['allowedVendorIds']   = $allowedVendorIds;
+
+
+            if (!empty($allowedVendorIds)) {
+
+                $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+
+                $data['rows'] = array_filter($data['rows'], function ($row) use ($allowedVendorIds) {
+                    return in_array($row->id, $allowedVendorIds);
+                });
+
+                // Re-index array numerically (optional, for clean JSON)
+                $data['rows'] = array_values($data['rows']);
+            } else {
+                $data['rows'] = [];
+
+            }
+
+
+        } else {
+            $conditions                 = ['status!=' => 3, 'type' => 'VENDOR', 'parent_id' => $company_id, 'gst_no!=' => ''];
+
+            $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
+
+        }
+
+
+
+
+
+
         echo $this->layout_after_login($title, $page_name, $data);
     }
     public function add()
@@ -105,7 +152,7 @@ class VendorController extends BaseController
             }
             /* PAN CARD */
             $postdata = $this->request->getPost();
-            if (array_key_exists("recycler_category",$postdata)){
+            if (array_key_exists("recycler_category", $postdata)) {
                 $recycler_category_id = json_encode($this->request->getPost('recycler_category'));
             } else {
                 $recycler_category_id = json_encode(array());
@@ -208,7 +255,7 @@ class VendorController extends BaseController
                 $contact_person_document = $data['row']->contact_person_document;
             }
             /* PAN CARD */
-            if (array_key_exists("recycler_category",$postdata)){
+            if (array_key_exists("recycler_category", $postdata)) {
                 $recycler_category_id = json_encode($this->request->getPost('recycler_category'));
             } else {
                 $recycler_category_id = json_encode(array());
@@ -351,7 +398,7 @@ class VendorController extends BaseController
     }
     public function check_email()
     {
-        $apiStatus          = TRUE;
+        $apiStatus          = true;
         $apiMessage         = '';
         $apiResponse        = [];
         $apiExtraField      = '';
@@ -362,7 +409,7 @@ class VendorController extends BaseController
         $headerData         = $this->request->headers();
         if (!$this->validateArray($requiredFields, $requestData)) {
             http_response_code(406);
-            $apiStatus          = FALSE;
+            $apiStatus          = false;
             $apiMessage         = $this->getResponseCode(http_response_code());
             $apiExtraField      = 'response_code';
             $apiExtraData       = http_response_code();
@@ -371,20 +418,20 @@ class VendorController extends BaseController
             $checkData = $this->common_model->find_data('ecomm_users', 'count', ['email' => $requestData['vendor_email'], 'status!=' => 3]);
             if ($checkData > 0) {
                 http_response_code(200);
-                $apiStatus          = FALSE;
+                $apiStatus          = false;
                 $apiMessage         = 'Email Already Exists. Try Other Email !!!';
                 $apiExtraField      = 'response_code';
                 $apiExtraData       = http_response_code();
             } else {
                 http_response_code(200);
-                $apiStatus          = TRUE;
+                $apiStatus          = true;
                 $apiMessage         = 'Email Available !!!';
                 $apiExtraField      = 'response_code';
                 $apiExtraData       = http_response_code();
             }
         } else {
             http_response_code(400);
-            $apiStatus          = FALSE;
+            $apiStatus          = false;
             $apiMessage         = $this->getResponseCode(http_response_code());
             $apiExtraField      = 'response_code';
             $apiExtraData       = http_response_code();
@@ -393,7 +440,7 @@ class VendorController extends BaseController
     }
     public function check_phone()
     {
-        $apiStatus          = TRUE;
+        $apiStatus          = true;
         $apiMessage         = '';
         $apiResponse        = [];
         $apiExtraField      = '';
@@ -404,7 +451,7 @@ class VendorController extends BaseController
         $headerData         = $this->request->headers();
         if (!$this->validateArray($requiredFields, $requestData)) {
             http_response_code(406);
-            $apiStatus          = FALSE;
+            $apiStatus          = false;
             $apiMessage         = $this->getResponseCode(http_response_code());
             $apiExtraField      = 'response_code';
             $apiExtraData       = http_response_code();
@@ -413,20 +460,20 @@ class VendorController extends BaseController
             $checkData = $this->common_model->find_data('ecomm_users', 'count', ['phone' => $requestData['vendor_phone'], 'status!=' => 3]);
             if ($checkData > 0) {
                 http_response_code(404);
-                $apiStatus          = TRUE;
+                $apiStatus          = true;
                 $apiMessage         = 'Phone Already Exists. Try Other Phone !!!';
                 $apiExtraField      = 'response_code';
                 $apiExtraData       = http_response_code();
             } else {
                 http_response_code(200);
-                $apiStatus          = TRUE;
+                $apiStatus          = true;
                 $apiMessage         = 'Phone Available !!!';
                 $apiExtraField      = 'response_code';
                 $apiExtraData       = http_response_code();
             }
         } else {
             http_response_code(400);
-            $apiStatus          = FALSE;
+            $apiStatus          = false;
             $apiMessage         = $this->getResponseCode(http_response_code());
             $apiExtraField      = 'response_code';
             $apiExtraData       = http_response_code();

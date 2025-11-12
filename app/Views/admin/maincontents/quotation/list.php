@@ -63,18 +63,26 @@ $userType           = $session->user_type;
                                             <div class="col-md-4 my-2">                                
                                                 <select id="filterLocation" class="form-control">
                                                 <option value="">Filter by Location</option>
-                                                <?php foreach ($locations as $location) {?>
+                                                <?php                                                                                                    
+                                                    if($userType == 'MA') { 
+                                                        foreach ($locations as $location) {?>
                                                 <option value="<?=$location->location?>"><?=$location->location?></option>                                
-                                                <?php } ?>
+                                                <?php } } elseif($userType == 'U') {
+                                                    foreach ($locations as $location) {?>
+                                                    <option value="<?=$location?>"><?=$location?></option>  
+                                                <?php } } ?> 
                                                 <!-- add more -->
                                                 </select>
                                             </div>
                                             <div class="col-md-4 my-2">
                                                 <select id="filterItem" class="form-control">
                                                 <option value="">Filter by Item Name</option>
-                                                <?php foreach ($items as $item) {?>
+                                                <?php foreach ($items as $item) {
+                                                    if($userType == 'MA') { ?>
                                                 <option value="<?=$item->scrap_name?>"><?=$item->scrap_name?></option>
-                                                <?php } ?>
+                                                <?php }  elseif($userType == 'U') {?>
+                                                    <option value="<?=$item?>"><?=$item?></option>
+                                                <?php } } ?>
                                                 <!-- add more -->
                                                 </select>
                                             </div>
@@ -164,7 +172,7 @@ $userType           = $session->user_type;
                                         <th style="width: 8%;">Vendor Name</th>
                                         <th style="width: 8%;">Contact No.</th>                                                                              
                                         <th style="width: 8%;">Quotation Submitted</th>     
-                                        <?php foreach ($rows as $row) {
+                                        <?php $itemStatus = null; foreach ($rows as $row) {
                                             $itemStatus = $row->quotation_item_status;
                                         }
                                             if($itemStatus == 1) {?>
@@ -178,6 +186,7 @@ $userType           = $session->user_type;
                                 <tbody>
                                     <?php if ($rows) {
                                         $sl = 1;
+                                        $itemStatus = null;
                                         foreach ($rows as $row) { $itemStatus = $row->quotation_item_status;?>                                            
                                             <tr>
                                                 <th scope="row"><?= $sl++ ?></th>
