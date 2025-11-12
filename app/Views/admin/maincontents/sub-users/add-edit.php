@@ -68,7 +68,8 @@ $controller_route   = $moduleDetail['controller_route'];
                 <div class="card">
                     <div class="card-body pt-3">
                         <form method="POST" action="" enctype="multipart/form-data">
-                            <div class="row mb-3">
+                            <input type="hidden" name="user_type" value="U">
+                            <!-- <div class="row mb-3">
                                 <label for="role_name" class="col-md-2 col-lg-2 col-form-label">User Type</label>
                                 <div class="col-md-10 col-lg-10">
                                     <select class="form-control" name="user_type" id="user_type" required>
@@ -77,7 +78,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                         <option value="CRMU" <?=(($user_type == 'CRMU')?'selected':'')?>>CRM Manager</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="row mb-3">
                                 <label for="role_name" class="col-md-2 col-lg-2 col-form-label">Role</label>
                                 <div class="col-md-10 col-lg-10">
@@ -89,7 +90,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                     </select>
                                 </div>
                             </div>
-                            <div class="row mb-3">
+                            <!-- <div class="row mb-3">
                                 <label for="role_name" class="col-md-2 col-lg-2 col-form-label">Team Members</label>
                                 <div class="col-md-10 col-lg-10">
                                     <select class="form-control" name="team_members[]" id="choices-multiple-remove-button" multiple>
@@ -98,7 +99,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                         <?php } }?>
                                     </select>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="row mb-3">
                                 <label for="role_name" class="col-md-2 col-lg-2 col-form-label">Name</label>
                                 <div class="col-md-10 col-lg-10">

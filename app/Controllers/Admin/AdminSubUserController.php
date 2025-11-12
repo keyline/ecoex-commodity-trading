@@ -63,7 +63,8 @@ class AdminSubUserController extends BaseController {
                         'sl_no'                       => $slNo,
                         'employee_no'                 => $employee_id,
                         'user_type'                   => $this->request->getPost('user_type'),
-                        'team_members'                => (($team_members != '')?json_encode($this->request->getPost('team_members')):json_encode([])),
+                        // 'team_members'                => (($team_members != '')?json_encode($this->request->getPost('team_members')):json_encode([])),
+                        'team_members'                => json_encode([]),
                         'role_id'                     => $this->request->getPost('role_id'),
                         'name'                        => $this->request->getPost('name'),
                         'mobileNo'                    => $this->request->getPost('mobileNo'),
@@ -117,7 +118,8 @@ class AdminSubUserController extends BaseController {
                 $team_members = $this->request->getPost('team_members');
                 $postData = [
                             'user_type'                   => $this->request->getPost('user_type'),
-                            'team_members'                => (($team_members != '')?json_encode($this->request->getPost('team_members')):json_encode([])),
+                            // 'team_members'                => (($team_members != '')?json_encode($this->request->getPost('team_members')):json_encode([])),
+                            'team_members'                => json_encode([]),
                             'role_id'                     => $this->request->getPost('role_id'),
                             'name'                        => $this->request->getPost('name'),
                             'mobileNo'                    => $this->request->getPost('mobileNo'),
