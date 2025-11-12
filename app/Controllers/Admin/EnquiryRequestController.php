@@ -100,6 +100,7 @@ class EnquiryRequestController extends BaseController
         $user_id                    = session('user_id');
         $getAdminUser               = $this->data['model']->find_data('ecoex_admin_user', 'row', ['id' => $user_id], 'plant_ids');
         $plantIds                   = (($getAdminUser)?json_decode($getAdminUser->plant_ids):[]);
+        Helper::pr($plantIds);
 
         if(!empty($plantIds)){
             // Filter the array
@@ -112,8 +113,7 @@ class EnquiryRequestController extends BaseController
 
             // Output result
             $data['rows']               = $filtered;
-        }
-        
+        }        
 
         //get whatsapp notification status per enquiry
         if (!empty($filtered)) {
@@ -161,8 +161,6 @@ class EnquiryRequestController extends BaseController
             $data['statusMap']  = [];
             $data['stateMap']  = [];
         }
-
-
 
         echo $this->layout_after_login($title, $page_name, $data);
     }

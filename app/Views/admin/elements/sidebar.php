@@ -45,7 +45,6 @@ if ($userType == 'MA') {
 
     $step13_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 13]);
 } elseif ($userType == 'U') {
-
     // 1️⃣ Define reusable function
     function filterByPlantId($dataArray, $plantIds)
     {
@@ -65,22 +64,41 @@ if ($userType == 'MA') {
         ${"step{$i}_count"} = count(${"filteredArray$i"});
     }
 } else {
-    $step0_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 0, 'company_id' => $company_id]);
-    $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1, 'company_id' => $company_id]);
-    $step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2, 'company_id' => $company_id]);
+    // $step0_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 0, 'company_id' => $company_id]);
+    // $step1_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 1, 'company_id' => $company_id]);
+    // $step2_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 2, 'company_id' => $company_id]);
 
-    $step3_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 3, 'company_id' => $company_id]);
-    $step4_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 4, 'company_id' => $company_id]);
-    $step5_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 5, 'company_id' => $company_id]);
-    $step6_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 6, 'company_id' => $company_id]);
-    $step7_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 7, 'company_id' => $company_id]);
-    $step8_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 8, 'company_id' => $company_id]);
-    $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 9, 'company_id' => $company_id]);
-    $step10_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 10, 'company_id' => $company_id]);
-    $step11_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 11, 'company_id' => $company_id]);
-    $step12_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 12, 'company_id' => $company_id]);
+    // $step3_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 3, 'company_id' => $company_id]);
+    // $step4_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 4, 'company_id' => $company_id]);
+    // $step5_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 5, 'company_id' => $company_id]);
+    // $step6_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 6, 'company_id' => $company_id]);
+    // $step7_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 7, 'company_id' => $company_id]);
+    // $step8_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 8, 'company_id' => $company_id]);
+    // $step9_count        = $common_model->find_data('ecomm_enquires', 'count', ['status' => 9, 'company_id' => $company_id]);
+    // $step10_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 10, 'company_id' => $company_id]);
+    // $step11_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 11, 'company_id' => $company_id]);
+    // $step12_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 12, 'company_id' => $company_id]);
 
-    $step13_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 13, 'company_id' => $company_id]);
+    // $step13_count       = $common_model->find_data('ecomm_enquires', 'count', ['status' => 13, 'company_id' => $company_id]);
+    
+    // 1️⃣ Define reusable function
+    function filterByPlantId($dataArray, $plantIds)
+    {
+        $filtered = array_filter($dataArray, function($item) use ($plantIds) {
+            return in_array($item->plant_id, $plantIds); // use array key since find_data returns array
+        });
+
+        return array_values($filtered);
+    }
+    // 3️⃣ Fetch all status-based arrays
+    for ($i = 0; $i <= 13; $i++) {
+        ${"bugArray$i"} = $common_model->find_data('ecomm_enquires', 'array', ['status' => $i, 'company_id' => $company_id], 'id,sl_no,plant_id');
+
+        // Filter them dynamically
+        ${"filteredArray$i"} = filterByPlantId(${"bugArray$i"}, $plantIds);
+
+        ${"step{$i}_count"} = count(${"filteredArray$i"});
+    }
 }
 ?>
 <style type="text/css">
