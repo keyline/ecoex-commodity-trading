@@ -743,7 +743,7 @@ class PlantController extends BaseController
             $item_id            = $this->request->getPost('item_id');
             $qty                = $this->request->getPost('qty');
             $uploadedFiles      = $this->request->getFileMultiple('new_product_image');
-            $uploadPath         = FCPATH . 'uploads/enquiry/';
+            $uploadPath         = 'public/uploads/enquiry/';
 
             if (!is_dir($uploadPath)) {
                 mkdir($uploadPath, 0777, true);
