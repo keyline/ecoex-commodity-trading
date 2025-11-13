@@ -50,10 +50,8 @@ $controller_route   = $moduleDetail['controller_route'];
                             <table class="table globel_table nowrap" style="width: 100%">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" width="7%">
-                                            #
-                                            <input type="checkbox" id="select_all_plants" onclick="toggleSelectAllPlants(this)">
-                                        </th>
+                                        <th class="text-center" width="7%">#</th>
+                                        <th><input type="checkbox" id="select_all_plants" onclick="toggleSelectAllPlants(this)"></th>
                                         <th>Company Name</th>
                                         <th>Plant Name</th>
                                         <th>Plant Address</th>
@@ -65,11 +63,9 @@ $controller_route   = $moduleDetail['controller_route'];
                                         $sl = 1;
                                         foreach ($plantLists as $plant) { ?>
                                             <tr>
-                                                <th scope="row" class="text-center">
-                                                    <?= $sl++ ?><br><br>
-                                                    <input type="checkbox" class="plant_checkbox" name="plant_ids[]" value="<?= $plant->id ?>"
-                                                        <?= (in_array($plant->id, (($row->plant_ids != '') ? json_decode($row->plant_ids) : [])) ? 'checked' : '') ?>>
-                                                </th>
+                                                <th scope="row" class="text-center"><?= $sl++ ?></th>
+                                                <td><input type="checkbox" class="plant_checkbox" name="plant_ids[]" value="<?= $plant->id ?>"
+                                                        <?= (in_array($plant->id, (($row->plant_ids != '') ? json_decode($row->plant_ids) : [])) ? 'checked' : '') ?>></td>
                                                 <td>
                                                     <?php
                                                     $getCompany = $common_model->find_data('ecoex_companies', 'row', ['id' => $plant->parent_id], 'company_name');
@@ -130,49 +126,7 @@ $controller_route   = $moduleDetail['controller_route'];
                 selectAll.checked = Array.from(checkboxes).every(c => c.checked);
             });
         });
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchCompanyName = document.getElementById('searchCompanyName');
-        const searchPlantName = document.getElementById('searchPlantName');
-        const searchAddress = document.getElementById('searchAddress');
-        const searchState = document.getElementById('searchState');
-
-        function filterPlants() {
-            const companyVal = searchCompanyName.value.toLowerCase();
-            const nameVal = searchPlantName.value.toLowerCase();
-            const addressVal = searchAddress.value.toLowerCase();
-            const stateVal = searchState.value.toLowerCase();
-
-            document.querySelectorAll('#plantTableBody tr').forEach(row => {
-                const companyname = row.cells[2].textContent.toLowerCase();
-                const name = row.cells[3].textContent.toLowerCase();
-                const address = row.cells[4].textContent.toLowerCase();
-                const state = row.cells[5].textContent.toLowerCase();
-
-                if (companyname.includes(companyVal) &&
-                    name.includes(nameVal) &&
-                    address.includes(addressVal) &&
-                    state.includes(stateVal)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-
-        [searchCompanyName, searchPlantName, searchAddress, searchState].forEach(input => {
-            input.addEventListener('keyup', filterPlants);
-        });
-
-        window.clearPlantSearch = function() {
-            searchCompanyName.value = '';
-            searchPlantName.value = '';
-            searchAddress.value = '';
-            searchState.value = '';
-            filterPlants();
-        }
-    });
+    });    
 
     // ✅ Before submit — store selected plant_ids as JSON
     document.getElementById('plantForm').addEventListener('submit', function(e) {
@@ -180,4 +134,51 @@ $controller_route   = $moduleDetail['controller_route'];
             .map(chk => chk.value);
         document.getElementById('plant_ids_json').value = JSON.stringify(selected);
     });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    const searchCompanyName = document.getElementById('searchCompanyName');
+    const searchPlantName = document.getElementById('searchPlantName');
+    const searchAddress = document.getElementById('searchAddress');
+    const searchState = document.getElementById('searchState');
+    const tableRows = document.querySelectorAll('#plantTableBody tr');
+
+    function filterPlants() {
+        const companyVal = searchCompanyName.value.toLowerCase();
+        const nameVal = searchPlantName.value.toLowerCase();
+        const addressVal = searchAddress.value.toLowerCase();
+        const stateVal = searchState.value.toLowerCase();
+
+        tableRows.forEach(row => {
+            const companyname = row.cells[2]?.textContent.toLowerCase() || '';
+            const name = row.cells[3]?.textContent.toLowerCase() || '';
+            const address = row.cells[4]?.textContent.toLowerCase() || '';
+            const state = row.cells[5]?.textContent.toLowerCase() || '';
+
+            const match =
+                companyname.includes(companyVal) &&
+                name.includes(nameVal) &&
+                address.includes(addressVal) &&
+                state.includes(stateVal);
+
+            row.style.display = match ? '' : 'none';
+        });
+    }
+
+    // Attach events
+    [searchCompanyName, searchPlantName, searchAddress, searchState].forEach(input => {
+        input.addEventListener('input', filterPlants);
+    });
+
+    // Clear button
+    document.getElementById('clearBtn').addEventListener('click', function() {
+        searchCompanyName.value = '';
+        searchPlantName.value = '';
+        searchAddress.value = '';
+        searchState.value = '';
+        filterPlants();
+    });
+
+});
 </script>
