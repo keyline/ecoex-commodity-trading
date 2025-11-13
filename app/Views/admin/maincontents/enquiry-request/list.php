@@ -120,12 +120,12 @@ $userType           = $session->user_type;
                                                         <?php }?>
                                                     </h6>
                                                 </td>                                                
-                                                <?php //if ($row->status >= 11 && $row->status <= 12 && $row->status <= 10) { ?>
+                                                <?php //if ($row->status >= 11 && $row->status <= 12 && $row->status <= 10) {?>
                                                 <?php if ($row->status >= 10) { ?>
                                                     <td>
                                                         <h6><?= (($row->ecoex_submitted_date != '') ? date_format(date_create($row->ecoex_submitted_date), "M d, Y h:i A") : '') ?></h6>
                                                         
-                                                        <?php //if ($row->is_ho_approve_ecoex_payment) { ?>
+                                                        <?php //if ($row->is_ho_approve_ecoex_payment) {?>
                                                             <h6 class="badge bg-success">APPROVED</h6>
                                                             <h6><?= (($row->ho_approve_date != '') ? date_format(date_create($row->ho_approve_date), "M d, Y h:i A") : '') ?></h6>
 
@@ -190,10 +190,23 @@ $userType           = $session->user_type;
                                                     <?php } else { ?>
                                                         <?php if ($row->status >= 1 && $row->status <= 12) { ?>
                                                             <h6 class="badge bg-success mt-2"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
+                                                        </br>
+                                                        <!-- <a href="<?= base_url('admin/certificate/create'); ?>"><h6 class="badge bg-success mt-2"><i class="fa fa-flag-checkered"></i> Generate Certificate</h6></a> -->
+                                                         <form action="<?= base_url('admin/certificate/create'); ?>" method="post" class="d-inline">
+                                                                <?= csrf_field(); ?>
+                                                                <input type="hidden" name="company_id" value="<?= $row->company_id; ?>">
+                                                                <input type="hidden" name="enquiry_id" value="<?= $row->id; ?>">
+                                                                <input type="hidden" name="plant_id" value="<?= $row->plant_id; ?>">
+
+                                                                <button type="submit" class="badge bg-success mt-2 border-0">
+                                                                    <i class="fa fa-flag-checkered"></i> Generate Certificate
+                                                                </button>
+                                                            </form>
                                                         <?php } elseif ($row->status == 13) { ?>
                                                             <h6 class="badge bg-danger mt-2"><i class="fa fa-times-circle"></i> REJECTED</h6>
                                                         <?php } ?>
                                                         <p><?= (($row->accepted_date != '') ? date_format(date_create($row->accepted_date), "M d, Y h:i A") : '') ?></p>
+
                                                     <?php } ?>
                                                 </td>
                                             </tr>
