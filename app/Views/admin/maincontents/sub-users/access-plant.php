@@ -132,43 +132,47 @@ $controller_route   = $moduleDetail['controller_route'];
         });
     });
 
-    // ✅ Column-wise filtering
-    const searchCompanyName = document.getElementById('searchCompanyName');
-    const searchPlantName = document.getElementById('searchPlantName');
-    const searchAddress = document.getElementById('searchAddress');
-    const searchState = document.getElementById('searchState');
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchCompanyName = document.getElementById('searchCompanyName');
+        const searchPlantName = document.getElementById('searchPlantName');
+        const searchAddress = document.getElementById('searchAddress');
+        const searchState = document.getElementById('searchState');
 
-    function filterPlants() {
-        const companyVal = searchCompanyName.value.toLowerCase();
-        const nameVal = searchPlantName.value.toLowerCase();
-        const addressVal = searchAddress.value.toLowerCase();
-        const stateVal = searchState.value.toLowerCase();
+        function filterPlants() {
+            const companyVal = searchCompanyName.value.toLowerCase();
+            const nameVal = searchPlantName.value.toLowerCase();
+            const addressVal = searchAddress.value.toLowerCase();
+            const stateVal = searchState.value.toLowerCase();
 
-        document.querySelectorAll('#plantTableBody tr').forEach(row => {
-            const companyname = row.cells[1].textContent.toLowerCase();
-            const name = row.cells[2].textContent.toLowerCase();
-            const address = row.cells[3].textContent.toLowerCase();
-            const state = row.cells[4].textContent.toLowerCase();
+            document.querySelectorAll('#plantTableBody tr').forEach(row => {
+                const companyname = row.cells[2].textContent.toLowerCase();
+                const name = row.cells[3].textContent.toLowerCase();
+                const address = row.cells[4].textContent.toLowerCase();
+                const state = row.cells[5].textContent.toLowerCase();
 
-            if (companyname.includes(nameVal) && name.includes(nameVal) && address.includes(addressVal) && state.includes(stateVal)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+                if (companyname.includes(companyVal) &&
+                    name.includes(nameVal) &&
+                    address.includes(addressVal) &&
+                    state.includes(stateVal)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        [searchCompanyName, searchPlantName, searchAddress, searchState].forEach(input => {
+            input.addEventListener('keyup', filterPlants);
         });
-    }
 
-    [searchCompanyName, searchPlantName, searchAddress, searchState].forEach(input => {
-        input.addEventListener('keyup', filterPlants);
+        window.clearPlantSearch = function() {
+            searchCompanyName.value = '';
+            searchPlantName.value = '';
+            searchAddress.value = '';
+            searchState.value = '';
+            filterPlants();
+        }
     });
-
-    function clearPlantSearch() {
-        searchCompanyName.value = '';
-        searchPlantName.value = '';
-        searchAddress.value = '';
-        searchState.value = '';
-        filterPlants();
-    }
 
     // ✅ Before submit — store selected plant_ids as JSON
     document.getElementById('plantForm').addEventListener('submit', function(e) {
