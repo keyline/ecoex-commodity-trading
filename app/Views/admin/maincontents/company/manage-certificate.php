@@ -71,15 +71,28 @@ $userType           = $session->user_type;
                                                     <!-- <div class="text-muted">Invoice No</div>
                                                 <h5 class="fw-bold mt-3 mb-0">128283</h5>
                                                 <div class="text-muted">Certificate No</div> -->
+                                                <?php
+                                                if ($certificate->certificate_type == 1) {
+                                                    $certificateModel = new \App\Models\CertificateModel();
+                                                    $certificateData = $certificateModel->getCertificateByEnquiry($certificate->enquiry_id);?>
+
+                                                    
+                                                
+                                                <div class="d-flex justify-content-between align-items-center mt-4">
+                                                        <a target="_blank" href="<?= base_url('admin/certificates/' . $certificateData['id']) ?>" class="text-decoration-none text-viewcolor">View</a>
+                                                        <a target="_blank" href="<?= base_url('admin/certificates/' . $certificateData['id'] . '/pdf/download') ?>" download=""><button class="btn btn-download download-icon px-3">Download</button></a>
+                                                    </div>
+                                                <?php } else {?>
                                                     <div class="d-flex justify-content-between align-items-center mt-4">
                                                         <a target="_blank" href="<?= base_url('public/uploads/certificate/' . $certificate->certificate_file) ?>" class="text-decoration-none text-viewcolor">View</a>
                                                         <a target="_blank" href="<?= base_url('public/uploads/certificate/' . $certificate->certificate_file) ?>" download=""><button class="btn btn-download download-icon px-3">Download</button></a>
                                                     </div>
+                                                <?php }?>
                                                 </div>
                                             </div>
                                         </div>
                                 <?php }
-                                } ?>
+                                    } ?>
                             </div>
                         </div>
                     </div>

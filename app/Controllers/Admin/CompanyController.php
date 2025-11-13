@@ -830,7 +830,7 @@ class CompanyController extends BaseController
         $data['company_name']       = $company_name;
 
         $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
-        $data['certificates']       = $this->common_model->find_data('ecomm_company_certificates', 'array', ['company_id' => $id, 'status' => 1], 'certificate_file,created_at,filename', '', '', $orderBy);
+        $data['certificates']       = $this->common_model->find_data('ecomm_company_certificates', 'array', ['company_id' => $id, 'status' => 1], 'enquiry_id,certificate_type,certificate_file,created_at,filename', '', '', $orderBy);
 
         echo $this->layout_after_login($title, $page_name, $data);
     }

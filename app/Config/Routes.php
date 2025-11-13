@@ -308,6 +308,40 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 
     $routes->match(['post'], 'getCompaniesByUserType', 'ReportController::getCompaniesByUserType');
 
+    # Certificates
+    #$routes->match(['get'], 'certificate/list', 'CertificateController::index');
+    $routes->match(['post'], 'certificate/create', 'CertificateController::generate');
+
+    $routes->match(['post'], 'certificates/store', 'CertificateController::store');
+
+
+
+    $routes->match(['get'], 'certificates/(:any)/edit', 'CertificateController::edit/$1');
+
+    // $routes->match(['get'], 'certificates/(:any)/pdf', 'CertificateController::generatePdf/$1');
+
+
+    $routes->match(['get'], 'certificates/(:any)/pdf/download', 'CertificateController::downloadPdf/$1');
+
+    $routes->match(['get'], 'certificates/(:any)/pdf/view', 'CertificateController::viewPdf/$1');
+
+
+
+
+
+    $routes->match(['post', 'put'], 'certificates/update/(:any)', 'CertificateController::update/$1');
+
+    $routes->match(['post'], 'certificates/(:any)/finalize', 'CertificateController::finalize/$1');
+
+    //generics routes must be at last
+
+    $routes->match(['get'], 'certificates/(:any)', 'CertificateController::view/$1');
+
+
+
+
+
+
 
 
 });
