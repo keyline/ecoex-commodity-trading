@@ -296,7 +296,7 @@ class CertificateController extends BaseController
             $pdfFilename = $this->generatePDF($certificateId);
 
 
-            $savePath = FCPATH . 'public/uploads/certificates/' . $pdfFilename;
+            $savePath = FCPATH . 'public/uploads/certificate/' . $pdfFilename;
 
 
             // Insert record into ecomm_company_certificates table
@@ -670,7 +670,7 @@ class CertificateController extends BaseController
             // Generate filename
             //$filename = 'certificate_' . $certificate['certificate_number'] . '_' . time() . '.pdf';
             $filename = $certificate['certificate_number'] . '.pdf';
-            $savePath = FCPATH . 'public/uploads/certificates/' . $filename;
+            $savePath = FCPATH . 'public/uploads/certificate/' . $filename;
 
             // Ensure directory exists
             $directory = dirname($savePath);
@@ -719,7 +719,7 @@ class CertificateController extends BaseController
             ->findAll();
 
         $filename = 'certificate_' . $certificate['certificate_number'] . '_final.pdf';
-        $savePath = FCPATH . 'public/uploads/certificates/' . $filename;
+        $savePath = FCPATH . 'public/uploads/certificate/' . $filename;
 
         $this->pdfService->generateCertificate($certificate, $savePath);
 
@@ -922,7 +922,7 @@ class CertificateController extends BaseController
                 return redirect()->back()->with('error', 'PDF file not generated yet');
             }
 
-            $filePath = FCPATH . 'public/uploads/certificates/' . $certificate['pdf_path'];
+            $filePath = FCPATH . 'public/uploads/certificate/' . $certificate['pdf_path'];
 
             // Check if file exists
             if (!file_exists($filePath)) {
@@ -965,7 +965,7 @@ class CertificateController extends BaseController
                 return redirect()->back()->with('error', 'PDF file not generated yet');
             }
 
-            $filePath = FCPATH . 'public/uploads/certificates/' . $certificate['pdf_path'];
+            $filePath = FCPATH . 'public/uploads/certificate/' . $certificate['pdf_path'];
 
             // Check if file exists
             if (!file_exists($filePath)) {
@@ -1007,7 +1007,7 @@ class CertificateController extends BaseController
         }
 
         try {
-            $filePath = FCPATH . 'public/uploads/certificates/' . $filename;
+            $filePath = FCPATH . 'public/uploads/certificate/' . $filename;
 
             if (file_exists($filePath)) {
                 if (unlink($filePath)) {
