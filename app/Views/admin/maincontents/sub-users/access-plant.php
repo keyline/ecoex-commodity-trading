@@ -145,11 +145,12 @@ $controller_route   = $moduleDetail['controller_route'];
         const stateVal = searchState.value.toLowerCase();
 
         document.querySelectorAll('#plantTableBody tr').forEach(row => {
-            const name = row.cells[1].textContent.toLowerCase();
-            const address = row.cells[2].textContent.toLowerCase();
-            const state = row.cells[3].textContent.toLowerCase();
+            const companyname = row.cells[1].textContent.toLowerCase();
+            const name = row.cells[2].textContent.toLowerCase();
+            const address = row.cells[3].textContent.toLowerCase();
+            const state = row.cells[4].textContent.toLowerCase();
 
-            if (name.includes(nameVal) && address.includes(addressVal) && state.includes(stateVal)) {
+            if (companyname.includes(nameVal) && name.includes(nameVal) && address.includes(addressVal) && state.includes(stateVal)) {
                 row.style.display = '';
             } else {
                 row.style.display = 'none';
