@@ -777,6 +777,13 @@ class CertificateController extends BaseController
         }
 
 
+        $subQuery = "
+    SELECT enq_id, weighted_qty, weighted_unit, item_id
+    FROM ecomm_sub_enquires
+    GROUP BY enq_id, item_id
+        ";
+
+
         // Get complete products with item details using JOINs (only approved)
         $products = $db->table('ecomm_enquiry_products ep')
             ->select('ep.id,
@@ -800,7 +807,9 @@ class CertificateController extends BaseController
                   ci.unit as unit_id,
                   
                   cat.name as category_name,
-                  unit.name as unit_name')
+                  unit.name as unit_name
+                  se.weighted_qty,
+                se.weighted_unit')
             ->join(
                 'ecomm_company_items ci',
                 'ci.id = IF(ep.new_product = 1, (SELECT id FROM ecomm_company_items WHERE enq_product_id = ep.id LIMIT 1), ep.product_id)',
@@ -808,8 +817,10 @@ class CertificateController extends BaseController
             )
             ->join('ecomm_product_categories cat', 'cat.id = ci.item_category', 'left')
             ->join('ecomm_units unit', 'unit.id = ci.unit', 'left')
+            ->join("($subQuery) se", 'se.enq_id = ep.enq_id AND se.item_id = ep.product_id', 'left', false)
             ->where('ep.enq_id', $mainData['id'])
             ->where('ep.status', 1)
+            ->where('ci.company_id = ep.company_id', null, false)
             ->orderBy('ep.id', 'ASC')
             ->get()
             ->getResultArray();
@@ -869,8 +880,8 @@ class CertificateController extends BaseController
                 'hsn' => $productHSN,
                 'gst' => $product['gst'] ?? '',
                 'rate' => $product['rate'] ?? '',
-                'quantity' => $product['qty'] ?? 0,
-                'unit' => $product['unit_name'] ?? 'Kgs',
+                'quantity' => $product['weighted_qty'] ?? 0,
+                'unit' => $product['weighted_unit'] ?? '',
                 'remarks' => $product['remarks'] ?? '',
                 'sequence' => $index + 1,
                 // Additional details if needed
