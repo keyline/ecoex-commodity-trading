@@ -31,10 +31,10 @@
                         </button> -->
                     <?php endif; ?>
                     
-                    <a href="<?= base_url('admin/certificates/' . $certificate['id'] . '/pdf/download') ?>" 
+                    <!-- <a href="<?= base_url('admin/certificates/' . $certificate['id'] . '/pdf/download') ?>" 
                     class="btn btn-danger" target="_blank">
                         <i class="fas fa-file-pdf"></i> Download PDF
-                    </a>
+                    </a> -->
                 </div>
             </div>
 
@@ -269,6 +269,26 @@
                             </a>
                         </div>
                     </div>
+                    <!-- Word Document -->
+                     <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="mb-0">Word Document</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <i class="fas fa-file-word fa-5x text-primary mb-3"></i>
+                            <p class="text-muted mb-3">
+                                <?php if ($certificate['status'] === 'draft'): ?>
+                                    Preview the certificate as Word document
+                                <?php else: ?>
+                                    Download the finalized certificate
+                                <?php endif; ?>
+                            </p>
+                            <a href="<?= base_url('admin/certificates/' . $certificate['id'] . '/word/view') ?>" 
+                            class="btn btn-primary w-100" target="_blank">
+                                <i class="fas fa-download"></i> Download Word Document
+                            </a>
+                        </div>
+                    </div>
 
                     <!-- Quick Stats -->
                     <div class="card">
@@ -284,10 +304,10 @@
                                 <span><i class="fas fa-users text-success"></i> Total Vendors:</span>
                                 <strong><?= count($certificate['vendors'] ?? []) ?></strong>
                             </div>
-                            <div class="d-flex justify-content-between">
+                            <!-- <div class="d-flex justify-content-between">
                                 <span><i class="fas fa-history text-info"></i> Version:</span>
                                 <strong>v<?= $certificate['version'] ?></strong>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
