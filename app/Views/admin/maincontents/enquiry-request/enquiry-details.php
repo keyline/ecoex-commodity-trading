@@ -296,7 +296,7 @@ $request_edit_fields = [
                 <div class="card">
                     <div class="card-body">
                         <div class="row mt-3">
-                            <?php if ($userType == 'MA') { ?>
+                            <?php //if ($userType == 'MA') { ?>
                                 <div class="col-md-12 mb-3">
                                     <?php if ($row->status == 0) { ?>
                                         <?php if ($common_model->checkModuleFunctionAccess(23, 110)) { ?>
@@ -411,7 +411,7 @@ $request_edit_fields = [
                                         <?php } ?>
                                     <?php } ?>
                                 </div>
-                            <?php } ?>
+                            <?php //} ?>
                             <!-- surajit comment -->
                             <div class="col-md-6">
                                 <h5 class="fw-bold text-success">Company Name</h5>
