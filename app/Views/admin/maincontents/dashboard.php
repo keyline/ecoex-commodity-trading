@@ -117,7 +117,7 @@ $userType           = $session->user_type;
                     <?php } ?>
                     <?php if ($userType == 'U') { ?>
                         <!-- Companies Card -->
-                        <!-- <div class="col-xxl-6 col-md-6">
+                        <div class="col-xxl-6 col-md-6">
                             <div class="card info-card sales-card">
                                 <div class="card-body">
                                     <h5 class="card-title">Companies <span>| <?= $filter_keyword_text ?></span></h5>
@@ -131,7 +131,7 @@ $userType           = $session->user_type;
                                     </div>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                         <!-- End Companies Card -->
                     <?php } ?>
                     <!-- Plants Card -->
