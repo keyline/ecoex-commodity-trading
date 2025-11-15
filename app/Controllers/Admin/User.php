@@ -302,7 +302,9 @@ class User extends BaseController
                 // $data['step13_count']               = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 13]);
 
                 $orderBy[0]                         =  ['field' => 'id', 'type' => 'DESC'];
-                $data['recent_enquiries']           = $this->common_model->find_data('ecomm_enquires', 'array', ['status!=' => 14], '', '', '', $orderBy, 10);
+                $recent_enquiries                   = $this->common_model->find_data('ecomm_enquires', 'array', ['status!=' => 14], '', '', '', $orderBy, 10);
+                $filteredRecentEnquiries            = array_filter($recent_enquiries, fn($v) => in_array($v->id, $plantIds));
+                $data['recent_enquiries']           = $filteredRecentEnquiries;
             } else {
                 $data['plant']                      = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'PLANT', 'parent_id' => $company_id]);
                 $data['enquiry']                    = $this->common_model->find_data('ecomm_enquires', 'count', ['status!=' => 14, 'company_id' => $company_id]);
