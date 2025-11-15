@@ -217,6 +217,10 @@ class User extends BaseController
             }
             $userType                           = $this->session->user_type;
             $company_id                         = $this->session->company_id;
+            $user_id                            = $this->session->user_id;
+            $getAdminUser                       = $this->data['model']->find_data('ecoex_admin_user', 'row', ['id' => $user_id], 'vendor_ids,plant_ids');
+            $vendorIds                          = (($getAdminUser)?json_decode($getAdminUser->vendor_ids, true):[]);
+            $plantIds                           = (($getAdminUser)?json_decode($getAdminUser->plant_ids, true):[]);
 
             $title                              = 'Dashboard';
             $page_name                          = 'dashboard';
@@ -254,9 +258,10 @@ class User extends BaseController
                 $orderBy[0]                         =  ['field' => 'id', 'type' => 'DESC'];
                 $data['recent_enquiries']           = $this->common_model->find_data('ecomm_enquires', 'array', ['status!=' => 14], '', '', '', $orderBy, 10);
             } elseif ($userType == 'U') {
-                $data['plant']                      = $this->common_model->find_data('ecomm_users', 'count', ['status!=' => 3, 'type' => 'PLANT']);
+                $data['plant']                      = count($plantIds);
                 $data['enquiry']                    = $this->common_model->find_data('ecomm_enquires', 'count', ['status!=' => 14]);
                 $data['pendingItem']                = $this->common_model->find_data('ecomm_company_items', 'count', ['status' => 0]);
+                $data['vendor']                     = count($vendorIds);
 
                 $data['step0_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 0]);
                 $data['step1_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
