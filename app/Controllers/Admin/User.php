@@ -285,7 +285,7 @@ class User extends BaseController
                 }
 
                 $data['enquiry']                    = $total_enquiry_count;
-
+                pr($data);
                 // $data['step0_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 0]);
                 // $data['step1_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 1]);
                 // $data['step2_count']                = $this->common_model->find_data('ecomm_enquires', 'count', ['status' => 2]);
