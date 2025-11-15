@@ -1926,8 +1926,14 @@ class EnquiryRequestController extends BaseController
         $data['assignItems']        = $this->data['model']->find_data('ecomm_company_items', 'array', $conditions, '', '', '', $order_by);
 
         $order_by[0]                = array('field' => 'company_name', 'type' => 'asc');
-        $data['avlVendors']         = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1], 'id,company_name,email', '', '', $order_by);
-        pr($data['avlVendors']);
+        $vendors                    = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1], 'id,company_name,email', '', '', $order_by);
+        $json                       = '["658","655","623","440","143","110","109","106","99","55","54","39","22","21","20"]';
+        $vendorIds                  = json_decode($json, true);
+
+        $filtered = array_filter($vendors, fn($v) => in_array($v->id, $vendorIds));
+
+        pr($filtered);
+        
         $data['sharedVendors']      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'array', ['enq_id' => $enq_id, 'status' => 1]);
 
         $data['getEnquiry']         = $this->common_model->find_data($this->data['table_name'], 'row', ['id' => $enq_id]);

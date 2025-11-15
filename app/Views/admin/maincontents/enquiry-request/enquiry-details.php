@@ -1694,16 +1694,14 @@ $request_edit_fields = [
                     <div class="form-group">
                         <label for="choices-multiple-remove-button">Vendors</label>
                         <select name="vendors[]" id="choices-multiple-remove-button" multiple>
-                            <?php if ($avlVendors) {
-                                foreach ($avlVendors as $avlvendor) { ?>
-                                    <?php
-                                    $checkVendorShare = $common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['enq_id' => $row->id, 'vendor_id' => $avlvendor->id]);
-                                    if ($checkVendorShare <= 0) {
-                                    ?>
-                                        <option value="<?= $avlvendor->id ?>"><?= $avlvendor->company_name ?></option>
-                                    <?php } ?>
-                            <?php }
-                            } ?>
+                            <?php if ($avlVendors) { foreach ($avlVendors as $avlvendor) { ?>
+                                <?php
+                                $checkVendorShare = $common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['enq_id' => $row->id, 'vendor_id' => $avlvendor->id]);
+                                if ($checkVendorShare <= 0) {
+                                ?>
+                                    <option value="<?= $avlvendor->id ?>"><?= (($avlvendor->company_name != '')?$avlvendor->company_name:$avlvendor->email) ?></option>
+                                <?php } ?>
+                            <?php } } ?>
                         </select>
                     </div>
                 </div>
