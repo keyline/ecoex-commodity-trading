@@ -1925,10 +1925,14 @@ class EnquiryRequestController extends BaseController
         $conditions                 = array('company_id' => $company_id, 'status!=' => 3);
         $data['assignItems']        = $this->data['model']->find_data('ecomm_company_items', 'array', $conditions, '', '', '', $order_by);
 
+        $user_id                    = $this->session->user_id;
+        $getAdminUser               = $this->data['model']->find_data('ecoex_admin_user', 'row', ['id' => $user_id], 'vendor_ids');
+        $vendorIds                  = (($getAdminUser)?json_decode($getAdminUser->vendor_ids, true):[]);
+
         $order_by[0]                = array('field' => 'company_name', 'type' => 'asc');
         $vendors                    = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1], 'id,company_name,email', '', '', $order_by);
-        $json                       = '["658","655","623","440","143","110","109","106","99","55","54","39","22","21","20"]';
-        $vendorIds                  = json_decode($json, true);
+        // $json                       = '["658","655","623","440","143","110","109","106","99","55","54","39","22","21","20"]';
+        // $vendorIds                  = json_decode($json, true);
 
         $filtered = array_filter($vendors, fn($v) => in_array($v->id, $vendorIds));
 
