@@ -655,7 +655,11 @@ $userType           = $session->user_type;
                                             </td>
                                         </tr>
                                 <?php }
-                                            } ?>
+                                            } else { ?>
+                                            <tr>
+                                                <td colspan="6" style="text-align: center; color:red;">No enquires found</td>
+                                            </tr>
+                                        <?php }?>
                             </tbody>
                         </table>
                     </div>
