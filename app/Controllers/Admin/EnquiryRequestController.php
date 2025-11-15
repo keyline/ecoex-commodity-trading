@@ -194,7 +194,7 @@ class EnquiryRequestController extends BaseController
 
         $order_by[0]                = array('field' => 'company_name', 'type' => 'asc');
         $data['avlVendors']         = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1], 'id,company_name', '', '', $order_by);
-
+        pr($data['avlVendors']);
         $data['sharedVendors']      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'array', ['enq_id' => $enq_id]);
 
         if ($this->request->getMethod() == 'post') {
