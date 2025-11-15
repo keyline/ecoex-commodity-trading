@@ -280,6 +280,7 @@ class User extends BaseController
                     ${"filteredArray$i"} = filterByPlantId(${"bugArray$i"}, $plantIds);
 
                     ${"step{$i}_count"} = count(${"filteredArray$i"});
+                    $data[${"step{$i}_count"}]                = count(${"filteredArray$i"});
                     $total_enquiry_count += count(${"filteredArray$i"});
                 }
 
