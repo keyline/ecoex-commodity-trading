@@ -1933,8 +1933,11 @@ class EnquiryRequestController extends BaseController
         $vendors                    = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1], 'id,company_name,email', '', '', $order_by);
         // $json                       = '["658","655","623","440","143","110","109","106","99","55","54","39","22","21","20"]';
         // $vendorIds                  = json_decode($json, true);
+        if($vendorIds == '' || $vendorIds == NULL){
+            $vendorIds = array();
+        }
 
-        $filtered = array_filter($vendors, fn($v) => in_array($v->id, $vendorIds));
+        $filtered                   = array_filter($vendors, fn($v) => in_array($v->id, $vendorIds));
 
         $data['avlVendors']         = $filtered;
         
