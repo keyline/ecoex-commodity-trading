@@ -8234,7 +8234,157 @@ class ApiController extends BaseController
         }
         $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
     }
+    public function vendorProcessRequestMaterialWeightedNew()
+    {
+        $apiStatus      = TRUE;
+        $apiMessage     = '';
+        $apiResponse    = [];
 
+        // ✅ Get form-data values
+        $sub_enquiry_no = $this->request->getPost('sub_enq_no');
+        $materials      = $this->request->getPost('materials');  // item_id, actual_weight
+        $fileData       = $this->request->getFiles();            // weighing_slip_img[]
+
+        $requiredFields = ['sub_enq_no', 'materials'];
+        $headerData     = $this->request->headers();
+
+        if (!$this->validateArray($requiredFields, $_POST)) {
+            return $this->response_to_json(FALSE, 'All Data Are Not Present !!!', []);
+        }
+
+        if ($headerData['Key'] != 'Key: ' . getenv('app.PROJECTKEY')) {
+            http_response_code(400);
+            return $this->response_to_json(FALSE, $this->getResponseCode(400), []);
+        }
+
+        $Authorization      = $headerData['Authorization'];
+        $app_access_token   = $this->extractToken($Authorization);
+        $getTokenValue      = $this->tokenAuth($app_access_token);
+
+        if (!$getTokenValue['status']) {
+            http_response_code($getTokenValue['data'][2]);
+            return $this->response_to_json(FALSE, $this->getResponseCode(http_response_code()), []);
+        }
+
+        $uId = $getTokenValue['data'][1];
+        $getUser = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+
+        if (!$getUser) {
+            http_response_code(404);
+            return $this->response_to_json(FALSE, 'User Not Found !!!', []);
+        }
+
+        $getSubEnquiry = $this->common_model->find_data(
+            'ecomm_sub_enquires',
+            'row',
+            ['sub_enquiry_no' => $sub_enquiry_no]
+        );
+
+        // PROCESS MATERIALS
+        if (!empty($materials)) {
+            foreach ($materials as $index => $material) {
+
+                $item_id        = $material['item_id'];
+                $actual_weight  = $material['actual_weight'];
+
+                // FILES for this material
+                $materialFiles = $fileData['materials'][$index]['weighing_slip_img'] ?? [];
+
+                // --- Find old images to unlink ---
+                $existing = $this->common_model->find_data(
+                    'ecomm_sub_enquires',
+                    'row',
+                    [
+                        'sub_enquiry_no' => $sub_enquiry_no,
+                        'item_id'        => $item_id,
+                        'vendor_id'      => $uId
+                    ],
+                    'material_weighing_edit_vendor_attempts,material_weighing_slips'
+                );
+
+                $incomingNames = [];
+                $newImages = [];
+
+                // Collect incoming strings (existing file names)
+                if (isset($material['weighing_slip_img'])) {
+                    foreach ($material['weighing_slip_img'] as $v) {
+                        if (is_string($v)) {
+                            $incomingNames[] = basename($v);
+                            $newImages[] = basename($v);
+                        }
+                    }
+                }
+
+                // Unlink old files not present in form-data
+                if ($existing && !empty($existing->material_weighing_slips)) {
+                    $oldFiles = json_decode($existing->material_weighing_slips, true);
+
+                    foreach ($oldFiles as $oldFile) {
+                        if (!in_array($oldFile, $incomingNames)) {
+                            $path = FCPATH . 'public/uploads/enquiry/' . $oldFile;
+                            if (file_exists($path)) {
+                                @unlink($path);
+                            }
+                        }
+                    }
+                }
+
+                // --- Upload new images from form-data ---
+                if (!empty($materialFiles)) {
+                    foreach ($materialFiles as $file) {
+
+                        if (!$file->isValid()) {
+                            http_response_code(400);
+                            return $this->response_to_json(FALSE, 'Invalid Image Uploaded', []);
+                        }
+
+                        if (!in_array($file->getMimeType(), ['image/jpeg', 'image/jpg', 'image/png'])) {
+                            http_response_code(400);
+                            return $this->response_to_json(FALSE, 'Invalid Image Type, Only JPG/PNG Allowed', []);
+                        }
+
+                        $newName = $file->getRandomName();
+                        $file->move('public/uploads/enquiry/', $newName);
+
+                        $newImages[] = $newName;
+                    }
+                }
+
+                // GET quotation (unit)
+                $getQuotation = $this->common_model->find_data(
+                    'ecomm_enquiry_vendor_quotations',
+                    'row',
+                    [
+                        'enq_id'    => (($getSubEnquiry) ? $getSubEnquiry->enq_id : ''),
+                        'vendor_id' => $uId,
+                        'item_id'   => $item_id
+                    ],
+                    'unit_name'
+                );
+
+                // Prepare update data
+                $fields1 = [
+                    'weighted_qty'                        => $actual_weight,
+                    'weighted_unit'                       => ($getQuotation ? $getQuotation->unit_name : ''),
+                    'material_weighted_date'              => date("Y-m-d H:i:s"),
+                    'material_weight_vendor_date'         => date("Y-m-d H:i:s"),
+                    'material_weighing_slips'             => json_encode($newImages),
+                    'material_weighing_edit_vendor'       => 0,
+                    'material_weighing_edit_vendor_attempts'
+                        => ($existing ? $existing->material_weighing_edit_vendor_attempts + 1 : 1),
+                ];
+
+                $this->common_model->update_batchdata(
+                    'ecomm_sub_enquires',
+                    $fields1,
+                    ['sub_enquiry_no' => $sub_enquiry_no, 'item_id' => $item_id]
+                );
+            }
+        }
+
+        http_response_code(200);
+        return $this->response_to_json(TRUE, 'Material Weighted Info Submitted Successfully !!!', []);
+    }
 
     #__________________________________________________________ END _________________________________________________________
 
