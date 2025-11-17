@@ -7442,6 +7442,138 @@ class ApiController extends BaseController
         }
         $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
     }
+    public function vendorProcessRequestInvoicePaymentNew()
+    {
+        $apiStatus   = TRUE;
+        $apiMessage  = '';
+        $apiResponse = [];
+
+        // ----------- READ FORM-DATA ----------
+        $sub_enquiry_no = $this->request->getPost('sub_enq_no');
+        $payment_amount = $this->request->getPost('payment_amount');
+        $payment_mode   = $this->request->getPost('payment_mode');
+        $payment_date   = $this->request->getPost('payment_date');
+        $txn_no         = $this->request->getPost('txn_no');
+
+        // FILE
+        $txn_file       = $this->request->getFile('txn_screenshot');
+
+        $requiredFields = ['sub_enq_no', 'payment_amount', 'payment_mode', 'payment_date'];
+
+        if (!$this->validateArray($requiredFields, $_POST)) {
+            return $this->response_to_json(FALSE, 'All Data Are Not Present !!!', []);
+        }
+
+        // HEADER CHECK
+        $headerData = $this->request->headers();
+
+        if ($headerData['Key'] != 'Key: ' . getenv('app.PROJECTKEY')) {
+            http_response_code(400);
+            return $this->response_to_json(FALSE, $this->getResponseCode(400), []);
+        }
+
+        // TOKEN VALIDATION
+        $Authorization      = $headerData['Authorization'];
+        $app_access_token   = $this->extractToken($Authorization);
+        $getTokenValue      = $this->tokenAuth($app_access_token);
+
+        if (!$getTokenValue['status']) {
+            http_response_code($getTokenValue['data'][2]);
+            return $this->response_to_json(FALSE, $this->getResponseCode(http_response_code()), []);
+        }
+
+        $uId = $getTokenValue['data'][1];
+        $getUser = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+
+        if (!$getUser) {
+            http_response_code(404);
+            return $this->response_to_json(FALSE, 'User Not Found !!!', []);
+        }
+
+        // FETCH SUB ENQUIRY
+        $getSubEnquiry = $this->common_model->find_data(
+            'ecomm_sub_enquires',
+            'row',
+            ['sub_enquiry_no' => $sub_enquiry_no]
+        );
+
+        if (!$getSubEnquiry) {
+            http_response_code(404);
+            return $this->response_to_json(FALSE, 'Sub Enquiry Not Found !!!', []);
+        }
+
+        // --------------------------------------
+        // HANDLE FILE UPLOAD
+        // --------------------------------------
+        $uploadedFileName = '';
+
+        if ($txn_file && $txn_file->isValid()) {
+
+            // Validate file type
+            if (!in_array($txn_file->getMimeType(), ['image/jpeg', 'image/jpg', 'image/png'])) {
+                http_response_code(404);
+                return $this->response_to_json(FALSE, "Please Upload Transaction Screenshot !!!", []);
+            }
+
+            $newName = $txn_file->getRandomName();
+            $txn_file->move('public/uploads/enquiry/', $newName);
+
+            $uploadedFileName = $newName;
+        }
+
+        // --------------------------------------
+        // UPDATE PAYMENT INFO
+        // --------------------------------------
+        $fields = [
+            'payment_amount'    => $payment_amount,
+            'payment_mode'      => $payment_mode,
+            'payment_date'      => date_format(date_create($payment_date), "Y-m-d H:i:s"),
+            'txn_no'            => $txn_no,
+            'txn_screenshot'    => $uploadedFileName
+        ];
+
+        $this->common_model->save_data(
+            'ecomm_sub_enquires',
+            $fields,
+            $sub_enquiry_no,
+            'sub_enquiry_no'
+        );
+
+        // --------------------------------------
+        // SEND EMAIL NOTIFICATION
+        // --------------------------------------
+        $fieldsMail = [
+            'enq_id'           => $getSubEnquiry->enq_id,
+            'company_id'       => $getSubEnquiry->company_id,
+            'plant_id'         => $getSubEnquiry->plant_id,
+            'vendor_id'        => $getSubEnquiry->vendor_id,
+            'enquiry_no'       => $getSubEnquiry->enquiry_no,
+            'sub_enquiry_no'   => $getSubEnquiry->sub_enquiry_no,
+        ];
+
+        $getCompany     = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $getSubEnquiry->company_id]);
+        $setting        = $this->common_model->find_data('general_settings', 'row');
+
+        $subject   = $setting->site_name . ' :: Sub Enquiry (' . $getSubEnquiry->sub_enquiry_no . ') Vendor Payment Info Uploaded';
+        $message   = view('email-templates/subenquiry-payment-info-upload-to-ecoex', $fieldsMail);
+
+        $this->sendMail($setting->system_email, $subject, $message);
+
+        // Save email log
+        $log = [
+            'name'    => $setting->site_name,
+            'email'   => $setting->system_email,
+            'subject' => $subject,
+            'message' => $message
+        ];
+        $this->common_model->save_data('email_logs', $log, '', 'id');
+
+        // --------------------------------------
+        // SUCCESS RESPONSE
+        // --------------------------------------
+        http_response_code(200);
+        return $this->response_to_json(TRUE, 'Payment Info Uploaded Successfully !!!', []);
+    }
     public function vendorProcessRequestVehicleDespatch()
     {
         $apiStatus          = TRUE;

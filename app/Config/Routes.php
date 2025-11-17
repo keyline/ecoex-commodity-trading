@@ -449,6 +449,7 @@ $routes->group("api", ["namespace" => "App\Controllers\Api",], function ($routes
     $routes->match(['post'], "vendor-process-request-material-weighted-new", "ApiController::vendorProcessRequestMaterialWeightedNew");
 
     $routes->match(['post'], "vendor-process-request-invoice-payment", "ApiController::vendorProcessRequestInvoicePayment");
+    $routes->match(['post'], "vendor-process-request-invoice-payment-new", "ApiController::vendorProcessRequestInvoicePaymentNew");
     $routes->match(['post'], "vendor-process-request-vehicle-despatch", "ApiController::vendorProcessRequestVehicleDespatch");
     // assigned request
     /* vendor panel */
