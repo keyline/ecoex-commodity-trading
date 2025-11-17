@@ -607,7 +607,7 @@ class ReportController extends BaseController
             $from_date = $requestData['search_range_from'];
             $to_date   = $requestData['search_range_to'];                           
 
-            $sql2 = '
+             $sql2 = '
                     SELECT 
                         eq.plant_id, eq.company_id, eq.enquiry_no, 
                         eup.plant_name AS plant_name,
@@ -625,7 +625,6 @@ class ReportController extends BaseController
                     LEFT JOIN ecoex_admin_user eau ON eau.plant_ids LIKE CONCAT(\'%"\', eq.plant_id, \'"%\')
                     WHERE DATE(eq.created_at) BETWEEN \'' . $from_date . '\' AND \'' . $to_date . '\'                     
                     ORDER BY eq.enquiry_no DESC';                     
-
             $query = $this->db->query($sql2);
             $results = $query->getResult();
             // $date_param             = $this->plantService->buildReportParams($requestData);
@@ -642,9 +641,10 @@ class ReportController extends BaseController
                     // initialize
                     $mergedData[$enquiryNo] = [                        
                         'enquiry_no' => $row->enquiry_no, 
-                        'assigned_user' => $row->assigned_user,                                         
+                        // 'assigned_user' => $row->assigned_user,                                                                 
                         'plant_names' => $row->plant_name,
                         'company_names' => $row->company_name,
+                        'assigned_users' => [],
                         'vendor_names' => [],
                         'item_names' => [],
                         'weighted_qtys' => [],
@@ -654,7 +654,8 @@ class ReportController extends BaseController
                 }
 
                 // push array values
-                $mergedData[$enquiryNo]['vendor_names'][] = $row->vendor_name;                
+                $mergedData[$enquiryNo]['vendor_names'][] = $row->vendor_name;  
+                $mergedData[$enquiryNo]['assigned_users'][] = $row->assigned_user;                                              
                 $mergedData[$enquiryNo]['item_names'][] = $row->item_name;
                 $mergedData[$enquiryNo]['weighted_qtys'][] = $row->weighted_qty;
                 $mergedData[$enquiryNo]['weighted_units'][] = $row->weighted_unit;
@@ -666,13 +667,14 @@ class ReportController extends BaseController
             }
 
             // ✅ Remove duplicates from repeated fields
-            // foreach ($mergedData as &$data) {
-            //     $data['vendor_names'] = array_values(array_unique($data['vendor_names']));
-            //     $data['plant_names'] = array_values(array_unique($data['plant_names']));
-            //     $data['company_names'] = array_values(array_unique($data['company_names']));
-            //     $data['item_names'] = array_values(array_unique($data['item_names']));
-            //     $data['vehicle_registration_nos'] = array_values(array_unique($data['vehicle_registration_nos']));
-            // }
+            foreach ($mergedData as &$data) {
+                $data['vendor_names'] = array_values(array_unique($data['vendor_names']));
+                $data['assigned_users'] = array_values(array_unique($data['assigned_users']));
+                $data['weighted_qtys'] = array_values(array_unique($data['weighted_qtys']));
+                $data['weighted_units'] = array_values(array_unique($data['weighted_units']));
+                $data['item_names'] = array_values(array_unique($data['item_names']));
+                $data['vehicle_registration_nos'] = array_values(array_unique($data['vehicle_registration_nos'], SORT_REGULAR));
+            }
 
             // reset to numeric array
             $finalData = array_values($mergedData);
@@ -680,17 +682,16 @@ class ReportController extends BaseController
             // pr($finalData);
 
             $response = [
-            // 'graph_title'       => $date_param['graph_title'],
-            'details_data'      => $finalData,
-        ];
-
+                // 'graph_title'       => $date_param['graph_title'],
+                'details_data'      => $finalData,
+            ];
             
             // pr($response);
             $data['is_search']                  = 1;                                  
             $data['search_range_from']          = $requestData['search_range_from'];
             $data['search_range_to']            = $requestData['search_range_to'];
             $data['response']                   = $response;                                               
-
+            // pr($data['response']);
         }
          
 

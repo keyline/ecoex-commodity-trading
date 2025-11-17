@@ -107,6 +107,7 @@
                                 // Ensure these are arrays, even if empty
                                 $vendor_names = $data['vendor_names'] ?? [];
                                 $item_names = $data['item_names'] ?? [];
+                                $assigned_users = $data['assigned_users'] ?? [];
                                 $weighted_qtys = $data['weighted_qtys'] ?? [];
                                 $weighted_units = $data['weighted_units'] ?? [];
                                 $vehicle_sets = $data['vehicle_registration_nos'] ?? [];
@@ -130,11 +131,12 @@
                                         <td rowspan="<?= $rowCount; ?>"><?= esc($data['enquiry_no']); ?></td>
                                         <td rowspan="<?= $rowCount; ?>"><?= esc($data['company_names']); ?></td>
                                         <td rowspan="<?= $rowCount; ?>"><?= esc($data['plant_names']); ?></td>
-                                        <td rowspan="<?= $rowCount; ?>"><?= esc($data['assigned_user']); ?></td>
+                                        <!-- <td rowspan="?= $rowCount; ?>">?= esc($data['assigned_user']); ?></td> -->
                                         <!-- <td></td> -->
                                     <?php } ?>
 
                                     <!-- Vehicle Numbers (each sub-enquiry has its own list) -->
+                                     <td><?= esc($assigned_users[$i] ?? '-'); ?></td>
                                     <td>
                                         <?php
                                         $vehicles = $vehicle_sets[$i] ?? [];
