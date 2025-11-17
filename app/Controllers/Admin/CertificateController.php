@@ -14,6 +14,7 @@ use App\Services\PdfService;
 use App\Models\CertificateVendorModel;
 use CodeIgniter\Database\Exceptions\DatabaseException;
 use App\Models\CompanyCertificateModel;
+use App\Libraries\WordDocumentGenerator;
 
 class CertificateController extends BaseController
 {
@@ -295,8 +296,10 @@ class CertificateController extends BaseController
             // Generate PDF on the fly
             $pdfFilename = $this->generatePDF($certificateId);
 
+            $wordFileName = $this->saveWord($certificateId);
 
-            $savePath = FCPATH . 'public/uploads/certificate/' . $pdfFilename;
+
+            //$savePath = FCPATH . 'public/uploads/certificate/' . $pdfFilename;
 
 
             // Insert record into ecomm_company_certificates table
@@ -304,14 +307,16 @@ class CertificateController extends BaseController
                 'company_id' => $certificateData['company_id'] ?? 0,
                 'enquiry_id' => $certificateData['enquiry_id'] ?? 0,
                 'certificate_type' => 1, // Alternate type
-                'certificate_file' => $savePath,
-                'filename' => $pdfFilename,
+                'certificate_file' => $pdfFilename,
+                'word_filename' => pathinfo($wordFileName, PATHINFO_FILENAME),
+                'certificate_word_file' => $wordFileName,
+                'filename' => pathinfo($pdfFilename, PATHINFO_FILENAME),
             ]);
 
 
 
             // Update certificate with PDF path
-            $this->certificateModel->update($certificateId, ['pdf_path' => $pdfFilename]);
+            $this->certificateModel->update($certificateId, ['pdf_path' => $pdfFilename, 'word_path' => $wordFileName]);
 
 
 
@@ -479,7 +484,8 @@ class CertificateController extends BaseController
         try {
 
             // Delete old PDF file
-            $this->deleteOldPDF($certificate['pdf_path']);
+            $this->deleteOldPDF(FCPATH . 'public/uploads/certificate/' . $certificate['pdf_path']);
+            $this->deleteOldPDF(FCPATH . 'public/uploads/certificate/' . $certificate['word_path']);
 
             // Create version before update (for audit trail)
             $this->certificateModel->createVersion($id, session()->get('user_id'), 'Updated certificate');
@@ -777,6 +783,13 @@ class CertificateController extends BaseController
         }
 
 
+        $subQuery = "
+    SELECT enq_id, weighted_qty, weighted_unit, item_id
+    FROM ecomm_sub_enquires
+    GROUP BY enq_id, item_id
+        ";
+
+
         // Get complete products with item details using JOINs (only approved)
         $products = $db->table('ecomm_enquiry_products ep')
             ->select('ep.id,
@@ -800,7 +813,9 @@ class CertificateController extends BaseController
                   ci.unit as unit_id,
                   
                   cat.name as category_name,
-                  unit.name as unit_name')
+                  unit.name as unit_name,
+                  se.weighted_qty,
+                se.weighted_unit')
             ->join(
                 'ecomm_company_items ci',
                 'ci.id = IF(ep.new_product = 1, (SELECT id FROM ecomm_company_items WHERE enq_product_id = ep.id LIMIT 1), ep.product_id)',
@@ -808,8 +823,10 @@ class CertificateController extends BaseController
             )
             ->join('ecomm_product_categories cat', 'cat.id = ci.item_category', 'left')
             ->join('ecomm_units unit', 'unit.id = ci.unit', 'left')
+            ->join("($subQuery) se", 'se.enq_id = ep.enq_id AND se.item_id = ep.product_id', 'left', false)
             ->where('ep.enq_id', $mainData['id'])
             ->where('ep.status', 1)
+            ->where('ci.company_id = ep.company_id', null, false)
             ->orderBy('ep.id', 'ASC')
             ->get()
             ->getResultArray();
@@ -869,8 +886,8 @@ class CertificateController extends BaseController
                 'hsn' => $productHSN,
                 'gst' => $product['gst'] ?? '',
                 'rate' => $product['rate'] ?? '',
-                'quantity' => $product['qty'] ?? 0,
-                'unit' => $product['unit_name'] ?? 'Kgs',
+                'quantity' => $product['weighted_qty'] ?? 0,
+                'unit' => $product['weighted_unit'] ?? '',
                 'remarks' => $product['remarks'] ?? '',
                 'sequence' => $index + 1,
                 // Additional details if needed
@@ -1075,5 +1092,137 @@ class CertificateController extends BaseController
             throw new \Exception('At least one valid vendor is required');
         }
     }
+
+    /**
+     * Generate Word document and save to server
+     */
+    private function saveWord($certificateId)
+    {
+        try {
+
+            // Get certificate with all related data
+            $certificate = $this->certificateModel->getCertificateWithItems($certificateId);
+
+
+            if (!$certificate) {
+                throw new \Exception('Certificate not found');
+            }
+
+            // Get vendors
+            $certificate['vendors'] = $this->vendorModel
+                ->where('certificate_id', $certificateId)
+                ->orderBy('sequence', 'ASC')
+                ->findAll();
+
+
+            // Initialize Word generator
+            $generator = new WordDocumentGenerator($certificate);
+            $phpWord = $generator->generate();
+
+            // Define save path
+            $uploadPath = FCPATH . 'public/uploads/certificate/';
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+
+            // Generate filename
+            $fileName = $certificate['certificate_number'] . '_' . time() . '.docx';
+            //$fileName = 'certificate' . '_' . time() . '.docx';
+            $savePath = $uploadPath . $fileName;
+
+            // Save the file
+            $generator->save($savePath);
+
+            // Update database with file path (optional)
+            //$this->updateCertificateWordPath($certificateId, $fileName);
+
+
+            // Verify Word file was created
+            if (!file_exists($savePath)) {
+                throw new \Exception('Failed to generate Word file');
+            }
+
+
+            return $fileName;
+
+        } catch (\Exception $e) {
+            log_message('error', 'Word save failed: ' . $e->getMessage());
+
+            throw new \Exception('Word generation failed: ' . $e->getMessage());
+
+        }
+    }
+
+    /**
+     * View Word document in browser (converts to HTML preview)
+     */
+    public function viewWord($certificateId)
+    {
+        try {
+
+
+            $certificate = $this->certificateModel->find($certificateId);
+
+            if (!$certificate) {
+                throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound('Certificate not found');
+            }
+
+            if (empty($certificate['word_path'])) {
+                return redirect()->back()->with('error', 'Word file not generated yet');
+            }
+
+            $wordPath = FCPATH . 'public/uploads/certificate/' . $certificate['word_path'];
+
+
+            // Check if file exists
+            if (!file_exists($wordPath)) {
+                log_message('error', 'Word file not found: ' . $certificate['word_path']);
+                return redirect()->back()->with('error', 'Word file not found. Please regenerate the certificate.');
+            }
+
+
+            // Check file permissions
+            if (!is_readable($wordPath)) {
+                log_message('error', 'Word file not readable: ' . $wordPath);
+                return redirect()->back()->with('error', 'Word file cannot be read. Please check file permissions.');
+            }
+
+
+
+
+            // Serve the file for download/view
+            return $this->response->download($wordPath, null)->setFileName(basename($wordPath));
+
+
+
+        } catch (\Exception $e) {
+            log_message('error', 'Word view failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to view Word document');
+        }
+    }
+
+    public function testWord()
+    {
+        try {
+            $phpWord = new \PhpOffice\PhpWord\PhpWord();
+            $section = $phpWord->addSection();
+            $section->addText('Test Document', ['bold' => true, 'size' => 14]);
+            $section->addText('This is a test paragraph.');
+
+            $filePath = WRITEPATH . 'uploads/test_word.docx';
+            $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+            $objWriter->save($filePath);
+
+            if (file_exists($filePath)) {
+                return $this->response->download($filePath, null)
+                                      ->setFileName('test.docx');
+            }
+
+            return 'File created but not found';
+        } catch (\Exception $e) {
+            return 'Error: ' . $e->getMessage();
+        }
+    }
+
 
 }

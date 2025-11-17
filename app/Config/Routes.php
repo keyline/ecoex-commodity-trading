@@ -325,6 +325,9 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 
     $routes->match(['get'], 'certificates/(:any)/pdf/view', 'CertificateController::viewPdf/$1');
 
+    $routes->match(['get'], 'certificates/(:any)/word/view', 'CertificateController::viewWord/$1');
+
+
 
 
 
