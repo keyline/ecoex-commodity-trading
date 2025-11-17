@@ -20,6 +20,8 @@ class CompanyCertificateModel extends Model
         'certificate_type',
         'certificate_file',
         'filename',
+        'certificate_word_file',
+        'word_filename',
         'created_at',
         'updated_at',
         'status'
