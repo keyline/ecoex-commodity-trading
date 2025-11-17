@@ -7104,6 +7104,120 @@ class ApiController extends BaseController
         }
         $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
     }
+    public function vendorProcessRequestVehiclePlacedNew()
+    {
+        $apiStatus          = TRUE;
+        $apiMessage         = '';
+        $apiResponse        = [];
+
+        // GET POST DATA FROM FORM-DATA
+        $sub_enquiry_no     = $this->request->getPost('sub_enq_no');
+        $vehicles           = $this->request->getPost('vehicles'); // vehicle_no will come here
+        $vehicleFiles       = $this->request->getFiles(); // vehicle_img files
+
+        $requiredFields     = ['sub_enq_no', 'vehicles'];
+        $headerData         = $this->request->headers();
+
+        if (!$this->validateArray($requiredFields, $_POST)) {
+            $apiStatus  = FALSE;
+            $apiMessage = 'All Data Are Not Present !!!';
+        }
+
+        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+            $Authorization      = $headerData['Authorization'];
+            $app_access_token   = $this->extractToken($Authorization);
+            $getTokenValue      = $this->tokenAuth($app_access_token);
+
+            if ($getTokenValue['status']) {
+
+                $uId = $getTokenValue['data'][1];
+                $getUser = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+
+                if ($getUser) {
+
+                    $getSubEnquiry = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+
+                    $vehicle_registration_nos = [];
+                    $vehicle_images = [];
+
+                    if (!empty($vehicles)) {
+                        foreach ($vehicles as $index => $vehicle) {
+
+                            /** Vehicle NO **/
+                            $vehicle_no = strtoupper($vehicle['vehicle_no']);
+                            $vehicle_registration_nos[] = $vehicle_no;
+
+                            /** Vehicle Images in Form-Data **/
+                            $uploadedImages = [];
+
+                            if (isset($vehicleFiles['vehicles'][$index]['vehicle_img'])) {
+
+                                $vehicle_img_files = $vehicleFiles['vehicles'][$index]['vehicle_img'];
+
+                                foreach ($vehicle_img_files as $file) {
+
+                                    if (!$file->isValid()) {
+                                        $apiStatus = FALSE;
+                                        $apiMessage = 'Invalid Vehicle Image !!!';
+                                        http_response_code(400);
+                                    }
+
+                                    if (!in_array($file->getMimeType(), ['image/jpeg', 'image/jpg', 'image/png'])) {
+                                        $apiStatus = FALSE;
+                                        $apiMessage = 'Please Upload Vehicle Image in JPG/PNG format !!!';
+                                        http_response_code(400);
+                                    }
+
+                                    $newName = $file->getRandomName();
+                                    $uploadPath = 'public/uploads/enquiry/' . $newName;
+                                    $file->move('public/uploads/enquiry/', $newName);
+
+                                    $uploadedImages[] = $newName;
+                                }
+                            }
+
+                            $vehicle_images[] = $uploadedImages;
+                        }
+                    }
+
+                    // SAVE DATA
+                    $fields1 = [
+                        'vehicle_placed_date'      => date("Y-m-d H:i:s"),
+                        'no_of_vehicle'            => count($vehicle_registration_nos),
+                        'vehicle_registration_nos' => json_encode($vehicle_registration_nos),
+                        'vehicle_images'           => json_encode($vehicle_images),
+                        'status'                   => 5.5,
+                    ];
+
+                    $this->common_model->save_data('ecomm_sub_enquires', $fields1, $sub_enquiry_no, 'sub_enquiry_no');
+
+                    $enq_id = ($getSubEnquiry) ? $getSubEnquiry->enq_id : 0;
+                    $this->common_model->save_data('ecomm_enquires', ['status' => 5], $enq_id, 'id');
+
+                    $apiStatus  = TRUE;
+                    http_response_code(200);
+                    $apiMessage = 'Vehicle Placed Info Submitted Successfully !!!';
+
+                } else {
+                    $apiStatus  = FALSE;
+                    http_response_code(404);
+                    $apiMessage = 'User Not Found !!!';
+                }
+
+            } else {
+                http_response_code($getTokenValue['data'][2]);
+                $apiStatus  = FALSE;
+                $apiMessage = $this->getResponseCode(http_response_code());
+            }
+
+        } else {
+            http_response_code(400);
+            $apiStatus  = FALSE;
+            $apiMessage = $this->getResponseCode(http_response_code());
+        }
+
+        $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+    }
     #@Shubha75 commneted on 30_04_2024
     // public function vendorProcessRequestMaterialWeighted()
     // {
