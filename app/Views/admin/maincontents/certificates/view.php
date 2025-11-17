@@ -17,7 +17,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2>Certificate Details</h2>
                 <div>
-                    <a href="<?= base_url('certificates') ?>" class="btn btn-secondary">
+                    <a href="<?= base_url('admin/enquiry-requests/list/' . encoded(12)) ?>" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Back
                     </a>
                     
