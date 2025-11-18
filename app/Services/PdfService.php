@@ -9,11 +9,13 @@ namespace App\Services;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use App\Models\CommonModel;
 
 class PdfService
 {
     protected $dompdf;
     protected $options;
+    protected $common_model;
 
     public function __construct()
     {
@@ -29,6 +31,8 @@ class PdfService
 
         // Set paper size and orientation
         $this->dompdf->setPaper('A4', 'portrait');
+
+        $this->common_model     = new CommonModel();
     }
 
     /**
@@ -40,8 +44,11 @@ class PdfService
      */
     public function generateCertificate($data, $savePath = null)
     {
+
+        $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
+
         // Load the certificate template view
-        $html = view('admin/maincontents/certificates/pdf_template', $data);
+        $html = view('admin/maincontents/certificates/pdf_template_v4', $data);
 
         // Load HTML into Dompdf
         $this->dompdf->loadHtml($html);
