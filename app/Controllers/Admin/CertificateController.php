@@ -1224,5 +1224,34 @@ class CertificateController extends BaseController
         }
     }
 
+    public function previewPdf($certificateId)
+    {
+
+        try {
+            // Get certificate with all related data
+            $certificate = $this->certificateModel->getCertificateWithItems($certificateId);
+
+            if (!$certificate) {
+                throw new \Exception('Certificate not found');
+            }
+
+            // Get vendors
+            $certificate['vendors'] = $this->vendorModel
+                ->where('certificate_id', $certificateId)
+                ->orderBy('sequence', 'ASC')
+                ->findAll();
+
+
+            // return $filename;
+            return view('admin/maincontents/certificates/pdf_template_v4', $certificate);
+
+        } catch (\Exception $e) {
+            log_message('error', 'PDF generation failed: ' . $e->getMessage());
+            throw new \Exception('PDF generation failed: ' . $e->getMessage());
+        }
+
+
+    }
+
 
 }
