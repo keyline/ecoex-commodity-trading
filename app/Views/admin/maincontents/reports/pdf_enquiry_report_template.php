@@ -67,57 +67,26 @@
             </tr>
         </thead>
         <tbody>
-            <?php                                                         
-                $sr = 1;
-                foreach($response['details_data'] as $data){ 
-                // Ensure these are arrays, even if empty
-                $vendor_names = $data['vendor_names'] ?? [];
-                $item_names = $data['item_names'] ?? [];
-                $weighted_qtys = $data['weighted_qtys'] ?? [];
-                $weighted_units = $data['weighted_units'] ?? [];
-                $vehicle_sets = $data['vehicle_registration_nos'] ?? [];
+                            <?php 
+                            $sr = 1;
+                            foreach ($response['details_data'] as $data): 
+                            ?>
+                            <tr>
+                                <td><?= $sr++; ?></td>
 
-                // Find the max count across these arrays
-                $rowCount = max(
-                    count($vendor_names),
-                    count($item_names),
-                    count($weighted_qtys)                                    
-                );
+                                <td><?= esc($data['enquiry_no']); ?></td>
+                                <td><?= esc($data['company_names']); ?></td>
+                                <td><?= esc($data['plant_names']); ?></td>
 
-                // If no sub-data, still show one row
-                if ($rowCount == 0) $rowCount = 1;
-                ?>
-                <?php for ($i = 0; $i < $rowCount; $i++) { ?>
-                <tr>
-                    <td><?= $sr++; ?></td>
-
-                    <?php if ($i == 0) { ?>
-                        <!-- Show enquiry-level data only once -->
-                        <td rowspan="<?= $rowCount; ?>"><?= esc($data['enquiry_no']); ?></td>
-                        <td rowspan="<?= $rowCount; ?>"><?= esc($data['company_names']); ?></td>
-                        <td rowspan="<?= $rowCount; ?>"><?= esc($data['plant_names']); ?></td>
-                        <td rowspan="<?= $rowCount; ?>"><?= esc($data['assigned_user']); ?></td>
-                        <!-- <td></td> -->
-                    <?php } ?>
-
-                    <!-- Vehicle Numbers (each sub-enquiry has its own list) -->
-                    <td>
-                        <?php
-                        $vehicles = $vehicle_sets[$i] ?? [];
-                        if (!empty($vehicles)) {
-                            echo implode('<br>', array_map('esc', $vehicles));
-                        } else {
-                            echo '-';
-                        }
-                        ?>
-                    </td>
-                    <td><?= esc($item_names[$i] ?? '-'); ?></td>
-                    <td><?= esc($weighted_qtys[$i] ?? '-'); ?>/<?= esc($weighted_units[$i] ?? '-'); ?></td>
-                    <td><?= esc($vendor_names[$i] ?? '-'); ?></td>
-                </tr>
-                <?php } ?>                              
-            <?php } ?>                            
-        </tbody>
+                                <!-- These fields are already merged with <br> in controller -->
+                                <td><?= $data['assigned_users'] ?: '-'; ?></td>
+                                <td><?= $data['vehicle_registration_nos'] ?: '-'; ?></td>
+                                <td><?= $data['item_names'] ?: '-'; ?></td>
+                                <td><?= $data['weighted_qtys'] ?: '-'; ?></td>
+                                <td><?= $data['vendor_names'] ?: '-'; ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
     </table>
 
 </body>
