@@ -47,9 +47,8 @@
                 </div>
                 <!-- custome date range  end -->
                 <div class="col-md-3 col-lg-3">
-                  <select id="filterUser" name="user_name" class="form-control">
-                  <option value="">Filter by User Name</option>
-                  <option value="all user">All Users</option>
+                  <select id="filterUser" name="user_name" class="form-control">                  
+                  <option value="">All Users</option>
                   <?php foreach ($users as $user) {
                       if($userType == 'MA') { ?>
                   <option value="<?=$user->id?>"<?= ($search_user == $user->id) ? 'selected' : '' ?>  ><?=$user->name?></option>
@@ -95,10 +94,7 @@
                     <div class="card-body">
                       <h5 class="card-title"><?= $response['graph_title'] ?? 'Report' ?></h5>
 
-                      <div class="table-responsive">
-
-                        
-
+                      <div class="table-responsive">                        
                         <table id="" class="table globel_table nowrap" style="width: 100%">
                           <thead>
                             <tr>
@@ -135,7 +131,6 @@
                             <?php endforeach; ?>
                         </tbody>
                         </table>
-
                       </div>
                     </div>
                   </div>

@@ -584,142 +584,7 @@ class ReportController extends BaseController
         }
 
         echo $this->layout_after_login($title, $page_name, $data);
-    }
-
-    
-
-    public function enquiryReport()
-    {
-        $user_type   = session('user_type');        
-        $title       = 'Manage Enquiry Reports';
-        $page_name   = 'reports/enquiry-report'; 
-
-        $data['is_search']         = 0;        
-        $data['is_date_range']     = 0;
-        $data['search_range_from'] = '';
-        $data['search_range_to']   = '';
-        $data['search_user'] = '';
-        $data['response']          = [];   
-
-        // Load users
-        $query1            = $this->db->query("SELECT name, id FROM ecoex_admin_user WHERE user_type != 'company'");
-        $data['users']     = $query1->getResult();   
-        $data['userType']  = $this->session->user_type;
-
-        if ($this->request->getGet('mode') == 'advance_search') {
-
-            $requestData = $this->request->getGet();  
-
-            // FIXED: correct variable names
-            $from_date = $requestData['search_range_from'] ?? '';
-            $to_date   = $requestData['search_range_to'] ?? '';
-            $user_id   = $requestData['user_name'] ?? '';
-
-            // Build WHERE
-            $where = " WHERE 1=1 ";
-
-            // Apply date filter if both dates exist
-            if (!empty($from_date) && !empty($to_date)) {
-                $where .= " AND DATE(eq.created_at) BETWEEN '$from_date' AND '$to_date' ";
-            }
-
-            // Apply user filter
-            if (!empty($user_id)) {
-                $where .= " AND eau.id = '$user_id' ";
-            }
-
-            // Final SQL FIXED syntax
-            $sql2 = "
-                SELECT 
-                    eq.plant_id, eq.company_id, eq.enquiry_no, 
-                    eup.plant_name AS plant_name,
-                    ec.company_name AS company_name,
-                    esq.vendor_id, esq.item_id, esq.weighted_qty, esq.weighted_unit, esq.vehicle_registration_nos,
-                    euv.company_name AS vendor_name,
-                    eci.item_name_ecoex AS item_name,
-                    eau.name AS assigned_user
-                FROM ecomm_enquires eq 
-                LEFT JOIN ecomm_users eup ON eq.plant_id = eup.id
-                LEFT JOIN ecoex_companies ec ON eq.company_id = ec.id 
-                LEFT JOIN ecomm_sub_enquires esq ON eq.id = esq.enq_id
-                LEFT JOIN ecomm_users euv ON esq.vendor_id = euv.id
-                LEFT JOIN ecomm_company_items eci ON esq.item_id = eci.id
-                LEFT JOIN ecoex_admin_user eau 
-                    ON eau.plant_ids LIKE CONCAT('%\"', eq.plant_id, '\"%')
-                $where
-                ORDER BY eq.enquiry_no DESC
-            ";
-
-            // Run query
-            $query   = $this->db->query($sql2);
-            $results = $query->getResult();
-
-            // Merge multiple rows
-            $mergedData = [];
-
-            foreach ($results as $row) {
-                $enquiryNo = $row->enquiry_no;
-
-                if (!isset($mergedData[$enquiryNo])) {
-                    $mergedData[$enquiryNo] = [                        
-                        'enquiry_no' => $row->enquiry_no, 
-                        'plant_names' => $row->plant_name,
-                        'company_names' => $row->company_name,
-                        'assigned_users' => [],
-                        'vendor_names' => [],
-                        'item_names' => [],
-                        'weighted_qtys' => [],
-                        'vehicle_registration_nos' => [],
-                    ];
-                }
-
-                if (!empty($row->vendor_name)) {
-                    $mergedData[$enquiryNo]['vendor_names'][] = $row->vendor_name;
-                }
-
-                if (!empty($row->assigned_user)) {
-                    $mergedData[$enquiryNo]['assigned_users'][] = $row->assigned_user;
-                }
-
-                if (!empty($row->item_name)) {
-                    $mergedData[$enquiryNo]['item_names'][] = $row->item_name;
-                }
-
-                if (!empty($row->weighted_qty)) {
-                    $mergedData[$enquiryNo]['weighted_qtys'][] = $row->weighted_qty . ' ' . $row->weighted_unit;
-                }
-
-                $vehicles = json_decode($row->vehicle_registration_nos, true);
-                if (!empty($vehicles)) {
-                    foreach ($vehicles as $v) {
-                        $mergedData[$enquiryNo]['vehicle_registration_nos'][] = $v;
-                    }
-                }
-            }
-
-            // Format results
-            foreach ($mergedData as $key => $m) {
-                $mergedData[$key]['vendor_names'] = implode('<br>', array_unique($m['vendor_names']));
-                $mergedData[$key]['assigned_users'] = implode('<br>', array_unique($m['assigned_users']));
-                $mergedData[$key]['item_names'] = implode('<br>', array_unique($m['item_names']));
-                $mergedData[$key]['weighted_qtys'] = implode('<br>', array_unique($m['weighted_qtys']));
-                $mergedData[$key]['vehicle_registration_nos'] = implode('<br>', array_unique($m['vehicle_registration_nos']));
-            }
-
-            $finalData = array_values($mergedData);
-
-            $data['is_search'] = 1;
-            $data['search_range_from'] = $from_date;
-            $data['search_range_to']   = $to_date;
-            $data['search_user']       = $requestData['user_name'] ?? '';
-            $data['response'] = [
-                'details_data' => $finalData
-            ];
-        }
-
-        echo $this->layout_after_login($title, $page_name, $data);
-    }
-
+    }   
 
     public function companyReportExportPdf()
     {
@@ -962,6 +827,145 @@ class ReportController extends BaseController
             'data'   => $companies
         ]);
     }
+
+    //@deblina
+
+     public function enquiryReport()
+    {
+        $user_type   = session('user_type');        
+        $title       = 'Manage Enquiry Reports';
+        $page_name   = 'reports/enquiry-report'; 
+
+        $data['is_search']         = 0;        
+        $data['is_date_range']     = 0;        
+        $data['search_user'] = '';
+        $data['response']          = [];   
+
+        $today = date('Y-m-d');
+
+        // Set initial date values to today, unless they are overridden by search parameters
+        $data['search_range_from'] = $this->request->getGet('search_range_from') ?? $today;
+        $data['search_range_to']   = $this->request->getGet('search_range_to') ?? $today;
+
+        // Load users
+        $query1            = $this->db->query("SELECT name, id FROM ecoex_admin_user WHERE user_type != 'company'");
+        $data['users']     = $query1->getResult();   
+        $data['userType']  = $this->session->user_type;
+
+        if ($this->request->getGet('mode') == 'advance_search') {
+
+            $requestData = $this->request->getGet();  
+
+            // FIXED: correct variable names
+            $from_date = $requestData['search_range_from'] ?? '';
+            $to_date   = $requestData['search_range_to'] ?? '';
+            $user_id   = $requestData['user_name'] ?? '';
+
+            // Build WHERE
+            $where = " WHERE 1=1 ";
+
+            // Apply date filter if both dates exist
+            if (!empty($from_date) && !empty($to_date)) {
+                $where .= " AND DATE(eq.created_at) BETWEEN '$from_date' AND '$to_date' ";
+            }
+
+            // Apply user filter
+            if (!empty($user_id)) {
+                $where .= " AND eau.id = '$user_id' ";
+            }
+
+            // Final SQL FIXED syntax
+            $sql2 = "
+                SELECT 
+                    eq.plant_id, eq.company_id, eq.enquiry_no, 
+                    eup.plant_name AS plant_name,
+                    ec.company_name AS company_name,
+                    esq.vendor_id, esq.item_id, esq.weighted_qty, esq.weighted_unit, esq.vehicle_registration_nos,
+                    euv.company_name AS vendor_name,
+                    eci.item_name_ecoex AS item_name,
+                    eau.name AS assigned_user
+                FROM ecomm_enquires eq 
+                LEFT JOIN ecomm_users eup ON eq.plant_id = eup.id
+                LEFT JOIN ecoex_companies ec ON eq.company_id = ec.id 
+                LEFT JOIN ecomm_sub_enquires esq ON eq.id = esq.enq_id
+                LEFT JOIN ecomm_users euv ON esq.vendor_id = euv.id
+                LEFT JOIN ecomm_company_items eci ON esq.item_id = eci.id
+                LEFT JOIN ecoex_admin_user eau 
+                    ON eau.plant_ids LIKE CONCAT('%\"', eq.plant_id, '\"%')
+                $where
+                ORDER BY eq.enquiry_no DESC
+            ";
+
+            // Run query
+            $query   = $this->db->query($sql2);
+            $results = $query->getResult();
+
+            // Merge multiple rows
+            $mergedData = [];
+
+            foreach ($results as $row) {
+                $enquiryNo = $row->enquiry_no;
+
+                if (!isset($mergedData[$enquiryNo])) {
+                    $mergedData[$enquiryNo] = [                        
+                        'enquiry_no' => $row->enquiry_no, 
+                        'plant_names' => $row->plant_name,
+                        'company_names' => $row->company_name,
+                        'assigned_users' => [],
+                        'vendor_names' => [],
+                        'item_names' => [],
+                        'weighted_qtys' => [],
+                        'vehicle_registration_nos' => [],
+                    ];
+                }
+
+                if (!empty($row->vendor_name)) {
+                    $mergedData[$enquiryNo]['vendor_names'][] = $row->vendor_name;
+                }
+
+                if (!empty($row->assigned_user)) {
+                    $mergedData[$enquiryNo]['assigned_users'][] = $row->assigned_user;
+                }
+
+                if (!empty($row->item_name)) {
+                    $mergedData[$enquiryNo]['item_names'][] = $row->item_name;
+                }
+
+                if (!empty($row->weighted_qty)) {
+                    $mergedData[$enquiryNo]['weighted_qtys'][] = $row->weighted_qty . ' ' . $row->weighted_unit;
+                }
+
+                $vehicles = json_decode($row->vehicle_registration_nos, true);
+                if (!empty($vehicles)) {
+                    foreach ($vehicles as $v) {
+                        $mergedData[$enquiryNo]['vehicle_registration_nos'][] = $v;
+                    }
+                }
+            }
+
+            // Format results
+            foreach ($mergedData as $key => $m) {
+                $mergedData[$key]['vendor_names'] = implode('<br>', array_unique($m['vendor_names']));
+                $mergedData[$key]['assigned_users'] = implode('<br>', array_unique($m['assigned_users']));
+                $mergedData[$key]['item_names'] = implode('<br>', array_unique($m['item_names']));
+                $mergedData[$key]['weighted_qtys'] = implode('<br>', array_unique($m['weighted_qtys']));
+                $mergedData[$key]['vehicle_registration_nos'] = implode('<br>', array_unique($m['vehicle_registration_nos']));
+            }
+
+            $finalData = array_values($mergedData);
+
+            $data['is_search'] = 1;
+            $data['search_range_from'] = $from_date;
+            $data['search_range_to']   = $to_date;
+            $data['search_user']       = $requestData['user_name'] ?? '';
+            $data['response'] = [
+                'details_data' => $finalData
+            ];
+        }
+
+        echo $this->layout_after_login($title, $page_name, $data);
+    }
+
     public function EnquiryReportExportPdf()
     {
         $page_name              = 'Views/admin/maincontents/reports/pdf_enquiry_report_template';
@@ -1102,161 +1106,171 @@ class ReportController extends BaseController
     }
 
     public function enquiryReportExportExcel()
-{
-    helper('text');
+    {
+        helper('text');
 
-    // Get Filters
-    $from_date = $this->request->getGet('search_range_from');
-    $to_date   = $this->request->getGet('search_range_to');
-    $user_id   = $this->request->getGet('user_name');  // User dropdown value
+        // Get Filters
+        $from_date = $this->request->getGet('search_range_from');
+        $to_date   = $this->request->getGet('search_range_to');
+        $user_id   = $this->request->getGet('user_name');  // User dropdown value
 
-    // Build WHERE
-    $where = " WHERE 1=1 ";
+        // Build WHERE
+        $where = " WHERE 1=1 ";
 
-    // Apply date filter if both dates exist
-    if (!empty($from_date) && !empty($to_date)) {
-        $where .= " AND DATE(eq.created_at) BETWEEN '$from_date' AND '$to_date' ";
-    }
-
-    // Apply user filter
-    if (!empty($user_id)) {
-        $where .= " AND eau.id = '$user_id' ";
-    }
-
-    // START SQL
-    $sql = "
-        SELECT 
-            eq.enquiry_no, eq.plant_id, eq.company_id,
-            eup.plant_name,
-            ec.company_name,
-            esq.vendor_id, esq.item_id, esq.weighted_qty, esq.weighted_unit, esq.vehicle_registration_nos,
-            euv.company_name AS vendor_name,
-            eci.item_name_ecoex AS item_name,
-            eau.id AS admin_user_id,
-            eau.name AS assigned_user,
-            eq.created_at
-        FROM ecomm_enquires eq
-        LEFT JOIN ecomm_users eup ON eq.plant_id = eup.id
-        LEFT JOIN ecoex_companies ec ON eq.company_id = ec.id
-        LEFT JOIN ecomm_sub_enquires esq ON eq.id = esq.enq_id
-        LEFT JOIN ecomm_users euv ON esq.vendor_id = euv.id
-        LEFT JOIN ecomm_company_items eci ON esq.item_id = eci.id
-        LEFT JOIN ecoex_admin_user eau ON eau.plant_ids LIKE CONCAT('%\"', eq.plant_id, '\"%')
-        $where
-    ";    
-
-    // ORDER
-    $sql .= " ORDER BY eq.enquiry_no DESC ";
-
-    // RUN QUERY
-    $results = $this->db->query($sql)->getResult();
-    $merged = [];
-
-    // MERGE MULTIPLE SUB-ENTRIES IN SAME ENQUIRY
-    foreach ($results as $row) {
-
-        $id = $row->enquiry_no;
-
-        if (!isset($merged[$id])) {
-            $merged[$id] = [
-                "enquiry_no" => $row->enquiry_no,
-                "company_name" => $row->company_name,
-                "plant_name"   => $row->plant_name,
-                "assigned_users" => [],
-                "vendor_names" => [],
-                "item_names" => [],
-                "qty_units" => [],
-                "vehicles" => []
-            ];
+        // Apply date filter if both dates exist
+        if (!empty($from_date) && !empty($to_date)) {
+            $where .= " AND DATE(eq.created_at) BETWEEN '$from_date' AND '$to_date' ";
         }
 
-        // Assigned Users
-        if (!empty($row->assigned_user) && !in_array($row->assigned_user, $merged[$id]["assigned_users"])) {
-            $merged[$id]["assigned_users"][] = $row->assigned_user;
+        // Apply user filter
+        if (!empty($user_id)) {
+            $where .= " AND eau.id = '$user_id' ";
         }
 
-        // Vendor
-        if (!empty($row->vendor_name)) {
-            $merged[$id]["vendor_names"][] = $row->vendor_name;
-        }
+        // START SQL
+        $sql = "
+            SELECT 
+                eq.enquiry_no, eq.plant_id, eq.company_id,
+                eup.plant_name,
+                ec.company_name,
+                esq.vendor_id, esq.item_id, esq.weighted_qty, esq.weighted_unit, esq.vehicle_registration_nos,
+                euv.company_name AS vendor_name,
+                eci.item_name_ecoex AS item_name,
+                eau.id AS admin_user_id,
+                eau.name AS assigned_user,
+                eq.created_at
+            FROM ecomm_enquires eq
+            LEFT JOIN ecomm_users eup ON eq.plant_id = eup.id
+            LEFT JOIN ecoex_companies ec ON eq.company_id = ec.id
+            LEFT JOIN ecomm_sub_enquires esq ON eq.id = esq.enq_id
+            LEFT JOIN ecomm_users euv ON esq.vendor_id = euv.id
+            LEFT JOIN ecomm_company_items eci ON esq.item_id = eci.id
+            LEFT JOIN ecoex_admin_user eau ON eau.plant_ids LIKE CONCAT('%\"', eq.plant_id, '\"%')
+            $where
+        ";    
 
-        // Item
-        if (!empty($row->item_name)) {
-            $merged[$id]["item_names"][] = $row->item_name;
-        }
+        // ORDER
+        $sql .= " ORDER BY eq.enquiry_no DESC ";
 
-        // Qty + Unit
-        if (!empty($row->weighted_qty)) {
-            $merged[$id]["qty_units"][] = $row->weighted_qty . " " . $row->weighted_unit;
-        }
+        // RUN QUERY
+        $results = $this->db->query($sql)->getResult();
+        $merged = [];
 
-        // Vehicle Number (JSON)
-        $veh = json_decode($row->vehicle_registration_nos, true);
-        if (!empty($veh)) {
-            foreach ($veh as $v) {
-                if (!empty($v)) {
-                    $merged[$id]["vehicles"][] = $v;
+        // MERGE MULTIPLE SUB-ENTRIES IN SAME ENQUIRY
+        foreach ($results as $row) {
+
+            $id = $row->enquiry_no;
+
+            if (!isset($merged[$id])) {
+                $merged[$id] = [
+                    "enquiry_no" => $row->enquiry_no,
+                    "company_name" => $row->company_name,
+                    "plant_name"   => $row->plant_name,
+                    "assigned_users" => [],
+                    "vendor_names" => [],
+                    "item_names" => [],
+                    "qty_units" => [],
+                    "vehicles" => []
+                ];
+            }
+
+            // Assigned Users
+            if (!empty($row->assigned_user) && !in_array($row->assigned_user, $merged[$id]["assigned_users"])) {
+                $merged[$id]["assigned_users"][] = $row->assigned_user;
+            }
+
+            // Vendor
+            if (!empty($row->vendor_name)) {
+                $merged[$id]["vendor_names"][] = $row->vendor_name;
+            }
+
+            // Item
+            if (!empty($row->item_name)) {
+                $merged[$id]["item_names"][] = $row->item_name;
+            }
+
+            // Qty + Unit
+            if (!empty($row->weighted_qty)) {
+                $merged[$id]["qty_units"][] = $row->weighted_qty . " " . $row->weighted_unit;
+            }
+
+            // Vehicle Number (JSON)
+            $veh = json_decode($row->vehicle_registration_nos, true);
+            if (!empty($veh)) {
+                foreach ($veh as $v) {
+                    if (!empty($v)) {
+                        $merged[$id]["vehicles"][] = $v;
+                    }
                 }
             }
         }
+
+        // Convert for excel loop
+        $final = array_values($merged);
+
+        // ========================================
+        // EXCEL EXPORT
+        // ========================================
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Headers
+        $headers = [
+            "Sr No", "Enquiry No", "Company Name", "Plant Name",
+            "Assigned User", "Vehicle No", "Material", "Quantity", "Vendor"
+        ];
+
+        foreach ($headers as $i => $h) {
+            $col = Coordinate::stringFromColumnIndex($i + 1);
+            $sheet->setCellValue($col . '1', $h);
+            $sheet->getStyle($col . '1')->getFont()->setBold(true);
+        }
+
+        // Fill Rows
+        $rowExcel = 2;
+        $serial = 1;
+
+        // Columns that require wrapping (E, F, G, H, I)
+        $wrapColumns = ['E', 'F', 'G', 'H', 'I'];
+
+        foreach ($final as $d) {        
+            
+            $assigned = !empty($d["assigned_users"]) ? implode("\n", array_unique($d["assigned_users"])) : "-";
+            $vendors  = !empty($d["vendor_names"]) ? implode("\n", array_unique($d["vendor_names"])) : "-";
+            $items    = !empty($d["item_names"]) ? implode("\n", array_unique($d["item_names"])) : "-";
+            $qty      = !empty($d["qty_units"]) ? implode("\n", array_unique($d["qty_units"])) : "-";
+            $vehicles = !empty($d["vehicles"]) ? implode("\n", array_unique($d["vehicles"])) : "-";
+
+            $sheet->setCellValue("A$rowExcel", $serial);
+            $sheet->setCellValue("B$rowExcel", $d["enquiry_no"]);
+            $sheet->setCellValue("C$rowExcel", $d["company_name"]);
+            $sheet->setCellValue("D$rowExcel", $d["plant_name"]);
+            $sheet->setCellValue("E$rowExcel", $assigned);
+            $sheet->setCellValue("F$rowExcel", $vehicles);
+            $sheet->setCellValue("G$rowExcel", $items);
+            $sheet->setCellValue("H$rowExcel", $qty);
+            $sheet->setCellValue("I$rowExcel", $vendors);
+
+            // FIX 2: Apply Text Wrapping to the necessary columns
+            foreach ($wrapColumns as $col) {
+                $sheet->getStyle($col . $rowExcel)->getAlignment()->setWrapText(true);
+                // Optionally, set vertical alignment to top for better look
+                $sheet->getStyle($col . $rowExcel)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+            }
+
+            $rowExcel++;
+            $serial++;
+        }
+
+        // OUTPUT FILE
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="Enquiry_Report.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
     }
-
-    // Convert for excel loop
-    $final = array_values($merged);
-
-    // ========================================
-    // EXCEL EXPORT
-    // ========================================
-    $spreadsheet = new Spreadsheet();
-    $sheet = $spreadsheet->getActiveSheet();
-
-    // Headers
-    $headers = [
-        "Sr No", "Enquiry No", "Company Name", "Plant Name",
-        "Assigned User", "Vehicle No", "Material", "Quantity", "Vendor"
-    ];
-
-    foreach ($headers as $i => $h) {
-        $col = Coordinate::stringFromColumnIndex($i + 1);
-        $sheet->setCellValue($col . '1', $h);
-        $sheet->getStyle($col . '1')->getFont()->setBold(true);
-    }
-
-    // Fill Rows
-    $rowExcel = 2;
-    $serial = 1;
-
-    foreach ($final as $d) {
-
-        $assigned = !empty($d["assigned_users"]) ? implode(", ", $d["assigned_users"]) : "-";
-        $vendors  = !empty($d["vendor_names"]) ? implode(", ", $d["vendor_names"]) : "-";
-        $items    = !empty($d["item_names"]) ? implode(", ", $d["item_names"]) : "-";
-        $qty      = !empty($d["qty_units"]) ? implode(", ", $d["qty_units"]) : "-";
-        $vehicles = !empty($d["vehicles"]) ? implode(", ", $d["vehicles"]) : "-";
-
-        $sheet->setCellValue("A$rowExcel", $serial);
-        $sheet->setCellValue("B$rowExcel", $d["enquiry_no"]);
-        $sheet->setCellValue("C$rowExcel", $d["company_name"]);
-        $sheet->setCellValue("D$rowExcel", $d["plant_name"]);
-        $sheet->setCellValue("E$rowExcel", $assigned);
-        $sheet->setCellValue("F$rowExcel", $vehicles);
-        $sheet->setCellValue("G$rowExcel", $items);
-        $sheet->setCellValue("H$rowExcel", $qty);
-        $sheet->setCellValue("I$rowExcel", $vendors);
-
-        $rowExcel++;
-        $serial++;
-    }
-
-    // OUTPUT FILE
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment; filename="Enquiry_Report.xlsx"');
-    header('Cache-Control: max-age=0');
-
-    $writer = new Xlsx($spreadsheet);
-    $writer->save('php://output');
-    exit;
-}
 
 
 }
