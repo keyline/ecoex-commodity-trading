@@ -6960,9 +6960,9 @@ class ApiController extends BaseController
                     $fields1 = [
                         'pickup_scheduled_date'         => date_format(date_create($pickup_scheduled_date), "Y-m-d H:i:s"),
                         'pickup_schedule_edit_access'   => 0,
-                        // 'is_pickup_final'               => 1,
-                        // 'status'                        => 4.4,
-                        // 'main_status'                   => 4,
+                        'is_pickup_final'               => 1,
+                        'status'                        => 4.4,
+                        'main_status'                   => 4,
                     ];
                     $this->common_model->save_data('ecomm_sub_enquires', $fields1, $sub_enquiry_no, 'sub_enquiry_no');
 
