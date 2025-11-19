@@ -193,16 +193,18 @@ $userType           = $session->user_type;
                                                             </br>
                                                             <!-- <a href="<?= base_url('admin/certificate/create'); ?>"><h6 class="badge bg-success mt-2"><i class="fa fa-flag-checkered"></i> Generate Certificate</h6></a> -->
                                                             <?php if($row->status == 12){?>
-                                                                <form action="<?= base_url('admin/certificate/create'); ?>" method="post" class="d-inline">
-                                                                    <?= csrf_field(); ?>
-                                                                    <input type="hidden" name="company_id" value="<?= $row->company_id; ?>">
-                                                                    <input type="hidden" name="enquiry_id" value="<?= $row->id; ?>">
-                                                                    <input type="hidden" name="plant_id" value="<?= $row->plant_id; ?>">
+                                                                <?php if ($common_model->checkModuleFunctionAccess(23, 155)) { ?>
+                                                                    <form action="<?= base_url('admin/certificate/create'); ?>" method="post" class="d-inline">
+                                                                        <?= csrf_field(); ?>
+                                                                        <input type="hidden" name="company_id" value="<?= $row->company_id; ?>">
+                                                                        <input type="hidden" name="enquiry_id" value="<?= $row->id; ?>">
+                                                                        <input type="hidden" name="plant_id" value="<?= $row->plant_id; ?>">
 
-                                                                    <button type="submit" class="badge bg-success mt-2 border-0">
-                                                                        <i class="fa fa-flag-checkered"></i> Generate Certificate
-                                                                    </button>
-                                                                </form>
+                                                                        <button type="submit" class="badge bg-success mt-2 border-0">
+                                                                            <i class="fa fa-flag-checkered"></i> Generate Certificate
+                                                                        </button>
+                                                                    </form>
+                                                                <?php }?>
                                                             <?php }?>
                                                         <?php } elseif ($row->status == 13) { ?>
                                                             <h6 class="badge bg-danger mt-2"><i class="fa fa-times-circle"></i> REJECTED</h6>
