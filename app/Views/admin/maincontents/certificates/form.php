@@ -74,14 +74,14 @@
                                     value="<?= esc($enquiry['enquiry_no'] ?? $certificate['enquiry_no'] ?? '') ?>" 
                                     readonly>
                             </div>
-                            <?php if (isset($certificate)): ?>
+                            
                                 <div class="col-md-6">
-                                    <label class="form-label">Certificate Number</label>
-                                    <input type="text" class="form-control bg-light" 
-                                        value="<?= esc($certificate['certificate_number']) ?>" 
-                                        readonly>
+                                    <label class="form-label">Certificate Number (Ref. No.)</label>
+                                    <input type="text" name="certificate_number" class="form-control bg-light" 
+                                        value="<?= old('certificate_number', $certificate['certificate_number'] ?? '') ?>" 
+                                        >
                                 </div>
-                            <?php endif; ?>
+                            
                         </div>
 
                         <!-- Company Name (Changed from Client Name) -->
