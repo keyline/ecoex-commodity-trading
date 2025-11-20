@@ -142,6 +142,7 @@ class CertificateController extends BaseController
             'enquiry_id' => 'required',
             'company_id' => 'required',
             'enquiry_no' => 'required',
+            'certificate_number' => 'permit_empty|max_length[255]',
             'company_name' => 'required|max_length[255]',
             'plant_name' => 'required|max_length[255]',
             'plant_address' => 'required',
@@ -227,17 +228,17 @@ class CertificateController extends BaseController
 
         try {
             // Generate certificate number
-            $certNumber = $this->generateCertificateNumber(
+            /*$certNumber = $this->generateCertificateNumber(
                 $this->request->getPost('plant_name'),
                 $this->request->getPost('enquiry_no')
-            );
+            );*/
 
             // Insert certificate
             $certificateData = [
                 'enquiry_id' => $enquiryId,
                 'enquiry_no' => $this->request->getPost('enquiry_no'),
                 'company_id' => $this->request->getPost('company_id'),
-                'certificate_number' => $certNumber,
+                'certificate_number' => $this->request->getPost('certificate_number') ?? null,
                 'company_name' => $this->request->getPost('company_name'),
                 'plant_name' => $this->request->getPost('plant_name'),
                 'plant_address' => $this->request->getPost('plant_address'),
@@ -407,6 +408,7 @@ class CertificateController extends BaseController
 
         $validationRules = [
                     'enquiry_id' => 'required',
+                    'certificate_number' => 'permit_empty|max_length[255]',
                     'company_id' => 'required',
                     'enquiry_no' => 'required',
                     'company_name' => 'required|max_length[255]',
@@ -493,6 +495,7 @@ class CertificateController extends BaseController
             // Update main certificate data
             $updateData = [
                 'company_name' => $this->request->getPost('company_name'),
+                'certificate_number' => $this->request->getPost('certificate_number') ?? null,
                 'plant_name' => $this->request->getPost('plant_name'),
                 'plant_address' => $this->request->getPost('plant_address'),
                 'plant_state' => $this->request->getPost('plant_state'),
