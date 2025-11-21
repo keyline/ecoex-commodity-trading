@@ -1349,7 +1349,8 @@ class EnquiryRequestController extends BaseController
             $this->session->setFlashdata('success_message', 'Enquiry Not Found !!!');
             return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/' . encoded($enq_id)));
         }
-    }
+    }    
+
     public function uploadInvoiceByEcoexForVendor()
     {
 
@@ -1524,6 +1525,187 @@ class EnquiryRequestController extends BaseController
             $this->session->setFlashdata('success_message', $e->getMessage());
             return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/' . encoded($postData['enq_id'])));
         }
+    }
+
+    public function uploadPaymentByEcoex()
+    {
+
+        $enq_id                     = decoded($this->request->getPost('enq_id'));
+        $sub_enquiry_no             = decoded($this->request->getPost('sub_enquiry_no'));
+
+        $getSubEnquiry              = $this->data['model']->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no]);
+        if($getSubEnquiry){
+            /* vendor invoice */
+                $file = $this->request->getFile('tax_screenshot_file');
+                $originalName = $file->getClientName();
+                $fieldName = 'tax_screenshot_file';
+                if($file!='') {
+                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'enquiry','image');
+                    if($upload_array['status']) {
+                        $tax_screenshot_file = $upload_array['newFilename'];
+                    } else {
+                        $this->session->setFlashdata('error_message', $upload_array['message']);
+                        return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($sub_enquiry_no)));
+                    }
+                } else {
+                    $this->session->setFlashdata('error_message', 'Please Upload Payment Details !!!');
+                    return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($sub_enquiry_no)));
+                }
+            /* vendor invoice */
+            $payment_date = $this->request->getPost('payment_date');
+            $fields                     = [                
+                'payment_amount'                => $this->request->getPost('payment_amount'),
+                'payment_mode'                  => $this->request->getPost('payment_mode'),
+                'txn_screenshot'                => $tax_screenshot_file,
+                'payment_date'                  => str_replace('T', ' ', $payment_date),
+                'txn_no'                        => $this->request->getPost('tax_no'),
+                'is_approve_vendor_payment'     => 1,
+                'vendor_payment_received_date'  => date('Y-m-d H:i:s'),
+            ];
+            // pr($fields);
+            $this->common_model->save_data('ecomm_sub_enquires', $fields, $sub_enquiry_no, 'sub_enquiry_no');
+            $this->common_model->save_data('ecomm_enquires', ['status' => 9], $enq_id, 'id');
+            $vendor_id = $getSubEnquiry->vendor_id;
+        //     /* push notification sent */
+        //         $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
+        //         if($getDeviceTokens){
+        //             foreach($getDeviceTokens as $getDeviceToken){
+        //                 $fcm_token          = $getDeviceToken->fcm_token;
+        //                 $messageData = [
+        //                     'title'     => 'Invoice Uploaded By Ecoex',
+        //                     'body'      => 'Sub Enquiry Request ('.$sub_enquiry_no.') Invoice Uploaded By Ecoex',
+        //                     'badge'     => 1,
+        //                     'sound'     => 'Default',
+        //                     'data'      => [],
+        //                 ];
+        //                 $this->pushNotification($fcm_token, $messageData);
+        //                 $users[]    = $getSubEnquiry->vendor_id;
+        //                 $pushData   = [
+        //                     'source'            => 'FROM APP',
+        //                     'title'             => 'Invoice Uploaded By Ecoex',
+        //                     'description'       => 'Sub Enquiry Request ('.$sub_enquiry_no.') Invoice Uploaded By Ecoex',
+        //                     'user_type'         => 'VENDOR',
+        //                     'users'             => json_encode($users),
+        //                     'is_send'           => 1,
+        //                     'send_timestamp'    => date('Y-m-d H:i:s'),
+        //                     'status'            => 1,
+        //                 ];
+        //                 $this->common_model->save_data('notifications', $pushData, '', 'id');
+        //             }
+        //         }
+        //     /* push notification sent */
+
+        //     /* email sent */
+        //         $fields = [
+        //             'enq_id'                => $getSubEnquiry->enq_id,
+        //             'company_id'            => $getSubEnquiry->company_id,
+        //             'plant_id'              => $getSubEnquiry->plant_id,
+        //             'vendor_id'             => $vendor_id,
+        //             'sub_enquiry_no'        => $sub_enquiry_no,
+        //         ];
+        //         $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendor_id]);
+        //         $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+        //         $subject                    = $generalSetting->site_name.' :: Sub Enquiry Invoice Uploaded By Ecoex ('.$sub_enquiry_no.') ';
+        //         $message1                    = view('email-templates/enquiry-request-for-ecoex-invoice-upload-for-vendor',$fields);
+        //         $this->sendMail((($getVendor)?$getVendor->email:''), $subject, $message1);
+
+        //         /* email log save */
+        //             $postData1 = [
+        //                 'name'                  => (($getVendor)?$getVendor->company_name:''),
+        //                 'email'                 => (($getVendor)?$getVendor->email:''),
+        //                 'subject'               => $subject,
+        //                 'message'               => $message1
+        //             ];
+        //             $this->common_model->save_data('email_logs', $postData1, '', 'id');
+        //         /* email log save */
+        //     /* email sent */
+
+            $this->session->setFlashdata('success_message', 'Payment details Uploaded From Ecoex Successfully !!!');
+            return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
+        } else {
+            $this->session->setFlashdata('success_message', 'Sub Enquiry Not Found !!!');
+            return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/'.encoded($enq_id)));
+        }
+
+
+
+        // _________________________________________  Code update by shubha on :28/03/25   ______________________________________________
+
+        // Get post data and file upload from the request
+        // $postData = $this->request->getPost();
+
+        // $files    = $this->request->getFiles('vendor_invoice_file');
+
+        // Call the service method
+        // try {
+        //     $result = $this->vendorInvoiceService->uploadInvoiceByEcoexForVendor($postData, $files['vendor_invoice_file']);
+        //     if ($result['status']) {
+        //         $getSubEnquiry = $result['data'];
+        //         $sub_enquiry_no = $result['sub_enquiry_no'];
+        //         $vendor_id = $getSubEnquiry['vendor_id'];
+        //         $enq_id = $result['data']['enq_id'];
+        //         /* push notification sent */
+        //         $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
+        //         if ($getDeviceTokens) {
+        //             foreach ($getDeviceTokens as $getDeviceToken) {
+        //                 $fcm_token          = $getDeviceToken->fcm_token;
+        //                 $messageData = [
+        //                     'title'     => 'Invoice Uploaded By Ecoex',
+        //                     'body'      => 'Sub Enquiry Request (' . $sub_enquiry_no . ') Invoice Uploaded By Ecoex',
+        //                     'badge'     => 1,
+        //                     'sound'     => 'Default',
+        //                     'data'      => [],
+        //                 ];
+        //                 $this->pushNotification($fcm_token, $messageData);
+        //                 $users[]    = $vendor_id;
+        //                 $pushData   = [
+        //                     'source'            => 'FROM APP',
+        //                     'title'             => 'Invoice Uploaded By Ecoex',
+        //                     'description'       => 'Sub Enquiry Request (' . $sub_enquiry_no . ') Invoice Uploaded By Ecoex',
+        //                     'user_type'         => 'VENDOR',
+        //                     'users'             => json_encode($users),
+        //                     'is_send'           => 1,
+        //                     'send_timestamp'    => date('Y-m-d H:i:s'),
+        //                     'status'            => 1,
+        //                 ];
+        //                 $this->common_model->save_data('notifications', $pushData, '', 'id');
+        //             }
+        //         }
+        //         /* push notification sent */
+
+        //         /* email sent */
+        //         $fields = [
+        //             'enq_id'                => $getSubEnquiry['enq_id'],
+        //             'company_id'            => $getSubEnquiry['company_id'],
+        //             'plant_id'              => $getSubEnquiry['plant_id'],
+        //             'vendor_id'             => $vendor_id,
+        //             'sub_enquiry_no'        => $sub_enquiry_no,
+        //         ];
+        //         $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendor_id]);
+        //         $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+        //         $subject                    = $generalSetting->site_name . ' :: Sub Enquiry Invoice Uploaded By Ecoex (' . $sub_enquiry_no . ') ';
+        //         $message1                    = view('email-templates/enquiry-request-for-ecoex-invoice-upload-for-vendor', $fields);
+        //         $this->sendMail((($getVendor) ? $getVendor->email : ''), $subject, $message1);
+
+        //         /* email log save */
+        //         $postData1 = [
+        //             'name'                  => (($getVendor) ? $getVendor->company_name : ''),
+        //             'email'                 => (($getVendor) ? $getVendor->email : ''),
+        //             'subject'               => $subject,
+        //             'message'               => $message1
+        //         ];
+        //         $this->common_model->save_data('email_logs', $postData1, '', 'id');
+        //         /* email log save */
+        //         /* email sent */
+
+        //         $this->session->setFlashdata('success_message', 'Invoice Uploaded From Ecoex Successfully !!!');
+        //         return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/' . encoded($enq_id)));
+        //     }
+        // } catch (\Exception $e) {
+
+        //     $this->session->setFlashdata('success_message', $e->getMessage());
+        //     return redirect()->to(base_url('admin/enquiry-requests/enquiry-details/' . encoded($postData['enq_id'])));
+        // }
     }
     public function vendorPaymentApprove($sub_enquiry_no)
     {

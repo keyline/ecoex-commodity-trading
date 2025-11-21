@@ -1424,7 +1424,9 @@ $request_edit_fields = [
                                                                 <div class="row mt-3">
                                                                     <div class="col-md-6 text-center">
                                                                         <?php if ($subenquiry->payment_amount <= 0) { ?>
-                                                                            <h5 class="text-warning fw-bold">Payment Info Still Not Uploaded By Vendor</h5>
+                                                                            <!-- @deblina -->
+                                                                             <?php include('./app/Views/admin/maincontents/enquiry-request/Invoicevendortoadmin.php'); ?>
+                                                                            <!-- <h5 class="text-warning fw-bold">Payment Info Still Not Uploaded By Vendor</h5> -->
                                                                         <?php } else { ?>
                                                                             <h5 class="text-success fw-bold">Payment Info Uploaded By Vendor Succesfully</h5>
                                                                             <h5>Payment Amount : <?= $subenquiry->payment_amount ?></h5>
