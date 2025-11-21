@@ -480,4 +480,98 @@ class VendorController extends BaseController
         }
         $this->response_to_json($apiStatus, $apiMessage, $apiResponse, $apiExtraField, $apiExtraData);
     }
+
+    public function manageItem($id)
+    {
+        $id                         = decoded($id);
+        $vendor                    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $id], 'company_name');
+        $vendor_name               = (($vendor) ? $vendor->company_name : '');
+        $data['moduleDetail']       = $this->data;
+        $data['action']             = 'Manage Items Of';
+        $title                      = $data['action'] . ' ' . $vendor_name;
+        $page_name                  = 'member/manage-item';
+        $data['vendor_id']         = $id;
+        $data['vendor_name']       = $vendor_name;
+
+        $sql2 = "
+                SELECT 
+                    ecomm_company_items.id,
+                    ecomm_company_items.company_id, 
+                    ecomm_company_items.item_name_ecoex, 
+                    ecomm_company_items.unit, 
+                    ecoex_companies.company_name, 
+                    ecomm_units.name as unit_name
+                FROM ecomm_company_items
+                INNER JOIN ecoex_companies ON ecomm_company_items.company_id = ecoex_companies.id 
+                INNER JOIN ecomm_units ON ecomm_company_items.unit = ecomm_units.id
+                ORDER BY ecomm_company_items.created_at DESC
+            ";
+        // Run query
+        $query   = $this->db->query($sql2);
+        $results = $query->getResult();
+        $data['allItems']          = $results;
+        // pr($results);
+
+        /* ---------------------------------------------------
+        LOAD EXISTING PRICES FOR THIS VENDOR
+        TO PREFILL TEXTBOX + CHANGE BUTTON TO UPDATE
+        ---------------------------------------------------- */
+        $priceRows = $this->db->table('vendor_items')
+            ->where('vendor_id', $id)
+            ->get()
+            ->getResultArray();
+
+        $priceMap = [];
+        foreach ($priceRows as $row) {
+            $priceMap[$row['item_id']] = $row['item_price']; // item_id → price
+        }
+
+        $data['priceMap'] = $priceMap;
+
+        if ($this->request->getMethod() == 'post') {
+
+            $vendor_id  = $this->request->getPost('vendor_id');
+            $company_id = $this->request->getPost('company_id');
+            $item_id    = $this->request->getPost('item_id');
+            $unit_id    = $this->request->getPost('unit_id');
+            $item_price = $this->request->getPost('item_price');
+
+            // Check if record exists
+            $exists = $this->db->table('vendor_items')
+                ->where('vendor_id', $vendor_id)
+                ->where('company_id', $company_id)
+                ->where('item_id', $item_id)
+                ->countAllResults();
+
+            if ($exists > 0) {
+
+                // Update only price
+                $fields = [
+                    'item_price' => $item_price
+                ];
+
+                $this->db->table('vendor_items')
+                    ->where('vendor_id', $vendor_id)
+                    ->where('company_id', $company_id)
+                    ->where('item_id', $item_id)
+                    ->update($fields);
+
+            } else {
+
+                // Insert new item
+                $fields = [
+                    'vendor_id'  => $vendor_id,
+                    'company_id' => $company_id,
+                    'item_id'    => $item_id,
+                    'item_price' => $item_price,
+                    'item_unit'  => $unit_id,
+                ];
+
+                $this->db->table('vendor_items')->insert($fields);
+            }
+
+            return redirect()->back()->with('success_message', 'Item price saved successfully.');
+        }                                
+        echo $this->layout_after_login($title, $page_name, $data);
+    }
 }
