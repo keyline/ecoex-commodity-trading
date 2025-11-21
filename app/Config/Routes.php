@@ -175,6 +175,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     $routes->match(['get', 'post'], "vendors/add", "VendorController::add");
     $routes->match(['get', 'post'], "vendors/edit/(:any)", "VendorController::edit/$1");
     $routes->match(['get', 'post'], "vendors/view/(:any)", "VendorController::view/$1");
+    $routes->match(['get', 'post'], "vendors/manage-item/(:any)", "VendorController::manageItem/$1");
     $routes->match(['get', 'post'], "vendors/delete/(:any)", "VendorController::confirm_delete/$1");
     $routes->match(['get', 'post'], "vendors/change-status/(:any)", "VendorController::change_status/$1");
     $routes->match(['get', 'post'], "vendors/check-email", "VendorController::check_email");
