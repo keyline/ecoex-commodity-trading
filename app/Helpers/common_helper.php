@@ -573,6 +573,14 @@ if (!function_exists('getQtyWithUnitGroupedItems')) {
             return [];
         }
     }
+    if (!function_exists('safeFilename')) {
 
+        function safeFilename($value)
+        {
+            // Replace everything except A-Z, a-z, 0-9, -, _
+            return preg_replace('/[^A-Za-z0-9-_]/', '_', $value);
+        }
+
+    }
 
 }

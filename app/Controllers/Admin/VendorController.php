@@ -181,6 +181,7 @@ class VendorController extends BaseController
                 'status'                                    => 2,
                 'created_by'                                => $this->session->user_id,
                 'updated_by'                                => $this->session->user_id,
+                'cto'                                       => $this->request->getPost('cto'),
             );
             $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
             $this->session->setFlashdata('success_message', $this->data['title'] . ' inserted successfully');
@@ -285,6 +286,7 @@ class VendorController extends BaseController
                     'status'                                    => 2,
                     'created_by'                                => $this->session->user_id,
                     'updated_by'                                => $this->session->user_id,
+                    'cto'                                       => $this->request->getPost('cto')
                 );
             } else {
                 $postData   = array(
@@ -309,6 +311,7 @@ class VendorController extends BaseController
                     'status'                                    => 2,
                     'created_by'                                => $this->session->user_id,
                     'updated_by'                                => $this->session->user_id,
+                    'cto'                                       => $this->request->getPost('cto')
                 );
             }
             // pr($postData);
@@ -571,7 +574,7 @@ class VendorController extends BaseController
             }
 
             return redirect()->back()->with('success_message', 'Item price saved successfully.');
-        }                                
+        }
         echo $this->layout_after_login($title, $page_name, $data);
     }
 }

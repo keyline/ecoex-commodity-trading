@@ -174,6 +174,7 @@
                                                 <th width="50">#</th>
                                                 <th width="100">Vendor ID</th>
                                                 <th>Company Name</th>
+                                                <th>CTO</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -188,6 +189,7 @@
                                                         <?php endif; ?>
                                                     </td>
                                                     <td><?= esc($vendor['company_name']) ?></td>
+                                                    <td><?= esc($vendor['cto'] ?? 'N/A') ?></td>
                                                 </tr>
                                             <?php endforeach; ?>
                                         </tbody>
