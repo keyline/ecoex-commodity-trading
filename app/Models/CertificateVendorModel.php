@@ -14,7 +14,7 @@ class CertificateVendorModel extends Model
     protected $table = 'ecomm_certificate_vendors';
     protected $primaryKey = 'id';
     protected $allowedFields = [
-        'certificate_id', 'vendor_id', 'company_name', 'sequence'
+        'certificate_id', 'vendor_id', 'company_name', 'sequence', 'cto'
     ];
 
     protected $validationRules = [

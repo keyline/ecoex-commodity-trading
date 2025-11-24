@@ -64,6 +64,7 @@ $controller_route   = $moduleDetail['controller_route'];
                 $contact_person_name                  = $row->contact_person_name;
                 $contact_person_designation           = $row->contact_person_designation;
                 $contact_person_document              = $row->contact_person_document;
+                $cto                                  = $row->cto;
             } else {
                 $gst_no           = '';
                 $gst_certificate  = '';
@@ -84,8 +85,9 @@ $controller_route   = $moduleDetail['controller_route'];
                 $contact_person_name              = '';
                 $contact_person_designation       = '';
                 $contact_person_document          = '';
+                $cto                              = '';
             }
-            ?>
+?>
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-body pt-3">
@@ -187,7 +189,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                             foreach ($memberTypes as $memberType) { ?>
                                                 <option value="<?= $memberType->id ?>" <?= (($memberType->id == $member_type) ? 'selected' : '') ?>><?= $memberType->name ?></option>
                                         <?php }
-                                        } ?>
+                                            } ?>
                                     </select>
                                 </div>
                             </div>
@@ -201,9 +203,9 @@ $controller_route   = $moduleDetail['controller_route'];
                                         <!-- <option value="" selected disabled>Select</option> -->
                                         <?php if ($recycler_category) {
                                             foreach ($recycler_category as $row) { ?>
-                                                <option value="<?= $row->id ?>" <?=((in_array($row->id, $selected_recyclercategory))?'selected':'')?>><?= $row->category_name ?></option>
+                                                <option value="<?= $row->id ?>" <?=((in_array($row->id, $selected_recyclercategory)) ? 'selected' : '')?>><?= $row->category_name ?></option>
                                         <?php }
-                                        } ?>
+                                            } ?>
                                     </select>
                                 </div>
                             </div>
@@ -220,6 +222,12 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <label for="contact_person_designation" class="col-md-2 col-lg-2 col-form-label">Proprietor Designation <span class="text-danger">*</span></label>
                                 <div class="col-md-10 col-lg-10">
                                     <input type="text" name="contact_person_designation" class="form-control" id="contact_person_designation" value="<?= $contact_person_designation ?>" required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="cto" class="col-md-2 col-lg-2 col-form-label">CTO</label>
+                                <div class="col-md-10 col-lg-10">
+                                    <input type="text" name="cto" class="form-control" id="cto" value="<?= $cto ?>">
                                 </div>
                             </div>
                             <div class="row mb-3">

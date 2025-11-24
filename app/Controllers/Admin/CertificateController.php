@@ -515,8 +515,23 @@ class CertificateController extends BaseController
             // Generate new PDF on the fly
             $pdfFilename = $this->generatePDF($id);
 
+            $wordFileName = $this->saveWord($id);
+
+
+
             // Update certificate with new PDF path
-            $this->certificateModel->update($id, ['pdf_path' => $pdfFilename]);
+            $this->certificateModel->update($id, ['pdf_path' => $pdfFilename, 'word_path' => $wordFileName]);
+
+
+            $this->companyCertificateModel->where('enquiry_id', $certificate['enquiry_id'])->set([
+                'certificate_word_file' => $wordFileName,
+                'word_filename'         => pathinfo($wordFileName, PATHINFO_FILENAME),
+                'certificate_file'      => $pdfFilename,
+                'filename'              => pathinfo($pdfFilename, PATHINFO_FILENAME),
+            ])->update();
+
+
+
 
             $db->transComplete();
 
@@ -608,7 +623,8 @@ class CertificateController extends BaseController
                 'certificate_id' => $certificateId,
                 'vendor_id' => !empty($vendor['vendor_id']) ? $vendor['vendor_id'] : null,
                 'company_name' => trim($vendor['company_name']),
-                'sequence' => $index + 1
+                'sequence' => $index + 1,
+                'cto' => !empty($vendor['cto']) ? trim($vendor['cto']) : null,
             ]);
 
             $validVendorsCount++;
@@ -678,7 +694,8 @@ class CertificateController extends BaseController
 
             // Generate filename
             //$filename = 'certificate_' . $certificate['certificate_number'] . '_' . time() . '.pdf';
-            $filename = $certificate['certificate_number'] . '.pdf';
+            $filename = safeFilename($certificate['certificate_number'] ?: $certificate['enquiry_no']) . '.pdf';
+
             $savePath = FCPATH . 'public/uploads/certificate/' . $filename;
 
             // Ensure directory exists
@@ -1083,9 +1100,10 @@ class CertificateController extends BaseController
             if (!empty($vendor['company_name'])) {
                 $this->vendorModel->insert([
                     'certificate_id' => $certificateId,
-                    'vendor_id' => !empty($vendor['vendor_id']) ? $vendor['vendor_id'] : null,
-                    'company_name' => trim($vendor['company_name']),
-                    'sequence' => $index + 1
+                    'vendor_id'     => !empty($vendor['vendor_id']) ? $vendor['vendor_id'] : null,
+                    'company_name'  => trim($vendor['company_name']),
+                    'sequence'      => $index + 1,
+                    'cto'           => trim($vendor['cto']),
                 ]);
                 $validVendorsCount++;
             }
@@ -1129,7 +1147,7 @@ class CertificateController extends BaseController
             }
 
             // Generate filename
-            $fileName = $certificate['certificate_number'] . '_' . time() . '.docx';
+            $fileName = safeFilename($certificate['certificate_number'] ?: $certificate['enquiry_no']) . '_' . time() . '.docx';
             //$fileName = 'certificate' . '_' . time() . '.docx';
             $savePath = $uploadPath . $fileName;
 

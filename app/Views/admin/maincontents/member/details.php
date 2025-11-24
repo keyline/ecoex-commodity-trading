@@ -19,13 +19,13 @@ $controller_route   = $moduleDetail['controller_route'];
     <div class="container-fluid">
         <div class="row">
             <div class="col-xl-12">
-                <?php if(session('success_message')){?>
+                <?php if (session('success_message')) {?>
                     <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show hide-message" role="alert">
                         <?=session('success_message')?>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 <?php }?>
-                <?php if(session('error_message')){?>
+                <?php if (session('error_message')) {?>
                     <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show hide-message" role="alert">
                         <?=session('error_message')?>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -75,11 +75,11 @@ $controller_route   = $moduleDetail['controller_route'];
                                 </tr>
                                 <tr>
                                     <th>Email Verify</th>
-                                    <td><span class="badge <?=(($row->email_verify)?'bg-success':'bg-danger')?>"><?=(($row->email_verify)?'YES':'NO')?></span></td>
+                                    <td><span class="badge <?=(($row->email_verify) ? 'bg-success' : 'bg-danger')?>"><?=(($row->email_verify) ? 'YES' : 'NO')?></span></td>
                                 </tr>
                                 <tr>
                                     <th>Email Verify At</th>
-                                    <td><?=(($row->email_verified_at != '')?date_format(date_create($row->email_verified_at), "M d Y h:i A"):'')?></td>
+                                    <td><?=(($row->email_verified_at != '') ? date_format(date_create($row->email_verified_at), "M d Y h:i A") : '')?></td>
                                 </tr>
                                 <tr>
                                     <th>Phone</th>
@@ -87,23 +87,23 @@ $controller_route   = $moduleDetail['controller_route'];
                                 </tr>
                                 <tr>
                                     <th>Phone Verify</th>
-                                    <td><span class="badge <?=(($row->phone_verify)?'bg-success':'bg-danger')?>"><?=(($row->phone_verify)?'YES':'NO')?></span></td>
+                                    <td><span class="badge <?=(($row->phone_verify) ? 'bg-success' : 'bg-danger')?>"><?=(($row->phone_verify) ? 'YES' : 'NO')?></span></td>
                                 </tr>
                                 <tr>
                                     <th>Phone Verify At</th>
-                                    <td><?=(($row->phone_verified_at != '')?date_format(date_create($row->phone_verified_at), "M d Y h:i A"):'')?></td>
+                                    <td><?=(($row->phone_verified_at != '') ? date_format(date_create($row->phone_verified_at), "M d Y h:i A") : '')?></td>
                                 </tr>
                                 <tr>
                                     <th>Profile Image</th>
-                                    <td><img src="<?=(($row->profile_image != '')?getenv('app.uploadsURL').'user/'.$row->profile_image:getenv('app.NO_IMAGE'))?>" class="img-thumbnail" style="width: 250px; height: auto;"></td>
+                                    <td><img src="<?=(($row->profile_image != '') ? getenv('app.uploadsURL').'user/'.$row->profile_image : getenv('app.NO_IMAGE'))?>" class="img-thumbnail" style="width: 250px; height: auto;"></td>
                                 </tr>
                                 <tr>
                                     <th>Member Type</th>
                                     <td>
-                                        <?php 
+                                        <?php
                                         $memberType = $common_model->find_data('ecomm_member_types', 'row', ['id' => $row->member_type], 'id,name');
-                                        echo (($memberType)?$memberType->name:'');
-                                        ?>
+echo(($memberType) ? $memberType->name : '');
+?>
                                     </td>
                                 </tr>
         
@@ -111,7 +111,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <tr>
                                     <th>GST Certificate</th>
                                     <td>
-                                        <?php if($row->gst_certificate != ''){?>
+                                        <?php if ($row->gst_certificate != '') {?>
                                             <a href="<?=getenv('app.uploadsURL').'user/'.$row->gst_certificate?>" class="badge bg-primary" target="_blank">View Document</a>
                                         <?php }?>
                                     </td>
@@ -125,9 +125,13 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <td><?=$row->contact_person_designation?></td>
                                 </tr>
                                 <tr>
+                                        <th>CTO</th>
+                                        <td><?= esc($row->cto) ?></td>
+                                </tr>
+                                <tr>
                                     <th>Proprietor PAN Card</th>
                                     <td>
-                                        <?php if($row->contact_person_document != ''){?>
+                                        <?php if ($row->contact_person_document != '') {?>
                                             <a href="<?=getenv('app.uploadsURL').'user/'.$row->contact_person_document?>" class="badge bg-primary" target="_blank">View Document</a>
                                         <?php }?>
                                     </td>
@@ -139,7 +143,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                 </tr>
                                 <tr>
                                     <th>Updated At</th>
-                                    <td><?=(($row->updated_at != '')?date_format(date_create($row->updated_at), "M d Y h:i A"):'')?></td>
+                                    <td><?=(($row->updated_at != '') ? date_format(date_create($row->updated_at), "M d Y h:i A") : '')?></td>
                                 </tr>
                             </table>
                         </div>

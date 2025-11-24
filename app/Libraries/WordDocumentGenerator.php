@@ -242,13 +242,17 @@ class WordDocumentGenerator
                 return $v['company_name'] ?? '';
             }, $vendors);
 
+            $ctoNames = array_map(function ($v) {
+                return ucwords(strtolower($v['cto'] ?? ''));
+            }, $vendors);
+
             if (count($vendorNames) === 1) {
                 $textRun->addText($vendorNames[0], ['size' => 11]);
             } elseif (count($vendorNames) === 2) {
                 $textRun->addText($vendorNames[0] . ' and ' . $vendorNames[1], ['size' => 11]);
             } else {
                 $lastVendor = array_pop($vendorNames);
-                $textRun->addText(implode(', ', $vendorNames) . ', and ' . $lastVendor, ['size' => 11]);
+                $textRun->addText(implode(', ', $vendorNames) . ', and ' . $lastVendor, ['size' => 11, 'bold' => true]);
             }
         } else {
             $textRun->addText('authorized vendors', ['size' => 11]);
@@ -258,8 +262,18 @@ class WordDocumentGenerator
 
         // Add recycler name
         if (!empty($vendors)) {
-            $recycler = end($vendors);
-            $textRun->addText($recycler['company_name'], ['size' => 11]);
+            //$recycler = end($vendors);
+
+            if (count($ctoNames) === 1) {
+                $textRun->addText($ctoNames[0], ['size' => 11]);
+            } elseif (count($ctoNames) === 2) {
+                $textRun->addText($ctoNames[0] . ' and ' . $ctoNames[1], ['size' => 11]);
+            } else {
+                $lastCTO = array_pop($ctoNames);
+                $textRun->addText(implode(', ', $ctoNames) . ', and ' . $lastCTO, ['size' => 11, 'bold' => true]);
+            }
+
+            //$textRun->addText($recycler['company_name'], ['size' => 11]);
         } else {
             $textRun->addText('authorized recyclers', ['size' => 11]);
         }

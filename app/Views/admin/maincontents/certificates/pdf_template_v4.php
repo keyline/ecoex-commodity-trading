@@ -245,9 +245,36 @@ from <strong><?= esc($company_name) ?> on <?= date('d-m-Y', strtotime($collectio
 
 <!-- FOOTER TEXT -->
 <div class="footer-text">
+    <?php if (isset($vendors) && is_array($vendors) && !empty($vendors)): ?>
+            <?php
+            $vendorNames = array_map(function ($v) {
+                return esc($v['company_name']);
+            }, $vendors);
+
+        $ctoNames = array_map(function ($v) {
+            return ucwords(strtolower(esc($v['cto'])));
+        }, $vendors);
+
+        if (count($vendorNames) === 1) {
+            $vendorName = $vendorNames[0];
+            $recyclerName = $ctoNames[0];
+        } elseif (count($vendorNames) === 2) {
+            $vendorName = $vendorNames[0] . ' and ' . $vendorNames[1];
+            $recyclerName = $ctoNames[0] . ' and ' . $ctoNames[1];
+        } else {
+            $lastVendor = array_pop($vendorNames);
+            $vendorName = implode(', ', $vendorNames) . ', and ' . $lastVendor;
+            $lastCTO = array_pop($ctoNames);
+            $recyclerName = implode(', ', $ctoNames) . ', and ' . $lastCTO;
+        }
+?>
+
+    <?php else: ?>
+            authorized vendors
+    <?php endif;?>
 Taken scrap materials including trademarked materials from <strong><?= esc($company_name) ?></strong>
-plant are being picked up by <strong><?= esc($vendors[0]['company_name']) ?></strong> on behalf of Karma Ecotech Limited and sent to 
-<strong><?= esc($vendors[0]['company_name']) ?></strong> (Recycler Listed in <?= esc($plant_state) ?> Pollution Control Board) 
+plant are being picked up by <strong><?= esc($vendorName) ?></strong> on behalf of Karma Ecotech Limited and sent to 
+<strong><?= esc($recyclerName) ?></strong> (Recycler Listed in <?= esc($plant_state) ?> Pollution Control Board) 
 for recycling purposes. Karma Ecotech Limited (Ecoex) will channelize these materials according to industry standards.
 </div>
 

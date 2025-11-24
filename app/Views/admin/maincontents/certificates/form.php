@@ -221,7 +221,7 @@
                                                     value="<?= esc($vendor['vendor_id'] ?? '') ?>" 
                                                     placeholder="Optional">
                                             </div> -->
-                                            <div class="col-md-6">
+                                            <div class="col-md-5">
                                                 <label class="form-label">Vendor Company Name *</label>
                                                 <input type="text" 
                                                     class="form-control" 
@@ -229,6 +229,10 @@
                                                     value="<?= esc($vendor['company_name'] ?? '') ?>" 
                                                     placeholder="e.g., Ravi Traders"
                                                     required>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">CTO</label>
+                                                <input type="text" name="vendors[<?= $index ?>][cto]" id="vendor_cto_<?= $index ?>" class="form-control" value="<?= esc($vendor['cto'] ?? '') ?>" required>
                                             </div>
                                             <div class="col-md-3 d-flex align-items-end">
                                                 <button type="button" class="btn btn-danger btn-sm remove-vendor w-100">
@@ -340,14 +344,14 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="vendor-row card mb-3" data-index="${vendorIndex}">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-3">
-                            <label class="form-label">Vendor ID</label>
-                            <input type="text" 
-                                   class="form-control" 
-                                   name="vendors[${vendorIndex}][vendor_id]" 
-                                   placeholder="Optional">
-                        </div>
-                        <div class="col-md-6">
+                            <div class="col-md-2">
+                                <label class="form-label">Vendor ID</label>
+                                <input type="text" 
+                                    class="form-control" 
+                                    name="vendors[${vendorIndex}][vendor_id]" 
+                                    placeholder="Optional">
+                            </div>
+                        <div class="col-md-4">
                             <label class="form-label">Vendor Company Name *</label>
                             <input type="text" 
                                    class="form-control" 
@@ -355,7 +359,15 @@ document.addEventListener('DOMContentLoaded', function() {
                                    placeholder="e.g., Ravi Traders"
                                    required>
                         </div>
-                        <div class="col-md-3 d-flex align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label">CTO</label>
+                            <input type="text" name="vendors[${vendorIndex}][cto]" 
+                            id="vendor_cto_${vendorIndex}" 
+                            class="form-control" 
+                            required>
+
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
                             <button type="button" class="btn btn-danger btn-sm remove-vendor w-100">
                                 <i class="fas fa-trash"></i> Remove
                             </button>
