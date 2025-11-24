@@ -78,7 +78,7 @@ $controller_route   = $moduleDetail['controller_route'];
                             <div class="row mb-3">
                                 <label for="phone" class="col-md-2 col-lg-2 col-form-label"><?= $title ?> Phone No.</label>
                                 <div class="col-md-10 col-lg-10">
-                                    <input type="text" name="phone" class="form-control" id="phone" value="<?= $phone ?>" required>
+                                    <input type="text" name="phone" class="form-control" id="phone" value="<?= $phone ?>" minlength="10" maxlength="10" required>
                                     <?php if (isset($validation) && $validation->hasError('phone')): ?>
                                         <span class="text-danger">
                                             <?= $validation->getError('phone') ?>
