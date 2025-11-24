@@ -67,26 +67,26 @@
             </tr>
         </thead>
         <tbody>
-                            <?php 
-                            $sr = 1;
-                            foreach ($response['details_data'] as $data): 
-                            ?>
-                            <tr>
-                                <td><?= $sr++; ?></td>
+            <?php 
+            $sr = 1;
+            foreach ($response['details_data'] as $data): 
+            ?>
+            <tr>
+                <td><?= $sr++; ?></td>
 
-                                <td><?= esc($data['enquiry_no']); ?></td>
-                                <td><?= esc($data['company_names']); ?></td>
-                                <td><?= esc($data['plant_names']); ?></td>
+                <td><?= esc($data['enquiry_no']); ?></td>
+                <td><?= esc($data['company_names']); ?></td>
+                <td><?= esc($data['plant_names']); ?></td>
 
-                                <!-- These fields are already merged with <br> in controller -->
-                                <td><?= $data['assigned_users'] ?: '-'; ?></td>
-                                <td><?= $data['vehicle_registration_nos'] ?: '-'; ?></td>
-                                <td><?= $data['item_names'] ?: '-'; ?></td>
-                                <td><?= $data['weighted_qtys'] ?: '-'; ?></td>
-                                <td><?= $data['vendor_names'] ?: '-'; ?></td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
+                <!-- These fields are already merged with <br> in controller -->
+                <td><?= $data['assigned_users'] ?: '-'; ?></td>
+                <td><?= $data['vehicle_registration_nos'] ?: '-'; ?></td>
+                <td><?= $data['item_names'] ?: '-'; ?></td>
+                <td><?= $data['weighted_qtys'] ?: '-'; ?></td>
+                <td><?= $data['vendor_names'] ?: '-'; ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
     </table>
 
 </body>
