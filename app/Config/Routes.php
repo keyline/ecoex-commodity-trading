@@ -180,6 +180,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     $routes->match(['get', 'post'], "vendors/change-status/(:any)", "VendorController::change_status/$1");
     $routes->match(['get', 'post'], "vendors/check-email", "VendorController::check_email");
     $routes->match(['get', 'post'], "vendors/check-phone", "VendorController::check_phone");
+    $routes->match(['get', 'post'], "vendors/change-item-status/(:any)", "VendorController::change_item_status/$1");
     // vendors
     // delete account requests
     $routes->match(['get'], "delete-account-request/list", "DeleteAccountRequestController::list");

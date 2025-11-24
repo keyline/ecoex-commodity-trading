@@ -47,6 +47,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                         <th>Type</th>
                                         <th>GST No</th>
                                         <th>Company Name</th>
+                                        <th>Proprietor Name</th>
                                         <th>Vendor Address</th>
                                         <th>Location</th>
                                         <th>Email</th>
@@ -82,6 +83,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 </td>
                                                 <td><?= $row->gst_no ?></td>
                                                 <td><?= $row->company_name ?></td>
+                                                <td><?= $row->contact_person_name ?></td>
                                                 <td><?= wordwrap($row->full_address, 25, "<br>\n") ?></td>
                                                 <td><?= $row->location ?></td>
                                                 <td><?= $row->email ?></td>
