@@ -48,6 +48,7 @@ class VendorController extends BaseController
 
             $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
 
+
         } elseif ($userType == 'U') {
             $conditions                 = ['status!=' => 3, 'type' => 'VENDOR', ]; //'gst_no!=' => ''
 
@@ -81,12 +82,6 @@ class VendorController extends BaseController
             $data['rows']               = $this->data['model']->find_data($this->data['table_name'], 'array', $conditions, '', '', '', $order_by);
 
         }
-
-
-
-
-
-
         echo $this->layout_after_login($title, $page_name, $data);
     }
     public function add()
@@ -499,6 +494,7 @@ class VendorController extends BaseController
                     ecomm_company_items.company_id, 
                     ecomm_company_items.item_name_ecoex, 
                     ecomm_company_items.unit, 
+                    ecomm_company_items.status, 
                     ecoex_companies.company_name, 
                     ecomm_units.name as unit_name
                 FROM ecomm_company_items
@@ -527,6 +523,8 @@ class VendorController extends BaseController
         }
 
         $data['priceMap'] = $priceMap;
+
+        // pr($priceMap);
 
         if ($this->request->getMethod() == 'post') {
 
@@ -573,5 +571,25 @@ class VendorController extends BaseController
             return redirect()->back()->with('success_message', 'Item price saved successfully.');
         }                                
         echo $this->layout_after_login($title, $page_name, $data);
+    }   
+
+    public function change_item_status($id,$vendor_id)
+    {
+        $id                         = decoded($id);
+        $vendor_id                  = decoded($vendor_id);
+        $data['row']                = $this->data['model']->find_data('ecomm_company_items', 'row', ['id' => $id]);
+        if ($data['row']->status) {
+            $status  = 0;
+            $msg        = 'Deactivated';
+        } else {
+            $status  = 1;
+            $msg        = 'Activated';
+        }
+        $postData = array(
+            'status' => $status
+        );
+        $updateData = $this->common_model->save_data('ecomm_company_items', $postData, $id, 'id');
+        $this->session->setFlashdata('success_message', $this->data['title'] . ' ' . $msg . ' successfully');
+        return redirect()->to('/admin/' . $this->data['controller_route'] . '/manage-item/' . encoded($vendor_id));
     }
 }
