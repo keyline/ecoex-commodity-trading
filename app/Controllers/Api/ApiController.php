@@ -7578,7 +7578,7 @@ class ApiController extends BaseController
         // SUCCESS RESPONSE
         // --------------------------------------
         http_response_code(200);
-        return $this->response_to_json(TRUE, 'Payment Info Uploaded Successfully !!!', []);
+        return $this->response_to_json(TRUE, 'Payment Info & Vehicle Despatch Uploaded Successfully !!!', []);
     }
     public function vendorProcessRequestVehicleDespatch()
     {
