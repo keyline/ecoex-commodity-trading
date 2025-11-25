@@ -509,7 +509,7 @@ class VendorController extends BaseController
         $query   = $this->db->query($sql2);
         $results = $query->getResult();
         $data['allItems']          = $results;
-        // pr($results);
+        pr($results);
 
         /* ---------------------------------------------------
         LOAD EXISTING PRICES FOR THIS VENDOR
