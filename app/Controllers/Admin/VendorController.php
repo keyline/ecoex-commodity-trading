@@ -483,7 +483,7 @@ class VendorController extends BaseController
     {
         $id                         = decoded($id);
         $vendor                    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $id], 'company_name');
-        $vendor_name               = (($vendor) ? $vendor->company_name : '');
+        $vendor_name               = (($vendor) ? $vendor->company_name : $vendor->contact_person_name);
         $data['moduleDetail']       = $this->data;
         $data['action']             = 'Manage Items Of';
         $title                      = $data['action'] . ' ' . $vendor_name;
