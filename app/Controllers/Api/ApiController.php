@@ -5800,6 +5800,7 @@ class ApiController extends BaseController
                                 $getUnit               = $this->common_model->find_data('ecomm_units', 'row', ['id' => $enquiryProduct->unit], 'name');
 
                                 $getVendorQuotation = $this->common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => $enq_id, 'item_id' => $product_id, 'vendor_id' => $uId], 'quote_price,qty');
+                                $getVendorPrice = $this->common_model->find_data('vendor_items', 'row', ['item_id' => $product_id, 'vendor_id' => $uId], 'item_price');
 
                                 $requestList[] = [
                                     'enq_id'            => $enq_id,
@@ -5811,7 +5812,7 @@ class ApiController extends BaseController
                                     'productErr'        => '',
                                     'new_product'       => (($enquiryProduct->new_product) ? true : false),
                                     'qty'               => (($getVendorQuotation) ? $getVendorQuotation->qty : ''),
-                                    'quote_price'       => (($getVendorQuotation) ? $getVendorQuotation->quote_price : ''),
+                                    'quote_price'       => (($getVendorQuotation) ? $getVendorQuotation->quote_price : ($getVendorPrice ? $getVendorPrice->item_price : '')),
                                     'unit'              => $enquiryProduct->unit,
                                     'unit_name'         => (($getUnit) ? $getUnit->name : ''),
                                 ];
