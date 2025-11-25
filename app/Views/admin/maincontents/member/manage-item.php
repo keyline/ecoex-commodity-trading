@@ -96,7 +96,7 @@ $userType           = $session->user_type;
                                     if ($userType == 'MA') {
                                         $display = '';
                                     } else {
-                                        if ($assignItems->status) {
+                                        if ($allItem->status) {
                                             $display = '';
                                         } else {
                                             $display = 'none';
