@@ -1561,11 +1561,12 @@ class EnquiryRequestController extends BaseController
                 'txn_no'                        => $this->request->getPost('tax_no'),
                 'is_approve_vendor_payment'     => 1,
                 'vendor_payment_received_date'  => date('Y-m-d H:i:s'),
-                'status'                        => 9.9, 
+                'status'                        => 10.10, 
+                'vehicle_dispatched_date'       => date('Y-m-d H:i:s'),
             ];
             // pr($fields);
             $this->common_model->save_data('ecomm_sub_enquires', $fields, $sub_enquiry_no, 'sub_enquiry_no');
-            $this->common_model->save_data('ecomm_enquires', ['status' => 9], $enq_id, 'id');
+            $this->common_model->save_data('ecomm_enquires', ['status' => 10], $enq_id, 'id');
             $vendor_id = $getSubEnquiry->vendor_id;
         //     /* push notification sent */
         //         $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
