@@ -7529,7 +7529,11 @@ class ApiController extends BaseController
             'payment_mode'      => $payment_mode,
             'payment_date'      => date_format(date_create($payment_date), "Y-m-d H:i:s"),
             'txn_no'            => $txn_no,
-            'txn_screenshot'    => $uploadedFileName
+            'txn_screenshot'    => $uploadedFileName,
+            'is_approve_vendor_payment'     => 1,
+            'vendor_payment_received_date'  => date('Y-m-d H:i:s'),
+            'status'                        => 10.10, 
+            'vehicle_dispatched_date'       => date('Y-m-d H:i:s'),
         ];
 
         $this->common_model->save_data(
@@ -7538,6 +7542,7 @@ class ApiController extends BaseController
             $sub_enquiry_no,
             'sub_enquiry_no'
         );
+        $this->common_model->save_data('ecomm_enquires', ['status' => 10], $getSubEnquiry->enq_id, 'id');
 
         // --------------------------------------
         // SEND EMAIL NOTIFICATION
