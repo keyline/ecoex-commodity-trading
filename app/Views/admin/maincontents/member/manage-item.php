@@ -61,7 +61,7 @@ $userType           = $session->user_type;
                             <div style="display: flex; gap: 10px; align-items: center;">
                                 <input type="text" id="searchCompanyName" class="form-control" placeholder="Search Company Name" style="width: 25%;">
                                 <input type="text" id="searchItemName" class="form-control" placeholder="Search Item Name" style="width: 25%;">
-                                <input type="text" id="searchItemPrice" class="form-control" placeholder="Search Item Price" style="width: 25%;">                                            
+                                <input type="text" id="searchItemPrice" class="form-control" placeholder="Search Item Price" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" style="width: 25%;">                                            
                                 <button type="button" class="btn btn-secondary" onclick="clearPlantSearch()">Clear</button>
                             </div>
                         </div>
@@ -118,7 +118,7 @@ $userType           = $session->user_type;
                                                 <?= $allItem->item_name_ecoex ?>
                                             </div>                                    
                                             <div class="col-md-2 mb-3 mb-md-0">
-                                                <input type = "text" class="form-control" name ="item_price" value="<?= $value ?>" required />
+                                                <input type = "text" class="form-control" name ="item_price" value="<?= $value ?>" required inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
                                             </div>
                                             <div class="col-md-2 mb-3 mb-md-0">
                                                /<?= $allItem->unit_name ?>
@@ -132,11 +132,11 @@ $userType           = $session->user_type;
                                                     <?php endif; ?>
                                                     <?php if ($allItem->status) { ?>
                                                         <?php if ($common_model->checkModuleFunctionAccess(16, 83)) { ?>
-                                                            <a href="<?= base_url('admin/' . $controller_route . '/change-item-status/' . encoded($allItem->id) .'/'. encoded($vendor_id)) ?>" class="btn btn-outline-success btn-sm" title="Activate <?= $title ?>" onclick="return confirm('Do You Want To Deactivate This <?= $title ?>');"><i class="fa fa-check"></i></a>
+                                                            <a href="<?= base_url('admin/' . $controller_route . '/change-item-status/' . encoded($allItem->id) .'/'. encoded($vendor_id)) ?>" class="btn btn-outline-success btn-sm" title="Activate <?= $title ?>" onclick="return confirm('Do You Want To Deactivate This <?= $title ?>');"><i class="fa fa-check"></i> Click to Deactivated </a>
                                                         <?php } ?>
                                                     <?php } else { ?>
                                                         <?php if ($common_model->checkModuleFunctionAccess(16, 82)) { ?>
-                                                            <a href="<?= base_url('admin/' . $controller_route . '/change-item-status/' . encoded($allItem->id) .'/'. encoded($vendor_id)) ?>" class="btn btn-outline-danger btn-sm" title="Deactivate <?= $title ?>" onclick="return confirm('Do You Want To Activate This <?= $title ?>');"><i class="fa fa-times"></i></a>
+                                                            <a href="<?= base_url('admin/' . $controller_route . '/change-item-status/' . encoded($allItem->id) .'/'. encoded($vendor_id)) ?>" class="btn btn-outline-danger btn-sm" title="Deactivate <?= $title ?>" onclick="return confirm('Do You Want To Activate This <?= $title ?>');"><i class="fa fa-times"></i> Click to Activated</a>
                                                         <?php } ?>
                                                     <?php } ?>
                                                 <?php } ?>
