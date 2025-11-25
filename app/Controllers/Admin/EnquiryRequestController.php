@@ -1561,6 +1561,7 @@ class EnquiryRequestController extends BaseController
                 'txn_no'                        => $this->request->getPost('tax_no'),
                 'is_approve_vendor_payment'     => 1,
                 'vendor_payment_received_date'  => date('Y-m-d H:i:s'),
+                'status'                        => 9.9, 
             ];
             // pr($fields);
             $this->common_model->save_data('ecomm_sub_enquires', $fields, $sub_enquiry_no, 'sub_enquiry_no');

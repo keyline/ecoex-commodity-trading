@@ -4,6 +4,7 @@
     style="border: 1px solid #0080006e; border-radius: 10px; padding: 10px;">
     <input type="hidden" name="enq_id" value="<?= encoded($subenquiry->enq_id) ?>">
     <input type="hidden" name="sub_enquiry_no" value="<?= encoded($sub_enquiry_no) ?>">
+    <input type="hidden" class="form-control form-control-sm" value="" name="tax_no">
 
     <!-- note: switched to class -->
     <div class="invoiceItemsContainer">
@@ -32,10 +33,9 @@
                 <label style="font-size:11px;">Payment Date</label>
                 <input type="datetime-local" class="form-control form-control-sm" name="payment_date" required>
             </div>
-            <div class="col-3">
-                <label style="font-size:11px;">Tax no.</label>
-                <input type="text" class="form-control form-control-sm" name="tax_no" required>
-            </div>
+            <!-- <div class="col-3">
+                <label style="font-size:11px;">Tax no.</label>                
+            </div> -->
             
             <div class="col-3">
                 <label style="font-size:11px;">Tax Screenshot</label>
