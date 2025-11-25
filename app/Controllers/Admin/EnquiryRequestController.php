@@ -1540,7 +1540,7 @@ class EnquiryRequestController extends BaseController
                 $originalName = $file->getClientName();
                 $fieldName = 'tax_screenshot_file';
                 if($file!='') {
-                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'enquiry','image');
+                    $upload_array = $this->common_model->upload_single_file($fieldName,$originalName,'enquiry','custom');
                     if($upload_array['status']) {
                         $tax_screenshot_file = $upload_array['newFilename'];
                     } else {

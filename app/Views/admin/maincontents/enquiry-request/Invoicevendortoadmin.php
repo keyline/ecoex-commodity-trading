@@ -42,11 +42,10 @@
                 <input 
                     type="file"
                     class="form-control form-control-sm"
-                    name="tax_screenshot_file"
-                    accept="image/*"
+                    name="tax_screenshot_file"                
                     required
                 >
-                <small class="text-primary">Only image files allowed (JPG, JPEG, PNG, GIF, WEBP)</small>
+                <small class="text-primary">Only image and pdf files allowed</small>
             </div>           
         </div>
     </div>

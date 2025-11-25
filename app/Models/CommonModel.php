@@ -203,7 +203,15 @@ class CommonModel extends Model
                     $message = 'Upload ok';
                     $status = 1;
                 }
-            }
+           } elseif ($uploadType == 'custom') {
+                if ($imageFileType1 != "jpg" && $imageFileType1 != "png" && $imageFileType1 != "jpeg" && $imageFileType1 != "gif" && $imageFileType1 != "JPG" && $imageFileType1 != "PNG" && $imageFileType1 != "JPEG" && $imageFileType1 != "GIF" && $imageFileType1 != "ico" && $imageFileType1 != "ICO" && $imageFileType1 != "pdf" && $imageFileType1 != "PDF") {
+                    $message = 'Sorry, only image and pdf files are allowed';
+                    $status = 0;
+                } else {
+                    $message = 'Upload ok';
+                    $status = 1;
+                }
+            }            
 
             $newFilename = time().$imge;
             $temp = $_FILES[$fieldName]["tmp_name"];
