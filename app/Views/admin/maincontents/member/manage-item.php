@@ -124,12 +124,15 @@ $userType           = $session->user_type;
                                                /<?= $allItem->unit_name ?>
                                             </div>
                                             <div class="col-md-2 mb-3 mb-md-0">
-                                                <?php if ($userType == 'MA') { ?>
-                                                    <?php if (isset($priceMap[$allItem->id])): ?>
-                                                    <button type="submit" onclick="return confirm('Do You Want To Update Price For This Item ?');" class="btn btn-warning " style="font-size: 11px; padding: 8px !important;margin-bottom: 5px;"><i class="fa fa-paper-plane"></i> Update Price</button>
-                                                    <?php else: ?>
-                                                    <button type="submit" onclick="return confirm('Do You Want To Save Price For This Item ?');" class="btn btn-success " style="font-size: 11px; padding: 8px !important;margin-bottom: 5px;"><i class="fa fa-paper-plane"></i> Save Price</button>
-                                                    <?php endif; ?>
+                                                <?php //if ($userType == 'MA') { ?>
+                                                    <?php if ($common_model->checkModuleFunctionAccess(16, 156)) { ?>
+                                                        <?php if (isset($priceMap[$allItem->id])): ?>
+                                                            <button type="submit" onclick="return confirm('Do You Want To Update Price For This Item ?');" class="btn btn-warning " style="font-size: 11px; padding: 8px !important;margin-bottom: 5px;"><i class="fa fa-paper-plane"></i> Update Price</button>
+                                                        <?php else: ?>
+                                                            <button type="submit" onclick="return confirm('Do You Want To Save Price For This Item ?');" class="btn btn-success " style="font-size: 11px; padding: 8px !important;margin-bottom: 5px;"><i class="fa fa-paper-plane"></i> Save Price</button>
+                                                        <?php endif; ?>
+                                                    <?php } ?>
+
                                                     <?php if ($allItem->status) { ?>
                                                         <?php if ($common_model->checkModuleFunctionAccess(16, 83)) { ?>
                                                             <a href="<?= base_url('admin/' . $controller_route . '/change-item-status/' . encoded($allItem->id) .'/'. encoded($vendor_id)) ?>" class="btn btn-outline-success btn-sm" title="Activate <?= $title ?>" onclick="return confirm('Do You Want To Deactivate This <?= $title ?>');"><i class="fa fa-check"></i> Click to Deactivated </a>
@@ -139,7 +142,7 @@ $userType           = $session->user_type;
                                                             <a href="<?= base_url('admin/' . $controller_route . '/change-item-status/' . encoded($allItem->id) .'/'. encoded($vendor_id)) ?>" class="btn btn-outline-danger btn-sm" title="Deactivate <?= $title ?>" onclick="return confirm('Do You Want To Activate This <?= $title ?>');"><i class="fa fa-times"></i> Click to Activated</a>
                                                         <?php } ?>
                                                     <?php } ?>
-                                                <?php } ?>
+                                                <?php //} ?>
                                             </div>
                                         </div>                                                                                                                   
                                     </form>
