@@ -2124,7 +2124,7 @@ class EnquiryRequestController extends BaseController
         $filtered                   = array_filter($vendors, fn($v) => in_array($v->id, $vendorIds));
 
         $data['avlVendors']         = $filtered;
-        pr($data['avlVendors']);
+        // pr($data['avlVendors']);
         
         $data['sharedVendors']      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'array', ['enq_id' => $enq_id, 'status' => 1]);
 
