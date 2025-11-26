@@ -2113,7 +2113,7 @@ class EnquiryRequestController extends BaseController
         $getAdminUser               = $this->data['model']->find_data('ecoex_admin_user', 'row', ['id' => $user_id], 'vendor_ids');
         $vendorIds                  = (($getAdminUser)?json_decode($getAdminUser->vendor_ids, true):[]);
 
-        $order_by[0]                = array('field' => 'company_name', 'company_name' => 'asc');
+        $order_by[0]                = array('field' => 'company_name', 'type' => 'asc');
         $vendors                    = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1], 'id,company_name,email', '', '', $order_by);
         // $json                       = '["658","655","623","440","143","110","109","106","99","55","54","39","22","21","20"]';
         // $vendorIds                  = json_decode($json, true);
@@ -2124,7 +2124,7 @@ class EnquiryRequestController extends BaseController
         $filtered                   = array_filter($vendors, fn($v) => in_array($v->id, $vendorIds));
 
         $data['avlVendors']         = $filtered;
-        // pr($data['avlVendors']);
+        pr($data['avlVendors']);
         
         $data['sharedVendors']      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'array', ['enq_id' => $enq_id, 'status' => 1]);
 
