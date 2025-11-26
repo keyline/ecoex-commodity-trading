@@ -127,9 +127,9 @@ $userType           = $session->user_type;
                                                 <?php //if ($userType == 'MA') { ?>
                                                     <?php if ($common_model->checkModuleFunctionAccess(16, 156)) { ?>
                                                         <?php if (isset($priceMap[$allItem->id])): ?>
-                                                            <button type="submit" onclick="return confirm('Do You Want To Update Price For This Item ?');" class="btn btn-warning"><i class="fa fa-paper-plane"></i> Update Price</button>
+                                                            <button type="submit" onclick="return confirm('Do You Want To Update Price For This Item ?');" class="btn btn-warning " style="font-size: 11px; padding: 8px !important;margin-bottom: 5px;"><i class="fa fa-paper-plane"></i> Update Price</button>
                                                         <?php else: ?>
-                                                            <button type="submit" onclick="return confirm('Do You Want To Save Price For This Item ?');" class="btn btn-success"><i class="fa fa-paper-plane"></i> Save Price</button>
+                                                            <button type="submit" onclick="return confirm('Do You Want To Save Price For This Item ?');" class="btn btn-success " style="font-size: 11px; padding: 8px !important;margin-bottom: 5px;"><i class="fa fa-paper-plane"></i> Save Price</button>
                                                         <?php endif; ?>
                                                     <?php } ?>
 
