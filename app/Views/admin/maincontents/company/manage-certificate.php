@@ -107,7 +107,23 @@ if (!empty($certificates)) {
 
         if ($certificateData['status'] == 'pending') {
             $found++;
-            ?>                                                                                              <?php
+            ?> 
+            <div class="col-md-4 productList">
+                            <div class="card card-custom p-3">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-2 border-bottom"><?= $certificateData['enquiry_no'] ?></h6>
+                                    <h5 class="fw-bold mb-0"><?= $certificate->created_at ?></h5>
+
+                                    <div class="d-flex justify-content-between align-items-center mt-4">
+                                        <a target="_blank" href="<?= base_url('admin/certificates/' . $certificateData['id']) ?>" class="text-decoration-none text-viewcolor">View</a>
+                                        <a target="_blank" href="<?= base_url('admin/certificates/' . $certificateData['id'] . '/pdf/download') ?>" download="">
+                                            <button class="btn btn-download download-icon px-3">Download</button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+<?php
         }
     }
 }
