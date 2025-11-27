@@ -273,7 +273,7 @@ class EnquiryRequestController extends BaseController
         $title                      = 'View Details Of ' . $data['row']->enquiry_no;
         $page_name                  = 'enquiry-request/view-details';
         echo $this->layout_after_login($title, $page_name, $data);
-    }
+    }    
     public function confirm_delete($id, $current_status)
     {
         if (!$this->common_model->checkModuleFunctionAccess(23, 107)) {
@@ -2100,6 +2100,7 @@ class EnquiryRequestController extends BaseController
             ->getResult();
 
         # new code by shubha on 19/04/25
+        $plant_id                   = $data['row']->plant_id;
         $company_id                 = $data['row']->company_id;
         $orderBy[0]                 = ['field' => 'category_alias', 'type' => 'ASC'];
         $data['cats']               = $this->common_model->find_data('ecomm_company_category', 'array', ['status' => 1, 'company_id' => $company_id], 'category_id,category_alias', '', '', $orderBy);
@@ -2117,6 +2118,9 @@ class EnquiryRequestController extends BaseController
 
         $order_by[0]                = array('field' => 'company_name', 'type' => 'asc');
         $vendors                    = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1], 'id,company_name,email', '', '', $order_by);
+
+        $orderBy2[0]                = ['field' => 'item_name_ecoex', 'type' => 'ASC'];
+        $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => $company_id ], 'id,item_name_ecoex', '', '', $orderBy2);
         // $json                       = '["658","655","623","440","143","110","109","106","99","55","54","39","22","21","20"]';
         // $vendorIds                  = json_decode($json, true);
         if ($vendorIds == '' || $vendorIds == null) {
@@ -2231,6 +2235,80 @@ class EnquiryRequestController extends BaseController
             }
         }
 
+
+        if ($this->request->getMethod() == 'post') {
+            /* sl no*/
+            $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
+            $checkEnq = $this->common_model->find_data('ecomm_enquires', 'row', '', 'sl_no', '', '', $orderBy);
+            if ($checkEnq) {
+                // exist
+                $sl_no              = $checkEnq->sl_no;
+                $next_sl_no         = $sl_no + 1;
+                $next_sl_no_string  = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
+                $enquiry_no         = 'ECOMM-' . $next_sl_no_string;
+            } else {
+                // not exist
+                $next_sl_no         = 1;
+                $next_sl_no_string  = str_pad($next_sl_no, 7, 0, STR_PAD_LEFT);
+                $enquiry_no         = 'ECOMM-' . $next_sl_no_string;
+            }
+            /* sl no*/
+            // Print the last executed query
+            // echo $this->db->showLastQuery(); 
+            // pr($_POST);
+            $item_id            = $this->request->getPost('item_id');
+            $qty                = $this->request->getPost('qty');
+            $uploadedFiles      = $this->request->getFileMultiple('new_product_image');
+            $uploadPath         = 'public/uploads/enquiry/';
+
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            $imageNames = [];
+
+            if ($uploadedFiles && is_array($uploadedFiles)) {
+                foreach ($uploadedFiles as $file) {
+                    if ($file->isValid() && !$file->hasMoved()) {
+                        // Use random name (safe) or keep original with getClientName()
+                        $newName = $file->getRandomName();
+                        $file->move($uploadPath, $newName);
+
+                        $imageNames[] = $newName;
+                    }
+                }
+            }
+
+            // $plant_id       = $id;
+            // $company_id     = $company_id;                                  
+
+            if (!empty($item_id)) {
+                for ($k = 0; $k < count($item_id); $k++) {
+                    $getItem = $this->data['model']->find_data('ecomm_company_items', 'row', ['id' => $item_id[$k]], 'item_name_ecoex,hsn,unit');
+                    $item_images = [];
+                    $item_images[] = $imageNames[$k];
+                    $fields2 = [
+                        'enq_id'                        => $enq_id,
+                        'plant_id'                      => $plant_id,
+                        'company_id'                    => $company_id,
+                        'sl_no'                         => $next_sl_no,
+                        'new_product'                   => 0,
+                        'product_id'                    => $item_id[$k],
+                        'new_hsn'                       => (($getItem) ? $getItem->hsn : ''),
+                        'qty'                           => $qty[$k],
+                        'unit'                          => (($getItem) ? $getItem->unit : 0),
+                        'new_product_image'             => json_encode($item_images),
+                        'status'                        => 1,
+                    ];
+                    // pr($fields2);
+                    $this->data['model']->save_data('ecomm_enquiry_products', $fields2, '', 'id');
+                }
+            }
+
+            $this->session->setFlashdata('success_message', $this->data['title'].' enquiry created successfully');
+            return redirect()->to('/admin/enquiry-requests/enquiry-details/' . encoded($enq_id));
+        }
+
         $groupBy[0]                 = 'sub_enquiry_no';
         $data['subenquires']        = $this->common_model->find_data('ecomm_sub_enquires', 'array', ['enq_id' => $enq_id], '', '', $groupBy);
         $data['is_plant_ecoex_confirm'] = $this->allItemsMatch($data['subenquires'], 'is_plant_ecoex_confirm', 2);
@@ -2238,6 +2316,28 @@ class EnquiryRequestController extends BaseController
         $page_name                  = 'enquiry-request/enquiry-details';
 
         echo $this->layout_after_login($title, $page_name, $data);
+    }
+
+    public function confirm_item_delete($id, $enq_id)
+    {
+        if (!$this->common_model->checkModuleFunctionAccess(23, 157)) {
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'] . ' ' . $this->data['title'];
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
+            exit;
+        }
+         $id                         = decoded($id);   
+         $enq_id                     = decoded($enq_id);     
+        
+        // DELETE ROW FROM ecomm_company_items TABLE
+        $query = $this->db->table('ecomm_enquiry_products')
+                ->where('product_id', $id)
+                ->delete();
+        // echo $query; die;
+
+        $this->session->setFlashdata('success_message', $this->data['title'] . ' deleted successfully');
+        return redirect()->to('/admin/' . $this->data['controller_route'] . '/enquiry-details/' . encoded($enq_id));
     }
 
     public function approveVendorQuit($enq_id, $vendor_id)

@@ -224,6 +224,57 @@ class PlantController extends BaseController
             );
             // pr($postData);
             $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
+            $last_id = $this->db->insertID();
+
+            // Logged-in user details
+            $logged_user_id = $this->session->user_id;
+            $logged_user_type = $this->session->user_type; // 'ma' or 'u' 
+
+            function insertPlantId($db, $user_id, $vendor_id) {
+
+                // Fetch user row
+                $row = $db->table('ecoex_admin_user')->where('id', $user_id)->get()->getRow();
+
+                // Decode JSON
+                $plant_ids = json_decode($row->plant_ids, true);
+
+                // Ensure array
+                if (!is_array($plant_ids)) {
+                    $plant_ids = [];
+                }
+
+                // Remove existing duplicate (if any)
+                $plant_ids = array_values(array_diff($plant_ids, [$vendor_id]));
+
+                // Insert vendor id at index 0
+                array_unshift($plant_ids, $vendor_id);
+
+                // Update back to DB
+                $db->table('ecoex_admin_user')
+                ->where('id', $user_id)
+                ->update(['plant_ids' => json_encode($plant_ids)]);
+            }
+
+            if ($logged_user_type === 'MA') {
+
+                // Insert for ONLY master admin (logged user)
+                insertPlantId($this->db, $logged_user_id, $last_id);
+
+            } elseif ($logged_user_type === 'U') {
+
+                // Insert for user himself
+                insertPlantId($this->db, $logged_user_id, $last_id);
+
+                // Insert for master admin also
+                $master_admin = $this->db->table('ecoex_admin_user')
+                                        ->where('user_type', 'MA')
+                                        ->get()
+                                        ->getRow();
+
+                if ($master_admin) {
+                    insertPlantId($this->db, $master_admin->id, $last_id);
+                }
+            }            
             $this->session->setFlashdata('success_message', $this->data['title'].' inserted successfully');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
         }

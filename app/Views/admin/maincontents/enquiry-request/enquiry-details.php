@@ -554,10 +554,28 @@ $request_edit_fields = [
                     </div>
                 </div>
 
+                <div class="card">
+                    <div class="card-body">
+                        <form method="POST" action="" enctype="multipart/form-data">
+                            <!-- items -->
+                            <div class="col-md-12 mb-4">
+                                <button type="button" class="btn btn-success btn-lg mt-4 add_button">Add Item For Enquiry</button>
+                            </div>
+                            <div class="col-md-12 mb-4 text-center">
+                                <div class="field_wrapper">
 
+                                </div>
+                            </div>
+                            <!-- items -->
+                            <div class="text-center">
+                                <button type="submit" id="create_item" class="btn btn-primary d-none">Create</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                 <div class="material_accordion_section">
                     <div class="accordion" id="accordionExample">
-                        <?php if ($common_model->checkModuleFunctionAccess(23, 118)) { ?>
+                        <?php if ($common_model->checkModuleFunctionAccess(23, 118)) { ?>                            
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingOne">
                                     <button class="accordion-button collapsed bg-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"> Enquiry Request Items </button>
@@ -581,13 +599,15 @@ $request_edit_fields = [
                                                         <th>Remarks</th>
                                                         <th>Images</th>
                                                         <th>Status</th>
-                                                        <?php if (($row->status == 1)): ?>
+                                                        <?php if (($row->status == 1 || $row->status == 0)): ?>
+                                                            <?php if ($common_model->checkModuleFunctionAccess(23, 158)) { ?>
                                                             <th></th>
-                                                        <?php endif ?>
+                                                        <?php } endif ?>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php
+                                                    // pr($enquiryProducts);
                                                     if ($enquiryProducts) {
                                                         $slNo = 1;
                                                         foreach ($enquiryProducts as $enquiryProduct) {
@@ -595,6 +615,7 @@ $request_edit_fields = [
                                                             if ($enquiryProduct->new_product) {
 
                                                                 $getItem = $common_model->find_data('ecomm_company_items', 'row', ['enq_product_id' => $enquiryProduct->id], 'id,item_category,item_name_ecoex,alias_name,billing_name,item_images,hsn,gst,rate,unit');
+                                                                // pr($getItem);
 
                                                                 if ($getItem) {
                                                                     $productName    = (($getItem) ? $getItem->item_name_ecoex : '');
@@ -618,7 +639,7 @@ $request_edit_fields = [
                                                                 $bgColor = '#ff00001c';
                                                             }
                                                             ### @Shubha75 ###
-                                                    ?>
+                                                            ?>
                                                             <tr style="background-color: <?= $bgColor ?>;">
                                                                 <th><?= $slNo++ ?></th>
                                                                 <td>
@@ -678,14 +699,18 @@ $request_edit_fields = [
                                                                         <?php } ?>
                                                                     <?php } ?>
                                                                 </td>
-                                                                <?php if (($row->status == 1)): ?>
+                                                                <?php if (($row->status == 1 || $row->status == 0)): ?>                                                                    
                                                                     <td>
+                                                                        <?php if ($common_model->checkModuleFunctionAccess(23, 158)) { ?>
                                                                         <span class="badge bg-warning  accepted_request_edit"
                                                                             style="cursor:pointer"
                                                                             data-product_id="<?= $enquiryProduct->product_id ?>"
                                                                             data-category="<?= $getItem->item_category ?>"
                                                                             data-unit="<?= $getItem->unit ?>">
                                                                             <i class="fas fa-pencil-alt"></i> Edit</span>
+                                                                            <?php } if ($common_model->checkModuleFunctionAccess(23, 157)) { ?>
+                                                                            <span><a href="<?= base_url('admin/' . $controller_route . '/enquiry-item/delete/' . encoded($getItem->id) . '/'. encoded($row->id)) ?>" class="btn btn-outline-danger btn-sm" title="Delete <?= $title ?>" onclick="return confirm('Do You Want To Delete This <?= $title ?>');"><i class="fa fa-trash"></i>Delete</a></span>
+                                                                            <?php } ?>
                                                                     </td>
                                                                 <?php endif; ?>
                                                             </tr>
@@ -2045,92 +2070,6 @@ $request_edit_fields = [
         }
     }
 
-
-
-    //  item name edit modal
-
-    // $(function() {
-    //     // 1. Show popup on span click
-    //     $(document).on('click', '.edit_request_item_name', function() {
-    //         var $span = $(this);
-    //         var itemId = $span.data('product_id');
-    //         var offset = $span.offset();
-    //         var popup = $(`
-    //   <div class="inline-popup">
-    //     <input type="text" class="popup-input" placeholder="New name…">
-    //     <i class="fa fa-check popup-confirm" data-product-id="${itemId}" title="Save"></i>
-    //     <i class="fa fa-times popup-cancel" title="Cancel"></i>
-    //   </div>
-    // `);
-
-    //         // Position below the span
-    //         popup.css({
-    //             top: offset.top + $span.outerHeight() + 5,
-    //             left: offset.left
-    //         });
-
-    //         // Remove any existing popups and append
-    //         $('.inline-popup').remove();
-    //         $('body').append(popup);
-    //         popup.find('.popup-input').focus();
-    //     });
-
-    //     //  remove popup only
-    //     $(document).on('click', '.popup-cancel', function() {
-    //         $(this).closest('.inline-popup').remove();
-    //     });
-
-    // save data
-    // $(document).on('click', '.popup-confirm', function() {
-
-    //     var $popup = $(this).closest('.inline-popup');
-    //     var productId = $(this).data('product-id');
-
-    //     var $span = $("#set_request_item_name" + productId);
-
-    //     var newName = $popup.find('.popup-input').val().trim();
-
-
-
-    //     if (!newName) {
-    //         $popup.find('.popup-input').addClass('is-invalid');
-    //         return;
-    //     }
-
-    //     // spinner state
-    //     $(this)
-    //         .removeClass('fa-check')
-    //         .addClass('fa-spinner fa-spin')
-    //         .off('click');
-
-    //     var baseURL = '<?= base_url(); ?>';
-
-    //     $.ajax({
-    //             url: baseURL + 'admin/api/items/rename',
-    //             method: 'POST',
-    //             dataType: 'json',
-    //             data: {
-    //                 name: newName,
-    //                 itemid: productId
-    //             }
-    //         })
-    //         .done(function(res) {
-    //             if (res.status) {
-    //                 // update the original span’s text
-    //                 $span.text(res.data.item_name_ecoex); // safe text update :contentReference[oaicite:6]{index=6}
-    //             } else {
-    //                 console.error('Update failed: ' + (res.message || 'Unknown error'));
-    //             }
-    //             $popup.remove();
-    //         })
-    //         .fail(function(jqXHR, textStatus) {
-    //             console.error('AJAX error:', textStatus);
-    //             alert('Error saving name');
-    //             $popup.remove();
-    //         });
-    // });
-
-
     function getRequestProductValues(productId, category_id, unit_id) {
         const values = {
             item_name: $(`#set_request_item_name${productId}`).text().trim(),
@@ -2239,4 +2178,59 @@ $request_edit_fields = [
         });
     });
     //  item name edit modal 
+</script>
+
+<script>
+    $(document).ready(function() {
+        var maxField = 10; //Input fields increment limitation
+        var addButton = $('.add_button'); //Add button selector
+        var wrapper = $('.field_wrapper'); //Input field wrapper
+        var fieldHTML = `<div class="row" >
+                            <div class="col-12">
+                                <div class="add_item_box" style="border: 1px solid #022b6d; padding: 10px;margin-bottom: 5px;border-radius:10px;">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <select class="form-select" name="item_id[]" required>
+                                                <option value="" selected>Select Item</option>
+                                                <?php if ($items) {
+                                                    foreach ($items as $item) { ?>
+                                                    <option value="<?= $item->id ?>"><?= $item->item_name_ecoex ?></option>
+                                                <?php }
+                                                } ?>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="text" class="form-control" name="qty[]" placeholder="Item Tentative Qty" required>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="file" class="form-control" name="new_product_image[]" placeholder="Item Image" required>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm remove_button" style="background: #FFF;">❌</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>`; //New input field html 
+        var x = 1; //Initial field counter is 1
+
+        // Once add button is clicked
+        $(addButton).click(function() {
+            $('#create_item').removeClass('d-none');
+            //Check maximum number of input fields
+            if (x < maxField) {
+                x++; //Increase field counter
+                $(wrapper).append(fieldHTML); //Add field html
+            } else {
+                alert('A maximum of ' + maxField + ' fields are allowed to be added. ');
+            }
+        });
+
+        // Once remove button is clicked
+        $(wrapper).on('click', '.remove_button', function(e) {
+            e.preventDefault();
+            $(this).parent('div').parent('div').parent('div').remove(); //Remove field html            
+            x--; //Decrease field counter            
+        });
+    });
 </script>
