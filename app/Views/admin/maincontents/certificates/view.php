@@ -21,20 +21,25 @@
                         <i class="fas fa-arrow-left"></i> Back
                     </a>
                     
-                    <?php if ($certificate['status'] === 'draft'): ?>
+                    <?php if ($certificate['status'] === 'pending' || $certificate['status'] === 'review'): ?>
                         <a href="<?= base_url('admin/certificates/' . $certificate['id'] . '/edit') ?>" 
                         class="btn btn-warning">
                             <i class="fas fa-edit"></i> Edit
                         </a>
-                        <!-- <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#finalizeModal">
-                            <i class="fas fa-check"></i> Finalize
-                        </button> -->
+                    <?php endif; ?>
+                    <?php if ($certificate['status'] === 'pending'): ?>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#finalizeModal">
+                            <i class="fas fa-check"></i> Send For Review
+                        </button>
+                    <?php endif; ?>
+
+                    <?php if ($certificate['status'] === 'review'): ?>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#finalizeModal_approve">
+                            <i class="fas fa-check"></i> Approve Certificate
+                        </button>
                     <?php endif; ?>
                     
-                    <!-- <a href="<?= base_url('admin/certificates/' . $certificate['id'] . '/pdf/download') ?>" 
-                    class="btn btn-danger" target="_blank">
-                        <i class="fas fa-file-pdf"></i> Download PDF
-                    </a> -->
+                    
                 </div>
             </div>
 
@@ -65,7 +70,7 @@
                     <div class="card mb-3">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Certificate Information</h5>
-                            <?php if ($certificate['status'] === 'draft'): ?>
+                            <?php if ($certificate['status'] === 'pending' || $certificate['status'] === 'review'): ?>
                                 <!-- <span class="badge bg-warning text-dark">Draft - Version <?= $certificate['version'] ?></span> -->
                             <?php else: ?>
                                 <span class="badge bg-success">Finalized - Version <?= $certificate['version'] ?></span>
@@ -210,18 +215,18 @@
                             <h5 class="mb-0">Status & Audit</h5>
                         </div>
                         <div class="card-body">
-                            <!-- <div class="mb-3">
+                            <div class="mb-3">
                                 <strong>Status:</strong><br>
-                                <?php if ($certificate['status'] === 'draft'): ?>
+                                <?php if ($certificate['status'] === 'pending' || $certificate['status'] === 'review'): ?>
                                     <span class="badge bg-warning text-dark fs-6">
-                                        <i class="fas fa-clock"></i> Draft
+                                        <i class="fas fa-clock"></i> <?php echo ucfirst($certificate['status']); ?>
                                     </span>
                                 <?php else: ?>
                                     <span class="badge bg-success fs-6">
-                                        <i class="fas fa-check-circle"></i> Finalized
+                                        <i class="fas fa-check-circle"></i> Approved
                                     </span>
                                 <?php endif; ?>
-                            </div> -->
+                            </div>
 
                             <!-- <div class="mb-3">
                                 <strong>Version:</strong><br>
@@ -242,7 +247,7 @@
                                 </div>
                             <?php endif; ?>
                             
-                            <?php if ($certificate['status'] === 'finalized' && $certificate['finalized_at']): ?>
+                            <?php if ($certificate['status'] === 'approved' && $certificate['finalized_at']): ?>
                                 <div class="mb-3">
                                     <strong>Finalized:</strong><br>
                                     <span class="text-muted"><?= date('d M Y, h:i A', strtotime($certificate['finalized_at'])) ?></span>
@@ -259,7 +264,7 @@
                         <div class="card-body text-center">
                             <i class="fas fa-file-pdf fa-5x text-danger mb-3"></i>
                             <p class="text-muted mb-3">
-                                <?php if ($certificate['status'] === 'draft'): ?>
+                                <?php if ($certificate['status'] === 'pending' || $certificate['status'] === 'review'): ?>
                                     Preview the certificate as PDF
                                 <?php else: ?>
                                     Download the finalized certificate
@@ -279,7 +284,7 @@
                         <div class="card-body text-center">
                             <i class="fas fa-file-word fa-5x text-primary mb-3"></i>
                             <p class="text-muted mb-3">
-                                <?php if ($certificate['status'] === 'draft'): ?>
+                                <?php if ($certificate['status'] === 'pending' || $certificate['status'] === 'review'): ?>
                                     Preview the certificate as Word document
                                 <?php else: ?>
                                     Download the finalized certificate
@@ -323,7 +328,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="finalizeModalLabel">Finalize Certificate</h5>
+                <h5 class="modal-title" id="finalizeModalLabel">Send For Review Certificate</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -331,25 +336,74 @@
                     <i class="fas fa-exclamation-triangle"></i>
                     <strong>Warning:</strong> This action cannot be undone!
                 </div>
-                <p>Are you sure you want to finalize this certificate?</p>
-                <p class="mb-0">Once finalized:</p>
+                <p>Are you sure you want to send this certificate for review?</p>
+                <!-- <p class="mb-0">Once reviewed:</p>
                 <ul>
                     <li>The certificate cannot be edited</li>
                     <li>A final PDF will be generated</li>
-                    <li>The status will be permanently set to "Finalized"</li>
-                </ul>
+                    <li>The status will be permanently set to "Approved"</li>
+                </ul> -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times"></i> Cancel
                 </button>
-                <form method="POST" action="<?= base_url('certificates/' . $certificate['id'] . '/finalize') ?>" class="d-inline">
+                <form method="POST" action="<?= base_url('/admin/certificates/' . $certificate['id'] . '/review') ?>" class="d-inline">
                     <?= csrf_field() ?>
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-check"></i> Yes, Finalize Certificate
+                        <i class="fas fa-check"></i> Yes, Send For Review Certificate
                     </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Approve modal -->
+ <div class="modal fade" id="finalizeModal_approve" tabindex="-1" aria-labelledby="finalizeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="finalizeModalLabel">Approve Certificate</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Warning:</strong> This action cannot be undone!
+                </div>
+                <p>Are you sure you want to approve the certificate ?</p>
+                <!-- <p class="mb-0">Once reviewed:</p>
+                <ul>
+                    <li>The certificate cannot be edited</li>
+                    <li>A final PDF will be generated</li>
+                    <li>The status will be permanently set to "Approved"</li>
+                </ul> -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <form method="POST" action="<?= base_url('/admin/certificates/' . $certificate['id'] . '/finalize') ?>" class="d-inline">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check"></i> Yes, Approve the Certificate
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+// Disable submit buttons in modal forms to prevent double-click
+document.addEventListener("submit", function (e) {
+    if (e.target.closest(".modal")) {  // only modal forms
+        const btn = e.target.querySelector("button[type=submit]");
+
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = "<span class='spinner-border spinner-border-sm'></span> Processing...";
+        }
+    }
+});
+</script>

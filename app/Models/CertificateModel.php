@@ -20,7 +20,7 @@ class CertificateModel extends Model
     protected $allowedFields = [
         'enquiry_id','company_id','enquiry_no','certificate_number', 'company_name', 'plant_name', 'plant_address',
         'plant_state','collection_date', 'issue_date', 'status', 'version', 'signature_path',
-        'pdf_path', 'word_path','finalized_at', 'finalized_by', 'created_by', 'updated_by'
+        'pdf_path', 'word_path','finalized_at', 'finalized_by', 'created_by', 'updated_by', 'reviewed_at', 'reviewed_by'
     ];
 
     protected $useTimestamps = true;
@@ -109,14 +109,28 @@ class CertificateModel extends Model
 
     public function finalizeCertificate($id, $userId)
     {
-        if ($this->where('id', $id)->where('status', 'draft')->countAllResults() === 0) {
+        if ($this->where('id', $id)->where('status', 'review')->countAllResults() === 0) {
             return false;
         }
 
         return $this->update($id, [
-            'status' => 'finalized',
+            'status' => 'approved',
             'finalized_at' => date('Y-m-d H:i:s'),
             'finalized_by' => $userId
         ]);
+    }
+
+    public function reviewCertificate($id, $userId)
+    {
+        if ($this->where('id', $id)->where('status', 'pending')->countAllResults() === 0) {
+            return false;
+        }
+
+        return $this->update($id, [
+            'status' => 'review',
+            'reviewed_at' => date('Y-m-d H:i:s'),
+            'reviewed_by' => $userId
+        ]);
+
     }
 }

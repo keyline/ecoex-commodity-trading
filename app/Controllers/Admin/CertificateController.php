@@ -245,7 +245,7 @@ class CertificateController extends BaseController
                 'plant_state' => $this->request->getPost('plant_state'),
                 'collection_date' => $this->request->getPost('collection_date'),
                 'issue_date' => date('Y-m-d'),
-                'status' => 'draft',
+                'status' => 'pending',
                 'created_by' => session()->get('user_id'),
             ];
 
@@ -364,9 +364,9 @@ class CertificateController extends BaseController
         }
 
         // Check if certificate can be edited
-        if ($certificate['status'] === 'finalized') {
+        if ($certificate['status'] === 'approved') {
             return redirect()->to('/certificates/view/' . $id)
-                ->with('error', 'Cannot edit finalized certificate');
+                ->with('error', 'Cannot edit approved certificate');
         }
 
         // Get certificate with items
@@ -398,9 +398,9 @@ class CertificateController extends BaseController
         }
 
         // Prevent update if finalized
-        if ($certificate['status'] === 'finalized') {
+        if ($certificate['status'] === 'approved') {
             return redirect()->back()
-                ->with('error', 'Cannot update finalized certificate');
+                ->with('error', 'Cannot update approved certificate');
         }
 
         // Validation
@@ -721,6 +721,36 @@ class CertificateController extends BaseController
         }
     }
 
+    public function sendForReview($id)
+    {
+        try {
+
+            $certificate = $this->certificateModel->find($id);
+
+
+            if (!$certificate) {
+                throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            }
+
+
+            if ($certificate['status'] === 'approved') {
+                return redirect()->back()->with('error_message', 'Certificate already finalized');
+            }
+
+
+            $this->certificateModel->reviewCertificate($id, session()->get('user_id'));
+
+
+            return redirect()->to('admin/certificates/' . $id)->with('success', 'Certificate send for review successfully');
+
+        } catch (\Exception $ex) {
+            //throw $th;
+            log_message('error', 'Error in sending certificate for review: ' . $ex->getMessage());
+            return redirect()->back()->with('error_message', 'Error: ' . "send for review failed. Please try again.");
+        }
+
+    }
+
     public function finalize($id)
     {
         $certificate = $this->certificateModel->find($id);
@@ -731,15 +761,15 @@ class CertificateController extends BaseController
         }
 
 
-        if ($certificate['status'] === 'finalized') {
-            return redirect()->back()->with('error_message', 'Certificate already finalized');
+        if ($certificate['status'] === 'approved') {
+            return redirect()->back()->with('error_message', 'Certificate already approved');
         }
 
         // Generate final PDF with signature
-        $certificate = $this->certificateModel->getCertificateWithItems($id);
+        //$certificate = $this->certificateModel->getCertificateWithItems($id);
 
         // Get vendors
-        $certificate['vendors'] = $this->vendorModel
+        /*$certificate['vendors'] = $this->vendorModel
             ->where('certificate_id', $id)
             ->orderBy('sequence', 'ASC')
             ->findAll();
@@ -751,13 +781,13 @@ class CertificateController extends BaseController
 
         // Add digital signature (if configured)
         //$signatureService = new DigitalSignatureService();
-        // $signatureService->signPdf($savePath, $savePath, $certPath, $keyPath, $password);
+        // $signatureService->signPdf($savePath, $savePath, $certPath, $keyPath, $password);*/
 
         // Finalize in database
         $this->certificateModel->finalizeCertificate($id, session()->get('user_id'));
-        $this->certificateModel->update($id, ['pdf_path' => $filename]);
+        //$this->certificateModel->update($id, ['pdf_path' => $filename]);
 
-        return redirect()->to('/certificates/' . $id)->with('success', 'Certificate finalized successfully');
+        return redirect()->to('admin/certificates/' . $id)->with('success', 'Certificate approved successfully');
     }
 
     private function generateCertificateNumber($plantName = null, $enquiryNo = null)
@@ -1273,6 +1303,94 @@ class CertificateController extends BaseController
 
 
     }
+
+    /*public function uploadCertificate($companyid, $enquiryid)
+    {
+
+        $company_id                         = decoded($companyid);
+        $enquiry_id                         = decoded($enquiryid);
+        $company                    = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $company_id], 'company_name');
+        $company_name               = (($company) ? $company->company_name : '');
+        $data['moduleDetail']       = $this->data;
+        $data['action']             = 'Manage Certificates : ';
+        $title                      = $data['action'] . ' ' . $company_name;
+        $page_name                  = 'certificates/upload-certificate';
+        $data['company_id']         = $company_id;
+        $data['company_name']       = $company_name;
+        $data['enquiry_id']         = $enquiry_id;
+        $data['enquiry_data']       = $this->certificateModel->getCertificateByEnquiry($enquiry_id);
+
+        if ($this->request->getMethod() == 'post') {
+            pr($this->request->getPost());
+        }
+        echo $this->layout_after_login($title, $page_name, $data);
+
+    }*/
+
+    /*public function upload()
+    {
+
+        $db = \Config\Database::connect();
+        $db->transStart();
+
+        try {
+            $companyId = $this->request->getPost('company_id');
+            $enquiryId = $this->request->getPost('enquiry_id');
+            $file = $this->request->getFile('certificate_file');
+
+            if ($file && $file->isValid() && !$file->hasMoved()) {
+                $newName = $file->getRandomName();
+                $fileOriginalName = $file->getName();
+                // Strip extension before saving
+                $filenameWithoutExt = pathinfo($fileOriginalName, PATHINFO_FILENAME);
+
+                $file->move('public/uploads/certificate', $newName); // Store securely
+
+                $fields = [
+                    //'company_id'        => $companyId,
+                    //'enquiry_id'        => $enquiryId,
+                    //'certificate_type'  => 1,
+                    'certificate_file'  => $newName,
+                    'filename'          => $filenameWithoutExt,
+                    //'created_at'        => date('Y-m-d H:i:s'),
+                    'updated_at'        => date('Y-m-d H:i:s'),
+                    'status'            => 1
+                ];
+                //$this->common_model->save_data('ecomm_company_certificates', $fields, '', 'id');
+                $this->companyCertificateModel->where('enquiry_id', $enquiryId)
+                                                ->where('company_id', $companyId)
+                                                ->where('certificate_type', 1)
+                                                ->set($fields)
+                                                ->update();
+                //update certificate table
+                //find certificate by enquiry id
+                $certificate = $this->certificateModel->where('enquiry_id', $enquiryId)->first();
+                if ($certificate) {
+                    $this->certificateModel->finalizeCertificate(
+                        $certificate['id'],
+                        session()->get('user_id')
+                    );
+                }
+
+                $db->transComplete();
+
+                if ($db->transStatus() === false) {
+                    throw new \Exception('Transaction failed');
+                }
+
+                return $this->response->setJSON(['status' => 'success', 'file' => $newName]);
+            }
+            return $this->response->setStatusCode(400)->setJSON(['status' => 'error', 'message' => 'File upload failed.']);
+
+        } catch (\Exception $ex) {
+            //throw $th;
+
+            $db->transRollback();
+            log_message('error', 'Certificate update failed: ' . $ex->getMessage());
+            return $this->response->setStatusCode(500)->setJSON(['status' => 'error', 'message' => 'Failed to upload certificate: ' . $ex->getMessage()]);
+        }
+
+    }*/
 
 
 }
