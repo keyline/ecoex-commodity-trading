@@ -69,6 +69,7 @@ $userType           = $session->user_type;
                                             $disapproveProductCount             = $common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status' => 0]);
                                             $company                            = $common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id]);
                                             $plant                              = $common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id]);
+                                            $certificateData                    = $certificate_model->where('enquiry_id', $row->id)->first();
                                             ?>
                                             <tr>
                                                 <th scope="row"><?= $sl++ ?></th>
@@ -192,7 +193,7 @@ $userType           = $session->user_type;
                                                             <h6 class="badge bg-success mt-2"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
                                                             </br>
                                                             <!-- <a href="<?= base_url('admin/certificate/create'); ?>"><h6 class="badge bg-success mt-2"><i class="fa fa-flag-checkered"></i> Generate Certificate</h6></a> -->
-                                                            <?php if($row->status == 12){?>
+                                                            <?php if ($row->status == 12) {?>
                                                                 <?php if ($common_model->checkModuleFunctionAccess(23, 155)) { ?>
                                                                     <form action="<?= base_url('admin/certificate/create'); ?>" method="post" class="d-inline">
                                                                         <?= csrf_field(); ?>
@@ -200,7 +201,7 @@ $userType           = $session->user_type;
                                                                         <input type="hidden" name="enquiry_id" value="<?= $row->id; ?>">
                                                                         <input type="hidden" name="plant_id" value="<?= $row->plant_id; ?>">
 
-                                                                        <button type="submit" class="badge bg-success mt-2 border-0">
+                                                                        <button type="<?= empty($certificateData) ? 'submit' : '' ?>" class="badge bg-success mt-2 border-0">
                                                                             <i class="fa fa-flag-checkered"></i> Generate Certificate
                                                                         </button>
                                                                     </form>
@@ -209,6 +210,10 @@ $userType           = $session->user_type;
                                                         <?php } elseif ($row->status == 13) { ?>
                                                             <h6 class="badge bg-danger mt-2"><i class="fa fa-times-circle"></i> REJECTED</h6>
                                                         <?php } ?>
+                                                        <?php if (!empty($certificateData['status'])): ?>
+                                                            </br>
+                                                            <h6 class="badge bg-info mt-2"><i class="fa fa-certificate"></i> <?= ucfirst($certificateData['status']); ?></h6>
+                                                        <?php endif; ?>
                                                         <p><?= (($row->accepted_date != '') ? date_format(date_create($row->accepted_date), "M d, Y h:i A") : '') ?></p>
 
                                                     <?php } ?>

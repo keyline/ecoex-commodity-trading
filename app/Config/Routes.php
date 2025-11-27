@@ -339,7 +339,16 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
 
     $routes->match(['post', 'put'], 'certificates/update/(:any)', 'CertificateController::update/$1');
 
+    $routes->match(['post'], 'certificates/(:any)/review', 'CertificateController::sendForReview/$1');
+
     $routes->match(['post'], 'certificates/(:any)/finalize', 'CertificateController::finalize/$1');
+
+    // $routes->match(['get', 'post'], "certificates/upload/certificate/(:any)/(:any)", "CertificateController::uploadCertificate/$1/$2");
+
+
+    // $routes->post('certificates/upload', 'CertificateController::upload');
+
+
 
     //generics routes must be at last
 
