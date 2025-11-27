@@ -118,7 +118,16 @@ $userType           = $session->user_type;
                                                 <?= $allItem->item_name_ecoex ?>
                                             </div>                                    
                                             <div class="col-md-2 mb-3 mb-md-0">
-                                                <input type = "text" class="form-control" name ="item_price" value="<?= $value ?>" required inputmode="decimal" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" />
+                                                <input type = "text" class="form-control" name ="item_price" value="<?= $value ?>" required inputmode="decimal" oninput="
+                // Remove everything except digits and dot
+                this.value = this.value.replace(/[^0-9.]/g, '');
+
+                // Allow only one dot
+                let parts = this.value.split('.');
+                if (parts.length > 2) {
+                    this.value = parts[0] + '.' + parts[1];
+                }
+           " />
                                             </div>
                                             <div class="col-md-2 mb-3 mb-md-0">
                                                /<?= $allItem->unit_name ?>
