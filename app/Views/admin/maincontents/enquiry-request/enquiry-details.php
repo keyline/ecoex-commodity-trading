@@ -581,13 +581,15 @@ $request_edit_fields = [
                                                         <th>Remarks</th>
                                                         <th>Images</th>
                                                         <th>Status</th>
-                                                        <?php if (($row->status == 1)): ?>
+                                                        <?php if (($row->status == 1 || $row->status == 0)): ?>
+                                                            <?php if ($common_model->checkModuleFunctionAccess(23, 158)) { ?>
                                                             <th></th>
-                                                        <?php endif ?>
+                                                        <?php } endif ?>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php
+                                                    // pr($enquiryProducts);
                                                     if ($enquiryProducts) {
                                                         $slNo = 1;
                                                         foreach ($enquiryProducts as $enquiryProduct) {
@@ -595,6 +597,7 @@ $request_edit_fields = [
                                                             if ($enquiryProduct->new_product) {
 
                                                                 $getItem = $common_model->find_data('ecomm_company_items', 'row', ['enq_product_id' => $enquiryProduct->id], 'id,item_category,item_name_ecoex,alias_name,billing_name,item_images,hsn,gst,rate,unit');
+                                                                // pr($getItem);
 
                                                                 if ($getItem) {
                                                                     $productName    = (($getItem) ? $getItem->item_name_ecoex : '');
@@ -678,14 +681,18 @@ $request_edit_fields = [
                                                                         <?php } ?>
                                                                     <?php } ?>
                                                                 </td>
-                                                                <?php if (($row->status == 1)): ?>
+                                                                <?php if (($row->status == 1 || $row->status == 0)): ?>                                                                    
                                                                     <td>
+                                                                        <?php if ($common_model->checkModuleFunctionAccess(23, 158)) { ?>
                                                                         <span class="badge bg-warning  accepted_request_edit"
                                                                             style="cursor:pointer"
                                                                             data-product_id="<?= $enquiryProduct->product_id ?>"
                                                                             data-category="<?= $getItem->item_category ?>"
                                                                             data-unit="<?= $getItem->unit ?>">
-                                                                            <i class="fas fa-pencil-alt"></i> Edit</span>
+                                                                            <i class="fas fa-pencil-alt"></i> Edit</span><br>
+                                                                            <?php } if ($common_model->checkModuleFunctionAccess(23, 157)) { ?>
+                                                                            <a href="<?= base_url('admin/' . $controller_route . '/enquiry-item/delete/' . encoded($getItem->id) . '/'. encoded($row->id)) ?>" class="btn btn-outline-danger btn-sm" title="Delete <?= $title ?>" onclick="return confirm('Do You Want To Delete This <?= $title ?>');"><i class="fa fa-trash"></i></a>                                                                            
+                                                                            <?php } ?>
                                                                     </td>
                                                                 <?php endif; ?>
                                                             </tr>

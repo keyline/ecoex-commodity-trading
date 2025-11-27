@@ -272,6 +272,26 @@ class EnquiryRequestController extends BaseController
         $page_name                  = 'enquiry-request/view-details';
         echo $this->layout_after_login($title, $page_name, $data);
     }
+    public function confirm_item_delete($id, $enq_id)
+    {
+        if (!$this->common_model->checkModuleFunctionAccess(23, 157)) {
+            $data['action']             = 'Access Forbidden';
+            $title                      = $data['action'] . ' ' . $this->data['title'];
+            $page_name                  = 'access-forbidden';
+            echo $this->layout_after_login($title, $page_name, $data);
+            exit;
+        }
+        $id                         = decoded($id);   
+        $enq_id                     = decoded($enq_id);     
+        
+        // DELETE ROW FROM ecomm_company_items TABLE
+        $this->db->table('ecomm_company_items')
+                ->where('id', $id)
+                ->delete();
+
+        $this->session->setFlashdata('success_message', $this->data['title'] . ' deleted successfully');
+        return redirect()->to('/admin/' . $this->data['controller_route'] . '/enquiry-details/. ' . encoded($enq_id));
+    }
     public function confirm_delete($id, $current_status)
     {
         if (!$this->common_model->checkModuleFunctionAccess(23, 107)) {

@@ -178,7 +178,62 @@ class VendorController extends BaseController
                 'updated_by'                                => $this->session->user_id,
                 'cto'                                       => $this->request->getPost('cto'),
             );
+            // pr($postData);
+            
             $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
+
+            $last_id = $this->db->insertID();
+
+            // Logged-in user details
+            $logged_user_id = $this->session->user_id;
+            $logged_user_type = $this->session->user_type; // 'ma' or 'u' 
+
+            function insertVendorId($db, $user_id, $vendor_id) {
+
+                // Fetch user row
+                $row = $db->table('ecoex_admin_user')->where('id', $user_id)->get()->getRow();
+
+                // Decode JSON
+                $vendor_ids = json_decode($row->vendor_ids, true);
+
+                // Ensure array
+                if (!is_array($vendor_ids)) {
+                    $vendor_ids = [];
+                }
+
+                // Remove existing duplicate (if any)
+                $vendor_ids = array_values(array_diff($vendor_ids, [$vendor_id]));
+
+                // Insert vendor id at index 0
+                array_unshift($vendor_ids, $vendor_id);
+
+                // Update back to DB
+                $db->table('ecoex_admin_user')
+                ->where('id', $user_id)
+                ->update(['vendor_ids' => json_encode($vendor_ids)]);
+            }
+
+            if ($logged_user_type === 'MA') {
+
+                // Insert for ONLY master admin (logged user)
+                insertVendorId($this->db, $logged_user_id, $last_id);
+
+            } elseif ($logged_user_type === 'U') {
+
+                // Insert for user himself
+                insertVendorId($this->db, $logged_user_id, $last_id);
+
+                // Insert for master admin also
+                $master_admin = $this->db->table('ecoex_admin_user')
+                                        ->where('user_type', 'MA')
+                                        ->get()
+                                        ->getRow();
+
+                if ($master_admin) {
+                    insertVendorId($this->db, $master_admin->id, $last_id);
+                }
+            }            
+            
             $this->session->setFlashdata('success_message', $this->data['title'] . ' inserted successfully');
             return redirect()->to('/admin/' . $this->data['controller_route'] . '/list');
         }
