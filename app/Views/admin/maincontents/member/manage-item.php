@@ -118,7 +118,7 @@ $userType           = $session->user_type;
                                                 <?= $allItem->item_name_ecoex ?>
                                             </div>                                    
                                             <div class="col-md-2 mb-3 mb-md-0">
-                                                <input type = "text" class="form-control" name ="item_price" value="<?= $value ?>" required inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                                                <input type = "text" class="form-control" name ="item_price" value="<?= $value ?>" required inputmode="decimal" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1')" />
                                             </div>
                                             <div class="col-md-2 mb-3 mb-md-0">
                                                /<?= $allItem->unit_name ?>
