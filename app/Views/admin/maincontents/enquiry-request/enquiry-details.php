@@ -582,6 +582,21 @@ $request_edit_fields = [
                                 </h2>
                                 <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                     <div class="accordion-body">
+                                        <form method="POST" action="" enctype="multipart/form-data">
+                                            <!-- items -->
+                                            <div class="col-md-12 mb-4">
+                                                <button type="button" class="btn btn-success btn-lg mt-4 add_button">Add Item For Enquiry</button>
+                                            </div>
+                                            <div class="col-md-12 mb-4 text-center">
+                                                <div class="field_wrapper">
+
+                                                </div>
+                                            </div>
+                                            <!-- items -->
+                                            <div class="text-center">
+                                                <button type="submit" id="create_item" class="btn btn-primary d-none">Create</button>
+                                            </div>
+                                        </form>
                                         <div class="table-responsive">
                                             <table class="table globel_table">
                                                 <thead>
