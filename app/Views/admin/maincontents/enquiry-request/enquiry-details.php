@@ -554,10 +554,10 @@ $request_edit_fields = [
                     </div>
                 </div>
 
-                <div class="card">
+                <!-- <div class="card">
                     <div class="card-body">
                         <form method="POST" action="" enctype="multipart/form-data">
-                            <!-- items -->
+                            items 
                             <div class="col-md-12 mb-4">
                                 <button type="button" class="btn btn-success btn-lg mt-4 add_button">Add Item For Enquiry</button>
                             </div>
@@ -566,13 +566,13 @@ $request_edit_fields = [
 
                                 </div>
                             </div>
-                            <!-- items -->
+                             items 
                             <div class="text-center">
                                 <button type="submit" id="create_item" class="btn btn-primary d-none">Create</button>
                             </div>
                         </form>
                     </div>
-                </div>
+                </div> -->
                 <div class="material_accordion_section">
                     <div class="accordion" id="accordionExample">
                         <?php if ($common_model->checkModuleFunctionAccess(23, 118)) { ?>                            
@@ -585,7 +585,7 @@ $request_edit_fields = [
                                         <form method="POST" action="" enctype="multipart/form-data">
                                             <!-- items -->
                                             <div class="col-md-12 mb-4">
-                                                <button type="button" class="btn btn-success btn-lg mt-4 add_button">Add Item For Enquiry</button>
+                                                <button type="button" class="btn btn-info btn-sm mt-4 add_button">Add Item For Enquiry</button>
                                             </div>
                                             <div class="col-md-12 mb-4 text-center">
                                                 <div class="field_wrapper">
