@@ -764,10 +764,13 @@ $request_edit_fields = [
                                                                     <?php } ?>
                                                                     <?php
                                                                     $submittedDates         = [];
-                                                                    $checkQuotationSubmits  = $common_model->find_data('ecomm_enquiry_vendor_quotation_logs', 'array', ['enq_id' => $enq_id, 'vendor_id' => $sharedVendor->vendor_id, 'item_id' => $enquiryProducts[0]->product_id], 'created_at');
-                                                                    if ($checkQuotationSubmits) {
-                                                                        foreach ($checkQuotationSubmits as $checkQuotationSubmit) {
-                                                                            $submittedDates[]         = date_format(date_create($checkQuotationSubmit->created_at), "M d, Y h:i A");
+
+                                                                    if(count($enquiryProducts) > 0){
+                                                                        $checkQuotationSubmits  = $common_model->find_data('ecomm_enquiry_vendor_quotation_logs', 'array', ['enq_id' => $enq_id, 'vendor_id' => $sharedVendor->vendor_id, 'item_id' => $enquiryProducts[0]->product_id], 'created_at');
+                                                                        if ($checkQuotationSubmits) {
+                                                                            foreach ($checkQuotationSubmits as $checkQuotationSubmit) {
+                                                                                $submittedDates[]         = date_format(date_create($checkQuotationSubmit->created_at), "M d, Y h:i A");
+                                                                            }
                                                                         }
                                                                     }
                                                                     ?>
