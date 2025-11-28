@@ -724,6 +724,10 @@ class CompanyController extends BaseController
         }
         echo $this->layout_after_login($title, $page_name, $data);
     }
+    public function manageItemDelete($id){
+        $id                         = decoded($id);
+        echo $id;die;
+    }
     public function approveItem()
     {
         $id             = decoded($this->request->getPost('id'));
