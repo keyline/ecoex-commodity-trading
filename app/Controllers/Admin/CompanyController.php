@@ -726,7 +726,12 @@ class CompanyController extends BaseController
     }
     public function manageItemDelete($id){
         $id                         = decoded($id);
-        echo $id;die;
+        $getItem                    = $this->data['model']->find_data('ecomm_company_items', 'row', ['id' => $id], 'company_id');
+        $company_id                 = (($getItem)?$getItem->company_id:0);
+        $this->common_model->save_data('ecomm_company_items', ['status' => 3], $id, 'id');
+
+        $this->session->setFlashdata('success_message', $this->data['title'] . ' Item Removed Successfully');
+        return redirect()->to(base_url('admin/companies/manage-item/' . encoded($company_id)));
     }
     public function approveItem()
     {
