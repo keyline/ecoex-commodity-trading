@@ -174,7 +174,7 @@ $userType           = $session->user_type;
                                                     <?php } ?>
                                                 <?php } ?>
                                                 <?php if ($userType == 'MA') { ?>
-                                                    <a href="<?= base_url('admin/manage-item-delete/' . encoded($assignItem->id)) ?>" class="btn btn-danger btn-sm w-100 remove_button ms-auto" title="Remove Item" onclick="return confirm('Do You Want To Remove This Item ?');"><i class="fa fa-trash"></i> Remove</a>
+                                                    <a href="<?= base_url('admin/companies/manage-item-delete/' . encoded($assignItem->id)) ?>" class="btn btn-danger btn-sm w-100 remove_button ms-auto" title="Remove Item" onclick="return confirm('Do You Want To Remove This Item ?');"><i class="fa fa-trash"></i> Remove</a>
                                                 <?php } ?>
                                             </div>
                                         </div>
