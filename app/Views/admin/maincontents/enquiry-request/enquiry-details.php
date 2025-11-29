@@ -594,7 +594,7 @@ $request_edit_fields = [
                                             </div>
                                             <!-- items -->
                                             <div class="text-center">
-                                                <button type="submit" id="create_item" class="btn btn-primary d-none">Create</button>
+                                                <button type="submit" id="create_item" class="btn btn-primary mb-4 d-none">Create</button>
                                             </div>
                                         </form>
                                         <div class="table-responsive">
@@ -724,7 +724,7 @@ $request_edit_fields = [
                                                                             data-unit="<?= $getItem->unit ?>">
                                                                             <i class="fas fa-pencil-alt"></i> Edit</span>
                                                                             <?php } if ($common_model->checkModuleFunctionAccess(23, 157)) { ?>
-                                                                            <span><a href="<?= base_url('admin/' . $controller_route . '/enquiry-item/delete/' . encoded($getItem->id) . '/'. encoded($row->id)) ?>" class="btn btn-outline-danger btn-sm" title="Delete <?= $title ?>" onclick="return confirm('Do You Want To Delete This <?= $title ?>');"><i class="fa fa-trash"></i>Delete</a></span>
+                                                                            <span><a href="<?= base_url('admin/' . $controller_route . '/enquiry-item/delete/' . encoded($getItem->id) . '/'. encoded($row->id)) ?>" class="badge  bg-danger btn-sm" title="Delete <?= $title ?>" onclick="return confirm('Do You Want To Delete This <?= $title ?>');"><i class="fa fa-trash"></i> Delete</a></span>
                                                                             <?php } ?>
                                                                     </td>
                                                                 <?php endif; ?>
