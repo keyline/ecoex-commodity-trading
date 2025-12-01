@@ -61,14 +61,14 @@ $userType           = $session->user_type;
                                 <h6 class="text-success fw-bold">Item<br>Category</h6>
                             </div>
                             <div class="col-md-2">
-                                <h6 class="text-success fw-bold">Item Name<br>(Ecoex)</h6>
+                                <h6 class="text-success fw-bold">Item Name</h6>
                             </div>
-                            <div class="col-md-1">
+                            <!-- <div class="col-md-1">
                                 <h6 class="text-success fw-bold">Alias<br>(App)</h6>
                             </div>
                             <div class="col-md-1">
                                 <h6 class="text-success fw-bold">Billing<br>Name</h6>
-                            </div>
+                            </div> -->
                             <div class="col-md-1">
                                 <h6 class="text-success fw-bold">HSN</h6>
                             </div>
@@ -121,12 +121,12 @@ $userType           = $session->user_type;
                                             <div class="col-md-2 mb-3 mb-md-0">
                                                 <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex" value="<?= $assignItem->item_name_ecoex ?>">
                                             </div>
-                                            <div class="col-md-1 mb-3 mb-md-0">
-                                                <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name" value="<?= $assignItem->alias_name ?>">
+                                            <!-- <div class="col-md-1 mb-3 mb-md-0">
+                                                <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name" value="?= $assignItem->alias_name ?>">
                                             </div>
                                             <div class="col-md-1 mb-3 mb-md-0">
-                                                <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name" value="<?= $assignItem->billing_name ?>">
-                                            </div>
+                                                <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name" value="?= $assignItem->billing_name ?>">
+                                            </div> -->
                                             <div class="col-md-1 mb-3 mb-md-0">
                                                 <input type="text" name="hsn[]" class="form-control" placeholder="HSN" value="<?= $assignItem->hsn ?>">
                                             </div>

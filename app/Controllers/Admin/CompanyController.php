@@ -756,8 +756,10 @@ class CompanyController extends BaseController
         $postData   = array(
             'item_category'             => $this->request->getPost('item_category')[0],
             'item_name_ecoex'           => $this->request->getPost('item_name_ecoex')[0],
-            'alias_name'                => $this->request->getPost('alias_name')[0],
-            'billing_name'              => $this->request->getPost('billing_name')[0],
+            // 'alias_name'                => $this->request->getPost('alias_name')[0],
+            // 'billing_name'              => $this->request->getPost('billing_name')[0],
+            'alias_name'                => $this->request->getPost('item_name_ecoex')[0],
+            'billing_name'              => $this->request->getPost('item_name_ecoex')[0],
             'hsn'                       => $this->request->getPost('hsn')[0],
             'gst'                       => $this->request->getPost('gst')[0],
             'rate'                      => $this->request->getPost('rate')[0],
