@@ -615,7 +615,7 @@ $request_edit_fields = [
                                                         <th>Images</th>
                                                         <th>Status</th>
                                                         <?php if (($row->status == 1 || $row->status == 0)): ?>
-                                                            <?php if ($common_model->checkModuleFunctionAccess(23, 158)) { ?>
+                                                            <?php if ($common_model->checkModuleFunctionAccess(23, 158) || $common_model->checkModuleFunctionAccess(23, 157) ) { ?>
                                                             <th></th>
                                                         <?php } endif ?>
                                                     </tr>
