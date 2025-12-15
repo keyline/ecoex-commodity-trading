@@ -322,6 +322,7 @@ $userType           = $session->user_type;
         transition: 0.3s;
         /* min-height: 260px; */
         min-height: 185px;
+        height: 223px;
         border: 1px solid #e3e3e3;
         background: #ebebeb;
     }
