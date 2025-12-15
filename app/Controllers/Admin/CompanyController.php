@@ -834,6 +834,7 @@ class CompanyController extends BaseController
         $company                    = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $id], 'company_name');
         $company_name               = (($company) ? $company->company_name : '');
         $data['moduleDetail']       = $this->data;
+        $data['common_model']       = $this->common_model;
         $data['action']             = 'Manage Certificates : ';
         $title                      = $data['action'] . ' ' . $company_name;
         $page_name                  = 'company/manage-certificate';
