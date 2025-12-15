@@ -187,7 +187,17 @@ $userType           = $session->user_type;
                                 </div> -->
 
                                                                 <div class="card-body">
-                                                                    <h6 class="text-muted mb-2 border-bottom"><?= $certificateData['enquiry_no'] ?></h6>
+                                                                    <h6 class="text-muted mb-2 border-bottom">
+                                                                        <?php
+                                                                        if ($certificate->certificate_type) {
+                                                                            $join[0] = ['table' => 'ecomm_users', 'field' => 'id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'plant_id', 'type' => 'inner'];
+                                                                            $getEnquiryPlant = $common_model->find_data('ecomm_enquires', 'row', ['ecomm_enquires.id' => $certificate->enquiry_id], 'ecomm_users.plant_name', $join);
+
+                                                                            echo (($getEnquiryPlant)?$getEnquiryPlant->plant_name:'');
+                                                                        }
+                                                                        ?>
+                                                                    </h6>
+                                                                    <small><?= $certificateData['enquiry_no'] ?></small>
                                                                     <h5 class="fw-bold mb-0"><?= $certificate->created_at ?></h5>
 
                                                                     <div class="d-flex justify-content-between align-items-center mt-4">
@@ -247,11 +257,18 @@ $userType           = $session->user_type;
                                                             <div class="col-md-4 productList">
                                                                 <div class="card card-custom p-3">
                                                                     <div class="card-body">
-                                                                        <h6 class="text-muted mb-2 border-bottom"><?= $certificateData['enquiry_no'] ?></h6>
+                                                                        <h6 class="text-muted mb-2 border-bottom">
+                                                                            <?php
+                                                                            if ($certificate->certificate_type) {
+                                                                                $join[0] = ['table' => 'ecomm_users', 'field' => 'id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'plant_id', 'type' => 'inner'];
+                                                                                $getEnquiryPlant = $common_model->find_data('ecomm_enquires', 'row', ['ecomm_enquires.id' => $certificate->enquiry_id], 'ecomm_users.plant_name', $join);
+
+                                                                                echo (($getEnquiryPlant)?$getEnquiryPlant->plant_name:'');
+                                                                            }
+                                                                            ?>
+                                                                        </h6>
+                                                                        <small><?= $certificateData['enquiry_no'] ?></small>
                                                                         <h5 class="fw-bold mb-0"><?= $certificate->created_at ?></h5>
-
-
-
                                                                         <div class="d-flex justify-content-between align-items-center mt-4">
                                                                             <a target="_blank" href="<?= base_url('admin/certificates/' . $certificateData['id']) ?>" class="text-decoration-none text-viewcolor">View</a>
                                                                             <a target="_blank" href="<?= base_url('admin/certificates/' . $certificateData['id'] . '/pdf/download') ?>" download=""><button class="btn btn-download download-icon px-3">Download</button></a>
