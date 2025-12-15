@@ -134,8 +134,8 @@ $userType           = $session->user_type;
                                                                             echo (($getEnquiryPlant)?$getEnquiryPlant->plant_name:'');
                                                                         }
                                                                         ?>
-                                                                         (<?= $certificateData['enquiry_no'] ?>)
                                                                     </h6>
+                                                                    <small><?= $certificateData['enquiry_no'] ?></small>
                                                                     <h5 class="fw-bold mb-0"><?= $certificate->created_at ?></h5>
 
                                                                     <div class="d-flex justify-content-between align-items-center mt-4">
