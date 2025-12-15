@@ -165,7 +165,7 @@ $userType           = $session->user_type;
                                                             <?php } ?>
                                                         <?php } ?>
                                                         <br>
-                                                        <?php if ($common_model->checkModuleFunctionAccess(23, 149)) { ?>
+                                                        <?php //if ($common_model->checkModuleFunctionAccess(23, 149)) { ?>
                                                             <?php if ($userType == 'MA') { ?>
                                                                 <!-- <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification/' . encoded(97)) ?>" class="btn btn-success btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa fa-whatsapp" aria-hidden="true"></i> Click To Send Notification</a> -->
                                                                  <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
@@ -187,7 +187,7 @@ $userType           = $session->user_type;
                                                                 </form>
                                                                 
                                                             <?php } ?>
-                                                        <?php } ?>
+                                                        <?php //} ?>
                                                     <?php } else { ?>
                                                         <?php if ($row->status >= 1 && $row->status <= 12) { ?>
                                                             <h6 class="badge bg-success mt-2"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
