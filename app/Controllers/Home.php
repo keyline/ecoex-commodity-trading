@@ -168,4 +168,11 @@ class Home extends BaseController
     {
         phpinfo();
     }
+
+    public function getAllEnquiry()
+    {
+        $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
+        $data['enqs']            = $this->common_model->find_data('ecomm_enquires', 'array', ['status<' => 14], 'id,company_id,enquiry_no,status');
+        return view('enquiry-list', $data);
+    }
 }
