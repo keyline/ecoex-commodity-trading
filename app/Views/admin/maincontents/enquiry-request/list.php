@@ -181,7 +181,7 @@ $userType           = $session->user_type;
                                                                     <?= csrf_field() ?>
                                                                     <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
                                                                     <input type="hidden" name="send_type" value="pan_india">
-                                                                    <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]['pan_India']) && ($statusMap[$row->id]['pan_India'] == 'processing' || $statusMap[$row->id]['pan_India'] == 'pending')) ? 'disabled' : '' ?>>
+                                                                    <button type="submit" class="btn btn-primary btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]['pan_India']) && ($statusMap[$row->id]['pan_India'] == 'processing' || $statusMap[$row->id]['pan_India'] == 'pending')) ? 'disabled' : '' ?>>
                                                                         <i class="fa fa-whatsapp" aria-hidden="true"></i> Send Notification To Pan India (<?= $statusMap[$row->id]['pan_India'] ?? '' ?>)
                                                                     </button>
                                                                 </form>
