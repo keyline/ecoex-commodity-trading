@@ -285,7 +285,7 @@ class WhatsappMessageController extends BaseController
         $notInterested = $data['notificationStats']['coverage'][0]['not_interested_count'];
         $interested = $data['notificationStats']['coverage'][0]['interested_count'];
         //$pending = $data['notificationStats']['coverage'][0]['pending_count'];
-        $total = $data['notificationStats']['summary']['state']['total_notified'] + $data['notificationStats']['summary']['pan_India']['total_notified'];
+        $total = $data['notificationStats']['summary']['state']['total_notified'] + $data['notificationStats']['summary']['pan_India']['total_notified'] + $data['notificationStats']['summary']['neighbour']['total_notified'];
         $pending = $total - ($interested + $notInterested);
         $interestedRate = $total > 0 ? round((($interested) / $total) * 100, 2) : 0;
         $notInterestedRate = $total > 0 ? round((($notInterested) / $total) * 100, 2) : 0;
@@ -315,8 +315,7 @@ class WhatsappMessageController extends BaseController
             COUNT(DISTINCT w.id) AS total_sent,
             SUM(CASE WHEN i.button_action = 'Interested' THEN 1 ELSE 0 END) AS interested_count,
             SUM(CASE WHEN i.button_action = 'Not Interested' THEN 1 ELSE 0 END) AS not_interested_count,
-            SUM(CASE WHEN (i.button_action IS NULL OR i.button_action = '') THEN 1 ELSE 0 END) AS pending_count
-        ");
+            SUM(CASE WHEN (i.button_action IS NULL OR i.button_action = '') THEN 1 ELSE 0 END) AS pending_count");
             $builder1->join('whatsapp_interactions i', 'w.enquiry_id = i.enquiry_id', 'left');
             $builder1->where('w.enquiry_id', $enquiryId);
             $builder1->groupBy('w.enquiry_id');
@@ -331,8 +330,9 @@ class WhatsappMessageController extends BaseController
             COUNT(*) AS total_attempts,
             w.total_recipients AS total_notified,
             SUM(CASE WHEN w.send_type = 'state' THEN 1 ELSE 0 END) AS statewise_count,
-            SUM(CASE WHEN w.send_type = 'pan_India' THEN 1 ELSE 0 END) AS pan_india_count
-        ");
+            SUM(CASE WHEN w.send_type = 'pan_India' THEN 1 ELSE 0 END) AS pan_india_count,
+            SUM(CASE WHEN w.send_type = 'neighbour' THEN 1 ELSE 0 END) AS neighbour_count            
+            ");
             $builder2->groupBy('DATE(w.created_at)');
             $builder2->groupBy('w.send_type');
             $builder2->orderBy('DATE(w.created_at)', 'DESC');
@@ -381,6 +381,38 @@ class WhatsappMessageController extends BaseController
         $builder4->where('phone <>', '');
         $panIndiaSubscriber = (int) $builder4->get()->getRow('count');
 
+        // --- 5 Neighbourwise Vendors ---
+        $builder5 = $db->table('ecomm_states');
+        $builder5->select('name');
+        $builder5->where('is_neighbour', 1);
+        $builder5->where('status', 1);
+        $getNeighbourStates = $builder5->get()->getResult();
+        $neighbourStateList = [];
+        if($getNeighbourStates){
+            foreach($getNeighbourStates as $getNeighbourState){
+                $neighbourStateList[] = $getNeighbourState->name;
+            }
+        }
+        $neighbourStateString = implode(',', $neighbourStateList);
+
+        $builder6 = $db->table('ecomm_users');
+        $builder6->select('COUNT(*) AS count');
+        $builder6->where('type', 'VENDOR');
+        $builder6->where('phone <>', '');
+        if (!empty($state)) {
+            $builder6->whereIn('state', $neighbourStateString);
+        }
+        $neighbourVendor = (int) $builder6->get()->getRow('count');
+
+        // --- Neighbourwise Subscribers ---
+        $builder7 = $db->table('subscribers');
+        $builder7->select('COUNT(*) AS count');
+        $builder7->where('phone <>', '');
+        if (!empty($state)) {
+            $builder7->whereIn('state', $neighbourStateString);
+        }
+        $neighbourSubscriber = (int) $builder7->get()->getRow('count');
+
         // ✅ Return summary
         return [
             'statewise' => [
@@ -393,6 +425,12 @@ class WhatsappMessageController extends BaseController
                 'subscriber_count' => $panIndiaSubscriber,
                 'total'            => $panIndiaVendor + $panIndiaSubscriber,
             ],
+            
+            'neighbour' => [
+                'vendor_count'     => $neighbourVendor,
+                'subscriber_count' => $neighbourSubscriber,
+                'total'            => $neighbourVendor + $neighbourSubscriber,
+            ],
         ];
     }
 
@@ -402,6 +440,8 @@ class WhatsappMessageController extends BaseController
      */
     public function tabData()
     {
+        $db = \Config\Database::connect();
+
         try {
             $jobId = (int) $this->request->getGet('job_id');
             $type  = $this->request->getGet('type') ?? 'interested';
@@ -412,7 +452,6 @@ class WhatsappMessageController extends BaseController
                 return $this->response->setJSON(['status' => 'error', 'message' => 'invalid or missing parameter'])->setStatusCode(400);
 
             }
-
 
             //for pagination
 
@@ -433,7 +472,7 @@ class WhatsappMessageController extends BaseController
             }
 
             $enquiryId = $job['enquiry_id'];
-            $sendType  = $job['send_type']; // state / pan_India
+            $sendType  = $job['send_type']; // state / pan_India // neighbour
             if ($sendType == 'state') {
 
                 $builder = $this->db->table('ecomm_enquires enq');
@@ -449,6 +488,21 @@ class WhatsappMessageController extends BaseController
 
             }
             //$state     = $job['state_type'] ?? null;
+
+            if ($sendType == 'neighbour') {
+                $builder5 = $db->table('ecomm_states');
+                $builder5->select('name');
+                $builder5->where('is_neighbour', 1);
+                $builder5->where('status', 1);
+                $getNeighbourStates = $builder5->get()->getResult();
+                $neighbourStateList = [];
+                if($getNeighbourStates){
+                    foreach($getNeighbourStates as $getNeighbourState){
+                        $neighbourStateList[] = $getNeighbourState->name;
+                    }
+                }
+                $neighbourStateString = implode(',', $neighbourStateList);
+            }
 
 
 
@@ -469,6 +523,12 @@ class WhatsappMessageController extends BaseController
                 $subscriberSQL .= " AND state = ?";
                 $recipientBinds[] = $state;
                 $recipientBinds[] = $state;
+            }
+            if ($sendType === 'neighbour') {
+                $vendorSQL .= " AND state IN ?";
+                $subscriberSQL .= " AND state IN ?";
+                $recipientBinds[] = $neighbourStateString;
+                $recipientBinds[] = $neighbourStateString;
             }
 
             // combine

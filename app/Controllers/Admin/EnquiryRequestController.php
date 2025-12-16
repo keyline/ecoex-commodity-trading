@@ -2890,18 +2890,13 @@ class EnquiryRequestController extends BaseController
 
         // Ensure this is a POST request
         if ($this->request->getMethod() !== 'post') {
-
             return redirect()->back()->with('error_message', 'Invalid request method.');
-
         }
 
-
-
         $validation = \Config\Services::validation();
-
         $validation->setRules([
             'enquiry_id' => 'required|alpha_numeric',
-            'send_type'  => 'required|in_list[state, pan_india]',
+            'send_type'  => 'required|in_list[state, pan_india, neighbour]',
         ]);
         $isValid = $validation->withRequest($this->request)->run();
         if (!$isValid) {
@@ -2935,6 +2930,7 @@ class EnquiryRequestController extends BaseController
             'enquiry_meta' => json_encode($enquiryData),
             'created_at' => date('Y-m-d H:i:s'),
         ];
+        // pr($data);
         $jobModel->insert($data);
 
         $jobId = $jobModel->getInsertID();

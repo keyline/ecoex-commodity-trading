@@ -177,6 +177,7 @@ $userType           = $session->user_type;
                                                                     </button>
                                                                 </form>
                                                                 <br>
+
                                                                 <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
                                                                     <?= csrf_field() ?>
                                                                     <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
@@ -185,7 +186,16 @@ $userType           = $session->user_type;
                                                                         <i class="fa-brands fa-whatsapp"></i> Send Notification To Pan India (<?= $statusMap[$row->id]['pan_India'] ?? '' ?>)
                                                                     </button>
                                                                 </form>
+                                                                <br>
                                                                 
+                                                                <!-- <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
+                                                                    <?= csrf_field() ?>
+                                                                    <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
+                                                                    <input type="hidden" name="send_type" value="neighbour">
+                                                                    <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]['neighbour']) && ($statusMap[$row->id]['neighbour'] == 'processing' || $statusMap[$row->id]['neighbour'] == 'pending')) ? 'disabled' : '' ?>>
+                                                                        <i class="fa-brands fa-whatsapp"></i> Send Notification To Neighbour (<?= $statusMap[$row->id]['neighbour'] ?? '' ?>)
+                                                                    </button>
+                                                                </form> -->
                                                             <?php //} ?>
                                                         <?php //} ?>
                                                     <?php } else { ?>
