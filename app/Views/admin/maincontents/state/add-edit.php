@@ -35,9 +35,11 @@ $controller_route   = $moduleDetail['controller_route'];
             </div>
             <?php
                 if($row){
-                  $name     = $row->name;
+                  $name             = $row->name;
+                  $is_neighbour     = $row->is_neighbour;
                 } else {
-                  $name     = '';
+                  $name             = '';
+                  $is_neighbour     = '';
                 }
                 ?>
             <div class="col-xl-12">
@@ -48,6 +50,16 @@ $controller_route   = $moduleDetail['controller_route'];
                                 <label for="name" class="col-md-2 col-lg-2 col-form-label"><?=$title?> Name</label>
                                 <div class="col-md-10 col-lg-10">
                                     <input type="text" name="name" class="form-control" id="name" value="<?=$name?>" required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="is_neighbour" class="col-md-2 col-lg-2 col-form-label">Is Neighbour</label>
+                                <div class="col-md-10 col-lg-10">
+                                    <select name="is_neighbour" class="form-control" id="is_neighbour" required>
+                                        <option value="" selected>Select Is Neighbour</option>
+                                        <option value="1" <?= (($is_neighbour == 1)?'selected':'') ?>>YES</option>
+                                        <option value="0" <?= (($is_neighbour == 0)?'selected':'') ?>>NO</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="text-center">

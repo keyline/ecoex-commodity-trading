@@ -55,6 +55,7 @@ class StateController extends BaseController {
         if($this->request->getMethod() == 'post') {
             $postData   = array(
                 'name'          => strtoupper($this->request->getPost('name')),
+                'is_neighbour'  => $this->request->getPost('is_neighbour'),
                 'created_by'    => $this->session->get('user_id'),
             );
             $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);            
@@ -83,6 +84,7 @@ class StateController extends BaseController {
         if($this->request->getMethod() == 'post') {
             $postData   = array(
                 'name'          => strtoupper($this->request->getPost('name')),
+                'is_neighbour'  => $this->request->getPost('is_neighbour'),
                 'updated_by'    => $this->session->get('user_id'),
             );
             $record = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);

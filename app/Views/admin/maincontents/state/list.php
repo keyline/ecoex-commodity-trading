@@ -45,6 +45,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <tr>
                                         <th width="5%" class="text-center">#</th>
                                         <th width="20%">Name</th>
+                                        <th width="20%">Is Neighbour</th>
                                         <th>Created At / Created By<br>Updated At / Updated By</th>
                                         <th class="text-center">Action</th>
                                     </tr>
@@ -54,6 +55,13 @@ $controller_route   = $moduleDetail['controller_route'];
                                     <tr>
                                         <th scope="row" class="text-center"><?=$sl++?></th>
                                         <td><?=$row->name?></td>
+                                        <td>
+                                            <?php if($row->is_neighbour){?>
+                                                <span class="badge bg-success">YES</span>
+                                            <?php } else {?>
+                                                <span class="badge bg-danger">NO</span>
+                                            <?php }?>
+                                        </td>
                                         <td>
                                             <h6>
                                                 <?=(($row->created_at != '')?date_format(date_create($row->created_at), "M d, Y h:i A"):'')?> /
