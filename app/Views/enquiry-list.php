@@ -39,13 +39,13 @@ $this->common_model         = new CommonModel;
     </style>
 </head>
 <body>
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
     <h3 class="text-center">
         <img src="<?=getenv('app.uploadsURL').$general_settings->site_logo?>" alt="<?=$general_settings->site_name?>">
         <p class="mt-3">Enquiry List</p>
     </h3>
-    <div class=" justify-content-center d-flex">
+    <div class=" justify-content-center">
         <div class="row">
             <div class="col-md-12">
                 <table class="table table-bordered">
@@ -54,8 +54,11 @@ $this->common_model         = new CommonModel;
                             <th>#</th>
                             <th>Enquiry No.</th>
                             <th>Company</th>
-                            <th>Status</th>
+                            <th>Sub Enquiry Count</th>
+                            <th>Sub Enquiries</th>
                             <th>Item Count</th>
+                            <th>Items</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -66,11 +69,12 @@ $this->common_model         = new CommonModel;
                         <tr>
                             <td><?= $sl++ ?></td>
                             <td><?= $enq->enquiry_no ?></td>
-                            <td><?= $enq->company_id ?></td>
-                            <td><?= $enq->status ?></td>
-                            <td>
-
-                            </td>
+                            <td><?= $enq->company_name ?></td>
+                            <td><?= $enq->sub_enquiry_count ?></td>
+                            <td><?= $enq->sub_enquiry_nos ?></td>
+                            <td><?= $enq->enquiry_products_count ?></td>
+                            <td><?= $enq->enquiry_product_name_list ?></td>
+                            <td><?= $enq->enquiry_status ?></td>
                         </tr>
                         <?php } }?>
                     </tbody>

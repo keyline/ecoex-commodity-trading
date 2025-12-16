@@ -172,7 +172,34 @@ class Home extends BaseController
     public function getAllEnquiry()
     {
         $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
-        $data['enqs']            = $this->common_model->find_data('ecomm_enquires', 'array', ['status<' => 14], 'id,company_id,enquiry_no,status');
+        // $data['enqs']            = $this->common_model->find_data('ecomm_enquires', 'array', ['status<' => 14], 'id,company_id,enquiry_no,status');
+        $db = \Config\Database::connect();
+
+        $builder = $db->table('ecomm_enquires E');
+
+        $builder->select([
+            'E.enquiry_no',
+            'E.status AS enquiry_status',
+            'C.company_name',
+            'COUNT(DISTINCT SE.id) AS sub_enquiry_count',
+            "GROUP_CONCAT(DISTINCT SE.sub_enquiry_no ORDER BY SE.sub_enquiry_no SEPARATOR ', ') AS sub_enquiry_nos",
+            'COUNT(DISTINCT EP.id) AS enquiry_products_count',
+            "GROUP_CONCAT(
+                DISTINCT IF(EP.new_product = 1, EP.new_product_name, CONCAT('PRODUCT-ID-', EP.product_id))
+                ORDER BY EP.id
+                SEPARATOR ', '
+            ) AS enquiry_product_name_list"
+        ]);
+
+        $builder->join('ecoex_companies C', 'C.id = E.company_id', 'left');
+        $builder->join('ecomm_sub_enquires SE', 'SE.enq_id = E.id', 'left');
+        $builder->join('ecomm_enquiry_products EP', 'EP.enq_id = E.id', 'left');
+
+        $builder->where('E.status <', 14);
+        $builder->groupBy('E.id');
+        $builder->orderBy('E.id', 'DESC');
+
+        $data['enqs'] = $builder->get()->getResult();
         return view('enquiry-list', $data);
     }
 }
