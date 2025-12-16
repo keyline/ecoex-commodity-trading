@@ -197,7 +197,7 @@ class Home extends BaseController
 
         $builder->where('E.status <', 14);
         $builder->groupBy('E.id');
-        $builder->orderBy('E.id', 'DESC');
+        $builder->orderBy('E.id', 'ASC');
 
         $data['enqs'] = $builder->get()->getResult();
         return view('enquiry-list', $data);
