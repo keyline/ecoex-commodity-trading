@@ -195,7 +195,7 @@ class Home extends BaseController
         $builder->join('ecomm_sub_enquires SE', 'SE.enq_id = E.id', 'left');
         $builder->join('ecomm_enquiry_products EP', 'EP.enq_id = E.id', 'left');
 
-        $builder->where('E.status <', 14);
+        $builder->where('E.status', 12);
         $builder->groupBy('E.id');
         $builder->orderBy('E.id', 'ASC');
 
