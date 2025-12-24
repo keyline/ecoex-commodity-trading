@@ -274,7 +274,19 @@ class PlantController extends BaseController
                 if ($master_admin) {
                     insertPlantId($this->db, $master_admin->id, $last_id);
                 }
-            }            
+
+                // Insert for particular company user also
+                $companyId = $this->request->getPost('parent_id');
+                $company_admins = $this->db->table('ecoex_admin_user')
+                                        ->where('user_type', 'COMPANY')
+                                        ->get()
+                                        ->getResult();
+                if($company_admins){
+                    foreach($company_admins as $company_admin){
+                        insertPlantId($this->db, $company_admin->id, $last_id);
+                    }
+                }
+            }
             $this->session->setFlashdata('success_message', $this->data['title'].' inserted successfully');
             return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
         }
