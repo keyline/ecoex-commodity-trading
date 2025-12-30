@@ -202,4 +202,12 @@ class Home extends BaseController
         $data['enqs'] = $builder->get()->getResult();
         return view('enquiry-list', $data);
     }
+
+    public function getAnalytics()
+    {
+        $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
+        $data['title']              = 'Analytics - ' . $data['general_settings']->site_name;
+        $data['page_header']        = 'Analytics';
+        return view('analytics', $data);
+    }
 }

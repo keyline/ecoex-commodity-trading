@@ -15,6 +15,7 @@ $routes->post('/get-phone-otp', 'Home::getPhoneOTP');
 $routes->get('/enquiry-cron', 'Home::enquiryCron');
 $routes->get('/upcoming-collection', 'Home::upcomingCollectionCron');
 $routes->get('/get-all-enquiry', 'Home::getAllEnquiry');
+$routes->get('/get-analytics', 'Home::getAnalytics');
 /* ADMIN PANEL */
 $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($routes) {
     // authentication
