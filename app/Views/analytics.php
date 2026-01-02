@@ -279,7 +279,7 @@
         tfoot .total-row td:first-child {
             color: var(--primary);
         }
-        /* ================= PRINT STYLES ================= */
+        /* ============= PRINT STYLES ========== */
 @media print {
 
     /* Hide everything */
