@@ -283,6 +283,32 @@ class Home extends BaseController
         $data['companies'] = $builder->countAllResults();
 
 
+        // Plants
+        $builder = $db->table('ecomm_users');
+        $builder->where('type', 'PLANT');
+        $builder->where('status !=', 3);
+
+        if (!empty($from_date) && !empty($to_date)) 
+        {
+            $builder->where('created_at >=', $from_date);
+            $builder->where('created_at <=', $to_date);
+        }
+
+        $data['plants'] = $builder->countAllResults();
+
+
+        // Vendors
+        $builder = $db->table('ecomm_users');
+        $builder->where('type', 'VENDOR');
+        $builder->where('status !=', 3);
+
+        if (!empty($from_date) && !empty($to_date)) 
+        {
+            $builder->where('created_at >=', $from_date);
+            $builder->where('created_at <=', $to_date);
+        }
+
+        $data['vendors'] = $builder->countAllResults();
 
        
         

@@ -395,12 +395,12 @@
 
                 <div class="card company-card">
                     <div class="card-title">Plants</div>
-                    <p class="card-value">119</p>
+                    <p class="card-value"><?= $plants ?></p>
                 </div>
 
                 <div class="card company-card">
                     <div class="card-title">Vendors</div>
-                    <p class="card-value">635</p>
+                    <p class="card-value"><?= $vendors ?></p>
                 </div>
                 <div class="card company-card">
                     <div class="card-title"> Subscribe Vendors</div>
