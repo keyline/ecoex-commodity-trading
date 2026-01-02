@@ -330,9 +330,14 @@ class Home extends BaseController
         // $builder->where('user_type', 'MA');
         $builder->where('status !=', 3);
         $admin_user_data = $builder->get()->getResult();
-        dd($admin_user_data);
+        // dd($admin_user_data);
+        foreach ($admin_user_data as $user)
+        {
+            echo $user;
+        }
 
-        // $data['page_content'] = $this->common_model->find_data('ecomm_pages', 'row', ['id' => 3]);
+
+        
 
 
 
