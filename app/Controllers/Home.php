@@ -326,12 +326,13 @@ class Home extends BaseController
 
 
         // admin_user data
-        //for MA
-        // $builder = $db->table('ecoex_admin_user');
+        $builder = $db->table('ecoex_admin_user');
         // $builder->where('user_type', 'MA');
-        // $builder->where('status !=', 3);
-        // $data['MA_name'] = $builder->
-        dd('hehe');
+        $builder->where('status !=', 3);
+        $admin_user_data = $builder->get()->getResult();
+        dd($admin_user_data);
+
+        // $data['page_content'] = $this->common_model->find_data('ecomm_pages', 'row', ['id' => 3]);
 
 
 
