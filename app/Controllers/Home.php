@@ -267,18 +267,21 @@ class Home extends BaseController
         $data['to_date']   = $to_date;
         $data['filter']    = $filter;
 
+        $db = \Config\Database::connect();
+
         // Companies
-        $builder = $this->db->table('ecoex_companies');
+        $builder = $db->table('ecoex_companies');
         $builder->where('type', 'COMPANY');
         $builder->where('status !=', 3);
 
-        if (!empty($filter))
+        if (!empty($from_date) && !empty($to_date)) 
         {
             $builder->where('created_at >=', $from_date);
             $builder->where('created_at <=', $to_date);
         }
 
         $data['companies'] = $builder->countAllResults();
+
 
 
        
