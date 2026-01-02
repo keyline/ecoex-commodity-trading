@@ -29,7 +29,7 @@ class Database extends Config
         'hostname'     => 'localhost',
         'username'     => 'root',
         'password'     => '',
-        'database'     => 'ecoex_commodity_new',
+        'database'     => 'keylines_ecoex_commodity',
         'DBDriver'     => '',
         'DBPrefix'     => '',
         'pConnect'     => false,
