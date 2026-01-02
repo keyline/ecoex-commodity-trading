@@ -331,11 +331,28 @@ class Home extends BaseController
         $builder->where('status !=', 3);
         $admin_user_data = $builder->get()->getResult();
         // dd($admin_user_data);
+
+        $data['SUM_RequestSubmittedCount'] = 0;
+
         foreach ($admin_user_data as $user)
         {
             if($user->user_type == 'MA')
             {
                $data['MA_name'] = $user->name ?? '';
+
+               // Request Submitted
+               $builder = $db->table('ecomm_enquires');
+               $builder->where('status', 0);
+               if (!empty($from_date) && !empty($to_date)) 
+               {
+                   $builder->where('created_at >=', $from_date);
+                   $builder->where('created_at <=', $to_date);
+               }
+               $data['MA_RequestSubmittedCount'] = $builder->countAllResults();
+               $data['SUM_RequestSubmittedCount'] += $data['MA_RequestSubmittedCount'];
+
+               
+
             }
         }
 

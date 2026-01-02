@@ -436,7 +436,7 @@
                             <tbody>
                                 <tr>
                                     <td><?= $MA_name ?></td>
-                                    <td>Request Submitted</td>
+                                    <td><?= $MA_RequestSubmittedCount ?></td>
                                     <td>Accept Request</td>
                                     <td>Vendor Allocated</td>
                                     <td>Vendor Assigned</td>
@@ -474,19 +474,19 @@
                             <tfoot>
                                 <tr class="total-row">
                                     <td>TOTAL</td>
-                                    <td>30</td>
-                                    <td>45</td>
-                                    <td>60</td>
-                                    <td>75</td>
-                                    <td>90</td>
-                                    <td>105</td>
-                                    <td>120</td>
-                                    <td>135</td>
-                                    <td>150</td>
-                                    <td>165</td>
-                                    <td>180</td>
-                                    <td>195</td>
-                                    <td>210</td>
+                                    <td><?= $SUM_RequestSubmittedCount ?></td>
+                                    <td>Accept Request</td>
+                                    <td>Vendor Allocated</td>
+                                    <td>Vendor Assigned</td>
+                                    <td>Pickup Scheduled</td>
+                                    <td>Vehicle Placed</td>
+                                    <td>Material Weighed</td>
+                                    <td>Invoice from HO</td>
+                                    <td>Invoice to Vendor</td>
+                                    <td>Payment received from Vendor</td>
+                                    <td>Vehicle Dispatched</td>
+                                    <td>Payment to HO</td>
+                                    <td>Order Complete</td>
                                 </tr>
                             </tfoot>
 
