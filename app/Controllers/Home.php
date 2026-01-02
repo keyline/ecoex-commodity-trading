@@ -333,7 +333,10 @@ class Home extends BaseController
         // dd($admin_user_data);
         foreach ($admin_user_data as $user)
         {
-            echo $user->name;
+            if($user->user_type == 'MA')
+            {
+               $data['MA_name'] = $user->name ?? '';
+            }
         }
 
 

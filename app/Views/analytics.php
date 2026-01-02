@@ -435,7 +435,7 @@
 
                             <tbody>
                                 <tr>
-                                    <td>Users</td>
+                                    <td><?= $MA_name ?></td>
                                     <td>Request Submitted</td>
                                     <td>Accept Request</td>
                                     <td>Vendor Allocated</td>
