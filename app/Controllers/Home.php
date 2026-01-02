@@ -325,7 +325,13 @@ class Home extends BaseController
 
 
 
-
+        // admin_user data
+        //for MA
+        // $builder = $db->table('ecoex_admin_user');
+        // $builder->where('user_type', 'MA');
+        // $builder->where('status !=', 3);
+        // $data['MA_name'] = $builder->
+        dd('hehe');
 
 
 

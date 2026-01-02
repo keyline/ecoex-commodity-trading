@@ -450,6 +450,22 @@
                                     <td>Payment to HO</td>
                                     <td>Order Complete</td>
                                 </tr>
+                                <tr>
+                                    <td>Users</td>
+                                    <td>Request Submitted</td>
+                                    <td>Accept Request</td>
+                                    <td>Vendor Allocated</td>
+                                    <td>Vendor Assigned</td>
+                                    <td>Pickup Scheduled</td>
+                                    <td>Vehicle Placed</td>
+                                    <td>Material Weighed</td>
+                                    <td>Invoice from HO</td>
+                                    <td>Invoice to Vendor</td>
+                                    <td>Payment received from Vendor</td>
+                                    <td>Vehicle Dispatched</td>
+                                    <td>Payment to HO</td>
+                                    <td>Order Complete</td>
+                                </tr>
                                 
                                 
                             </tbody>
