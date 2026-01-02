@@ -404,7 +404,7 @@
                 </div>
                 <div class="card company-card">
                     <div class="card-title"> Subscribe Vendors</div>
-                    <p class="card-value">635</p>
+                    <p class="card-value"><?= $subscribe_vendors ?></p>
                 </div>
 
             </div>

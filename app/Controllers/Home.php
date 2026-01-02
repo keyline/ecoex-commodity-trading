@@ -311,7 +311,18 @@ class Home extends BaseController
         $data['vendors'] = $builder->countAllResults();
 
        
-        
+        // Subscribe Vendors 
+        $builder = $db->table('subscribers');
+        $builder->where('status !=', 3);
+
+        if (!empty($from_date) && !empty($to_date)) 
+        {
+            $builder->where('created_at >=', $from_date);
+            $builder->where('created_at <=', $to_date);
+        }
+
+        $data['subscribe_vendors'] = $builder->countAllResults();
+
 
 
 
