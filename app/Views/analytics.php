@@ -390,7 +390,7 @@
                 <!-- Company card box -->
                 <div class="card company-card">
                     <div class="card-title">Companies</div>
-                    <p class="card-value">100</p>
+                    <p class="card-value"><?= $companies ?></p>
                 </div>
 
                 <div class="card company-card">
