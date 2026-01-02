@@ -203,70 +203,7 @@ class Home extends BaseController
         return view('enquiry-list', $data);
     }
 
-    // public function getAnalytics()
-    // {
-    //     $from_date =  ;
-    //     $to_date =  ;
-
-
-    //     if ($this->request->getMethod() == 'post')
-    //     {
-
-    //         if($this->request->getPost('filter_keyword') == "today")
-    //         {
-    //             $from_date =  ;
-    //             $to_date =  ;
-    //         }
-    //         elseif($this->request->getPost('filter_keyword') == "yesterday")
-    //         {
-    //             $from_date =  ;
-    //             $to_date =  ;
-    //         }
-    //         elseif($this->request->getPost('filter_keyword') == "this_month")
-    //         {
-    //             $from_date =  ;
-    //             $to_date =  ;
-    //         }
-    //         elseif($this->request->getPost('filter_keyword') == "last_month")
-    //         {
-    //             $from_date =  ;
-    //             $to_date =  ;
-    //         }
-    //         elseif($this->request->getPost('filter_keyword') == "last_7_days")
-    //         {
-    //             $from_date =  ;
-    //             $to_date =  ;
-    //         }
-    //         elseif($this->request->getPost('filter_keyword') == "last_30_days")
-    //         {
-    //             $from_date =  ;
-    //             $to_date =  ;
-    //         }
-    //         elseif($this->request->getPost('filter_keyword') == "this_year")
-    //         {
-    //             $from_date =  ;
-    //             $to_date =  ;
-    //         }
-    //         elseif($this->request->getPost('filter_keyword') == "last_year")
-    //         {
-    //             $from_date =  ;
-    //             $to_date =  ;
-    //         }
-            
-    //     }
-
-    //     $data['from_date']          = $from_date;
-    //     $data['to_date']            = $to_date;
-
-
-
-
-
-    //     $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
-    //     $data['title']              = 'Analytics - ' . $data['general_settings']->site_name;
-    //     $data['page_header']        = 'Analytics';
-    //     return view('analytics', $data);
-    // }
+    
 
 
 
@@ -329,6 +266,24 @@ class Home extends BaseController
         $data['from_date'] = $from_date;
         $data['to_date']   = $to_date;
         $data['filter']    = $filter;
+
+        // Companies
+        $builder = $this->db->table('ecoex_companies');
+        $builder->where('type', 'COMPANY');
+        $builder->where('status !=', 3);
+
+        if (!empty($filter))
+        {
+            $builder->where('created_at >=', $from_date);
+            $builder->where('created_at <=', $to_date);
+        }
+
+        $data['companies'] = $builder->countAllResults();
+
+
+       
+        
+
 
 
 

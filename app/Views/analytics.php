@@ -322,18 +322,6 @@
                     <div class="date-group">
                         <form method="GET" action="" name="PostName">
                             <input type="hidden" name="mode" value="filter">
-                            <!-- <select class="form-control  ecoex-select" id="filter_keyword" name="filter_keyword"
-                                onchange="PostName.submit()">
-                                <option value="">All Time</option>
-                                <option value="today" selected="">Today</option>
-                                <option value="yesterday">Yesterday</option>
-                                <option value="this_month">This Month</option>
-                                <option value="last_month">Last Month</option>
-                                <option value="last_7_days">Last 7 Days</option>
-                                <option value="last_30_days">Last 30 Days</option>
-                                <option value="this_year">This Year</option>
-                                <option value="last_year">Last Year</option>
-                            </select> -->
                             <select class="form-control  ecoex-select" id="filter_keyword" name="filter_keyword" onchange="this.form.submit()">
 
                                 <option value="" <?= empty($filter) ? 'selected' : '' ?>>
@@ -380,10 +368,10 @@
 
                     <?php if (!empty($from_date) && !empty($to_date)) { ?>
                     <label>
-                        From Date: <?= date('d M Y', strtotime($from_date)) ?>
+                        From: <?= date('d M Y', strtotime($from_date)) ?>
                     </label>
                     <label>
-                        To Date: <?= date('d M Y', strtotime($to_date)) ?>
+                        To: <?= date('d M Y', strtotime($to_date)) ?>
                     </label>
                     <?php } ?>
 
