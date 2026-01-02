@@ -322,7 +322,7 @@
                     <div class="date-group">
                         <form method="GET" action="" name="PostName">
                             <input type="hidden" name="mode" value="filter">
-                            <select class="form-control  ecoex-select" id="filter_keyword" name="filter_keyword"
+                            <!-- <select class="form-control  ecoex-select" id="filter_keyword" name="filter_keyword"
                                 onchange="PostName.submit()">
                                 <option value="">All Time</option>
                                 <option value="today" selected="">Today</option>
@@ -333,11 +333,61 @@
                                 <option value="last_30_days">Last 30 Days</option>
                                 <option value="this_year">This Year</option>
                                 <option value="last_year">Last Year</option>
+                            </select> -->
+                            <select class="form-control  ecoex-select" id="filter_keyword" name="filter_keyword" onchange="this.form.submit()">
+
+                                <option value="" <?= empty($filter) ? 'selected' : '' ?>>
+                                    All Time
+                                </option>
+
+                                <option value="today" <?= ($filter == 'today') ? 'selected' : '' ?>>
+                                    Today
+                                </option>
+
+                                <option value="yesterday" <?= ($filter == 'yesterday') ? 'selected' : '' ?>>
+                                    Yesterday
+                                </option>
+
+                                <option value="this_month" <?= ($filter == 'this_month') ? 'selected' : '' ?>>
+                                    This Month
+                                </option>
+
+                                <option value="last_month" <?= ($filter == 'last_month') ? 'selected' : '' ?>>
+                                    Last Month
+                                </option>
+
+                                <option value="last_7_days" <?= ($filter == 'last_7_days') ? 'selected' : '' ?>>
+                                    Last 7 Days
+                                </option>
+
+                                <option value="last_30_days" <?= ($filter == 'last_30_days') ? 'selected' : '' ?>>
+                                    Last 30 Days
+                                </option>
+
+                                <option value="this_year" <?= ($filter == 'this_year') ? 'selected' : '' ?>>
+                                    This Year
+                                </option>
+
+                                <option value="last_year" <?= ($filter == 'last_year') ? 'selected' : '' ?>>
+                                    Last Year
+                                </option>
+
                             </select>
+
                         </form>
                     </div>
-                    <label for="">From Date: 02/01/2026</label>
-                    <label for="">To Date: 02/01/2026</label>
+
+
+                    <?php if (!empty($from_date) && !empty($to_date)) { ?>
+                    <label>
+                        From Date: <?= date('d M Y', strtotime($from_date)) ?>
+                    </label>
+                    <label>
+                        To Date: <?= date('d M Y', strtotime($to_date)) ?>
+                    </label>
+                    <?php } ?>
+
+                    
                 </div>
                 <div class="header">
                     <div class="actions">
@@ -397,53 +447,23 @@
 
                             <tbody>
                                 <tr>
-                                    <td>Ram</td>
-                                    <td>20</td>
-                                    <td>30</td>
-                                    <td>40</td>
-                                    <td>50</td>
-                                    <td>60</td>
-                                    <td>70</td>
-                                    <td>80</td>
-                                    <td>90</td>
-                                    <td>100</td>
-                                    <td>110</td>
-                                    <td>120</td>
-                                    <td>130</td>
-                                    <td>140</td>
+                                    <td>Users</td>
+                                    <td>Request Submitted</td>
+                                    <td>Accept Request</td>
+                                    <td>Vendor Allocated</td>
+                                    <td>Vendor Assigned</td>
+                                    <td>Pickup Scheduled</td>
+                                    <td>Vehicle Placed</td>
+                                    <td>Material Weighed</td>
+                                    <td>Invoice from HO</td>
+                                    <td>Invoice to Vendor</td>
+                                    <td>Payment received from Vendor</td>
+                                    <td>Vehicle Dispatched</td>
+                                    <td>Payment to HO</td>
+                                    <td>Order Complete</td>
                                 </tr>
-                                <tr>
-                                    <td>Sam</td>
-                                    <td>10</td>
-                                    <td>15</td>
-                                    <td>20</td>
-                                    <td>25</td>
-                                    <td>30</td>
-                                    <td>35</td>
-                                    <td>40</td>
-                                    <td>45</td>
-                                    <td>50</td>
-                                    <td>55</td>
-                                    <td>60</td>
-                                    <td>65</td>
-                                    <td>70</td>
-                                </tr>
-                                <tr>
-                                    <td>Ram</td>
-                                    <td>20</td>
-                                    <td>30</td>
-                                    <td>40</td>
-                                    <td>50</td>
-                                    <td>60</td>
-                                    <td>70</td>
-                                    <td>80</td>
-                                    <td>90</td>
-                                    <td>100</td>
-                                    <td>110</td>
-                                    <td>120</td>
-                                    <td>130</td>
-                                    <td>140</td>
-                                </tr>
+                                
+                                
                             </tbody>
 
                             <!-- Total row -->

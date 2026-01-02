@@ -203,11 +203,146 @@ class Home extends BaseController
         return view('enquiry-list', $data);
     }
 
+    // public function getAnalytics()
+    // {
+    //     $from_date =  ;
+    //     $to_date =  ;
+
+
+    //     if ($this->request->getMethod() == 'post')
+    //     {
+
+    //         if($this->request->getPost('filter_keyword') == "today")
+    //         {
+    //             $from_date =  ;
+    //             $to_date =  ;
+    //         }
+    //         elseif($this->request->getPost('filter_keyword') == "yesterday")
+    //         {
+    //             $from_date =  ;
+    //             $to_date =  ;
+    //         }
+    //         elseif($this->request->getPost('filter_keyword') == "this_month")
+    //         {
+    //             $from_date =  ;
+    //             $to_date =  ;
+    //         }
+    //         elseif($this->request->getPost('filter_keyword') == "last_month")
+    //         {
+    //             $from_date =  ;
+    //             $to_date =  ;
+    //         }
+    //         elseif($this->request->getPost('filter_keyword') == "last_7_days")
+    //         {
+    //             $from_date =  ;
+    //             $to_date =  ;
+    //         }
+    //         elseif($this->request->getPost('filter_keyword') == "last_30_days")
+    //         {
+    //             $from_date =  ;
+    //             $to_date =  ;
+    //         }
+    //         elseif($this->request->getPost('filter_keyword') == "this_year")
+    //         {
+    //             $from_date =  ;
+    //             $to_date =  ;
+    //         }
+    //         elseif($this->request->getPost('filter_keyword') == "last_year")
+    //         {
+    //             $from_date =  ;
+    //             $to_date =  ;
+    //         }
+            
+    //     }
+
+    //     $data['from_date']          = $from_date;
+    //     $data['to_date']            = $to_date;
+
+
+
+
+
+    //     $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
+    //     $data['title']              = 'Analytics - ' . $data['general_settings']->site_name;
+    //     $data['page_header']        = 'Analytics';
+    //     return view('analytics', $data);
+    // }
+
+
+
+
     public function getAnalytics()
     {
+        $filter = $this->request->getGet('filter_keyword') ?? 'today';
+
+        switch ($filter) 
+        {
+            case '':
+            case 'all':
+                // ALL TIME
+                $from_date = '';
+                $to_date   = '';
+                break;
+
+            case 'yesterday':
+                $from_date = date('Y-m-d 00:00:00', strtotime('-1 day'));
+                $to_date   = date('Y-m-d 23:59:59', strtotime('-1 day'));
+                break;
+
+            case 'this_month':
+                $from_date = date('Y-m-01 00:00:00');
+                $to_date   = date('Y-m-t 23:59:59');
+                break;
+
+            case 'last_month':
+                $from_date = date('Y-m-01 00:00:00', strtotime('first day of last month'));
+                $to_date   = date('Y-m-t 23:59:59', strtotime('last day of last month'));
+                break;
+
+            case 'last_7_days':
+                $from_date = date('Y-m-d 00:00:00', strtotime('-6 days'));
+                $to_date   = date('Y-m-d 23:59:59');
+                break;
+
+            case 'last_30_days':
+                $from_date = date('Y-m-d 00:00:00', strtotime('-29 days'));
+                $to_date   = date('Y-m-d 23:59:59');
+                break;
+
+            case 'this_year':
+                $from_date = date('Y-01-01 00:00:00');
+                $to_date   = date('Y-12-31 23:59:59');
+                break;
+
+            case 'last_year':
+                $from_date = date('Y-01-01 00:00:00', strtotime('-1 year'));
+                $to_date   = date('Y-12-31 23:59:59', strtotime('-1 year'));
+                break;
+
+            case 'today':
+            default:
+                $from_date = date('Y-m-d 00:00:00');
+                $to_date   = date('Y-m-d 23:59:59');
+                break;
+        }
+
+        $data['from_date'] = $from_date;
+        $data['to_date']   = $to_date;
+        $data['filter']    = $filter;
+
+
+
+
+
+
         $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
         $data['title']              = 'Analytics - ' . $data['general_settings']->site_name;
         $data['page_header']        = 'Analytics';
         return view('analytics', $data);
     }
+
+
+
+
+
 }
