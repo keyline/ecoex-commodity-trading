@@ -351,6 +351,13 @@
             .company-card{
                 margin-bottom: 15px
             }
+            .date-group2{
+                flex-wrap: wrap;
+            }
+ 
+            .date-group2 label {
+        width: 100%;
+    }
         }
 
     </style>
