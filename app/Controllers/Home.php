@@ -343,6 +343,9 @@ class Home extends BaseController
         $data['SUM_MaterialWeighedCount'] = 0;
         $data['SUM_InvoicefromHOCount'] = 0;
         $data['SUM_InvoicetoVendorCount'] = 0;
+        $data['SUM_PaymentreceivedfromVendorCount'] = 0;
+
+
 
 
 
@@ -469,8 +472,17 @@ class Home extends BaseController
                $data['SUM_InvoicetoVendorCount'] += $data['MA_InvoicetoVendorCount'];
 
 
-
-
+               // Payment received from Vendor
+               $builder = $db->table('ecomm_sub_enquires');
+               $builder->where('status', 9.9);
+               if (!empty($from_date) && !empty($to_date)) 
+               {
+                   $builder->where('vendor_payment_received_date >=', $from_date);
+                   $builder->where('vendor_payment_received_date <=', $to_date);
+               }
+               $data['MA_PaymentreceivedfromVendorCount'] = $builder->countAllResults();
+               $data['SUM_PaymentreceivedfromVendorCount'] += $data['MA_PaymentreceivedfromVendorCount'];
+ 
 
 
 
