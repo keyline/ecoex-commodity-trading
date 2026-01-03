@@ -337,7 +337,7 @@ class Home extends BaseController
         $data['SUM_RequestSubmittedCount'] = 0;
         $data['SUM_AcceptRequestCount'] = 0;
         $data['SUM_VendorAllocatedCount'] = 0;
-
+        $data['SUM_VendorAssignedCount'] = 0;
 
 
 
@@ -393,6 +393,15 @@ class Home extends BaseController
 
 
                // dd($from_date, $to_date);
+               // Vendor Assigned
+               $builder = $db->table('ecomm_enquiry_vendor_quotations');
+               if (!empty($from_date) && !empty($to_date)) 
+               {
+                   $builder->where('created_at >=', $from_date);
+                   $builder->where('created_at <=', $to_date);
+               }
+               $data['MA_VendorAssignedCount'] = $builder->countAllResults();
+               $data['SUM_VendorAssignedCount'] += $data['MA_VendorAssignedCount'];
 
                
  

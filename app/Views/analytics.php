@@ -439,7 +439,7 @@
                                     <td><?= $MA_RequestSubmittedCount ?></td>
                                     <td><?= $MA_AcceptRequestCount ?></td>
                                     <td><?= $MA_VendorAllocatedCount ?></td>
-                                    <td>Vendor Assigned</td>
+                                    <td><?= $MA_VendorAssignedCount ?></td>
                                     <td>Pickup Scheduled</td>
                                     <td>Vehicle Placed</td>
                                     <td>Material Weighed</td>
@@ -477,7 +477,7 @@
                                     <td><?= $SUM_RequestSubmittedCount ?></td>
                                     <td><?= $SUM_AcceptRequestCount ?></td>
                                     <td><?= $SUM_VendorAllocatedCount ?></td>
-                                    <td>Vendor Assigned</td>
+                                    <td><?= $SUM_VendorAssignedCount ?></td>
                                     <td>Pickup Scheduled</td>
                                     <td>Vehicle Placed</td>
                                     <td>Material Weighed</td>
