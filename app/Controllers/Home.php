@@ -357,7 +357,7 @@ class Home extends BaseController
 
                // Request Submitted
                $builder = $db->table('ecomm_enquires');
-               $builder->where('status', '>=', 0);
+               $builder->where('status >=', 0);
                if (!empty($from_date) && !empty($to_date)) 
                {
                    $builder->where('created_at >=', $from_date);
@@ -369,7 +369,7 @@ class Home extends BaseController
 
                 // Accept Request
                 $builder = $db->table('ecomm_enquires');
-                $builder->where('status', '>=', 1);
+                $builder->where('status >=', 1);
 
                 if (!empty($from_date) && !empty($to_date)) {
 
@@ -414,7 +414,7 @@ class Home extends BaseController
                
                // Pickup Scheduled
                $builder = $db->table('ecomm_sub_enquires');
-               $builder->where('status', '>=', 4.4);
+               $builder->where('status >=', 4.4);
                if (!empty($from_date) && !empty($to_date)) 
                {
                    $builder->where('pickup_scheduled_date >=', $from_date);
@@ -426,7 +426,7 @@ class Home extends BaseController
 
                // Vehicle Placed
                $builder = $db->table('ecomm_sub_enquires');
-               $builder->where('status', '>=', 5.5);
+               $builder->where('status >=', 5.5);
                if (!empty($from_date) && !empty($to_date)) 
                {
                    $builder->where('vehicle_placed_date >=', $from_date);
@@ -438,7 +438,7 @@ class Home extends BaseController
 
                // Material Weighed
                $builder = $db->table('ecomm_sub_enquires');
-               $builder->where('status', '>=', 6.6);
+               $builder->where('status >=', 6.6);
                if (!empty($from_date) && !empty($to_date)) 
                {
                    $builder->where('material_weighted_date >=', $from_date);
@@ -450,7 +450,7 @@ class Home extends BaseController
 
                // Invoice from HO
                $builder = $db->table('ecomm_sub_enquires');
-               $builder->where('status', '>=', 7.7);
+               $builder->where('status >=', 7.7);
                if (!empty($from_date) && !empty($to_date)) 
                {
                    $builder->where('invoice_from_ho_date >=', $from_date);
@@ -462,7 +462,7 @@ class Home extends BaseController
 
                // Invoice to Vendor
                $builder = $db->table('ecomm_sub_enquires');
-               $builder->where('status', '>=', 8.8);
+               $builder->where('status >=', 8.8);
                if (!empty($from_date) && !empty($to_date)) 
                {
                    $builder->where('invoice_to_vendor_date >=', $from_date);
@@ -474,7 +474,7 @@ class Home extends BaseController
 
                // Payment received from Vendor
                $builder = $db->table('ecomm_sub_enquires');
-               $builder->where('status', '>=', 9.9);
+               $builder->where('status >=', 9.9);
                if (!empty($from_date) && !empty($to_date)) 
                {
                    $builder->where('vendor_payment_received_date >=', $from_date);
@@ -486,7 +486,7 @@ class Home extends BaseController
 
                // Vehicle Dispatched
                $builder = $db->table('ecomm_sub_enquires');
-               $builder->where('status', '>=', 10.10);
+               $builder->where('status >=', 10.10);
                if (!empty($from_date) && !empty($to_date)) 
                {
                    $builder->where('vehicle_dispatched_date >=', $from_date);
@@ -498,7 +498,7 @@ class Home extends BaseController
 
                // Payment to HO
                $builder = $db->table('ecomm_enquires');
-               $builder->where('status', '>=', 11);
+               $builder->where('status >=', 11);
                if (!empty($from_date) && !empty($to_date)) 
                {
                    $builder->where('ho_approve_date >=', $from_date);
@@ -510,7 +510,7 @@ class Home extends BaseController
 
                // Order Complete
                $builder = $db->table('ecomm_enquires');
-               $builder->where('status', '>=', 12);
+               $builder->where('status >=', 12);
                if (!empty($from_date) && !empty($to_date)) 
                {
                    $builder->where('order_complete_date >=', $from_date);
