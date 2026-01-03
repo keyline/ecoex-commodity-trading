@@ -304,6 +304,8 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
             white-space: nowrap;
         }
+
+        
         /* ============= PRINT STYLES ========== */
 @media print {
 
@@ -322,11 +324,12 @@
         font-weight: 600;
     }
     /* Show only print area */
-    
 
-   
-
-    
+}
+@media(max-width: 767px){
+    .cards-row {
+        grid-template-columns: 260px repeat(1, 1fr);
+    }
 }
 
     </style>
