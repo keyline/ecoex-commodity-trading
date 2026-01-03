@@ -339,6 +339,9 @@ class Home extends BaseController
         $data['SUM_VendorAllocatedCount'] = 0;
         $data['SUM_VendorAssignedCount'] = 0;
         $data['SUM_PickupScheduledCount'] = 0;
+        $data['SUM_VehiclePlacedCount'] = 0;
+
+
 
 
         foreach ($admin_user_data as $user)
@@ -414,6 +417,22 @@ class Home extends BaseController
                }
                $data['MA_PickupScheduledCount'] = $builder->countAllResults();
                $data['SUM_PickupScheduledCount'] += $data['MA_PickupScheduledCount'];
+
+
+               // Vehicle Placed
+               $builder = $db->table('ecomm_sub_enquires');
+               $builder->where('status', 5.5);
+               if (!empty($from_date) && !empty($to_date)) 
+               {
+                   $builder->where('vehicle_placed_date >=', $from_date);
+                   $builder->where('vehicle_placed_date <=', $to_date);
+               }
+               $data['MA_VehiclePlacedCount'] = $builder->countAllResults();
+               $data['SUM_VehiclePlacedCount'] += $data['MA_VehiclePlacedCount'];
+
+
+
+
 
 
             }
