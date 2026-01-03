@@ -192,7 +192,7 @@
         .card-title {
             font-weight: 600;
             color: var(--primary);
-            font-size: 25px;
+            font-size: 20px;
             margin-bottom: 10px;
         }
 
@@ -367,16 +367,18 @@
 
 
                     <?php if (!empty($from_date) && !empty($to_date)) { ?>
-                    <label>
-                        From: <?= date('d M Y', strtotime($from_date)) ?>
-                    </label>
-                    <label>
-                        To: <?= date('d M Y', strtotime($to_date)) ?>
-                    </label>
+                        <div class="date-group">
+                            <label>
+                                From: <?= date('d M Y', strtotime($from_date)) ?>
+                            </label>
+                            <label>
+                                To: <?= date('d M Y', strtotime($to_date)) ?>
+                            </label>
+                        </div>
                     <?php } ?>
 
                     
-                </div>
+                </>
                 <!-- <div class="header">
                     <div class="actions">
                         <button class="btn" onclick="printTable()">Print</button>
