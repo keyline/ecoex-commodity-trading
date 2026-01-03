@@ -267,7 +267,7 @@ class Home extends BaseController
         $data['to_date']   = $to_date;
         $data['filter']    = $filter;
 
-        // dd($from_date, $to_date);
+        
 
         $db = \Config\Database::connect();
 
@@ -336,6 +336,10 @@ class Home extends BaseController
 
         $data['SUM_RequestSubmittedCount'] = 0;
         $data['SUM_AcceptRequestCount'] = 0;
+        $data['SUM_VendorAllocatedCount'] = 0;
+
+
+
 
         foreach ($admin_user_data as $user)
         {
@@ -377,7 +381,18 @@ class Home extends BaseController
                 $data['SUM_AcceptRequestCount'] += $data['MA_AcceptRequestCount'];
 
 
+               // Vendor Allocated
+               $builder = $db->table('ecomm_enquiry_vendor_shares');
+               if (!empty($from_date) && !empty($to_date)) 
+               {
+                   $builder->where('created_at >=', $from_date);
+                   $builder->where('created_at <=', $to_date);
+               }
+               $data['MA_VendorAllocatedCount'] = $builder->countAllResults();
+               $data['SUM_VendorAllocatedCount'] += $data['MA_VendorAllocatedCount'];
 
+
+               dd($from_date, $to_date);
 
                
  
