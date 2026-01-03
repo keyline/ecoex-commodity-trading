@@ -281,6 +281,29 @@
         tfoot .total-row td:first-child {
             color: var(--primary);
         }
+        .date-group2 {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            padding: 10px 16px;
+            background: rgba(72, 151, 78, 0.08);
+            border: 1px solid rgba(72, 151, 78, 0.3);
+            border-radius: 8px;
+            width: fit-content;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .date-group2 label {
+            color: #48974e;
+            font-size: 14px;
+            font-weight: 600;
+            background: #ffffff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(72, 151, 78, 0.35);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+            white-space: nowrap;
+        }
         /* ============= PRINT STYLES ========== */
 @media print {
 
@@ -369,7 +392,7 @@
 
 
                     <?php if (!empty($from_date) && !empty($to_date)) { ?>
-                        <div class="date-group">
+                        <div class="date-group2">
                             <label>
                                 From: <?= date('d M Y', strtotime($from_date)) ?>
                             </label>
