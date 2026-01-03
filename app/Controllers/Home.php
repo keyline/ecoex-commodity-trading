@@ -392,7 +392,7 @@ class Home extends BaseController
                $data['SUM_VendorAllocatedCount'] += $data['MA_VendorAllocatedCount'];
 
 
-               dd($from_date, $to_date);
+               // dd($from_date, $to_date);
 
                
  
