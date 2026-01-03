@@ -331,6 +331,19 @@
                 grid-template-columns: 260px repeat(1, 1fr);
             }
         }
+        @media(max-width: 767px) {
+            .date-filters{
+                flex-wrap: wrap;
+            }
+            .date-group,
+            .ecoex-select,
+            .date-group2{
+                width: 100%;
+            }
+            .date-group2 label{
+                width: 50%;
+            }
+        }
 
     </style>
 </head>
