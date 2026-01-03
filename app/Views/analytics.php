@@ -377,33 +377,33 @@
 
                     
                 </div>
-                <div class="header">
+                <!-- <div class="header">
                     <div class="actions">
                         <button class="btn" onclick="printTable()">Print</button>
                         <button class="btn secondary">Download</button>
                     </div>
-                </div>
+                </div> -->
             </div>
             <!-- Cards row (Company card + other card boxes) -->
             <div class="cards-row">
 
                 <!-- Company card box -->
                 <div class="card company-card">
-                    <div class="card-title">Companies</div>
+                    <div class="card-title">Registered Companies</div>
                     <p class="card-value"><?= $companies ?></p>
                 </div>
 
                 <div class="card company-card">
-                    <div class="card-title">Plants</div>
+                    <div class="card-title">Registered Plants</div>
                     <p class="card-value"><?= $plants ?></p>
                 </div>
 
                 <div class="card company-card">
-                    <div class="card-title">Vendors</div>
+                    <div class="card-title">Registered Vendors</div>
                     <p class="card-value"><?= $vendors ?></p>
                 </div>
                 <div class="card company-card">
-                    <div class="card-title"> Subscribe Vendors</div>
+                    <div class="card-title"> Subscribed Vendors</div>
                     <p class="card-value"><?= $subscribe_vendors ?></p>
                 </div>
 
