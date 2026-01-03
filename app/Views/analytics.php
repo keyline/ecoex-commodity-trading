@@ -5,7 +5,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ECOEX Commodity</title>
-    <link rel="stylesheet" href="style.css" />
     <style>
         :root {
             --primary: #48974E;
@@ -307,30 +306,31 @@
 
         
         /* ============= PRINT STYLES ========== */
-@media print {
+        @media print {
 
-    /* Hide everything */
-    .title-row,
-    .logo-box{
-        display: none;
-    }
-    .card-title {
-        font-weight: 600;
-        font-size: 20px;
-    }
+            /* Hide everything */
+            .title-row,
+            .logo-box{
+                display: none;
+            }
+            .card-title {
+                font-weight: 600;
+                font-size: 20px;
+            }
 
-    .card-value {
-        font-size: 18px;
-        font-weight: 600;
-    }
-    /* Show only print area */
+            .card-value {
+                font-size: 18px;
+                font-weight: 600;
+            }
+            /* Show only print area */
 
-}
-@media(max-width: 767px){
-    .cards-row {
-        grid-template-columns: 260px repeat(1, 1fr);
-    }
-}
+        }
+
+        @media(max-width: 767px) {
+            .cards-row {
+                grid-template-columns: 260px repeat(1, 1fr);
+            }
+        }
 
     </style>
 </head>
