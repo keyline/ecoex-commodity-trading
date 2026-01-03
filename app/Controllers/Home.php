@@ -346,7 +346,7 @@ class Home extends BaseController
         $data['SUM_PaymentreceivedfromVendorCount'] = 0;
         $data['SUM_VehicleDispatchedCount'] = 0;
         $data['SUM_PaymenttoHOCount'] = 0;
-
+        $data['SUM_OrderCompleteCount'] = 0;
 
 
         foreach ($admin_user_data as $user)
@@ -508,15 +508,21 @@ class Home extends BaseController
                $data['SUM_PaymenttoHOCount'] += $data['MA_PaymenttoHOCount'];
             
 
+               // Order Complete
+               $builder = $db->table('ecomm_enquires');
+               $builder->where('status', 12);
+               if (!empty($from_date) && !empty($to_date)) 
+               {
+                   $builder->where('order_complete_date >=', $from_date);
+                   $builder->where('order_complete_date <=', $to_date);
+               }
+               $data['MA_OrderCompleteCount'] = $builder->countAllResults();
+               $data['SUM_OrderCompleteCount'] += $data['MA_OrderCompleteCount'];
 
-
-
+               
+               
             }
         }
-
-
-        
-
 
 
 

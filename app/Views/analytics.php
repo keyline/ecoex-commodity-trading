@@ -448,9 +448,9 @@
                                     <td><?= $MA_PaymentreceivedfromVendorCount ?></td>
                                     <td><?= $MA_VehicleDispatchedCount ?></td>
                                     <td><?= $MA_PaymenttoHOCount ?></td>
-                                    <td>Order Complete</td>
+                                    <td><?= $MA_OrderCompleteCount ?></td>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <td>Users</td>
                                     <td>Request Submitted</td>
                                     <td>Accept Request</td>
@@ -465,7 +465,7 @@
                                     <td>Vehicle Dispatched</td>
                                     <td>Payment to HO</td>
                                     <td>Order Complete</td>
-                                </tr>
+                                </tr> -->
                                 
                                 
                             </tbody>
@@ -486,7 +486,7 @@
                                     <td><?= $SUM_PaymentreceivedfromVendorCount ?></td>
                                     <td><?= $SUM_VehicleDispatchedCount ?></td>
                                     <td><?= $SUM_PaymenttoHOCount ?></td>
-                                    <td>Order Complete</td>
+                                    <td><?= $SUM_OrderCompleteCount ?></td>
                                 </tr>
                             </tfoot>
 
