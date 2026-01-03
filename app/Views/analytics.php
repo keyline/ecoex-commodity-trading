@@ -101,7 +101,9 @@
         .date-filters {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 12px;
+            width: 100%;
         }
 
         /* Group */
@@ -378,7 +380,7 @@
                     <?php } ?>
 
                     
-                </>
+                </div>
                 <!-- <div class="header">
                     <div class="actions">
                         <button class="btn" onclick="printTable()">Print</button>
