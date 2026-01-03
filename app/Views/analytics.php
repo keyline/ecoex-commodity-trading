@@ -437,7 +437,7 @@
                                 <tr>
                                     <td><?= $MA_name ?></td>
                                     <td><?= $MA_RequestSubmittedCount ?></td>
-                                    <td>Accept Request</td>
+                                    <td><?= $MA_AcceptRequestCount ?></td>
                                     <td>Vendor Allocated</td>
                                     <td>Vendor Assigned</td>
                                     <td>Pickup Scheduled</td>
@@ -475,7 +475,7 @@
                                 <tr class="total-row">
                                     <td>TOTAL</td>
                                     <td><?= $SUM_RequestSubmittedCount ?></td>
-                                    <td>Accept Request</td>
+                                    <td><?= $SUM_AcceptRequestCount ?></td>
                                     <td>Vendor Allocated</td>
                                     <td>Vendor Assigned</td>
                                     <td>Pickup Scheduled</td>

@@ -267,6 +267,8 @@ class Home extends BaseController
         $data['to_date']   = $to_date;
         $data['filter']    = $filter;
 
+        dd($from_date, $to_date);
+
         $db = \Config\Database::connect();
 
         // Companies
@@ -333,6 +335,7 @@ class Home extends BaseController
         // dd($admin_user_data);
 
         $data['SUM_RequestSubmittedCount'] = 0;
+        $data['SUM_AcceptRequestCount'] = 0;
 
         foreach ($admin_user_data as $user)
         {
@@ -351,7 +354,18 @@ class Home extends BaseController
                $data['MA_RequestSubmittedCount'] = $builder->countAllResults();
                $data['SUM_RequestSubmittedCount'] += $data['MA_RequestSubmittedCount'];
 
+               // Accept Request
+               $builder = $db->table('ecomm_enquires');
+               $builder->where('status', 1);
+               if (!empty($from_date) && !empty($to_date)) 
+               {
+                   $builder->where('accepted_date >=', $from_date);
+                   $builder->where('accepted_date <=', $to_date);
+               }
+               $data['MA_AcceptRequestCount'] = $builder->countAllResults();
+               $data['SUM_AcceptRequestCount'] += $data['MA_AcceptRequestCount'];
                
+ 
 
             }
         }
