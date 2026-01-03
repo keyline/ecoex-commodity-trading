@@ -443,7 +443,7 @@
                                     <td><?= $MA_PickupScheduledCount ?></td>
                                     <td><?= $MA_VehiclePlacedCount ?></td>
                                     <td><?= $MA_MaterialWeighedCount ?></td>
-                                    <td>Invoice from HO</td>
+                                    <td><?= $MA_InvoicefromHOCount ?></td>
                                     <td>Invoice to Vendor</td>
                                     <td>Payment received from Vendor</td>
                                     <td>Vehicle Dispatched</td>
@@ -481,7 +481,7 @@
                                     <td><?= $SUM_PickupScheduledCount ?></td>
                                     <td><?= $SUM_VehiclePlacedCount ?></td>
                                     <td><?= $SUM_MaterialWeighedCount ?></td>
-                                    <td>Invoice from HO</td>
+                                    <td><?= $SUM_InvoicefromHOCount ?></td>
                                     <td>Invoice to Vendor</td>
                                     <td>Payment received from Vendor</td>
                                     <td>Vehicle Dispatched</td>

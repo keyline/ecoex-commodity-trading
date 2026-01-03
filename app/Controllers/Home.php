@@ -341,6 +341,8 @@ class Home extends BaseController
         $data['SUM_PickupScheduledCount'] = 0;
         $data['SUM_VehiclePlacedCount'] = 0;
         $data['SUM_MaterialWeighedCount'] = 0;
+        $data['SUM_InvoicefromHOCount'] = 0;
+
 
 
 
@@ -443,12 +445,21 @@ class Home extends BaseController
                $data['SUM_MaterialWeighedCount'] += $data['MA_MaterialWeighedCount'];
 
 
-               
+               // Invoice from HO
+               $builder = $db->table('ecomm_sub_enquires');
+               $builder->where('status', 7.7);
+               if (!empty($from_date) && !empty($to_date)) 
+               {
+                   $builder->where('invoice_from_ho_date >=', $from_date);
+                   $builder->where('invoice_from_ho_date <=', $to_date);
+               }
+               $data['MA_InvoicefromHOCount'] = $builder->countAllResults();
+               $data['SUM_InvoicefromHOCount'] += $data['MA_InvoicefromHOCount'];
 
 
 
 
-               
+
             }
         }
 
