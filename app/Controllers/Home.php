@@ -340,7 +340,7 @@ class Home extends BaseController
         $data['SUM_VendorAssignedCount'] = 0;
         $data['SUM_PickupScheduledCount'] = 0;
         $data['SUM_VehiclePlacedCount'] = 0;
-
+        $data['SUM_MaterialWeighedCount'] = 0;
 
 
 
@@ -431,10 +431,24 @@ class Home extends BaseController
                $data['SUM_VehiclePlacedCount'] += $data['MA_VehiclePlacedCount'];
 
 
+               // Material Weighed
+               $builder = $db->table('ecomm_sub_enquires');
+               $builder->where('status', 6.6);
+               if (!empty($from_date) && !empty($to_date)) 
+               {
+                   $builder->where('material_weighted_date >=', $from_date);
+                   $builder->where('material_weighted_date <=', $to_date);
+               }
+               $data['MA_MaterialWeighedCount'] = $builder->countAllResults();
+               $data['SUM_MaterialWeighedCount'] += $data['MA_MaterialWeighedCount'];
+
+
+               
 
 
 
 
+               
             }
         }
 
