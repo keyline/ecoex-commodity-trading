@@ -344,6 +344,14 @@
                 width: 50%;
             }
         }
+        @media(max-width: 575px) {
+            .cards-row{
+                display: block;
+            }
+            .company-card{
+                margin-bottom: 15px
+            }
+        }
 
     </style>
 </head>
