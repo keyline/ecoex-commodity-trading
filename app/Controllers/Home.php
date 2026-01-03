@@ -267,7 +267,7 @@ class Home extends BaseController
         $data['to_date']   = $to_date;
         $data['filter']    = $filter;
 
-        dd($from_date, $to_date);
+        // dd($from_date, $to_date);
 
         $db = \Config\Database::connect();
 
@@ -354,16 +354,31 @@ class Home extends BaseController
                $data['MA_RequestSubmittedCount'] = $builder->countAllResults();
                $data['SUM_RequestSubmittedCount'] += $data['MA_RequestSubmittedCount'];
 
-               // Accept Request
-               $builder = $db->table('ecomm_enquires');
-               $builder->where('status', 1);
-               if (!empty($from_date) && !empty($to_date)) 
-               {
-                   $builder->where('accepted_date >=', $from_date);
-                   $builder->where('accepted_date <=', $to_date);
-               }
-               $data['MA_AcceptRequestCount'] = $builder->countAllResults();
-               $data['SUM_AcceptRequestCount'] += $data['MA_AcceptRequestCount'];
+
+                // Accept Request
+                $builder = $db->table('ecomm_enquires');
+                $builder->where('status', 1);
+
+                if (!empty($from_date) && !empty($to_date)) {
+
+                    $builder->where("
+                        STR_TO_DATE(
+                            accepted_date,
+                            CASE
+                                WHEN LENGTH(SUBSTRING_INDEX(accepted_date, '-', 1)) = 2
+                                THEN '%y-%m-%d %H:%i:%s'
+                                ELSE '%Y-%m-%d %H:%i:%s'
+                            END
+                        ) BETWEEN '{$from_date}' AND '{$to_date}'
+                    ");
+                }
+
+                $data['MA_AcceptRequestCount'] = $builder->countAllResults();
+                $data['SUM_AcceptRequestCount'] += $data['MA_AcceptRequestCount'];
+
+
+
+
                
  
 
