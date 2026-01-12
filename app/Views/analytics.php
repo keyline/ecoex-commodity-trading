@@ -375,8 +375,8 @@
             <div class="title-row">
                 <!-- Top actions -->
                 <div class="date-filters">
-                    <div class="date-group">
-                        <form method="GET" action="" name="PostName">
+                    <form method="GET" action="" name="PostName">
+                        <div class="date-group">
                             <input type="hidden" name="mode" value="filter">
                             <select class="form-control  ecoex-select" id="filter_keyword" name="filter_keyword" onchange="this.form.submit()">
 
@@ -422,8 +422,10 @@
 
                             </select>
 
-                        </form>
-                    </div>
+                        </div>
+                    </form>
+
+                    
 
 
                     <?php if (!empty($from_date) && !empty($to_date)) { ?>
