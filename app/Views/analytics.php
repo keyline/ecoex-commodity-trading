@@ -108,7 +108,7 @@
         .filter-section {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-start;
             gap: 12px;
             width: 100%;
         }
@@ -314,7 +314,6 @@
 
         .date-group3 {
             display: flex;
-            gap: 14px;
             align-items: center;
             padding: 10px 16px;
             background: rgba(72, 151, 78, 0.08);
@@ -322,6 +321,18 @@
             border-radius: 8px;
             width: fit-content;
             font-family: 'Segoe UI', sans-serif;
+        }
+
+        .date-group3 input[type="date"]{
+            color: #48974e;
+            font-size: 14px;
+            font-weight: 600;
+            background: #ffffff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(72, 151, 78, 0.35);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+            white-space: nowrap;
         }
         
         /* ============= PRINT STYLES ========== */
