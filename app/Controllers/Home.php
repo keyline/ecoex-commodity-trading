@@ -273,24 +273,23 @@ class Home extends BaseController
                         $from_date = $from_date_input . ' 00:00:00';
                         $to_date   = $to_date_input . ' 23:59:59';
 
-                        // From date should not be greater than To date
                         if (strtotime($from_date) > strtotime($to_date)) {
-                            // fallback to today (safe default)
+                            // fallback to today
                             $from_date = date('Y-m-d 00:00:00');
                             $to_date   = date('Y-m-d 23:59:59');
                         }
 
                     } else {
-                        // Invalid format fallback
+                        // Invalid format fallback i.e., fallback to today
                         $from_date = date('Y-m-d 00:00:00');
                         $to_date   = date('Y-m-d 23:59:59');
                     }
 
-                $data['from_date_input'] = $from_date_input;
-                $data['to_date_input'] = $to_date_input;
+                    $data['from_date_input'] = $from_date_input;
+                    $data['to_date_input'] = $to_date_input;
 
                 } else {
-                    // If user selected custom_date but did not select both dates
+                    
                     $from_date = '';
                     $to_date   = '';
                 }

@@ -304,6 +304,17 @@
             white-space: nowrap;
         }
 
+        .date-group3 {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            padding: 10px 16px;
+            background: rgba(72, 151, 78, 0.08);
+            border: 1px solid rgba(72, 151, 78, 0.3);
+            border-radius: 8px;
+            width: fit-content;
+            font-family: 'Segoe UI', sans-serif;
+        }
         
         /* ============= PRINT STYLES ========== */
         @media print {
@@ -424,11 +435,11 @@
 
                         </div>
 
-                        <div class="date-group custom-date-box" style="display:none;">
-                            <label class="filter-label">From Date</label>
+                        <div class="date-group3 custom-date-box" style="display:none;">
+                            <label class="filter-label">From </label>
                             <input type="date" id="from_date" name="from_date" value="<?= !empty($from_date_input) ? $from_date_input : '' ?>">
 
-                            <label class="filter-label">To Date</label>
+                            <label class="filter-label">To </label>
                             <input type="date" id="to_date" name="to_date" value="<?= !empty($to_date_input) ? $to_date_input : '' ?>">
                         </div>
 
