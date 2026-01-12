@@ -105,6 +105,14 @@
             width: 100%;
         }
 
+        .filter-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+        }
+
         /* Group */
         .date-group {
             display: flex;
@@ -346,6 +354,9 @@
             .date-filters{
                 flex-wrap: wrap;
             }
+            .filter-section{
+                flex-wrap: wrap;
+            }
             .date-group,
             .ecoex-select,
             .date-group2,
@@ -388,7 +399,7 @@
             <div class="title-row">
                 <!-- Top actions -->
                 <div class="date-filters">
-                    <form method="GET" action="" name="PostName">
+                    <form method="GET" action="" name="PostName" class="filter-section">
                         <div class="date-group">
                             <input type="hidden" name="mode" value="filter">
                             <select class="form-control  ecoex-select" id="filter_keyword" name="filter_keyword" >
