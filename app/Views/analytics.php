@@ -362,11 +362,19 @@
 
         }
 
+
+        @media(max-width: 1199px) {
+            .filter-section{
+                flex-wrap: wrap;
+            }
+        }
+
         @media(max-width: 991px) {
             .cards-row {
                 grid-template-columns: 260px repeat(1, 1fr);
             }
         }
+        
 
        
 
