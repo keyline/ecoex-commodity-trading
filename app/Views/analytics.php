@@ -393,9 +393,13 @@
                 width: 50%;
             }
 
-            .date-group3 
+            .date-group3 > div
             {
-                justify-content: space-between;
+                width: 50%;
+            }
+            .date-group3 > div input
+            {
+                width: 100%;
             }
 
 
@@ -414,8 +418,13 @@
             }
  
             .date-group2 label {
-        width: 100%;
-    }
+                width: 100%;
+            }
+
+           .date-group3 > div
+            {
+                width: 100%;
+            }
         }
 
     </style>
