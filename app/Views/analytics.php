@@ -421,7 +421,11 @@
                 width: 100%;
             }
 
-           .date-group3 > div
+            .date-group3{
+                flex-wrap: wrap;
+            }
+
+            .date-group3 > div
             {
                 width: 100%;
             }
