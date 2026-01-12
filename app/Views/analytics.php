@@ -393,9 +393,9 @@
                 width: 50%;
             }
 
-            .date-group3 > div
+            .date-group3 
             {
-                width: 50%;
+                justify-content: space-between;
             }
 
 
