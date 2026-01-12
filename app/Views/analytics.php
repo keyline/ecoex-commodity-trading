@@ -314,6 +314,7 @@
 
         .date-group3 {
             display: flex;
+            gap: 14px;
             align-items: center;
             padding: 10px 16px;
             background: rgba(72, 151, 78, 0.08);
