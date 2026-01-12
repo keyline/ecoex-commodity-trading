@@ -370,6 +370,9 @@
             .date-filters{
                 align-items: flex-start;
             }
+            .date-group{
+                width: 100%;
+            }
         }
 
         @media(max-width: 991px) {
