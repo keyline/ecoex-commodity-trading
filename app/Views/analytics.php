@@ -423,6 +423,18 @@
                             </select>
 
                         </div>
+
+                        <div class="date-group custom-date-box" style="display:none;">
+                            <label class="filter-label">From Date</label>
+                            <input type="date" id="from_date" name="from_date">
+
+                            <label class="filter-label">To Date</label>
+                            <input type="date" id="to_date" name="to_date">
+                        </div>
+
+
+
+
                     </form>
 
                     
@@ -562,6 +574,37 @@
     </div>
 
 </body>
+
+<script>
+    const filterSelect = document.getElementById('filter_keyword');
+    const customDateBox = document.querySelector('.custom-date-box');
+    const fromDateInput = document.getElementById('from_date');
+    const toDateInput = document.getElementById('to_date');
+
+    function toggleCustomDate() {
+        if (filterSelect.value === 'custom_date') {
+            customDateBox.style.display = 'block';
+        } else {
+            customDateBox.style.display = 'none';
+            fromDateInput.value = '';
+            toDateInput.value = '';
+        }
+    }
+
+    function autoSubmitIfDatesSelected() {
+        if (fromDateInput.value && toDateInput.value) {
+            filterSelect.form.submit();
+        }
+    }
+
+    filterSelect.addEventListener('change', toggleCustomDate);
+    fromDateInput.addEventListener('change', autoSubmitIfDatesSelected);
+    toDateInput.addEventListener('change', autoSubmitIfDatesSelected);
+
+    // On page load (important for refresh / back)
+    toggleCustomDate();
+</script>
+
 
 <script>
     function printTable() {

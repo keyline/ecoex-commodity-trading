@@ -212,6 +212,10 @@ class Home extends BaseController
     {
         $filter = $this->request->getGet('filter_keyword') ?? 'today';
 
+        $from_date_input = $this->request->getGet('from_date') ?? '';
+        $to_date_input   = $this->request->getGet('to_date') ?? '';
+
+
         switch ($filter) 
         {
             case '':
@@ -255,6 +259,43 @@ class Home extends BaseController
                 $from_date = date('Y-01-01 00:00:00', strtotime('-1 year'));
                 $to_date   = date('Y-12-31 23:59:59', strtotime('-1 year'));
                 break;
+
+            
+            case 'custom_date':
+
+                if (!empty($from_date_input) && !empty($to_date_input)) {
+
+                    // Validate format (Y-m-d)
+                    if (
+                        preg_match('/^\d{4}-\d{2}-\d{2}$/', $from_date_input) &&
+                        preg_match('/^\d{4}-\d{2}-\d{2}$/', $to_date_input)
+                    ) {
+                        $from_date = $from_date_input . ' 00:00:00';
+                        $to_date   = $to_date_input . ' 23:59:59';
+
+                        // From date should not be greater than To date
+                        if (strtotime($from_date) > strtotime($to_date)) {
+                            // fallback to today (safe default)
+                            $from_date = date('Y-m-d 00:00:00');
+                            $to_date   = date('Y-m-d 23:59:59');
+                        }
+
+                    } else {
+                        // Invalid format fallback
+                        $from_date = date('Y-m-d 00:00:00');
+                        $to_date   = date('Y-m-d 23:59:59');
+                    }
+
+                } else {
+                    // If user selected custom_date but did not select both dates
+                    $from_date = '';
+                    $to_date   = '';
+                }
+
+                break;
+
+            
+
 
             case 'today':
             default:
