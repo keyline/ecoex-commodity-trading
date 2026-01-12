@@ -122,7 +122,7 @@
 
         /* Label */
         .filter-label {
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 800;
             color: #48974E;
             letter-spacing: 0.4px;
@@ -328,7 +328,7 @@
             font-size: 14px;
             font-weight: 600;
             background: #ffffff;
-            padding: 6px 12px;
+            padding: 5px 12px;
             border-radius: 6px;
             border: 1px solid rgba(72, 151, 78, 0.35);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
