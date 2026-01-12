@@ -362,17 +362,9 @@
             }
         }
 
-        @media(max-width: 1000px)
-        {
-            .filter-section{
-                flex-wrap: wrap;
-            }
-            .date-group3{
-                width: 100%;
-            }
-        }
+       
 
-        @media(max-width: 767px) {
+        @media(max-width: 1000px) {
             .date-filters{
                 flex-wrap: wrap;
             }
@@ -385,6 +377,15 @@
             .date-group2 label{
                 width: 50%;
             }
+
+            .filter-section{
+                flex-wrap: wrap;
+            }
+            .date-group3{
+                width: 100%;
+            }
+
+
         }
         @media(max-width: 575px) {
             .cards-row{
