@@ -312,7 +312,7 @@
             white-space: nowrap;
         }
 
-        /* .date-group3 {
+        .date-group3 {
             display: flex;
             align-items: center;
             padding: 10px 16px;
@@ -333,36 +333,9 @@
             border: 1px solid rgba(72, 151, 78, 0.35);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
             white-space: nowrap;
-        } */
-
-        .date-group3 {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            background: rgba(72, 151, 78, 0.08);
-            border: 1px solid rgba(72, 151, 78, 0.3);
-            border-radius: 8px;
-            font-family: 'Segoe UI', sans-serif;
         }
 
-        .date-group3 > div {
-            display: flex;
-            flex-direction: row;
-            gap: 4px;
-        }
-
-        .date-group3 input[type="date"] {
-            min-width: 160px;
-            color: #48974e;
-            font-size: 14px;
-            font-weight: 600;
-            background: #ffffff;
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 1px solid rgba(72, 151, 78, 0.35);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-        }
+        
 
 
 
@@ -660,7 +633,7 @@
 
         if (selectedValue === 'custom_date') {
             // Show inputs but DO NOT submit
-            customDateBox.style.display = 'block';
+            customDateBox.style.display = 'flex';
         } else {
             // Hide custom date inputs
             customDateBox.style.display = 'none';
