@@ -348,7 +348,8 @@
             }
             .date-group,
             .ecoex-select,
-            .date-group2{
+            .date-group2,
+            .date-group3{
                 width: 100%;
             }
             .date-group2 label{
@@ -362,7 +363,8 @@
             .company-card{
                 margin-bottom: 15px
             }
-            .date-group2{
+            .date-group2,
+            .date-group3{
                 flex-wrap: wrap;
             }
  
