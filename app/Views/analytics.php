@@ -378,12 +378,6 @@
                 width: 50%;
             }
 
-            .filter-section{
-                flex-wrap: wrap;
-            }
-            .date-group3{
-                width: 100%;
-            }
 
 
         }
@@ -394,8 +388,8 @@
             .company-card{
                 margin-bottom: 15px
             }
-            .date-group2,
-            .date-group3{
+            .date-group2
+            {
                 flex-wrap: wrap;
             }
  
@@ -469,11 +463,14 @@
                         </div>
 
                         <div class="date-group3 custom-date-box" style="display:none;">
-                            <label class="filter-label">From </label>
-                            <input type="date" id="from_date" name="from_date" value="<?= !empty($from_date_input) ? $from_date_input : '' ?>">
-
-                            <label class="filter-label">To </label>
-                            <input type="date" id="to_date" name="to_date" value="<?= !empty($to_date_input) ? $to_date_input : '' ?>">
+                            <div>
+                                <label class="filter-label">From </label>
+                                <input type="date" id="from_date" name="from_date" value="<?= !empty($from_date_input) ? $from_date_input : '' ?>">
+                            </div>
+                            <div>
+                                <label class="filter-label">To </label>
+                                <input type="date" id="to_date" name="to_date" value="<?= !empty($to_date_input) ? $to_date_input : '' ?>">
+                            </div>
                         </div>
 
 
