@@ -367,6 +367,9 @@
             .filter-section{
                 flex-wrap: wrap;
             }
+            .date-filters{
+                align-items: flex-start;
+            }
         }
 
         @media(max-width: 991px) {
@@ -404,6 +407,7 @@
 
 
 
+
         }
         @media(max-width: 575px) {
             .cards-row{
@@ -428,6 +432,10 @@
             .date-group3 > div
             {
                 width: 100%;
+            }
+
+            .ecoex-select{
+                min-width: 100%;
             }
         }
 
