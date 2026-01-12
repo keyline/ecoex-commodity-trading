@@ -385,7 +385,8 @@
             
             .date-group,
             .ecoex-select,
-            .date-group2{
+            .date-group2, 
+            .date-group3{
                 width: 100%;
             }
             .date-group2 label{
