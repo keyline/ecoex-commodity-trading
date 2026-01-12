@@ -426,10 +426,10 @@
 
                         <div class="date-group custom-date-box" style="display:none;">
                             <label class="filter-label">From Date</label>
-                            <input type="date" id="from_date" name="from_date">
+                            <input type="date" id="from_date" name="from_date" value="<?= !empty($from_date_input) ? $from_date_input : '' ?>">
 
                             <label class="filter-label">To Date</label>
-                            <input type="date" id="to_date" name="to_date">
+                            <input type="date" id="to_date" name="to_date" value="<?= !empty($to_date_input) ? $to_date_input : '' ?>">
                         </div>
 
 

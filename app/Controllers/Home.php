@@ -286,6 +286,9 @@ class Home extends BaseController
                         $to_date   = date('Y-m-d 23:59:59');
                     }
 
+                $data['from_date_input'] = $from_date_input;
+                $data['to_date_input'] = $to_date_input;
+
                 } else {
                     // If user selected custom_date but did not select both dates
                     $from_date = '';
