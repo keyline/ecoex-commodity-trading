@@ -709,7 +709,7 @@
     // Handle page reload / back button
     document.addEventListener('DOMContentLoaded', function () {
         if (filterSelect.value === 'custom_date') {
-            customDateBox.style.display = 'block';
+            customDateBox.style.display = 'flex';
         } else {
             customDateBox.style.display = 'none';
         }
