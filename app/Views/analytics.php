@@ -416,6 +416,10 @@
                                     Last Year
                                 </option>
 
+                                <option value="custom_date" <?= ($filter == 'custom_date') ? 'selected' : '' ?>>
+                                    Custom Date
+                                </option>
+
                             </select>
 
                         </form>
