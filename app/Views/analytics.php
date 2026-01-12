@@ -378,7 +378,7 @@
                     <form method="GET" action="" name="PostName">
                         <div class="date-group">
                             <input type="hidden" name="mode" value="filter">
-                            <select class="form-control  ecoex-select" id="filter_keyword" name="filter_keyword" onchange="this.form.submit()">
+                            <select class="form-control  ecoex-select" id="filter_keyword" name="filter_keyword" >
 
                                 <option value="" <?= empty($filter) ? 'selected' : '' ?>>
                                     All Time
@@ -576,34 +576,63 @@
 </body>
 
 <script>
-    const filterSelect = document.getElementById('filter_keyword');
-    const customDateBox = document.querySelector('.custom-date-box');
-    const fromDateInput = document.getElementById('from_date');
-    const toDateInput = document.getElementById('to_date');
+    const filterSelect   = document.getElementById('filter_keyword');
+    const customDateBox  = document.querySelector('.custom-date-box');
+    const fromDateInput  = document.getElementById('from_date');
+    const toDateInput    = document.getElementById('to_date');
+    const form           = filterSelect.form;
 
-    function toggleCustomDate() {
+    function handleFilterChange() {
+        const selectedValue = filterSelect.value;
+
+        if (selectedValue === 'custom_date') {
+            // Show inputs but DO NOT submit
+            customDateBox.style.display = 'block';
+        } else {
+            // Hide custom date inputs
+            customDateBox.style.display = 'none';
+            fromDateInput.value = '';
+            toDateInput.value = '';
+
+            // Existing behavior: auto submit for other filters
+            form.submit();
+        }
+    }
+
+    function autoSubmitIfValidDates() {
+        const fromDate = fromDateInput.value;
+        const toDate   = toDateInput.value;
+
+        // Only proceed if both dates are selected
+        if (!fromDate || !toDate) {
+            return;
+        }
+
+        // Client-side validation
+        if (fromDate > toDate) {
+            alert('From date should not be greater than To date');
+            toDateInput.value = '';
+            return;
+        }
+
+        // Valid → submit form
+        form.submit();
+    }
+
+    filterSelect.addEventListener('change', handleFilterChange);
+    fromDateInput.addEventListener('change', autoSubmitIfValidDates);
+    toDateInput.addEventListener('change', autoSubmitIfValidDates);
+
+    // Handle page reload / back button
+    document.addEventListener('DOMContentLoaded', function () {
         if (filterSelect.value === 'custom_date') {
             customDateBox.style.display = 'block';
         } else {
             customDateBox.style.display = 'none';
-            fromDateInput.value = '';
-            toDateInput.value = '';
         }
-    }
-
-    function autoSubmitIfDatesSelected() {
-        if (fromDateInput.value && toDateInput.value) {
-            filterSelect.form.submit();
-        }
-    }
-
-    filterSelect.addEventListener('change', toggleCustomDate);
-    fromDateInput.addEventListener('change', autoSubmitIfDatesSelected);
-    toDateInput.addEventListener('change', autoSubmitIfDatesSelected);
-
-    // On page load (important for refresh / back)
-    toggleCustomDate();
+    });
 </script>
+
 
 
 <script>
