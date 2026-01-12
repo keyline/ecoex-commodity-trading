@@ -337,7 +337,7 @@
 
         .date-group3 {
             display: flex;
-            align-items: flex-end;
+            align-items: center;
             gap: 12px;
             padding: 10px 14px;
             background: rgba(72, 151, 78, 0.08);
@@ -348,7 +348,7 @@
 
         .date-group3 > div {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             gap: 4px;
         }
 
