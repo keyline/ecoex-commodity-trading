@@ -393,6 +393,11 @@
                 width: 50%;
             }
 
+            .date-group3 > div
+            {
+                width: 50%;
+            }
+
 
 
         }
