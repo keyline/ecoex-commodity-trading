@@ -73,6 +73,23 @@
                     </div>
 
                     <div class="card-body p-4">
+
+                        <?php if (session()->getFlashdata('success')): ?>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong>Success!</strong> <?= session()->getFlashdata('success'); ?>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (session()->getFlashdata('error')): ?>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>Error!</strong> <?= session()->getFlashdata('error'); ?>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        <?php endif; ?>
+
+
+
                         <form action="" method="post" enctype="multipart/form-data">
 
                             <?= csrf_field() ?>

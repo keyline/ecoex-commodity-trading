@@ -678,7 +678,7 @@ class Home extends BaseController
             $ch = curl_init();
 
             curl_setopt_array($ch, [
-                CURLOPT_URL            => "WHATSAPP_API_ENDPOINT_URL",
+                CURLOPT_URL            => "https://backend.api-wa.co/campaign/smartping/api/v2",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_POST           => true,
                 CURLOPT_HTTPHEADER     => [
