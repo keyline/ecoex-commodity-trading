@@ -80,8 +80,8 @@
                             <!-- Phone Number -->
                             <div class="mb-3">
                                 <label class="form-label">Phone No. <span class="text-danger">*</span></label>
-                                <input type="tel" name="phone_no" class="form-control" placeholder="Enter phone number"
-                                    required>
+                                <input type="tel" name="phone_no" class="form-control"
+                                    placeholder="Enter phone number" required>
                             </div>
 
                             <!-- Image Upload -->
@@ -90,32 +90,34 @@
                                 <input type="file" name="image" class="form-control" accept="image/*" required>
                             </div>
 
-                            <!-- Param 1 -->
-                            <div class="mb-3">
-                                <label class="form-label">Param 1</label>
-                                <input type="text" name="param1" class="form-control"
-                                    placeholder="Optional parameter">
+                            <!-- Params Row 1 -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Param 1</label>
+                                    <input type="text" name="param1" class="form-control"
+                                        placeholder="Optional parameter">
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Param 2</label>
+                                    <input type="text" name="param2" class="form-control"
+                                        placeholder="Optional parameter">
+                                </div>
                             </div>
 
-                            <!-- Param 2 -->
-                            <div class="mb-3">
-                                <label class="form-label">Param 2</label>
-                                <input type="text" name="param2" class="form-control"
-                                    placeholder="Optional parameter">
-                            </div>
+                            <!-- Params Row 2 -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Param 3</label>
+                                    <input type="text" name="param3" class="form-control"
+                                        placeholder="Optional parameter">
+                                </div>
 
-                            <!-- Param 3 -->
-                            <div class="mb-3">
-                                <label class="form-label">Param 3</label>
-                                <input type="text" name="param3" class="form-control"
-                                    placeholder="Optional parameter">
-                            </div>
-
-                            <!-- Param 4 -->
-                            <div class="mb-4">
-                                <label class="form-label">Param 4</label>
-                                <input type="text" name="param4" class="form-control"
-                                    placeholder="Optional parameter">
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label">Param 4</label>
+                                    <input type="text" name="param4" class="form-control"
+                                        placeholder="Optional parameter">
+                                </div>
                             </div>
 
                             <!-- Submit Button -->
