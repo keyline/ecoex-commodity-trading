@@ -596,17 +596,13 @@ class Home extends BaseController
         $db = \Config\Database::connect();
         helper(['form']);
 
-        // Common data for GET & POST
+        
         $data['general_settings'] = $this->common_model->find_data('general_settings', 'row');
         $data['title']            = 'Wp Message - ' . $data['general_settings']->site_name;
         $data['page_header']      = 'Wp Message';
 
-        // ---------- HANDLE FORM SUBMISSION ----------
         if ($this->request->getMethod() === 'post') {
 
-            /* --------------------------
-            * 1. GET & VALIDATE INPUTS
-            * ------------------------------- */
             $phoneNo = trim($this->request->getPost('phone_no'));
 
             $phoneNo = preg_replace('/\D/', '', $phoneNo);
@@ -635,40 +631,58 @@ class Home extends BaseController
             * 2. IMAGE UPLOAD
             * ------------------------------- */
             // $uploadPath = FCPATH . 'uploads/wp_image/';
-            $uploadPath = getenv('app.uploadsURL'). 'wp_image/';
+            // $uploadPath = getenv('app.uploadsURL'). 'wp_image/';
 
-            if (!is_dir($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
+            // if (!is_dir($uploadPath)) {
+            //     mkdir($uploadPath, 0755, true);
+            // }
+
+            // $newName = time() . '_' . $image->getRandomName();
+            // $image->move($uploadPath, $newName);
+
+            // if (!$image->hasMoved()) {
+            //     return redirect()->back()->with('error', 'Image upload failed');
+            // }
+
+            // // $imageUrl  = base_url('uploads/wp_image/' . $newName);
+            // $imageUrl  = getenv('app.uploadsURL').'wp_image/' . $newName;
+            // $imageName = $newName;
+
+
+            $fileName = $_FILES['image']['name'];
+
+            $upload = $this->common_model->upload_single_file(
+                'image',        // input field name
+                $fileName,      // original file name
+                'wp_image',     // folder inside public/uploads/
+                'image'         // upload type
+            );
+
+            if ($upload['status'] == 1) {
+
+                // SUCCESS
+                $imageName = $upload['newFilename'];
+
+                // save to DB example
+                $data = [
+                    'image' => $imageName
+                ];
+
+                // $this->common_model->insert_data('table_name', $data);
+
+            } else {
+
+                // ERROR
+                return redirect()->back()->with('error', $upload['message']);
             }
 
-            $newName = time() . '_' . $image->getRandomName();
-            $image->move($uploadPath, $newName);
 
-            if (!$image->hasMoved()) {
-                return redirect()->back()->with('error', 'Image upload failed');
-            }
-
-            // $imageUrl  = base_url('uploads/wp_image/' . $newName);
-            $imageUrl  = getenv('app.uploadsURL').'wp_image/' . $newName;
-            $imageName = $newName;
-
-
-
-
-
-            /* -------------------------------
-            * 3. BUILD templateParams ARRAY
-            * ------------------------------- */
-            // WhatsApp API expects array values, not raw params
-            // If 2 params submitted → array length = 2
             $templateParams = [];
             foreach ($params as $p) {
                 $templateParams[] = $p;
             }
 
-            /* -------------------------------
-            * 4. PREPARE API PAYLOAD
-            * ------------------------------- */
+
             $payload = [
                 "apiKey"        => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUyNDRjN2VlMTE0MGY3OTQ5MmZiZSIsIm5hbWUiOiJLZXlsaW5lIERpZ2lUZWNoIFB2dC4gTHRkLiIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2N2U1MjQ0YzdlZTExNDBmNzk0OTJmYjgiLCJhY3RpdmVQbGFuIjoiTk9ORSIsImlhdCI6MTc0MzA3MDI4NH0.eFNVbyN63fAzdd_gtViD0JToL10R7nvgKiM6MFbQqow",
                 "campaignName"  => "ecoex-test",
@@ -691,9 +705,7 @@ class Home extends BaseController
 
             dd($payload);
 
-            /* -------------------------------
-            * 5. SEND CURL REQUEST
-            * ------------------------------- */
+            
             $ch = curl_init();
 
             curl_setopt_array($ch, [
@@ -718,7 +730,6 @@ class Home extends BaseController
 
             $responseData = json_decode($response, true);
 
-            // DEBUG (temporarily)
             // log_message('error', print_r($responseData, true));
 
             if ($httpCode !== 200 || empty($responseData) || (isset($responseData['success']) && $responseData['success'] === false)) {
@@ -732,7 +743,7 @@ class Home extends BaseController
 
         }
 
-        // ---------- LOAD VIEW (GET REQUEST) ----------
+        
         return view('wp-message', $data);
     }
 
