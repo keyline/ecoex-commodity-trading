@@ -604,7 +604,7 @@ class Home extends BaseController
         // ---------- HANDLE FORM SUBMISSION ----------
         if ($this->request->getMethod() === 'post') {
 
-            /* -------------------------------
+            /* --------------------------
             * 1. GET & VALIDATE INPUTS
             * ------------------------------- */
             $phoneNo = trim($this->request->getPost('phone_no'));
@@ -634,7 +634,8 @@ class Home extends BaseController
             /* -------------------------------
             * 2. IMAGE UPLOAD
             * ------------------------------- */
-            $uploadPath = FCPATH . 'uploads/wp_image/';
+            // $uploadPath = FCPATH . 'uploads/wp_image/';
+            $uploadPath = getenv('app.uploadsURL'). 'wp_image/';
 
             if (!is_dir($uploadPath)) {
                 mkdir($uploadPath, 0755, true);
@@ -647,7 +648,8 @@ class Home extends BaseController
                 return redirect()->back()->with('error', 'Image upload failed');
             }
 
-            $imageUrl  = base_url('uploads/wp_image/' . $newName);
+            // $imageUrl  = base_url('uploads/wp_image/' . $newName);
+            $imageUrl  = getenv('app.uploadsURL').'wp_image/' . $newName;
             $imageName = $newName;
 
 
