@@ -624,21 +624,6 @@ class Home extends BaseController
                 return redirect()->back()->with('error', 'Phone number and image are mandatory');
             }
 
-            // /* -------------------------------
-            // * 2. IMAGE UPLOAD
-            // * ------------------------------- */
-            // $uploadPath = FCPATH . 'wp_image/';
-
-            // if (!is_dir($uploadPath)) {
-            //     mkdir($uploadPath, 0755, true);
-            // }
-
-            // $newName = time() . '_' . $image->getRandomName();
-            // $image->move($uploadPath, $newName);
-
-            // $imageUrl  = base_url('wp_image/' . $newName);
-            // $imageName = $newName;
-
 
             /* -------------------------------
             * 2. IMAGE UPLOAD
