@@ -73,7 +73,7 @@
                     </div>
 
                     <div class="card-body p-4">
-                        <form action="<?= current_url() ?>" method="post" enctype="multipart/form-data">
+                        <form action="" method="post" enctype="multipart/form-data">
 
                             <?= csrf_field() ?>
 
@@ -95,13 +95,13 @@
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Param 1</label>
                                     <input type="text" name="param1" class="form-control"
-                                        placeholder="Optional parameter">
+                                        placeholder="Param 1">
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Param 2</label>
                                     <input type="text" name="param2" class="form-control"
-                                        placeholder="Optional parameter">
+                                        placeholder="Param 2">
                                 </div>
                             </div>
 
@@ -110,13 +110,13 @@
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Param 3</label>
                                     <input type="text" name="param3" class="form-control"
-                                        placeholder="Optional parameter">
+                                        placeholder="Param 3">
                                 </div>
 
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label">Param 4</label>
                                     <input type="text" name="param4" class="form-control"
-                                        placeholder="Optional parameter">
+                                        placeholder="Param 4">
                                 </div>
                             </div>
 

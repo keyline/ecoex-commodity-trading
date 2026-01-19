@@ -578,17 +578,134 @@ class Home extends BaseController
 
 
 
-    public function wpMessage()
-    {
-        $db = \Config\Database::connect();
+    // public function wpMessage()
+    // {
+    //     $db = \Config\Database::connect();
 
         
 
-        $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
-        $data['title']              = 'Wp Message - ' . $data['general_settings']->site_name;
-        $data['page_header']        = 'Wp Message';
+    //     $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
+    //     $data['title']              = 'Wp Message - ' . $data['general_settings']->site_name;
+    //     $data['page_header']        = 'Wp Message';
+    //     return view('wp-message', $data);
+    // }
+
+
+    public function wpMessage()
+    {
+        $db = \Config\Database::connect();
+        helper(['form']);
+
+        // Common data for GET & POST
+        $data['general_settings'] = $this->common_model->find_data('general_settings', 'row');
+        $data['title']            = 'Wp Message - ' . $data['general_settings']->site_name;
+        $data['page_header']      = 'Wp Message';
+
+        // ---------- HANDLE FORM SUBMISSION ----------
+        if ($this->request->getMethod() === 'post') {
+
+            /* -------------------------------
+            * 1. GET & VALIDATE INPUTS
+            * ------------------------------- */
+            $phoneNo = trim($this->request->getPost('phone_no'));
+
+            $params = [];
+            for ($i = 1; $i <= 4; $i++) {
+                $paramVal = trim($this->request->getPost("param{$i}"));
+                if ($paramVal !== '') {
+                    $params[] = $paramVal;
+                }
+            }
+
+            // Image
+            $image = $this->request->getFile('image');
+
+            if (!$phoneNo || !$image->isValid()) {
+                return redirect()->back()->with('error', 'Phone number and image are mandatory');
+            }
+
+            /* -------------------------------
+            * 2. IMAGE UPLOAD
+            * ------------------------------- */
+            $uploadPath = FCPATH . 'wp_image/';
+
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+
+            $newName = time() . '_' . $image->getRandomName();
+            $image->move($uploadPath, $newName);
+
+            $imageUrl  = base_url('wp_image/' . $newName);
+            $imageName = $newName;
+
+            /* -------------------------------
+            * 3. BUILD templateParams ARRAY
+            * ------------------------------- */
+            // WhatsApp API expects array values, not raw params
+            // If 2 params submitted → array length = 2
+            $templateParams = [];
+            foreach ($params as $p) {
+                $templateParams[] = $p;
+            }
+
+            /* -------------------------------
+            * 4. PREPARE API PAYLOAD
+            * ------------------------------- */
+            $payload = [
+                "apiKey"        => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUyNDRjN2VlMTE0MGY3OTQ5MmZiZSIsIm5hbWUiOiJLZXlsaW5lIERpZ2lUZWNoIFB2dC4gTHRkLiIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2N2U1MjQ0YzdlZTExNDBmNzk0OTJmYjgiLCJhY3RpdmVQbGFuIjoiTk9ORSIsImlhdCI6MTc0MzA3MDI4NH0.eFNVbyN63fAzdd_gtViD0JToL10R7nvgKiM6MFbQqow",
+                "campaignName"  => "ecoex-test",
+                "destination"   => $phoneNo,
+                "userName"      => "Keyline DigiTech Pvt. Ltd.",
+                "templateParams"=> $templateParams,
+                "source"        => "new-landing-page form",
+                "media"         => [
+                    "url"      => $imageUrl,
+                    "filename" => $imageName
+                ],
+                "buttons"       => [],
+                "carouselCards" => [],
+                "location"      => (object)[],
+                "attributes"    => (object)[],
+                "paramsFallbackValue" => [
+                    "FirstName" => "user"
+                ]
+            ];
+
+            /* -------------------------------
+            * 5. SEND CURL REQUEST
+            * ------------------------------- */
+            $ch = curl_init();
+
+            curl_setopt_array($ch, [
+                CURLOPT_URL            => "WHATSAPP_API_ENDPOINT_URL",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POST           => true,
+                CURLOPT_HTTPHEADER     => [
+                    "Content-Type: application/json"
+                ],
+                CURLOPT_POSTFIELDS     => json_encode($payload)
+            ]);
+
+            $response = curl_exec($ch);
+            $error    = curl_error($ch);
+
+            curl_close($ch);
+
+            if ($error) {
+                return redirect()->back()->with('error', $error);
+            }
+
+            // Optional: decode response if needed
+            // $result = json_decode($response, true);
+
+            return redirect()->back()->with('success', 'WhatsApp message sent successfully');
+        }
+
+        // ---------- LOAD VIEW (GET REQUEST) ----------
         return view('wp-message', $data);
     }
+
 
 
 
