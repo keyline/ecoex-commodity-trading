@@ -624,10 +624,26 @@ class Home extends BaseController
                 return redirect()->back()->with('error', 'Phone number and image are mandatory');
             }
 
+            // /* -------------------------------
+            // * 2. IMAGE UPLOAD
+            // * ------------------------------- */
+            // $uploadPath = FCPATH . 'wp_image/';
+
+            // if (!is_dir($uploadPath)) {
+            //     mkdir($uploadPath, 0755, true);
+            // }
+
+            // $newName = time() . '_' . $image->getRandomName();
+            // $image->move($uploadPath, $newName);
+
+            // $imageUrl  = base_url('wp_image/' . $newName);
+            // $imageName = $newName;
+
+
             /* -------------------------------
             * 2. IMAGE UPLOAD
             * ------------------------------- */
-            $uploadPath = FCPATH . 'wp_image/';
+            $uploadPath = FCPATH . 'uploads/wp_image/';
 
             if (!is_dir($uploadPath)) {
                 mkdir($uploadPath, 0755, true);
@@ -636,8 +652,16 @@ class Home extends BaseController
             $newName = time() . '_' . $image->getRandomName();
             $image->move($uploadPath, $newName);
 
-            $imageUrl  = base_url('wp_image/' . $newName);
+            if (!$image->hasMoved()) {
+                return redirect()->back()->with('error', 'Image upload failed');
+            }
+
+            $imageUrl  = base_url('uploads/wp_image/' . $newName);
             $imageName = $newName;
+
+
+
+
 
             /* -------------------------------
             * 3. BUILD templateParams ARRAY
@@ -688,18 +712,29 @@ class Home extends BaseController
             ]);
 
             $response = curl_exec($ch);
-            $error    = curl_error($ch);
+            $curlError = curl_error($ch);
+            $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
             curl_close($ch);
 
-            if ($error) {
-                return redirect()->back()->with('error', $error);
+            if ($curlError) {
+                return redirect()->back()->with('error', 'Curl Error: ' . $curlError);
             }
 
-            // Optional: decode response if needed
-            // $result = json_decode($response, true);
+            $responseData = json_decode($response, true);
+
+            // DEBUG (temporarily)
+            // log_message('error', print_r($responseData, true));
+
+            if ($httpCode !== 200 || empty($responseData) || (isset($responseData['success']) && $responseData['success'] === false)) {
+                return redirect()->back()->with(
+                    'error',
+                    'WhatsApp API Error: ' . ($responseData['message'] ?? 'Unknown error')
+                );
+            }
 
             return redirect()->back()->with('success', 'WhatsApp message sent successfully');
+
         }
 
         // ---------- LOAD VIEW (GET REQUEST) ----------
