@@ -687,6 +687,8 @@ class Home extends BaseController
                 ]
             ];
 
+            dd($payload);
+
             /* -------------------------------
             * 5. SEND CURL REQUEST
             * ------------------------------- */
