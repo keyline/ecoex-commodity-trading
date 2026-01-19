@@ -609,6 +609,12 @@ class Home extends BaseController
             * ------------------------------- */
             $phoneNo = trim($this->request->getPost('phone_no'));
 
+            $phoneNo = preg_replace('/\D/', '', $phoneNo);
+            if (strlen($phoneNo) === 10) {
+                $phoneNo = '91' . $phoneNo;
+            }
+
+
             $params = [];
             for ($i = 1; $i <= 4; $i++) {
                 $paramVal = trim($this->request->getPost("param{$i}"));
