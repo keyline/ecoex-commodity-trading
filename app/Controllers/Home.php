@@ -580,14 +580,14 @@ class Home extends BaseController
 
     public function wpMessage()
     {
-        $db = \Config\Database::connect();
+        // $db = \Config\Database::connect();
 
         // dd('hehe');
 
         $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
         $data['title']              = 'Wp Message - ' . $data['general_settings']->site_name;
-        $data['page_header']        = 'wp-message';
-        return view('analytics', $data);
+        $data['page_header']        = 'Wp Message';
+        return view('wp-message', $data);
     }
 
 
