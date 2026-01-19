@@ -663,6 +663,8 @@ class Home extends BaseController
                 // SUCCESS
                 $imageName = $upload['newFilename'];
 
+                $imageUrl = base_url('public/uploads/wp_image/' . $imageName);
+
                 // save to DB example
                 $data = [
                     'image' => $imageName
