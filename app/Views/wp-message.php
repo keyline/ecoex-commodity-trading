@@ -48,7 +48,7 @@
                <div class="row">
                    <div class="mb-2 col-md-6">
                        <label>Destination (with country code) <span class="required">*</span></label>
-                       <input type="text" name="destination" class="form-control" placeholder="+919XXXXXXXXX" required>
+                       <input type="text" name="destination" class="form-control" placeholder="+91XXXXXXXXXX" required>
                    </div>
    
                    <div class="mb-2 col-md-6">
