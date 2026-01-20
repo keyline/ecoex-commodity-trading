@@ -708,6 +708,10 @@ class Home extends BaseController
 
         if ($this->request->getMethod() === 'post') {
 
+            echo '<pre>';
+            print_r($this->request->getPost());
+            exit;
+
             $rules = [
                 'campaignName'    => 'required',
                 'destination'     => 'required',
