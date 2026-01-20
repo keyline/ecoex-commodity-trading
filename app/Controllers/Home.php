@@ -705,7 +705,7 @@ class Home extends BaseController
                 ]
             ];
 
-            dd($payload);
+            // dd($payload);
 
             
             $ch = curl_init();
