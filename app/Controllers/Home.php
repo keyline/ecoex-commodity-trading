@@ -706,12 +706,8 @@ class Home extends BaseController
         $data['title']           = 'Wp Message - ' . $data['general_settings']->site_name;
         $data['page_header']     = 'Wp Message';
 
-        if ($this->request->getMethod() === 'post') {
-
-            // echo '<pre>';
-            // print_r($this->request->getPost());
-            // exit;
-
+        if ($this->request->getMethod() === 'post') 
+        {
             $rules = [
                 'campaignName'    => 'required',
                 'destination'     => 'required',
@@ -774,62 +770,65 @@ class Home extends BaseController
 
             foreach($destinationArr as $key => $eachDestination)
             {
-                dd($eachDestination);
-            }
-            
-            $payload = [
-                'apiKey'        => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUyNDRjN2VlMTE0MGY3OTQ5MmZiZSIsIm5hbWUiOiJLZXlsaW5lIERpZ2lUZWNoIFB2dC4gTHRkLiIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2N2U1MjQ0YzdlZTExNDBmNzk0OTJmYjgiLCJhY3RpdmVQbGFuIjoiTk9ORSIsImlhdCI6MTc0MzA3MDI4NH0.eFNVbyN63fAzdd_gtViD0JToL10R7nvgKiM6MFbQqow",
-                'campaignName'  => $campaignName,
-                'destination'   => $destination,
-                'userName'      => $userName,
-                // 'source'        => $source,
-            ];
-
-            if (!empty($templateParams)) {
-                $payload['templateParams'] = $templateParams;
-            }
-
-            if (!empty($media)) {
-                $payload['media'] = $media;
-            }
-
-            // dd($payload);
-            
-            $client = \Config\Services::curlrequest();
-
-            try {
-                $response = $client->post(
-                    'https://backend.api-wa.co/campaign/smartping/api/v2',
-                    [
-                        'headers' => [
-                            'Content-Type' => 'application/json',
-                        ],
-                        'json' => $payload,
-                        'http_errors' => false
-                    ]
-                );
-
-                $result = json_decode($response->getBody(), true);
-
-                if (isset($result['success']) && $result['success'] === "true") 
-                {
-                    // return redirect()->back()->with(
-                    //     'success',
-                    //     'WhatsApp message sent successfully. Message ID: ' . $result['submitted_message_id']
-                    // );
-                    return redirect()->back()->with(
-                        'success',
-                        'WhatsApp message sent successfully.'
-                    );
-
-
-                } else {
-                    return redirect()->back()->with('error', 'API Error: ' . $response->getBody());
+                // dd($eachDestination);
+                $payload = [
+                    'apiKey'        => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUyNDRjN2VlMTE0MGY3OTQ5MmZiZSIsIm5hbWUiOiJLZXlsaW5lIERpZ2lUZWNoIFB2dC4gTHRkLiIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2N2U1MjQ0YzdlZTExNDBmNzk0OTJmYjgiLCJhY3RpdmVQbGFuIjoiTk9ORSIsImlhdCI6MTc0MzA3MDI4NH0.eFNVbyN63fAzdd_gtViD0JToL10R7nvgKiM6MFbQqow",
+                    'campaignName'  => $campaignName,
+                    'destination'   => $eachDestination,
+                    'userName'      => $userName,
+                    // 'source'        => $source,
+                ];
+    
+                if (!empty($templateParams)) {
+                    $payload['templateParams'] = $templateParams;
                 }
-
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', $e->getMessage());
+    
+                if (!empty($media)) {
+                    $payload['media'] = $media;
+                }
+    
+                // dd($payload);
+                
+                $client = \Config\Services::curlrequest();
+    
+                try {
+                    $response = $client->post(
+                        'https://backend.api-wa.co/campaign/smartping/api/v2',
+                        [
+                            'headers' => [
+                                'Content-Type' => 'application/json',
+                            ],
+                            'json' => $payload,
+                            'http_errors' => false
+                        ]
+                    );
+    
+                    $result = json_decode($response->getBody(), true);
+    
+                    if (isset($result['success']) && $result['success'] === "true") 
+                    {
+                        // return redirect()->back()->with(
+                        //     'success',
+                        //     'WhatsApp message sent successfully. Message ID: ' . $result['submitted_message_id']
+                        // );
+                        
+                        continue;
+    
+    
+                    } else {
+                        return redirect()->back()->with('error', 'API Error: ' . $response->getBody());
+                    }
+    
+                } catch (\Exception $e) {
+                    return redirect()->back()->with('error', $e->getMessage());
+                }
+                
             }
+
+            return redirect()->back()->with('success','WhatsApp message sent successfully.');
+
+
+            
         }
 
         return view('wp-message', $data);
