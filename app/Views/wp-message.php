@@ -71,8 +71,8 @@
 
                 <div class="row">
                     <div class="mb-2 col-md-12">
-                        <label>Template Params (comma separated)</label>
-                        <input type="text" name="templateParams" class="form-control" placeholder="Name,Product,Company,Quantity">
+                        <label>Template Params (comma separated) <span class="required">*</span></label>
+                        <input type="text" name="templateParams" class="form-control" placeholder="Name,Product,Company,Quantity" required>
                     </div>
                 </div>
 
