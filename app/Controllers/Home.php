@@ -772,7 +772,10 @@ class Home extends BaseController
                 ? array_map('trim', explode(',', $destinationRaw))
                 : [];
 
-            dd($destinationArr);
+            foreach($destinationArr as $key => $eachDestination)
+            {
+                dd($eachDestination);
+            }
             
             $payload = [
                 'apiKey'        => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUyNDRjN2VlMTE0MGY3OTQ5MmZiZSIsIm5hbWUiOiJLZXlsaW5lIERpZ2lUZWNoIFB2dC4gTHRkLiIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2N2U1MjQ0YzdlZTExNDBmNzk0OTJmYjgiLCJhY3RpdmVQbGFuIjoiTk9ORSIsImlhdCI6MTc0MzA3MDI4NH0.eFNVbyN63fAzdd_gtViD0JToL10R7nvgKiM6MFbQqow",
