@@ -732,7 +732,7 @@ class Home extends BaseController
 
             // ✅ VALIDATION
             $rules = [
-                'campaignName'  => 'required',
+                // 'campaignName'  => 'required',
                 'destination'   => 'required',
                 'userName'      => 'required',
             ];
@@ -742,7 +742,7 @@ class Home extends BaseController
             }
 
             // ✅ BASIC DATA
-            $campaignName  = $this->request->getPost('campaignName');
+            // $campaignName  = $this->request->getPost('campaignName');
             $destination   = $this->request->getPost('destination');
             $userName      = $this->request->getPost('userName');
             $source        = $this->request->getPost('source');
@@ -782,7 +782,7 @@ class Home extends BaseController
             // ✅ API PAYLOAD
             $payload = [
                 'apiKey'        => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUyNDRjN2VlMTE0MGY3OTQ5MmZiZSIsIm5hbWUiOiJLZXlsaW5lIERpZ2lUZWNoIFB2dC4gTHRkLiIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2N2U1MjQ0YzdlZTExNDBmNzk0OTJmYjgiLCJhY3RpdmVQbGFuIjoiTk9ORSIsImlhdCI6MTc0MzA3MDI4NH0.eFNVbyN63fAzdd_gtViD0JToL10R7nvgKiM6MFbQqow",
-                'campaignName'  => $campaignName,
+                'campaignName'  => "ecoex-test",
                 'destination'   => $destination,
                 'userName'      => $userName,
                 'source'        => $source,

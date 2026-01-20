@@ -61,7 +61,7 @@
 
                 <div class="mb-3">
                     <label>Template Params (comma separated)</label>
-                    <input type="text" name="templateParams" class="form-control" placeholder="$FirstName,$OrderId">
+                    <input type="text" name="templateParams" class="form-control" placeholder="Surajit,ORD-1023,18-Jan-2026,EcoEx Team">
                 </div>
 
                 <div class="mb-3">
