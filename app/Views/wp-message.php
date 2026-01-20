@@ -38,38 +38,46 @@
 
             <form method="post" enctype="multipart/form-data">
 
+               <div class="row">
+                   <div class="mb-2 col-md-12">
+                       <label>Campaign Name <span class="required">*</span></label>
+                       <input type="text" name="campaignName" class="form-control" required>
+                   </div>
+               </div>
+               
+               <div class="row">
+                   <div class="mb-2 col-md-6">
+                       <label>Destination (with country code) <span class="required">*</span></label>
+                       <input type="text" name="destination" class="form-control" placeholder="+919XXXXXXXXX" required>
+                   </div>
+   
+                   <div class="mb-2 col-md-6">
+                       <label>User Name <span class="required">*</span></label>
+                       <input type="text" name="userName" class="form-control" required>
+                   </div>
+               </div>
 
-                <div class="mb-3">
-                    <label>Campaign Name <span class="required">*</span></label>
-                    <input type="text" name="campaignName" class="form-control" required>
+               <div class="row">
+                    <div class="mb-2 col-md-6">
+                        <label>Media Image</label>
+                        <input type="file" name="image" class="form-control">
+                    </div>
+                    <div class="mb-2 col-md-6">
+                        <label>Source</label>
+                        <input type="text" name="source" class="form-control">
+                    </div>
+               </div>
+
+                <div class="row">
+                    <div class="mb-2 col-md-12">
+                        <label>Template Params (comma separated)</label>
+                        <input type="text" name="templateParams" class="form-control" placeholder="Name,Product,Company,Quantity">
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label>Destination (with country code) <span class="required">*</span></label>
-                    <input type="text" name="destination" class="form-control" placeholder="+919XXXXXXXXX" required>
-                </div>
+                
 
-                <div class="mb-3">
-                    <label>User Name <span class="required">*</span></label>
-                    <input type="text" name="userName" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                    <label>Source</label>
-                    <input type="text" name="source" class="form-control">
-                </div>
-
-                <div class="mb-3">
-                    <label>Template Params (comma separated)</label>
-                    <input type="text" name="templateParams" class="form-control" placeholder="Name,Product,Company,Quantity">
-                </div>
-
-                <div class="mb-3">
-                    <label>Media Image</label>
-                    <input type="file" name="image" class="form-control">
-                </div>
-
-                <button type="submit" class="btn btn-success">
+                <button type="submit" class="btn btn-success mx-auto d-block mt-2">
                     Send WhatsApp Message
                 </button>
 

@@ -578,145 +578,8 @@ class Home extends BaseController
 
 
 
-    // public function wpMessage()
-    // {
-    //     $db = \Config\Database::connect();
+    
 
-        
-
-    //     $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
-    //     $data['title']              = 'Wp Message - ' . $data['general_settings']->site_name;
-    //     $data['page_header']        = 'Wp Message';
-    //     return view('wp-message', $data);
-    // }
-
-
-    // public function wpMessage()
-    // {
-    //     $db = \Config\Database::connect();
-    //     helper(['form']);
-
-        
-    //     $data['general_settings'] = $this->common_model->find_data('general_settings', 'row');
-    //     $data['title']            = 'Wp Message - ' . $data['general_settings']->site_name;
-    //     $data['page_header']      = 'Wp Message';
-
-    //     if ($this->request->getMethod() === 'post') {
-
-    //         $phoneNo = trim($this->request->getPost('phone_no'));
-
-    //         // $phoneNo = preg_replace('/\D/', '', $phoneNo);
-    //         // if (strlen($phoneNo) === 10) {
-    //         //     $phoneNo = '91' . $phoneNo;
-    //         // }
-
-
-    //         $params = [];
-    //         for ($i = 1; $i <= 4; $i++) {
-    //             $paramVal = trim($this->request->getPost("param{$i}"));
-    //             if ($paramVal !== '') {
-    //                 $params[] = $paramVal;
-    //             }
-    //         }
-
-    //         // Image
-    //         $image = $this->request->getFile('image');
-
-    //         if (!$phoneNo || !$image->isValid()) {
-    //             return redirect()->back()->with('error', 'Phone number and image are mandatory');
-    //         }
-
-
-    //         $fileName = $_FILES['image']['name'];
-
-    //         $upload = $this->common_model->upload_single_file(
-    //             'image',        // input field name
-    //             $fileName,      // original file name
-    //             'wp_image',     // folder inside public/uploads/
-    //             'image'         // upload type
-    //         );
-
-    //         if ($upload['status'] == 1) 
-    //         {
-    //             $imageName = $upload['newFilename'];
-
-    //             $imageUrl = base_url('public/uploads/wp_image/' . $imageName);
-    //         } 
-    //         else 
-    //         {
-    //             return redirect()->back()->with('error', $upload['message']);
-    //         }
-
-
-    //         $templateParams = [];
-    //         foreach ($params as $p) {
-    //             $templateParams[] = $p;
-    //         }
-
-
-    //         $payload = [
-    //             "apiKey"        => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUyNDRjN2VlMTE0MGY3OTQ5MmZiZSIsIm5hbWUiOiJLZXlsaW5lIERpZ2lUZWNoIFB2dC4gTHRkLiIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2N2U1MjQ0YzdlZTExNDBmNzk0OTJmYjgiLCJhY3RpdmVQbGFuIjoiTk9ORSIsImlhdCI6MTc0MzA3MDI4NH0.eFNVbyN63fAzdd_gtViD0JToL10R7nvgKiM6MFbQqow",
-    //             "campaignName"  => "ecoex-test",
-    //             "destination"   => $phoneNo,
-    //             "userName"      => "Keyline DigiTech Pvt. Ltd.",
-    //             "templateParams"=> $templateParams,
-    //             "source"        => "new-landing-page form",
-    //             "media"         => [
-    //                 "url"      => $imageUrl,
-    //                 "filename" => $imageName
-    //             ],
-    //             "buttons"       => [],
-    //             "carouselCards" => [],
-    //             "location"      => (object)[],
-    //             "attributes"    => (object)[],
-    //             "paramsFallbackValue" => [
-    //                 "FirstName" => "user"
-    //             ]
-    //         ];
-
-    //         dd($payload);
-
-            
-    //         $ch = curl_init();
-
-    //         curl_setopt_array($ch, [
-    //             CURLOPT_URL            => "https://backend.api-wa.co/campaign/smartping/api/v2",
-    //             CURLOPT_RETURNTRANSFER => true,
-    //             CURLOPT_POST           => true,
-    //             CURLOPT_HTTPHEADER     => [
-    //                 "Content-Type: application/json"
-    //             ],
-    //             CURLOPT_POSTFIELDS     => json_encode($payload)
-    //         ]);
-
-    //         $response = curl_exec($ch);
-    //         $curlError = curl_error($ch);
-    //         $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-    //         curl_close($ch);
-
-    //         if ($curlError) {
-    //             return redirect()->back()->with('error', 'Curl Error: ' . $curlError);
-    //         }
-
-    //         $responseData = json_decode($response, true);
-
-    //         // log_message('error', print_r($responseData, true));
-
-    //         if ($httpCode !== 200 || empty($responseData) || (isset($responseData['success']) && $responseData['success'] === false)) {
-    //             return redirect()->back()->with(
-    //                 'error',
-    //                 'WhatsApp API Error: ' . ($responseData['message'] ?? 'Unknown error')
-    //             );
-    //         }
-
-    //         return redirect()->back()->with('success', 'WhatsApp message sent successfully');
-
-    //     }
-
-        
-    //     return view('wp-message', $data);
-    // }
 
 
 
@@ -793,7 +656,7 @@ class Home extends BaseController
                 $payload['media'] = $media;
             }
 
-            dd($payload);
+            // dd($payload);
             
             $client = \Config\Services::curlrequest();
 
