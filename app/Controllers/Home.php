@@ -583,6 +583,122 @@ class Home extends BaseController
 
 
 
+    // public function wpMessage()
+    // {
+
+    //     $data['general_settings'] = $this->common_model->find_data('general_settings', 'row');
+    //     $data['title']           = 'Wp Message - ' . $data['general_settings']->site_name;
+    //     $data['page_header']     = 'Wp Message';
+
+    //     if ($this->request->getMethod() === 'post') {
+
+    //         $rules = [
+    //             'campaignName'  => 'required',
+    //             'destination'   => 'required',
+    //             'userName'      => 'required',
+    //         ];
+
+    //         if (!$this->validate($rules)) {
+    //             return redirect()->back()->with('error', 'Please fill all mandatory fields.');
+    //         }
+
+    //         $campaignName  = $this->request->getPost('campaignName');
+    //         $destination   = $this->request->getPost('destination');
+    //         $userName      = $this->request->getPost('userName');
+    //         // $source        = $this->request->getPost('source');
+
+    //         // TEMPLATE PARAMS (comma separated → array)
+    //         $templateParamsRaw = $this->request->getPost('templateParams');
+    //         $templateParams    = !empty($templateParamsRaw)
+    //             ? array_map('trim', explode(',', $templateParamsRaw))
+    //             : [];
+
+            
+    //         $media = null;
+    //         if (!empty($_FILES['image']['name'])) {
+
+    //             $fileName = $_FILES['image']['name'];
+
+    //             $upload = $this->common_model->upload_single_file(
+    //                 'image',
+    //                 $fileName,
+    //                 'wp_image',
+    //                 'image'
+    //             );
+
+    //             if ($upload['status'] == 1) {
+    //                 $imageName = $upload['newFilename'];
+    //                 $imageUrl  = base_url('public/uploads/wp_image/' . $imageName);
+
+    //                 $media = [
+    //                     'url'      => $imageUrl,
+    //                     'filename' => $imageName
+    //                 ];
+    //             } else {
+    //                 return redirect()->back()->with('error', $upload['message']);
+    //             }
+    //         }
+
+            
+    //         $payload = [
+    //             'apiKey'        => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUyNDRjN2VlMTE0MGY3OTQ5MmZiZSIsIm5hbWUiOiJLZXlsaW5lIERpZ2lUZWNoIFB2dC4gTHRkLiIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2N2U1MjQ0YzdlZTExNDBmNzk0OTJmYjgiLCJhY3RpdmVQbGFuIjoiTk9ORSIsImlhdCI6MTc0MzA3MDI4NH0.eFNVbyN63fAzdd_gtViD0JToL10R7nvgKiM6MFbQqow",
+    //             'campaignName'  => $campaignName,
+    //             'destination'   => $destination,
+    //             'userName'      => $userName,
+    //             // 'source'        => $source,
+    //         ];
+
+    //         if (!empty($templateParams)) {
+    //             $payload['templateParams'] = $templateParams;
+    //         }
+
+    //         if (!empty($media)) {
+    //             $payload['media'] = $media;
+    //         }
+
+    //         // dd($payload);
+            
+    //         $client = \Config\Services::curlrequest();
+
+    //         try {
+    //             $response = $client->post(
+    //                 'https://backend.api-wa.co/campaign/smartping/api/v2',
+    //                 [
+    //                     'headers' => [
+    //                         'Content-Type' => 'application/json',
+    //                     ],
+    //                     'json' => $payload,
+    //                     'http_errors' => false
+    //                 ]
+    //             );
+
+    //             $result = json_decode($response->getBody(), true);
+
+    //             if (isset($result['success']) && $result['success'] === "true") 
+    //             {
+    //                 // return redirect()->back()->with(
+    //                 //     'success',
+    //                 //     'WhatsApp message sent successfully. Message ID: ' . $result['submitted_message_id']
+    //                 // );
+    //                 return redirect()->back()->with(
+    //                     'success',
+    //                     'WhatsApp message sent successfully.'
+    //                 );
+
+
+    //             } else {
+    //                 return redirect()->back()->with('error', 'API Error: ' . $response->getBody());
+    //             }
+
+    //         } catch (\Exception $e) {
+    //             return redirect()->back()->with('error', $e->getMessage());
+    //         }
+    //     }
+
+    //     return view('wp-message', $data);
+    // }
+
+
     public function wpMessage()
     {
 
@@ -593,9 +709,11 @@ class Home extends BaseController
         if ($this->request->getMethod() === 'post') {
 
             $rules = [
-                'campaignName'  => 'required',
-                'destination'   => 'required',
-                'userName'      => 'required',
+                'campaignName'    => 'required',
+                'destination'     => 'required',
+                'userName'        => 'required',
+                'templateParams'  => 'required',
+                'image'           => 'required',
             ];
 
             if (!$this->validate($rules)) {
@@ -639,6 +757,14 @@ class Home extends BaseController
                 }
             }
 
+
+            // destination (comma separated → array)
+            $destinationRaw = $this->request->getPost('destination');
+            $destinationArr    = !empty($destinationRaw)
+                ? array_map('trim', explode(',', $destinationRaw))
+                : [];
+
+            dd($destinationArr);
             
             $payload = [
                 'apiKey'        => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUyNDRjN2VlMTE0MGY3OTQ5MmZiZSIsIm5hbWUiOiJLZXlsaW5lIERpZ2lUZWNoIFB2dC4gTHRkLiIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2N2U1MjQ0YzdlZTExNDBmNzk0OTJmYjgiLCJhY3RpdmVQbGFuIjoiTk9ORSIsImlhdCI6MTc0MzA3MDI4NH0.eFNVbyN63fAzdd_gtViD0JToL10R7nvgKiM6MFbQqow",
@@ -697,6 +823,8 @@ class Home extends BaseController
 
         return view('wp-message', $data);
     }
+
+
 
 
 }
