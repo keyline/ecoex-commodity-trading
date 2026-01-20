@@ -708,16 +708,15 @@ class Home extends BaseController
 
         if ($this->request->getMethod() === 'post') {
 
-            echo '<pre>';
-            print_r($this->request->getPost());
-            exit;
+            // echo '<pre>';
+            // print_r($this->request->getPost());
+            // exit;
 
             $rules = [
                 'campaignName'    => 'required',
                 'destination'     => 'required',
                 'userName'        => 'required',
                 'templateParams'  => 'required',
-                'image'           => 'required',
             ];
 
             if (!$this->validate($rules)) {
@@ -737,7 +736,8 @@ class Home extends BaseController
 
             
             $media = null;
-            if (!empty($_FILES['image']['name'])) {
+            if (!empty($_FILES['image']['name'])) 
+            {
 
                 $fileName = $_FILES['image']['name'];
 
@@ -759,6 +759,10 @@ class Home extends BaseController
                 } else {
                     return redirect()->back()->with('error', $upload['message']);
                 }
+            }
+            else
+            {
+                return redirect()->back()->with('error', 'Please Upload An Image');
             }
 
 
