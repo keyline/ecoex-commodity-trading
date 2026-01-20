@@ -59,8 +59,8 @@
 
                <div class="row">
                     <div class="mb-2 col-md-6">
-                        <label>Media Image</label>
-                        <input type="file" name="image" class="form-control">
+                        <label>Media Image <span class="required">*</span></label>
+                        <input type="file" name="image" class="form-control" accept="image/*" required>
                     </div>
                     <div class="mb-2 col-md-6">
                         <label>Source</label>
