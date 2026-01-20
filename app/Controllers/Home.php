@@ -722,7 +722,6 @@ class Home extends BaseController
 
     public function wpMessage()
     {
-        $db = \Config\Database::connect();
 
         $data['general_settings'] = $this->common_model->find_data('general_settings', 'row');
         $data['title']           = 'Wp Message - ' . $data['general_settings']->site_name;
@@ -730,9 +729,8 @@ class Home extends BaseController
 
         if ($this->request->getMethod() === 'post') {
 
-            // ✅ VALIDATION
             $rules = [
-                // 'campaignName'  => 'required',
+                'campaignName'  => 'required',
                 'destination'   => 'required',
                 'userName'      => 'required',
             ];
@@ -741,19 +739,18 @@ class Home extends BaseController
                 return redirect()->back()->with('error', 'Please fill all mandatory fields.');
             }
 
-            // ✅ BASIC DATA
-            // $campaignName  = $this->request->getPost('campaignName');
+            $campaignName  = $this->request->getPost('campaignName');
             $destination   = $this->request->getPost('destination');
             $userName      = $this->request->getPost('userName');
             $source        = $this->request->getPost('source');
 
-            // ✅ TEMPLATE PARAMS (comma separated → array)
+            // TEMPLATE PARAMS (comma separated → array)
             $templateParamsRaw = $this->request->getPost('templateParams');
             $templateParams    = !empty($templateParamsRaw)
                 ? array_map('trim', explode(',', $templateParamsRaw))
                 : [];
 
-            // ✅ MEDIA HANDLING (AS YOU DEMANDED)
+            
             $media = null;
             if (!empty($_FILES['image']['name'])) {
 
@@ -779,10 +776,10 @@ class Home extends BaseController
                 }
             }
 
-            // ✅ API PAYLOAD
+            
             $payload = [
                 'apiKey'        => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUyNDRjN2VlMTE0MGY3OTQ5MmZiZSIsIm5hbWUiOiJLZXlsaW5lIERpZ2lUZWNoIFB2dC4gTHRkLiIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2N2U1MjQ0YzdlZTExNDBmNzk0OTJmYjgiLCJhY3RpdmVQbGFuIjoiTk9ORSIsImlhdCI6MTc0MzA3MDI4NH0.eFNVbyN63fAzdd_gtViD0JToL10R7nvgKiM6MFbQqow",
-                'campaignName'  => "ecoex-test",
+                'campaignName'  => $campaignName,
                 'destination'   => $destination,
                 'userName'      => $userName,
                 'source'        => $source,
@@ -796,7 +793,8 @@ class Home extends BaseController
                 $payload['media'] = $media;
             }
 
-            // ✅ SEND REQUEST TO SMARTPING
+            dd($payload);
+            
             $client = \Config\Services::curlrequest();
 
             try {

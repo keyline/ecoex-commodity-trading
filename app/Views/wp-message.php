@@ -39,10 +39,10 @@
             <form method="post" enctype="multipart/form-data">
 
 
-                <!-- <div class="mb-3">
+                <div class="mb-3">
                     <label>Campaign Name <span class="required">*</span></label>
                     <input type="text" name="campaignName" class="form-control" required>
-                </div> -->
+                </div>
 
                 <div class="mb-3">
                     <label>Destination (with country code) <span class="required">*</span></label>
@@ -61,7 +61,7 @@
 
                 <div class="mb-3">
                     <label>Template Params (comma separated)</label>
-                    <input type="text" name="templateParams" class="form-control" placeholder="Surajit,ORD-1023,18-Jan-2026,EcoEx Team">
+                    <input type="text" name="templateParams" class="form-control" placeholder="Name,Product,Company,Quantity">
                 </div>
 
                 <div class="mb-3">
