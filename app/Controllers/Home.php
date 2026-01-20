@@ -605,7 +605,7 @@ class Home extends BaseController
             $campaignName  = $this->request->getPost('campaignName');
             $destination   = $this->request->getPost('destination');
             $userName      = $this->request->getPost('userName');
-            $source        = $this->request->getPost('source');
+            // $source        = $this->request->getPost('source');
 
             // TEMPLATE PARAMS (comma separated → array)
             $templateParamsRaw = $this->request->getPost('templateParams');
@@ -645,7 +645,7 @@ class Home extends BaseController
                 'campaignName'  => $campaignName,
                 'destination'   => $destination,
                 'userName'      => $userName,
-                'source'        => $source,
+                // 'source'        => $source,
             ];
 
             if (!empty($templateParams)) {
@@ -674,11 +674,18 @@ class Home extends BaseController
 
                 $result = json_decode($response->getBody(), true);
 
-                if (isset($result['success']) && $result['success'] === "true") {
+                if (isset($result['success']) && $result['success'] === "true") 
+                {
+                    // return redirect()->back()->with(
+                    //     'success',
+                    //     'WhatsApp message sent successfully. Message ID: ' . $result['submitted_message_id']
+                    // );
                     return redirect()->back()->with(
                         'success',
-                        'WhatsApp message sent successfully. Message ID: ' . $result['submitted_message_id']
+                        'WhatsApp message sent successfully.'
                     );
+
+
                 } else {
                     return redirect()->back()->with('error', 'API Error: ' . $response->getBody());
                 }

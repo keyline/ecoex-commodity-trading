@@ -21,7 +21,6 @@
 
         <div class="card-body">
 
-            <!-- ✅ FLASH MESSAGES -->
             <?php if (session()->getFlashdata('success')): ?>
                 <div class="alert alert-success alert-dismissible fade show">
                     <strong>Success!</strong> <?= session()->getFlashdata('success'); ?>
@@ -38,12 +37,14 @@
 
             <form method="post" enctype="multipart/form-data">
 
-               <div class="row">
+               <!-- <div class="row">
                    <div class="mb-2 col-md-12">
                        <label>Campaign Name <span class="required">*</span></label>
                        <input type="text" name="campaignName" class="form-control" required>
                    </div>
-               </div>
+               </div> -->
+
+               <input type="hidden" name="campaignName" value="ecoex-test">
                
                <div class="row">
                    <div class="mb-2 col-md-6">
@@ -58,14 +59,14 @@
                </div>
 
                <div class="row">
-                    <div class="mb-2 col-md-6">
+                    <div class="mb-2 col-md-12">
                         <label>Media Image <span class="required">*</span></label>
                         <input type="file" name="image" class="form-control" accept="image/*" required>
                     </div>
-                    <div class="mb-2 col-md-6">
+                    <!-- <div class="mb-2 col-md-6">
                         <label>Source</label>
                         <input type="text" name="source" class="form-control">
-                    </div>
+                    </div> -->
                </div>
 
                 <div class="row">
