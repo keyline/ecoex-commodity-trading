@@ -593,7 +593,7 @@ class EnquiryRequestController extends BaseController
                 
 
                 /* send wp message to vendors & subscribers */
-                $enquiry_id                             = decoded($id);
+                $enquiry_id                             = $id;
                 $plant_state_name                       = decoded($plant_state_name);
                 
                 $wpRecipients                           = [];
