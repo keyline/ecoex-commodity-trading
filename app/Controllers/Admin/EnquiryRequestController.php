@@ -267,6 +267,8 @@ class EnquiryRequestController extends BaseController
     }
     public function send_whatsapp_campaign($username, $phone, $image, $param2, $param3, $param4, $param5)
     {
+        pr($image);die;
+
         $url = "https://backend.api-wa.co/campaign/smartping/api/v2";
 
         $postData = [
