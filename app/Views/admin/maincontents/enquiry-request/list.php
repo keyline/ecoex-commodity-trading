@@ -56,7 +56,7 @@ $userType           = $session->user_type;
                                             } ?> -->
                                         <?php if ($rows) {
                                             if ($rows[0]->status >= 10) { ?><th>Ecoex Payment<br>Approve Status<br>HO Approve<br>Enquiry Complete</th><?php }
-                                            } ?>
+                                                                                                                                                } ?>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -100,44 +100,46 @@ $userType           = $session->user_type;
                                                         <?php
                                                         if ($row->created_by > 0) {
                                                             $actionUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->created_by], 'plant_name');
-                                                            ?>
+                                                        ?>
                                                             <small><?= ($actionUser) ? nl2br(wordwrap($actionUser->plant_name, 15, "\n", false)) : '' ?>
                                                             </small>
-                                                        <?php } else {?>
+                                                        <?php } else { ?>
                                                             <small>Admin</small>
-                                                        <?php }?>
+                                                        <?php } ?>
                                                         <hr>
                                                     </h6>
                                                     <h6>
                                                         <?= (($row->updated_at != '') ? date_format(date_create($row->updated_at), "M d, Y h:i A") : '') ?><br>
                                                         <?php
-                                                            if ($row->updated_by > 0) {
-                                                                $actionUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->updated_by], 'plant_name');
-                                                                ?>
+                                                        if ($row->updated_by > 0) {
+                                                            $actionUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->updated_by], 'plant_name');
+                                                        ?>
                                                             <small><?= ($actionUser) ? nl2br(wordwrap($actionUser->plant_name, 15, "\n", false)) : '' ?>
                                                             </small>
-                                                        <?php } else {?>
+                                                        <?php } else { ?>
                                                             <small>Admin</small>
-                                                        <?php }?>
+                                                        <?php } ?>
                                                     </h6>
-                                                </td>                                                
-                                                <?php //if ($row->status >= 11 && $row->status <= 12 && $row->status <= 10) {?>
+                                                </td>
+                                                <?php //if ($row->status >= 11 && $row->status <= 12 && $row->status <= 10) {
+                                                ?>
                                                 <?php if ($row->status >= 10) { ?>
                                                     <td>
                                                         <h6><?= (($row->ecoex_submitted_date != '') ? date_format(date_create($row->ecoex_submitted_date), "M d, Y h:i A") : '') ?></h6>
-                                                        
-                                                        <?php //if ($row->is_ho_approve_ecoex_payment) {?>
-                                                            <h6 class="badge bg-success">APPROVED</h6>
-                                                            <h6><?= (($row->ho_approve_date != '') ? date_format(date_create($row->ho_approve_date), "M d, Y h:i A") : '') ?></h6>
 
-                                                            <?php if ($row->order_complete_date == '') { ?>
-                                                                <?php if ($userType == 'MA') { ?>
-                                                                    <a href="<?= base_url('admin/' . $controller_route . '/order-complete/' . encoded($row->$primary_key)) ?>" class="btn btn-success btn-sm" title="Complete <?= $title ?>" onclick="return confirm('Do You Want To Complete This <?= $title ?>');"><i class="fa-solid fa-flag-checkered"></i> Click To Complete</a>
-                                                                <?php } ?>
-                                                            <?php } else { ?>
-                                                                <h6 class="badge bg-success">COMPLETED</h6>
-                                                                <h6><?= (($row->order_complete_date != '') ? date_format(date_create($row->order_complete_date), "M d, Y h:i A") : '') ?></h6>
+                                                        <?php //if ($row->is_ho_approve_ecoex_payment) {
+                                                        ?>
+                                                        <h6 class="badge bg-success">APPROVED</h6>
+                                                        <h6><?= (($row->ho_approve_date != '') ? date_format(date_create($row->ho_approve_date), "M d, Y h:i A") : '') ?></h6>
+
+                                                        <?php if ($row->order_complete_date == '') { ?>
+                                                            <?php if ($userType == 'MA') { ?>
+                                                                <a href="<?= base_url('admin/' . $controller_route . '/order-complete/' . encoded($row->$primary_key)) ?>" class="btn btn-success btn-sm" title="Complete <?= $title ?>" onclick="return confirm('Do You Want To Complete This <?= $title ?>');"><i class="fa-solid fa-flag-checkered"></i> Click To Complete</a>
                                                             <?php } ?>
+                                                        <?php } else { ?>
+                                                            <h6 class="badge bg-success">COMPLETED</h6>
+                                                            <h6><?= (($row->order_complete_date != '') ? date_format(date_create($row->order_complete_date), "M d, Y h:i A") : '') ?></h6>
+                                                        <?php } ?>
                                                         <!-- ?php } else { ?>
                                                             <h6 class="badge bg-warning">PENDING</h6>
                                                         ?php } ?> -->
@@ -165,30 +167,32 @@ $userType           = $session->user_type;
                                                             <?php } ?>
                                                         <?php } ?>
                                                         <br>
-                                                        <?php //if ($common_model->checkModuleFunctionAccess(23, 149)) { ?>
-                                                            <?php //if ($userType == 'MA') { ?>
-                                                                <!-- <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification/' . encoded(97)) ?>" class="btn btn-success btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa fa-whatsapp" aria-hidden="true"></i> Click To Send Notification</a> -->
-                                                                 <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
-                                                                    <?= csrf_field() ?>
-                                                                    <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
-                                                                    <input type="hidden" name="send_type" value="state">
-                                                                    <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]['state']) && ($statusMap[$row->id]['state'] == 'processing' || $statusMap[$row->id]['state'] == 'pending')) ? 'disabled' : '' ?>>
-                                                                        <i class="fa-brands fa-whatsapp"></i> Send Notification To <?= $stateMap[$row->id] ?? '' ?> (<?= $statusMap[$row->id]['state'] ?? '' ?>)
-                                                                    </button>
-                                                                </form>
-                                                                <br>
+                                                        <?php //if ($common_model->checkModuleFunctionAccess(23, 149)) { 
+                                                        ?>
+                                                        <?php //if ($userType == 'MA') { 
+                                                        ?>
+                                                        <!-- <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification/' . encoded(97)) ?>" class="btn btn-success btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa fa-whatsapp" aria-hidden="true"></i> Click To Send Notification</a> -->
+                                                        <!-- <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
+                                                            <?= csrf_field() ?>
+                                                            <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
+                                                            <input type="hidden" name="send_type" value="state">
+                                                            <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]['state']) && ($statusMap[$row->id]['state'] == 'processing' || $statusMap[$row->id]['state'] == 'pending')) ? 'disabled' : '' ?>>
+                                                                <i class="fa-brands fa-whatsapp"></i> Send Notification To <?= $stateMap[$row->id] ?? '' ?> (<?= $statusMap[$row->id]['state'] ?? '' ?>)
+                                                            </button>
+                                                        </form>
+                                                        <br>
 
-                                                                <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
-                                                                    <?= csrf_field() ?>
-                                                                    <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
-                                                                    <input type="hidden" name="send_type" value="pan_india">
-                                                                    <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]['pan_India']) && ($statusMap[$row->id]['pan_India'] == 'processing' || $statusMap[$row->id]['pan_India'] == 'pending')) ? 'disabled' : '' ?>>
-                                                                        <i class="fa-brands fa-whatsapp"></i> Send Notification To Pan India (<?= $statusMap[$row->id]['pan_India'] ?? '' ?>)
-                                                                    </button>
-                                                                </form>
-                                                                <br>
-                                                                
-                                                                <!-- <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
+                                                        <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
+                                                            <?= csrf_field() ?>
+                                                            <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
+                                                            <input type="hidden" name="send_type" value="pan_india">
+                                                            <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]['pan_India']) && ($statusMap[$row->id]['pan_India'] == 'processing' || $statusMap[$row->id]['pan_India'] == 'pending')) ? 'disabled' : '' ?>>
+                                                                <i class="fa-brands fa-whatsapp"></i> Send Notification To Pan India (<?= $statusMap[$row->id]['pan_India'] ?? '' ?>)
+                                                            </button>
+                                                        </form> -->
+                                                        <br>
+
+                                                        <!-- <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
                                                                     <?= csrf_field() ?>
                                                                     <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
                                                                     <input type="hidden" name="send_type" value="neighbour">
@@ -196,14 +200,16 @@ $userType           = $session->user_type;
                                                                         <i class="fa-brands fa-whatsapp"></i> Send Notification To Neighbour (<?= $statusMap[$row->id]['neighbour'] ?? '' ?>)
                                                                     </button>
                                                                 </form> -->
-                                                            <?php //} ?>
-                                                        <?php //} ?>
+                                                        <?php //} 
+                                                        ?>
+                                                        <?php //} 
+                                                        ?>
                                                     <?php } else { ?>
                                                         <?php if ($row->status >= 1 && $row->status <= 12) { ?>
                                                             <h6 class="badge bg-success mt-2"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
                                                             </br>
                                                             <!-- <a href="<?= base_url('admin/certificate/create'); ?>"><h6 class="badge bg-success mt-2"><i class="fa fa-flag-checkered"></i> Generate Certificate</h6></a> -->
-                                                            <?php if ($row->status == 12) {?>
+                                                            <?php if ($row->status == 12) { ?>
                                                                 <?php if ($common_model->checkModuleFunctionAccess(23, 155)) { ?>
                                                                     <form action="<?= base_url('admin/certificate/create'); ?>" method="post" class="d-inline">
                                                                         <?= csrf_field(); ?>
@@ -215,8 +221,8 @@ $userType           = $session->user_type;
                                                                             <i class="fa fa-flag-checkered"></i> Generate Certificate
                                                                         </button>
                                                                     </form>
-                                                                <?php }?>
-                                                            <?php }?>
+                                                                <?php } ?>
+                                                            <?php } ?>
                                                         <?php } elseif ($row->status == 13) { ?>
                                                             <h6 class="badge bg-danger mt-2"><i class="fa fa-times-circle"></i> REJECTED</h6>
                                                         <?php } ?>
@@ -230,7 +236,7 @@ $userType           = $session->user_type;
                                                 </td>
                                             </tr>
                                     <?php }
-                                        } ?>
+                                    } ?>
                                 </tbody>
                             </table>
                         </div>
