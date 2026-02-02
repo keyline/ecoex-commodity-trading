@@ -169,7 +169,29 @@ class EnquiryRequestController extends BaseController
     public function sendWhatsappNotificationState($enquiry_id, $plant_state_name){
         $enquiry_id                             = decoded($enquiry_id);
         $plant_state_name                       = decoded($plant_state_name);
-        echo $enquiry_id . ' || ' . $plant_state_name;die;
+        
+        $wpRecipients                           = [];
+        $getVendors                             = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'state' => '$plant_state_name'], 'company_name,phone');
+        if($getVendors){
+            foreach($getVendors as $getVendor){
+                $wpRecipients[]                           = [
+                    'name'  => $getVendor->company_name,
+                    'phone' => $getVendor->phone,
+                ];
+            }
+        }
+
+        $getSubscribers                             = $this->data['model']->find_data('subscribers', 'array', ['type' => 'VENDOR', 'state' => '$plant_state_name'], 'name,phone');
+        if($getSubscribers){
+            foreach($getSubscribers as $getSubscriber){
+                $wpRecipients[]                           = [
+                    'name'  => $getSubscriber->name,
+                    'phone' => $getSubscriber->phone,
+                ];
+            }
+        }
+
+        pr($wpRecipients);die;
     }
     public function viewDetail($enq_id)
     {
