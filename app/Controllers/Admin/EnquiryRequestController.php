@@ -192,7 +192,77 @@ class EnquiryRequestController extends BaseController
         }
 
         pr($wpRecipients);die;
+
+        // 9330528208, 6289339520
+
+        /* wp message template */
+            
+        /* wp message template */
     }
+    public function send_whatsapp_campaign($param1, $param2, $param3, $param4, $param5)
+    {
+        $url = "https://backend.api-wa.co/campaign/smartping/api/v2";
+
+        $postData = [
+            "apiKey" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUyNDRjN2VlMTE0MGY3OTQ5MmZiZSIsIm5hbWUiOiJLZXlsaW5lIERpZ2lUZWNoIFB2dC4gTHRkLiIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2N2U1MjQ0YzdlZTExNDBmNzk0OTJmYjgiLCJhY3RpdmVQbGFuIjoiTk9ORSIsImlhdCI6MTc0MzA3MDI4NH0.eFNVbyN63fAzdd_gtViD0JToL10R7nvgKiM6MFbQqow",
+            "campaignName" => "ecoex-comodity-alert",
+            "destination" => "9330528208",
+            "userName" => "Keyline DigiTech Pvt. Ltd.",
+            "templateParams" => [
+                "$param1",
+                "$param2",
+                "$param3",
+                "$param4",
+                "$param5"
+            ],
+            "source" => "new-landing-page form",
+            "media" => [
+                "url" => "https://d3jt6ku4g6z5l8.cloudfront.net/IMAGE/6353da2e153a147b991dd812/4958901_highanglekidcheatingschooltestmin.jpg",
+                "filename" => "sample_media"
+            ],
+            "buttons" => [],
+            "carouselCards" => [],
+            "location" => new stdClass(),
+            "attributes" => new stdClass(),
+            "paramsFallbackValue" => [
+                "FirstName" => "user"
+            ]
+        ];
+
+        $ch = curl_init($url);
+
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_HTTPHEADER     => [
+                "Content-Type: application/json"
+            ],
+            CURLOPT_POSTFIELDS     => json_encode($postData),
+            CURLOPT_TIMEOUT        => 30,
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if (curl_errno($ch)) {
+            $error = curl_error($ch);
+            curl_close($ch);
+            echo json_encode([
+                'status' => false,
+                'error'  => $error
+            ]);
+            return;
+        }
+
+        curl_close($ch);
+
+        echo json_encode([
+            'status'    => true,
+            'http_code' => $httpCode,
+            'response'  => json_decode($response, true)
+        ]);
+    }
+
     public function viewDetail($enq_id)
     {
         if (!$this->common_model->checkModuleFunctionAccess(23, 109)) {
