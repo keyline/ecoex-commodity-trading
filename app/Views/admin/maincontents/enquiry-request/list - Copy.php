@@ -167,7 +167,11 @@ $userType           = $session->user_type;
                                                             <?php } ?>
                                                         <?php } ?>
                                                         <br>
-                                                                                                                
+                                                        <?php //if ($common_model->checkModuleFunctionAccess(23, 149)) { 
+                                                        ?>
+                                                        <?php //if ($userType == 'MA') { 
+                                                        ?>
+                                                        <!-- <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification/' . encoded(97)) ?>" class="btn btn-success btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa fa-whatsapp" aria-hidden="true"></i> Click To Send Notification</a> -->
                                                         <?php
                                                         $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'state, company_name');
                                                         $plant_state_name = (($getPlant)?$getPlant->state:'');
@@ -175,6 +179,38 @@ $userType           = $session->user_type;
                                                         
                                                         <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification to <?= $plant_state_name ?> Vendors & Subscribers</a>
                                                         
+                                                        <!-- <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
+                                                            <?= csrf_field() ?>
+                                                            <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
+                                                            <input type="hidden" name="send_type" value="state">
+                                                            <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]['state']) && ($statusMap[$row->id]['state'] == 'processing' || $statusMap[$row->id]['state'] == 'pending')) ? 'disabled' : '' ?>>
+                                                                <i class="fa-brands fa-whatsapp"></i> Send Notification To <?= $stateMap[$row->id] ?? '' ?> (<?= $statusMap[$row->id]['state'] ?? '' ?>)
+                                                            </button>
+                                                        </form>
+                                                        <br> -->
+
+                                                        <!-- <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
+                                                            <?= csrf_field() ?>
+                                                            <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
+                                                            <input type="hidden" name="send_type" value="pan_india">
+                                                            <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]['pan_India']) && ($statusMap[$row->id]['pan_India'] == 'processing' || $statusMap[$row->id]['pan_India'] == 'pending')) ? 'disabled' : '' ?>>
+                                                                <i class="fa-brands fa-whatsapp"></i> Send Notification To Pan India (<?= $statusMap[$row->id]['pan_India'] ?? '' ?>)
+                                                            </button>
+                                                        </form> -->
+                                                        <br>
+
+                                                        <!-- <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
+                                                                    <?= csrf_field() ?>
+                                                                    <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
+                                                                    <input type="hidden" name="send_type" value="neighbour">
+                                                                    <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]['neighbour']) && ($statusMap[$row->id]['neighbour'] == 'processing' || $statusMap[$row->id]['neighbour'] == 'pending')) ? 'disabled' : '' ?>>
+                                                                        <i class="fa-brands fa-whatsapp"></i> Send Notification To Neighbour (<?= $statusMap[$row->id]['neighbour'] ?? '' ?>)
+                                                                    </button>
+                                                                </form> -->
+                                                        <?php //} 
+                                                        ?>
+                                                        <?php //} 
+                                                        ?>
                                                     <?php } else { ?>
                                                         <?php if ($row->status >= 1 && $row->status <= 12) { ?>
                                                             <h6 class="badge bg-success mt-2"><i class="fa fa-check-circle"></i> ACCEPTED</h6>

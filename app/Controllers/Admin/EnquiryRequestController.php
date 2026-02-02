@@ -169,7 +169,7 @@ class EnquiryRequestController extends BaseController
     public function sendWhatsappNotificationState($enquiry_id, $plant_state_name){
         $enquiry_id                             = decoded($enquiry_id);
         $plant_state_name                       = decoded($plant_state_name);
-        echo $enquiry_id . ' || ' . $plant_state_name;
+        echo $enquiry_id . ' || ' . $plant_state_name;die;
     }
     public function viewDetail($enq_id)
     {
