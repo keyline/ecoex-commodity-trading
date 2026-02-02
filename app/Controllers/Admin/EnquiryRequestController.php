@@ -224,10 +224,19 @@ class EnquiryRequestController extends BaseController
             $join[0]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'table' => 'ecomm_company_items', 'field' => 'id', 'type' => 'LEFT'];
             $join[1]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'table' => 'ecomm_units', 'field' => 'id', 'type' => 'INNER'];
             $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name', $join);
-            pr($getEnquiryItems);
+            
+            $itemNameArray = [];
+            $quantityArray = [];
 
-            $material           = "EcoEx Commodity Platform";
-            $quantity           = "New Enquiry Request Available In Your State. Please Login To EcoEx App/Portal To Check & Submit Quotation.";
+            if($getEnquiryItems){
+                foreach($getEnquiryItems as $getEnquiryItem){
+                    $itemNameArray[] = $getEnquiryItem->item_name;
+                    $quantityArray[] = $getEnquiryItem->qty . ' ' . $getEnquiryItem->unit_name;
+                }
+            }
+
+            $material           = ((!empty($itemNameArray))?implode(', ', $itemNameArray):'NA');
+            $quantity           = ((!empty($quantityArray))?implode(', ', $quantityArray):'NA');
             $location           = (($getEnquiry)?$getEnquiry->full_address:'');
             $price_range        = "EcoEx Support Team";
 
