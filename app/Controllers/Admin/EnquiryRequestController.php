@@ -223,22 +223,24 @@ class EnquiryRequestController extends BaseController
 
             $join[0]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'table' => 'ecomm_company_items', 'field' => 'id', 'type' => 'LEFT'];
             $join[1]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'table' => 'ecomm_units', 'field' => 'id', 'type' => 'INNER'];
-            $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name', $join);
+            $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name, ecomm_company_items.price_range as price_range', $join);
             
             $itemNameArray = [];
             $quantityArray = [];
+            $priceRangeArray = [];
 
             if($getEnquiryItems){
                 foreach($getEnquiryItems as $getEnquiryItem){
                     $itemNameArray[] = $getEnquiryItem->item_name;
                     $quantityArray[] = $getEnquiryItem->qty . ' ' . $getEnquiryItem->unit_name;
+                    $priceRangeArray[] = '₹' . $getEnquiryItem->price_range;
                 }
             }
 
             $material           = ((!empty($itemNameArray))?implode(', ', $itemNameArray):'NA');
             $quantity           = ((!empty($quantityArray))?implode(', ', $quantityArray):'NA');
             $location           = (($getEnquiry)?$getEnquiry->full_address:'');
-            $price_range        = "EcoEx Support Team";
+            $price_range        = ((!empty($priceRangeArray))?implode(', ', $priceRangeArray):'NA');
 
             echo $material . '<br>' . $quantity . '<br>' . $price_range;
             die;
