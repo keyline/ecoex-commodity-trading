@@ -211,7 +211,7 @@ class EnquiryRequestController extends BaseController
         // pr($DemoRecipents);die;
         foreach($DemoRecipents as $recipent)
         {
-            dd($recipent['name']);
+            pr($recipent['name']); die;
         }
 
 
