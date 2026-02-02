@@ -244,20 +244,17 @@ class EnquiryRequestController extends BaseController
             $location           = (($getEnquiry)?$getEnquiry->full_address:'');
             $price_range        = ((!empty($priceRangeArray))?implode(', ', $priceRangeArray):'NA');
 
-            echo $material . '<br>' . $quantity . '<br>' . $price_range;
-            die;
+            // echo $material . '<br>' . $quantity . '<br>' . $price_range;
+            // die;
             $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
             pr($whatsappResponse);die;
 
-        }
-
-
-
-    
+        }    
         /* wp message template */
     }
     public function send_whatsapp_campaign($username, $phone, $image, $param2, $param3, $param4, $param5)
     {
+        pr($image);
         $url = "https://backend.api-wa.co/campaign/smartping/api/v2";
 
         $postData = [
