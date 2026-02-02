@@ -615,9 +615,8 @@ class EnquiryRequestController extends BaseController
                     }
                 }
 
-                pr($wpRecipients);die;
+                // pr($wpRecipients);die;
 
-                // 9330528208, 6289339520
 
                 /* wp message template */
                 $DemoRecipents = [
@@ -632,6 +631,10 @@ class EnquiryRequestController extends BaseController
                     [
                         'name'  => 'Somnath Shil',
                         'phone' => '9088467525'
+                    ],
+                    [
+                        'name'  => 'Harendra Tiwari',
+                        'phone' => '9766601173'
                     ]
                 ];
 
