@@ -247,9 +247,10 @@ class EnquiryRequestController extends BaseController
             // echo $material . '<br>' . $quantity . '<br>' . $price_range;
             // die;
             $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
-            pr($whatsappResponse);die;
+            pr($whatsappResponse,0);
 
-        }    
+        }
+        die;
         /* wp message template */
     }
     public function send_whatsapp_campaign($username, $phone, $image, $param2, $param3, $param4, $param5)
