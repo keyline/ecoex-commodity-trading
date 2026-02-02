@@ -218,6 +218,8 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     $routes->match(['get', 'post'], "enquiry-requests/approve-vendor-quit/(:any)/(:any)", "EnquiryRequestController::approveVendorQuit/$1/$2");
     $routes->match(['get', 'post'], "enquiry-requests/reject-vendor-quit/(:any)/(:any)", "EnquiryRequestController::rejectVendorQuit/$1/$2");
 
+    $routes->match(['get', 'post'], "enquiry-requests/send-whatsapp-notification-state/(:any)/(:any)", "EnquiryRequestController::rejectVendorQuit/$1/$2");
+
     $routes->match(['get', 'post'], "enquiry-requests/material-weighted-access/(:any)/(:any)", "EnquiryRequestController::weighted_access/$1/$2");
 
     $routes->match(['get', 'post'], "enquiry-requests/enquiry-details/(:any)", "EnquiryRequestController::enquiryDetails/$1");

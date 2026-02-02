@@ -166,6 +166,11 @@ class EnquiryRequestController extends BaseController
 
         echo $this->layout_after_login($title, $page_name, $data);
     }
+    public function sendWhatsappNotificationState($enquiry_id, $plant_state_name){
+        $enquiry_id                             = decoded($enquiry_id);
+        $plant_state_name                       = decoded($plant_state_name);
+        echo $enquiry_id . ' || ' . $plant_state_name;
+    }
     public function viewDetail($enq_id)
     {
         if (!$this->common_model->checkModuleFunctionAccess(23, 109)) {
