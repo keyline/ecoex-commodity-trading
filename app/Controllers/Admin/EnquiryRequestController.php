@@ -171,7 +171,7 @@ class EnquiryRequestController extends BaseController
         $plant_state_name                       = decoded($plant_state_name);
         
         $wpRecipients                           = [];
-        $getVendors                             = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'state' => '$plant_state_name'], 'company_name,phone');
+        $getVendors                             = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'state' => $plant_state_name], 'company_name,phone');
         if($getVendors){
             foreach($getVendors as $getVendor){
                 $wpRecipients[]                           = [
@@ -181,7 +181,7 @@ class EnquiryRequestController extends BaseController
             }
         }
 
-        $getSubscribers                             = $this->data['model']->find_data('subscribers', 'array', ['type' => 'VENDOR', 'state' => '$plant_state_name'], 'name,phone');
+        $getSubscribers                             = $this->data['model']->find_data('subscribers', 'array', ['type' => 'VENDOR', 'state' => $plant_state_name], 'name,phone');
         if($getSubscribers){
             foreach($getSubscribers as $getSubscriber){
                 $wpRecipients[]                           = [
