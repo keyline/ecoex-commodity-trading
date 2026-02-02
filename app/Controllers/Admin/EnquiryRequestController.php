@@ -211,16 +211,16 @@ class EnquiryRequestController extends BaseController
         // pr($DemoRecipents);die;
         foreach($DemoRecipents as $recipent)
         {
-            $username = $recipent['name'];
-            $phone = $recipent['phone'];
-            $image[
+            $username   = $recipent['name'];
+            $phone      = $recipent['phone'];
+            $image      = [
                 "url" => "https://d3jt6ku4g6z5l8.cloudfront.net/IMAGE/6353da2e153a147b991dd812/4958901_highanglekidcheatingschooltestmin.jpg",
                 "filename" => "sample_media"
             ];
-            $param2 = "EcoEx Commodity Platform";
-            $param3 = "New Enquiry Request Available In Your State. Please Login To EcoEx App/Portal To Check & Submit Quotation.";
-            $param4 = "www.ecoex.in";
-            $param5 = "EcoEx Support Team";
+            $param2     = "EcoEx Commodity Platform";
+            $param3     = "New Enquiry Request Available In Your State. Please Login To EcoEx App/Portal To Check & Submit Quotation.";
+            $param4     = "www.ecoex.in";
+            $param5     = "EcoEx Support Team";
 
            $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $param2, $param3, $param4, $param5);
            pr($whatsappResponse);die;
@@ -261,6 +261,7 @@ class EnquiryRequestController extends BaseController
                 "FirstName" => "user"
             ]
         ];
+        pr($postData);
 
         $ch = curl_init($url);
 
