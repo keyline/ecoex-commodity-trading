@@ -255,8 +255,8 @@ class EnquiryRequestController extends BaseController
             ],
             "buttons" => [],
             "carouselCards" => [],
-            "location" => new stdClass(),
-            "attributes" => new stdClass(),
+            "location" => [],
+            "attributes" => [],
             "paramsFallbackValue" => [
                 "FirstName" => "user"
             ]
