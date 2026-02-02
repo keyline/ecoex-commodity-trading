@@ -206,12 +206,20 @@ class EnquiryRequestController extends BaseController
                 'phone' => '6289339520'
             ],
             [
-                'name'  => 'Keyline Digitech',
+                'name'  => 'Joydeep Ghosh',
                 'phone' => '9330109091'
             ],
             [
-                'name'  => 'Papu Samanta',
-                'phone' => '8981374267'
+                'name'  => 'Somnath',
+                'phone' => '9088467525'
+            ],
+            [
+                'name'  => 'Sudip 1',
+                'phone' => '8981436780'
+            ],
+            [
+                'name'  => 'Sudip 2',
+                'phone' => '7003366979'
             ]
         ];
 
