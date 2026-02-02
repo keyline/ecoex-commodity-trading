@@ -211,20 +211,23 @@ class EnquiryRequestController extends BaseController
         // pr($DemoRecipents);die;
         foreach($DemoRecipents as $recipent)
         {
-            $username   = $recipent['name'];
-            $phone      = $recipent['phone'];
-            $image      = [
-                "url" => "https://d3jt6ku4g6z5l8.cloudfront.net/IMAGE/6353da2e153a147b991dd812/4958901_highanglekidcheatingschooltestmin.jpg",
-                "filename" => "sample_media"
-            ];
-            $param2     = "EcoEx Commodity Platform";
-            $param3     = "New Enquiry Request Available In Your State. Please Login To EcoEx App/Portal To Check & Submit Quotation.";
-            $param4     = "www.ecoex.in";
-            $param5     = "EcoEx Support Team";
+            $username           = $recipent['name'];
+            $phone              = $recipent['phone'];
+
+            $join[0]            = ['table_master' => 'ecomm_enquires', 'field_table_master' => 'plant_id', 'table' => 'ecomm_users', 'field' => 'id', 'type' => 'INNER'];
+            $getEnquiry         = $this->data['model']->find_data('ecomm_enquires', 'row', ['ecomm_enquires.id' => $enquiry_id], 'ecomm_enquires.plant_id, ecomm_enquires.gps_tracking_image, ecomm_enquires.enquiry_no, ecomm_users.plant_name, ecomm_users.full_address', $join);
+            $image              =   [
+                                        "url" => (($getEnquiry)?base_url('public/uploads/enquiry/' . $getEnquiry->gps_tracking_image):'https://commodity.ecoex.market/public/uploads/1700637387admin_leftlogo.png'),
+                                        "filename" => (($getEnquiry)?$getEnquiry->gps_tracking_image:'')
+                                    ];
+            $material           = "EcoEx Commodity Platform";
+            $quantity           = "New Enquiry Request Available In Your State. Please Login To EcoEx App/Portal To Check & Submit Quotation.";
+            echo $location           = (($getEnquiry)?$getEnquiry->full_address:'');
+            $price_range        = "EcoEx Support Team";
 
             pr($image);
             die;
-            $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $param2, $param3, $param4, $param5);
+            $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
             pr($whatsappResponse);die;
 
         }
