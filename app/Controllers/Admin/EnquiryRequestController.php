@@ -256,7 +256,7 @@ class EnquiryRequestController extends BaseController
 
         curl_close($ch);
 
-        echo json_encode([
+        return json_encode([
             'status'    => true,
             'http_code' => $httpCode,
             'response'  => json_decode($response, true)
