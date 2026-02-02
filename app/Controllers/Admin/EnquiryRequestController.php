@@ -649,7 +649,7 @@ class EnquiryRequestController extends BaseController
                     $getEnquiry         = $this->data['model']->find_data('ecomm_enquires', 'row', ['ecomm_enquires.id' => $enquiry_id], 'ecomm_enquires.plant_id, ecomm_enquires.gps_tracking_image, ecomm_enquires.enquiry_no, ecomm_users.plant_name, ecomm_users.full_address', $join1);
                     $image              =   [
                                                 "url" => (($getEnquiry)?base_url('public/uploads/enquiry/' . $getEnquiry->gps_tracking_image):'https://commodity.ecoex.market/public/uploads/1700637387admin_leftlogo.png'),
-                                                "filename" => (($getEnquiry)?$getEnquiry->gps_tracking_image:'')
+                                                "filename" => (($getEnquiry)?$getEnquiry->gps_tracking_image:'ImageName')
                                             ];
 
                     $join2[0]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'table' => 'ecomm_company_items', 'field' => 'id', 'type' => 'LEFT'];
