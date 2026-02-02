@@ -172,6 +172,9 @@ $userType           = $session->user_type;
                                                         <?php //if ($userType == 'MA') { 
                                                         ?>
                                                         <!-- <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification/' . encoded(97)) ?>" class="btn btn-success btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa fa-whatsapp" aria-hidden="true"></i> Click To Send Notification</a> -->
+
+                                                        <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key)) ?>" class="btn btn-success btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa fa-whatsapp" aria-hidden="true"></i> Click To Send Notification to <?= $statusMap[$row->id]['state'] ?? '' ?> Vendors & Subscribers</a>
+                                                        
                                                         <!-- <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
                                                             <?= csrf_field() ?>
                                                             <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
@@ -180,9 +183,9 @@ $userType           = $session->user_type;
                                                                 <i class="fa-brands fa-whatsapp"></i> Send Notification To <?= $stateMap[$row->id] ?? '' ?> (<?= $statusMap[$row->id]['state'] ?? '' ?>)
                                                             </button>
                                                         </form>
-                                                        <br>
+                                                        <br> -->
 
-                                                        <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
+                                                        <!-- <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
                                                             <?= csrf_field() ?>
                                                             <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
                                                             <input type="hidden" name="send_type" value="pan_india">
