@@ -233,7 +233,9 @@ class EnquiryRequestController extends BaseController
                 foreach($getEnquiryItems as $getEnquiryItem){
                     $itemNameArray[] = $getEnquiryItem->item_name;
                     $quantityArray[] = $getEnquiryItem->qty . ' ' . $getEnquiryItem->unit_name;
-                    $priceRangeArray[] = (($getEnquiryItem->price_range != '')?'₹' . $getEnquiryItem->price_range:'');
+                    if($getEnquiryItem->price_range != ''){
+                        $priceRangeArray[] = (($getEnquiryItem->price_range != '')?'₹' . $getEnquiryItem->price_range:'');
+                    }
                 }
             }
 
