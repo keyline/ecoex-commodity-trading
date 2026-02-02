@@ -198,11 +198,11 @@ class EnquiryRequestController extends BaseController
         /* wp message template */
         $DemoRecipents = [
             [
-                'name'  => 'Anirban Rathore',
+                'name'  => 'Anirban Singh',
                 'phone' => '9330528208'
             ],
             [
-                'name'  => 'Subhomoy Da',
+                'name'  => 'Subhomoy Samanta',
                 'phone' => '6289339520'
             ]
         ];
@@ -212,8 +212,19 @@ class EnquiryRequestController extends BaseController
         foreach($DemoRecipents as $recipent)
         {
             $username = $recipent['name'];
+            $phone = $recipent['phone'];
+            $image[
+                "url" => "https://d3jt6ku4g6z5l8.cloudfront.net/IMAGE/6353da2e153a147b991dd812/4958901_highanglekidcheatingschooltestmin.jpg",
+                "filename" => "sample_media"
+            ];
+            $param2 = "EcoEx Commodity Platform";
+            $param3 = "New Enquiry Request Available In Your State. Please Login To EcoEx App/Portal To Check & Submit Quotation.";
+            $param4 = "www.ecoex.in";
+            $param5 = "EcoEx Support Team";
 
-            pr($recipent['phone']); die;
+           $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $param2, $param3, $param4, $param5);
+           pr($whatsappResponse);die;
+
         }
 
 
@@ -221,17 +232,17 @@ class EnquiryRequestController extends BaseController
     
         /* wp message template */
     }
-    public function send_whatsapp_campaign($param1, $param2, $param3, $param4, $param5)
+    public function send_whatsapp_campaign($username, $phone, $image, $param2, $param3, $param4, $param5)
     {
         $url = "https://backend.api-wa.co/campaign/smartping/api/v2";
 
         $postData = [
             "apiKey" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUyNDRjN2VlMTE0MGY3OTQ5MmZiZSIsIm5hbWUiOiJLZXlsaW5lIERpZ2lUZWNoIFB2dC4gTHRkLiIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2N2U1MjQ0YzdlZTExNDBmNzk0OTJmYjgiLCJhY3RpdmVQbGFuIjoiTk9ORSIsImlhdCI6MTc0MzA3MDI4NH0.eFNVbyN63fAzdd_gtViD0JToL10R7nvgKiM6MFbQqow",
             "campaignName" => "ecoex-comodity-alert",
-            "destination" => "9330528208",
-            "userName" => "Keyline DigiTech Pvt. Ltd.",
+            "destination" => $phone,
+            "userName" => $username,
             "templateParams" => [
-                "$param1",
+                "$username",
                 "$param2",
                 "$param3",
                 "$param4",
