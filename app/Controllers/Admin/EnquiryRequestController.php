@@ -588,6 +588,13 @@ class EnquiryRequestController extends BaseController
                     }
                 }
                 /* send push */
+                
+
+                /* send wp message to vendors & subscribers */
+
+                /* send wp message to vendors & subscribers */
+                die;
+                
                 $postData = array(
                     'status'                    => 1,
                     'enquiry_remarks'           => 'Approved By EcoEx',
@@ -595,10 +602,6 @@ class EnquiryRequestController extends BaseController
                 );
                 $updateData = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
 
-                /* send wp message to vendors & subscribers */
-
-                /* send wp message to vendors & subscribers */
-                
                 $this->session->setFlashdata('success_message', $this->data['title'] . ' Accepted Successfully & Transfer To Sent/Submitted List !!!');
                 return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/' . encoded(1));
             } else {
