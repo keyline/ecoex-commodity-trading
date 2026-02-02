@@ -191,12 +191,28 @@ class EnquiryRequestController extends BaseController
             }
         }
 
-        pr($wpRecipients);die;
+        // pr($wpRecipients);die;
 
         // 9330528208, 6289339520
 
         /* wp message template */
-            
+        $DemoRecipents = [
+            [
+                'name'  => 'Anirban Rathore',
+                'phone' => '9330528208'
+            ],
+            [
+                'name'  => 'Subhomoy Da',
+                'phone' => '6289339520'
+            ]
+        ];
+
+        // Debug
+        pr($DemoRecipents);die;
+
+
+        
+    
         /* wp message template */
     }
     public function send_whatsapp_campaign($param1, $param2, $param3, $param4, $param5)
