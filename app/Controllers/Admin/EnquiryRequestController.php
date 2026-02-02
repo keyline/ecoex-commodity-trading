@@ -222,8 +222,10 @@ class EnquiryRequestController extends BaseController
             $param4     = "www.ecoex.in";
             $param5     = "EcoEx Support Team";
 
-           $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $param2, $param3, $param4, $param5);
-           pr($whatsappResponse);die;
+            pr($image);
+            die;
+            $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $param2, $param3, $param4, $param5);
+            pr($whatsappResponse);die;
 
         }
 
