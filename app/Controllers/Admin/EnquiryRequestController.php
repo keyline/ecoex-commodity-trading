@@ -208,10 +208,14 @@ class EnquiryRequestController extends BaseController
         ];
 
         // Debug
-        pr($DemoRecipents);die;
+        // pr($DemoRecipents);die;
+        foreach($DemoRecipents as $recipent)
+        {
+            dd($recipent['name']);
+        }
 
 
-        
+
     
         /* wp message template */
     }
