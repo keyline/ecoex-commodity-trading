@@ -158,7 +158,13 @@ $userType           = $session->user_type;
                                                     <?php if ($row->status == 0) { ?>
                                                         <?php if ($common_model->checkModuleFunctionAccess(23, 110)) { ?>
                                                             <?php if ($userType == 'MA') { ?>
-                                                                <a href="<?= base_url('admin/' . $controller_route . '/accept-request/' . encoded($row->$primary_key)) ?>" class="btn btn-success btn-sm mt-2" title="Accept <?= $title ?>" onclick="return confirm('Do You Want To Accept This <?= $title ?>');"><i class="fa fa-check"></i> Click To Accept</a>
+
+                                                                <?php
+                                                                $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'state, company_name');
+                                                                $plant_state_name = (($getPlant)?$getPlant->state:'');
+                                                                ?>
+                                                            
+                                                                <a href="<?= base_url('admin/' . $controller_route . '/accept-request/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-success btn-sm mt-2" title="Accept <?= $title ?>" onclick="return confirm('Do You Want To Accept This <?= $title ?>');"><i class="fa fa-check"></i> Click To Accept</a>
                                                             <?php } ?>
                                                         <?php } ?>
                                                         <?php if ($common_model->checkModuleFunctionAccess(23, 111)) { ?>
@@ -168,12 +174,10 @@ $userType           = $session->user_type;
                                                         <?php } ?>
                                                         <br>
                                                                                                                 
-                                                        <?php
-                                                        $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'state, company_name');
-                                                        $plant_state_name = (($getPlant)?$getPlant->state:'');
-                                                        ?>
                                                         
-                                                        <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification to <?= $plant_state_name ?> Vendors & Subscribers</a>
+                                                        
+                                                        <!-- <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification to <?= $plant_state_name ?> Vendors & Subscribers</a> -->
+
                                                         
                                                     <?php } else { ?>
                                                         <?php if ($row->status >= 1 && $row->status <= 12) { ?>
