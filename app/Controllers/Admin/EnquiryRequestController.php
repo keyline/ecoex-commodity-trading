@@ -223,8 +223,6 @@ class EnquiryRequestController extends BaseController
             ]
         ];
 
-        // Debug
-        // pr($DemoRecipents);die;
         foreach($DemoRecipents as $recipent)
         {
             $username           = $recipent['name'];
@@ -260,8 +258,6 @@ class EnquiryRequestController extends BaseController
             $location           = (($getEnquiry)?$getEnquiry->full_address:'');
             $price_range        = ((!empty($priceRangeArray))?implode(', ', $priceRangeArray):'NA');
 
-            // echo $material . '<br>' . $quantity . '<br>' . $price_range;
-            // die;
             $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
             pr($whatsappResponse,0);
 
@@ -598,6 +594,11 @@ class EnquiryRequestController extends BaseController
                     'accepted_date'             => date('y-m-d H:i:s')
                 );
                 $updateData = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
+
+                /* send wp message to vendors & subscribers */
+
+                /* send wp message to vendors & subscribers */
+                
                 $this->session->setFlashdata('success_message', $this->data['title'] . ' Accepted Successfully & Transfer To Sent/Submitted List !!!');
                 return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/' . encoded(1));
             } else {
