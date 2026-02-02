@@ -211,7 +211,7 @@ class EnquiryRequestController extends BaseController
             ],
             [
                 'name'  => 'Papu Samanta',
-                'phone' => '+918981374267'
+                'phone' => '8981374267'
             ]
         ];
 
