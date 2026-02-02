@@ -254,7 +254,6 @@ class EnquiryRequestController extends BaseController
     }
     public function send_whatsapp_campaign($username, $phone, $image, $param2, $param3, $param4, $param5)
     {
-        pr($image);
         $url = "https://backend.api-wa.co/campaign/smartping/api/v2";
 
         $postData = [
@@ -271,8 +270,8 @@ class EnquiryRequestController extends BaseController
             ],
             "source" => "new-landing-page form",
             "media" => [
-                "url" => "https://d3jt6ku4g6z5l8.cloudfront.net/IMAGE/6353da2e153a147b991dd812/4958901_highanglekidcheatingschooltestmin.jpg",
-                "filename" => "sample_media"
+                "url" => $image['url'],
+                "filename" => $image['filename']
             ],
             "buttons" => [],
             "carouselCards" => [],
