@@ -166,6 +166,55 @@ class EnquiryRequestController extends BaseController
 
         echo $this->layout_after_login($title, $page_name, $data);
     }
+
+
+    
+
+
+    public function panIndiaWpModal()
+    {
+        if ($this->request->isAJAX())
+        {
+            $enquiry_id = $this->request->getPost('enquiry_id');
+            $data['enquiry_id'] = $enquiry_id;
+
+            $db = \Config\Database::connect();
+
+            $states = $db->table('ecomm_states')
+                      ->where('status', 1)
+                      ->select('id, name')
+                      ->orderBy('name', 'ASC')
+                      ->get()
+                      ->getResult();
+            
+            $stateWiseArr = [];
+            if(!empty($states))
+            {                
+                foreach($states as $state)
+                {
+                    
+                }
+            }
+
+             
+
+
+            $html = view('admin/maincontents/enquiry-request/panIndiaWpModal', $data);
+
+            return $this->response->setJSON([
+                'html' => $html
+            ]);
+        }
+
+        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+    }
+
+
+    
+
+
+
+
     public function sendWhatsappNotificationState($enquiry_id, $plant_state_name){
         $enquiry_id                             = decoded($enquiry_id);
         $plant_state_name                       = decoded($plant_state_name);
@@ -634,7 +683,7 @@ class EnquiryRequestController extends BaseController
                     ]
                 ];
 
-                foreach($DemoRecipents as $recipent)
+                foreach($wpRecipients as $recipent)
                 {
                     $username           = $recipent['name'];
                     $phone              = $recipent['phone'];
