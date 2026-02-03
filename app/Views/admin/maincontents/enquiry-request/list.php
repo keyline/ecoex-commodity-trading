@@ -180,7 +180,16 @@ $userType           = $session->user_type;
                                                         ?>
                                                         
                                                         
-                                                        <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification to <?= $plant_state_name ?> Vendors & Subscribers</a>
+                                                        <!-- <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification to <?= $plant_state_name ?> Vendors & Subscribers</a>
+
+                                                        <br>
+                                                        <a
+                                                            class="btn btn-info btn-sm mt-2 panIndiaWpModalBtn"
+                                                            data-bs-toggle="modal" data-bs-target=".panIndiaWpModal"
+                                                            data-enquiryid="<?= encoded($row->$primary_key) ?>">
+                                                            <i class="fa-brands fa-whatsapp"></i> Click To Send Notification to pan India Vendors & Subscribers 
+                                                        </a> -->
+
 
                                                         
                                                     <?php } else { ?>
@@ -239,7 +248,83 @@ $userType           = $session->user_type;
     </div>
 </div>
 <!-- reject request modal -->
+
+<div id="loadingOverlay"
+    class="d-none position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column justify-content-center align-items-center"
+    style="z-index: 9999;">
+
+    <div class="spinner-border text-white mb-3" style="width: 3rem; height: 3rem;" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+
+    <h5 class="text-white fw-semibold">Please Wait ☕</h5>
+    <h6 class="text-white mb-0">Processing Data…</h6>
+</div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function()
+    {
+        $(document).on('click', '.panIndiaWpModalBtn', function () 
+        {
+            let base_url = '<?= base_url() ?>';
+            let enquiry_id = $(this).data('enquiryid');
+
+            // console.log(base_url, enquiry_id);
+
+            $.ajax({
+                url: base_url + 'admin/enquiry-requests/pan-india-wp-modal',
+                type: 'POST',
+                data: { 
+                    enquiry_id : enquiry_id ,
+                    <?= csrf_token() ?>: '<?= csrf_hash() ?>'
+                },
+                beforeSend: function () {
+                    // Show Bootstrap overlay
+                    $('#loadingOverlay').removeClass('d-none');
+                },
+
+                success: function (response) {
+
+                    // Hide overlay
+                    $('#loadingOverlay').addClass('d-none');
+
+                    // Remove any existing modal with same class
+                    $('.panIndiaWpModal').remove();
+
+                    // Remove any leftover Bootstrap backdrop
+                    // $('.modal-backdrop').remove();
+
+                    // Append the modal HTML to body
+                    $('body').append(response.html);
+
+                    // Initialize and show Bootstrap modal
+                    var myModal = new bootstrap.Modal(document.querySelector('.panIndiaWpModal'));
+                    myModal.show();
+
+                    // Optional: remove modal from DOM after hidden to prevent accumulation
+                    document.querySelector('.panIndiaWpModal').addEventListener('hidden.bs.modal', function () {
+                        $(this).remove();
+                    });
+
+                },
+                error: function (xhr) {
+                    $('#loadingOverlay').addClass('d-none');
+                    alert('Error Loading The data.');
+                    console.log(xhr);
+                }
+
+            });
+
+        });
+
+
+
+    });
+</script>
+
+
 <script type="text/javascript">
     $(function() {
 
