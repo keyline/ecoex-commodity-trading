@@ -78,7 +78,7 @@
         .store-buttons a {
             padding: 14px 26px;
             border-radius: 10px;
-            background: var(--primary);
+            /* background: var(--primary); */
             color: var(--white);
             text-decoration: none;
             font-weight: 600;
@@ -95,8 +95,8 @@
         }
 
         .store-buttons img {
-            height: 22px;
-            filter: brightness(0) invert(1);
+            height: 70px;
+            width: 100%;
         }
 
         .preview {
