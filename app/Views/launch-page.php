@@ -72,6 +72,8 @@
         .store-buttons {
             display: flex;
             gap: 15px;
+            align-items: center;
+            /* justify-content: space-between; */
         }
 
         .store-buttons a {
@@ -94,7 +96,7 @@
         } */
 
         .store-buttons img {
-            height: 70px;
+            height: 50px;
             width: 100%;
         }
 
@@ -147,9 +149,9 @@
             </div>
         </div>
 
-        <div class="preview">
+        <!-- <div class="preview">
             <img src="<?= getenv('app.uploadsURL') ?>app-preview.png" alt="App Screenshot">
-        </div>
+        </div> -->
 
     </div>
 
