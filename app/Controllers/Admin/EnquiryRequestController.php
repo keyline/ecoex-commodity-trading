@@ -208,6 +208,10 @@ class EnquiryRequestController extends BaseController
             [
                 'name'  => 'Harendra Tiwari',
                 'phone' => '9766601173'
+            ],
+            [
+                'name'  => 'Sakshi ECOEX 2',
+                'phone' => '9773797180'
             ]
         ];
 
@@ -623,6 +627,10 @@ class EnquiryRequestController extends BaseController
                     [
                         'name'  => 'Harendra Tiwari',
                         'phone' => '9766601173'
+                    ],
+                    [
+                        'name'  => 'Sakshi ECOEX 2',
+                        'phone' => '9773797180'
                     ]
                 ];
 
