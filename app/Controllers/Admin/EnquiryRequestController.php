@@ -206,20 +206,8 @@ class EnquiryRequestController extends BaseController
                 'phone' => '6289339520'
             ],
             [
-                'name'  => 'Joydeep Ghosh',
-                'phone' => '9330109091'
-            ],
-            [
-                'name'  => 'Somnath',
-                'phone' => '9088467525'
-            ],
-            [
-                'name'  => 'Sudip 1',
-                'phone' => '8981436780'
-            ],
-            [
-                'name'  => 'Sudip 2',
-                'phone' => '7003366979'
+                'name'  => 'Harendra Tiwari',
+                'phone' => '9766601173'
             ]
         ];
 
@@ -259,10 +247,12 @@ class EnquiryRequestController extends BaseController
             $price_range        = ((!empty($priceRangeArray))?implode(', ', $priceRangeArray):'NA');
 
             $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
-            pr($whatsappResponse,0);
+            // pr($whatsappResponse,0);
 
         }
-        die;
+        
+        $this->session->setFlashdata('success_message', 'Whatsapp notification has been sent successfully !!!');
+        return redirect()->back();
         /* wp message template */
     }
     public function send_whatsapp_campaign($username, $phone, $image, $param2, $param3, $param4, $param5)
@@ -631,8 +621,8 @@ class EnquiryRequestController extends BaseController
                         'phone' => '6289339520'
                     ],
                     [
-                        'name'  => 'Ananda Ghosh',
-                        'phone' => '6291948498'
+                        'name'  => 'Harendra Tiwari',
+                        'phone' => '9766601173'
                     ]
                 ];
 
