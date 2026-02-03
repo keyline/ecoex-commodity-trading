@@ -139,11 +139,11 @@
             </p>
 
             <div class="store-buttons">
-                <a href="https://play.google.com/store/apps/details?id=YOUR_APP_ID" target="_blank">
+                <a href="https://play.google.com/store/apps/details?id=com.ecoexvendor.keyline" target="_blank">
                     <img src="<?= base_url('public/play-store.png') ?>">
                 </a>
 
-                <a href="https://apps.apple.com/app/idYOUR_APP_ID" target="_blank">
+                <a href="https://apps.apple.com/in/app/ecoex-buyer/id6498938548" target="_blank">
                     <img src="<?= base_url('public/app-store.png') ?>">
                 </a>
             </div>
