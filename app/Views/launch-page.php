@@ -72,11 +72,10 @@
         .store-buttons {
             display: flex;
             gap: 15px;
-            flex-wrap: wrap;
         }
 
         .store-buttons a {
-            padding: 14px 26px;
+            /* padding: 14px 26px; */
             border-radius: 10px;
             /* background: var(--primary); */
             color: var(--white);
@@ -88,11 +87,11 @@
             transition: all 0.25s ease;
         }
 
-        .store-buttons a:hover {
+        /* .store-buttons a:hover {
             background: var(--dark);
             transform: translateY(-3px);
             box-shadow: 0 12px 25px rgba(76, 175, 80, 0.35);
-        }
+        } */
 
         .store-buttons img {
             height: 70px;
@@ -140,12 +139,10 @@
             <div class="store-buttons">
                 <a href="https://play.google.com/store/apps/details?id=YOUR_APP_ID" target="_blank">
                     <img src="<?= base_url('public/play-store.png') ?>">
-                    Play Store
                 </a>
 
                 <a href="https://apps.apple.com/app/idYOUR_APP_ID" target="_blank">
                     <img src="<?= base_url('public/app-store.png') ?>">
-                    App Store
                 </a>
             </div>
         </div>
