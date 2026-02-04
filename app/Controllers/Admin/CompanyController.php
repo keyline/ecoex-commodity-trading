@@ -653,8 +653,8 @@ class CompanyController extends BaseController
         $orderBy[0]                 = ['field' => 'name', 'type' => 'ASC'];
         $data['units']              = $this->common_model->find_data('ecomm_units', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
 
-        $order_by[0]                = array('field' => 'id', 'type' => 'asc');
-        $conditions                 = array('company_id' => $id, 'status!=' => 3);
+        $order_by[0]                = array('field' => 'item_name_ecoex', 'type' => 'asc');
+        $conditions                 = array('company_id' => $id, 'status' => 1);
         $data['assignItems']        = $this->data['model']->find_data('ecomm_company_items', 'array', $conditions, '', '', '', $order_by);
 
         if ($this->request->getMethod() == 'post') {
