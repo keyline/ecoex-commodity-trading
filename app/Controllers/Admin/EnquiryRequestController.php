@@ -178,6 +178,8 @@ class EnquiryRequestController extends BaseController
             $enquiry_id = $this->request->getPost('enquiry_id');
             $data['enquiry_id'] = $enquiry_id;
 
+            $data['current_status'] = $this->request->getPost('current_status');
+
             $db = \Config\Database::connect();
 
             $states = $db->table('ecomm_states')
@@ -192,11 +194,22 @@ class EnquiryRequestController extends BaseController
             {                
                 foreach($states as $state)
                 {
-                    
+                    $stateWiseArr[] = [
+
+                        'state' => $state->name ,
+
+                        'VendorsCount' => $this->data['model']->find_data('ecomm_users', 'count', ['type' => 'VENDOR', 'state' => $state->name]) ?? 0 ,
+
+                        'SubscribersCount' => $this->data['model']->find_data('subscribers', 'count', ['type' => 'VENDOR', 'state' => $state->name]) ?? 0 ,
+
+                    ];  
+
                 }
             }
+           
+            // pr($stateWiseArr);die;
 
-             
+            $data['stateWiseArr'] = $stateWiseArr ;
 
 
             $html = view('admin/maincontents/enquiry-request/panIndiaWpModal', $data);
@@ -209,6 +222,120 @@ class EnquiryRequestController extends BaseController
         throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
     }
 
+    
+    public function sendPanIndiaWp()
+    {
+       if ($this->request->getMethod() == 'post')
+       {
+            $enquiry_id = decoded($this->request->getPost('enquiry_id'));
+            $stateArr = $this->request->getPost('stateArr');
+            $current_status = $this->request->getPost('current_status');
+            // dd($current_status);
+
+            // dd($enquiry_id);
+            if(!empty($stateArr))
+            {
+
+                $wpRecipients  = [];
+                foreach($stateArr as $eachState)
+                {
+                    $plant_state_name                       = decoded($eachState);
+                    // dd($plant_state_name);
+                    
+                    $getVendors                             = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'state' => $plant_state_name], 'company_name,phone, contact_person_name');
+                    if($getVendors){
+                        foreach($getVendors as $getVendor){
+                            $wpRecipients[]                           = [
+                                'name'  => (($getVendor->company_name != '')?$getVendor->company_name:$getVendor->contact_person_name),
+                                'phone' => $getVendor->phone,
+                            ];
+                        }
+                    }
+    
+                    $getSubscribers                             = $this->data['model']->find_data('subscribers', 'array', ['type' => 'VENDOR', 'state' => $plant_state_name], 'name,phone');
+                    if($getSubscribers){
+                        foreach($getSubscribers as $getSubscriber){
+                            $wpRecipients[]                           = [
+                                'name'  => (($getSubscriber->name != '')?$getSubscriber->name:'Subscriber'),
+                                'phone' => $getSubscriber->phone,
+                            ];
+                        }
+                    }
+    
+            
+                }
+    
+                // pr($wpRecipients);die;
+    
+                /* wp message template */
+                $DemoRecipents = [
+                    [
+                        'name'  => 'Anirban Singh',
+                        'phone' => '9330528208'
+                    ],
+                    [
+                        'name'  => 'Subhomoy Samanta',
+                        'phone' => '6289339520'
+                    ]
+                ];
+    
+                foreach($DemoRecipents as $recipent)
+                {
+                    $username           = $recipent['name'];
+                    $phone              = $recipent['phone'];
+    
+                    $join1[0]            = ['table_master' => 'ecomm_enquires', 'field_table_master' => 'plant_id', 'table' => 'ecomm_users', 'field' => 'id', 'type' => 'INNER'];
+                    $getEnquiry         = $this->data['model']->find_data('ecomm_enquires', 'row', ['ecomm_enquires.id' => $enquiry_id], 'ecomm_enquires.plant_id, ecomm_enquires.gps_tracking_image, ecomm_enquires.enquiry_no, ecomm_users.plant_name, ecomm_users.full_address', $join1);
+                    $image              =   [
+                                                "url" => (($getEnquiry)?base_url('public/uploads/enquiry/' . $getEnquiry->gps_tracking_image):'https://commodity.ecoex.market/public/uploads/1700637387admin_leftlogo.png'),
+                                                "filename" => (($getEnquiry)?$getEnquiry->gps_tracking_image:'ImageName.jpg')
+                                            ];
+    
+                    $join2[0]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'table' => 'ecomm_company_items', 'field' => 'id', 'type' => 'LEFT'];
+                    $join2[1]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'table' => 'ecomm_units', 'field' => 'id', 'type' => 'INNER'];
+                    $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name, ecomm_company_items.price_range as price_range', $join2);
+                    
+                    $itemNameArray = [];
+                    $quantityArray = [];
+                    $priceRangeArray = [];
+    
+                    if($getEnquiryItems){
+                        foreach($getEnquiryItems as $getEnquiryItem){
+                            $itemNameArray[] = $getEnquiryItem->item_name;
+                            $quantityArray[] = $getEnquiryItem->qty . ' ' . $getEnquiryItem->unit_name;
+                            if($getEnquiryItem->price_range != ''){
+                                $priceRangeArray[] = (($getEnquiryItem->price_range != '')?'₹' . $getEnquiryItem->price_range:'');
+                            }
+                        }
+                    }
+    
+                    $material           = ((!empty($itemNameArray))?implode(', ', $itemNameArray):'NA');
+                    $quantity           = ((!empty($quantityArray))?implode(', ', $quantityArray):'NA');
+                    $location           = (($getEnquiry)?$getEnquiry->full_address:'');
+                    $price_range        = ((!empty($priceRangeArray))?implode(', ', $priceRangeArray):'NA');
+    
+                    $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
+                    pr($whatsappResponse,0);
+    
+                }
+
+                die;
+            
+                
+                $this->session->setFlashdata('success_message', 'Whatsapp notification has been sent to pan India successfully !!!');
+                
+            }
+            else
+            {
+                $this->session->setFlashdata('error_message', 'Please select at least one state !!!');
+            }
+
+            return redirect()->to(base_url('admin/enquiry-requests/list/' . encoded($current_status)));
+
+
+
+        } 
+    }
 
     
 
@@ -273,7 +400,7 @@ class EnquiryRequestController extends BaseController
             $getEnquiry         = $this->data['model']->find_data('ecomm_enquires', 'row', ['ecomm_enquires.id' => $enquiry_id], 'ecomm_enquires.plant_id, ecomm_enquires.gps_tracking_image, ecomm_enquires.enquiry_no, ecomm_users.plant_name, ecomm_users.full_address', $join1);
             $image              =   [
                                         "url" => (($getEnquiry)?base_url('public/uploads/enquiry/' . $getEnquiry->gps_tracking_image):'https://commodity.ecoex.market/public/uploads/1700637387admin_leftlogo.png'),
-                                        "filename" => (($getEnquiry)?$getEnquiry->gps_tracking_image:'')
+                                        "filename" => (($getEnquiry)?$getEnquiry->gps_tracking_image:'ImageName.jpg')
                                     ];
 
             $join2[0]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'table' => 'ecomm_company_items', 'field' => 'id', 'type' => 'LEFT'];

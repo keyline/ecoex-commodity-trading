@@ -247,6 +247,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     $routes->match(['post'], "enquiry-requests/send-whatsapp-notification", "EnquiryRequestController::sendWhatsappWithSparkCmdV2");
     
     $routes->post("enquiry-requests/pan-india-wp-modal", "EnquiryRequestController::panIndiaWpModal");
+    $routes->post("enquiry-requests/send-pan-india-wp", "EnquiryRequestController::sendPanIndiaWp");
 
 
     // enquiry requests

@@ -180,15 +180,15 @@ $userType           = $session->user_type;
                                                         ?>
                                                         
                                                         
-                                                        <!-- <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification to <?= $plant_state_name ?> Vendors & Subscribers</a>
+                                                        <!-- <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification to <?= $plant_state_name ?> Vendors & Subscribers</a> -->
 
-                                                        <br>
+                                                        
                                                         <a
                                                             class="btn btn-info btn-sm mt-2 panIndiaWpModalBtn"
                                                             data-bs-toggle="modal" data-bs-target=".panIndiaWpModal"
                                                             data-enquiryid="<?= encoded($row->$primary_key) ?>">
                                                             <i class="fa-brands fa-whatsapp"></i> Click To Send Notification to pan India Vendors & Subscribers 
-                                                        </a> -->
+                                                        </a> 
 
 
                                                         
@@ -256,9 +256,7 @@ $userType           = $session->user_type;
     <div class="spinner-border text-white mb-3" style="width: 3rem; height: 3rem;" role="status">
         <span class="visually-hidden">Loading...</span>
     </div>
-
-    <h5 class="text-white fw-semibold">Please Wait ☕</h5>
-    <h6 class="text-white mb-0">Processing Data…</h6>
+    
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -278,6 +276,7 @@ $userType           = $session->user_type;
                 type: 'POST',
                 data: { 
                     enquiry_id : enquiry_id ,
+                    current_status : '<?= $current_status ?>',
                     <?= csrf_token() ?>: '<?= csrf_hash() ?>'
                 },
                 beforeSend: function () {
@@ -318,6 +317,7 @@ $userType           = $session->user_type;
             });
 
         });
+
 
 
 
