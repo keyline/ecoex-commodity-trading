@@ -122,7 +122,7 @@ $company_id                 = $session->company_id;
                                                         $assignCategoryText = '';
                                                     }
 
-                                                    $assignedItemCount = $common_model->find_data('ecomm_company_items', 'count', ['company_id' => $row->$primary_key, 'status!=' => 3]);
+                                                    $assignedItemCount = $common_model->find_data('ecomm_company_items', 'count', ['company_id' => $row->$primary_key, 'status' => 1]);
                                                     if ($assignedItemCount > 0) {
                                                         $assignItemText = '(' . $assignedItemCount . ')';
                                                     } else {
