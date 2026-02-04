@@ -297,9 +297,13 @@ $request_edit_fields = [
                     <div class="card-body">
                         <div class="row mt-3">
                             <div class="col-md-12 mb-3">
+                                <?php
+                                $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'state, company_name');
+                                $plant_state_name = (($getPlant)?$getPlant->state:'');
+                                ?>
                                 <?php if ($row->status == 0) { ?>
                                     <?php if ($common_model->checkModuleFunctionAccess(23, 110)) { ?>
-                                        <a href="<?= base_url('admin/' . $controller_route . '/accept-request/' . encoded($row->$primary_key)) ?>" class="btn btn-success btn-sm" title="Accept <?= $title ?>" onclick="return confirm('Do You Want To Accept This <?= $title ?>');"><i class="fa fa-check"></i> Click To Accept</a>
+                                        <a href="<?= base_url('admin/' . $controller_route . '/accept-request/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-success btn-sm" title="Accept <?= $title ?>" onclick="return confirm('Do You Want To Accept This <?= $title ?>');"><i class="fa fa-check"></i> Click To Accept</a>
                                     <?php } ?>
                                     <?php if ($common_model->checkModuleFunctionAccess(23, 111)) { ?>
                                         <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Reject <?= $title ?>" onclick="getRejectModal(<?= $row->$primary_key ?>);"><i class="fa fa-times"></i> Click To Reject</a>

@@ -723,8 +723,8 @@ class EnquiryRequestController extends BaseController
                 $updateData = $this->common_model->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
 
                 $this->session->setFlashdata('success_message', $this->data['title'] . ' Accepted Successfully & Transfer To Sent/Submitted List !!!');
-                // return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/' . encoded(1));
-                return redirect()->to('/admin/enquiry-requests/list/MQ==');
+                return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/' . encoded(1));
+                // return redirect()->to('/admin/enquiry-requests/list/MQ==');
             } else {
                 $this->session->setFlashdata('error_message', $pendingItemCount . ' Pending Items In ' . $getEnquiry->enquiry_no . '. Please Approve The Same Before Accept Enquiry Request !!!');
                 return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/' . encoded(0));
