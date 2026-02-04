@@ -718,7 +718,7 @@ class EnquiryRequestController extends BaseController
                     $location           = (($getEnquiry)?$getEnquiry->full_address:'');
                     $price_range        = ((!empty($priceRangeArray))?implode(', ', $priceRangeArray):'NA');
 
-                    // $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
+                    $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
                 }
                 
                 /* wp message template */
