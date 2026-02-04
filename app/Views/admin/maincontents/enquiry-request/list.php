@@ -146,6 +146,10 @@ $userType           = $session->user_type;
                                                     </td>
                                                 <?php } ?>
                                                 <td>
+                                                    <?php
+                                                    $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'state, company_name');
+                                                    $plant_state_name = (($getPlant)?$getPlant->state:'');
+                                                    ?>
                                                     <?php if ($common_model->checkModuleFunctionAccess(23, 109)) { ?>
                                                         <a href="<?= base_url('admin/' . $controller_route . '/enquiry-details/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-info btn-sm" title="View <?= $title ?>"><i class="fa fa-info-circle"></i> View Details</a>
                                                     <?php } ?>
@@ -174,14 +178,10 @@ $userType           = $session->user_type;
                                                         <?php } ?>
                                                         <br>
                                                             
-                                                        <?php
-                                                        $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'state, company_name');
-                                                        $plant_state_name = (($getPlant)?$getPlant->state:'');
-                                                        ?>
                                                         
+                                                        <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification to <?= $plant_state_name ?> Vendors & Subscribers</a>
                                                         
-                                                        <!-- <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification to <?= $plant_state_name ?> Vendors & Subscribers</a>
-
+                                                        <!-- 
                                                         <br>
                                                         <a
                                                             class="btn btn-info btn-sm mt-2 panIndiaWpModalBtn"
@@ -189,9 +189,6 @@ $userType           = $session->user_type;
                                                             data-enquiryid="<?= encoded($row->$primary_key) ?>">
                                                             <i class="fa-brands fa-whatsapp"></i> Click To Send Notification to pan India Vendors & Subscribers 
                                                         </a> -->
-
-
-                                                        
                                                     <?php } else { ?>
                                                         <?php if ($row->status >= 1 && $row->status <= 12) { ?>
                                                             <h6 class="badge bg-success mt-2"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
@@ -219,7 +216,10 @@ $userType           = $session->user_type;
                                                             <h6 class="badge bg-info mt-2"><i class="fa fa-certificate"></i> <?= ucfirst($certificateData['status']); ?></h6>
                                                         <?php endif; ?>
                                                         <p><?= (($row->accepted_date != '') ? date_format(date_create($row->accepted_date), "M d, Y h:i A") : '') ?></p>
-
+                                                        
+                                                        <?php if ($row->status >= 1 && $row->status <= 2) { ?>
+                                                            <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification to <?= $plant_state_name ?> Vendors & Subscribers</a>
+                                                        <?php }?>
                                                     <?php } ?>
                                                 </td>
                                             </tr>

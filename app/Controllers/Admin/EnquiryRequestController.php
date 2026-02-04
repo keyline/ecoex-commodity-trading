@@ -240,10 +240,6 @@ class EnquiryRequestController extends BaseController
             }
         }
 
-        // pr($wpRecipients);die;
-
-        // 9330528208, 6289339520
-
         /* wp message template */
         $DemoRecipents = [
             [
@@ -264,7 +260,7 @@ class EnquiryRequestController extends BaseController
             ]
         ];
 
-        foreach($DemoRecipents as $recipent)
+        foreach($wpRecipients as $recipent)
         {
             $username           = $recipent['name'];
             $phone              = $recipent['phone'];
@@ -310,8 +306,6 @@ class EnquiryRequestController extends BaseController
     }
     public function send_whatsapp_campaign($username, $phone, $image, $param2, $param3, $param4, $param5)
     {
-        // pr($image);die;
-
         $url = "https://backend.api-wa.co/campaign/smartping/api/v2";
 
         $postData = [
