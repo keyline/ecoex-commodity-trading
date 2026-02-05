@@ -8764,7 +8764,7 @@ class ApiController extends BaseController
 
                     if($results){
                         foreach($results as $result){
-                            $checkPrice = $this->Common_model->find_data('vendor_items', 'row', ['vendor_id' => $uId, 'company_id' => $result->company_id, 'item_id' => $result->id, 'status' => 1], 'item_price');
+                            $checkPrice = $this->common_model->find_data('vendor_items', 'row', ['vendor_id' => $uId, 'company_id' => $result->company_id, 'item_id' => $result->id, 'status' => 1], 'item_price');
                             $apiResponse[] = [
                                 'company_name'          => $result->company_name,
                                 'item_name_ecoex'       => $result->item_name_ecoex,
