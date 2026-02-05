@@ -8861,6 +8861,11 @@ class ApiController extends BaseController
                         ];
                         $this->common_model->save_data('vendor_items', $fields, '', 'id');
 
+                        $apiResponse        = [
+                            'company_id' => $company_id,
+                            'item_id' => $item_id,
+                            'price' => $price,
+                        ];
                         $apiStatus          = TRUE;
                         http_response_code(200);
                         $apiMessage         = 'Vendor price inserted successfully !!!';
