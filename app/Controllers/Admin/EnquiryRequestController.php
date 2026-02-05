@@ -293,7 +293,7 @@ class EnquiryRequestController extends BaseController
     
                     $join2[0]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'table' => 'ecomm_company_items', 'field' => 'id', 'type' => 'LEFT'];
                     $join2[1]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'table' => 'ecomm_units', 'field' => 'id', 'type' => 'INNER'];
-                    $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name, ecomm_company_items.price_range as price_range', $join2);
+                    $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id, 'ecomm_company_items.status' => 1], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name, ecomm_company_items.price_range as price_range', $join2);
                     
                     $itemNameArray = [];
                     $quantityArray = [];
@@ -314,7 +314,8 @@ class EnquiryRequestController extends BaseController
                     $location           = (($getEnquiry)?$getEnquiry->full_address:'');
                     $price_range        = ((!empty($priceRangeArray))?implode(', ', $priceRangeArray):'NA');
     
-                    $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
+                    dd($username, $phone, $image, $material, $quantity, $location, $price_range);
+                    // $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
                     // pr($whatsappResponse,0);
     
                 }
@@ -380,14 +381,6 @@ class EnquiryRequestController extends BaseController
             [
                 'name'  => 'Subhomoy Samanta',
                 'phone' => '6289339520'
-            ],
-            [
-                'name'  => 'Harendra Tiwari',
-                'phone' => '9766601173'
-            ],
-            [
-                'name'  => 'Sakshi ECOEX 2',
-                'phone' => '9773797180'
             ]
         ];
 
@@ -405,7 +398,7 @@ class EnquiryRequestController extends BaseController
 
             $join2[0]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'table' => 'ecomm_company_items', 'field' => 'id', 'type' => 'LEFT'];
             $join2[1]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'table' => 'ecomm_units', 'field' => 'id', 'type' => 'INNER'];
-            $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name, ecomm_company_items.price_range as price_range', $join2);
+            $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id, 'ecomm_company_items.status' => 1], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name, ecomm_company_items.price_range as price_range', $join2);
             
             $itemNameArray = [];
             $quantityArray = [];
