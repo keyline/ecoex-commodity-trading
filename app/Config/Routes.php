@@ -490,6 +490,10 @@ $routes->group("api", ["namespace" => "App\Controllers\Api",], function ($routes
     // whatsapp webhook
     $routes->match(['get', 'post'], 'wpmsg/incoming', [App\Controllers\Admin\WhatsappMessageController::class, 'incoming']);
 
+    // price list
+    $routes->match(['get'], "vendor-price-list", "ApiController::vendorPriceList");
+    $routes->match(['post'], "vendor-price-update", "ApiController::vendorPriceUpdate");
+
 });
 /* API */
 //For Cors

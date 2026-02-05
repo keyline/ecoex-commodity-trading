@@ -58,35 +58,35 @@ $userType           = $session->user_type;
 
                         <div class="row">
                             <div class="col-md-1">
-                                <h6 class="text-success fw-bold">Item<br>Category</h6>
+                                <h6 class="text-success fw-bold" style="text-align: center;">Item<br>Category</h6>
                             </div>
                             <div class="col-md-2">
-                                <h6 class="text-success fw-bold">Item Name</h6>
+                                <h6 class="text-success fw-bold" style="text-align: center;">Item Name</h6>
                             </div>
                             <!-- <div class="col-md-1">
-                                <h6 class="text-success fw-bold">Alias<br>(App)</h6>
+                                <h6 class="text-success fw-bold" style="text-align: center;">Alias<br>(App)</h6>
                             </div>
                             <div class="col-md-1">
-                                <h6 class="text-success fw-bold">Billing<br>Name</h6>
+                                <h6 class="text-success fw-bold" style="text-align: center;">Billing<br>Name</h6>
                             </div> -->
                             <div class="col-md-1">
-                                <h6 class="text-success fw-bold">HSN</h6>
+                                <h6 class="text-success fw-bold" style="text-align: center;">HSN</h6>
                             </div>
                             <div class="col-md-1">
-                                <h6 class="text-success fw-bold">GST</h6>
+                                <h6 class="text-success fw-bold" style="text-align: center;">GST</h6>
                             </div>
                             <div class="col-md-1">
-                                <h6 class="text-success fw-bold">Rate</h6>
+                                <h6 class="text-success fw-bold" style="text-align: center;">Rate</h6>
                             </div>
                             <div class="col-md-1">
-                                <h6 class="text-success fw-bold">Price Range</h6>
+                                <h6 class="text-success fw-bold" style="text-align: center;">Price Range</h6>
                             </div>
                             <div class="col-md-1">
-                                <h6 class="text-success fw-bold">Unit</h6>
+                                <h6 class="text-success fw-bold" style="text-align: center;">Unit</h6>
                             </div>
                             
                             <div class="col-md-1">
-                                <h6 class="text-success fw-bold">Action</h6>
+                                <h6 class="text-success fw-bold" style="text-align: center;">Action</h6>
                             </div>
                         </div>
                         <div class="field_wrapper">
@@ -200,12 +200,12 @@ $userType           = $session->user_type;
                                         <div class="col-md-2 mb-3 mb-md-0">
                                             <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex">
                                         </div>
-                                        <div class="col-md-1 mb-3 mb-md-0">
+                                        <!-- <div class="col-md-1 mb-3 mb-md-0">
                                             <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name">
                                         </div>
                                         <div class="col-md-1 mb-3 mb-md-0">
                                             <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name">
-                                        </div>
+                                        </div> -->
                                         <div class="col-md-1 mb-3 mb-md-0">
                                             <input type="text" name="hsn[]" class="form-control" placeholder="HSN">
                                         </div>

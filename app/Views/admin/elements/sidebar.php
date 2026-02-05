@@ -84,9 +84,12 @@ if ($userType == 'MA') {
     // 1️⃣ Define reusable function
     function filterByPlantId($dataArray, $plantIds)
     {
-        $filtered = array_filter($dataArray, function($item) use ($plantIds) {
-            return in_array($item->plant_id, $plantIds); // use array key since find_data returns array
-        });
+        $filtered = [];
+        if(!empty($plantIds)){
+            $filtered = array_filter($dataArray, function($item) use ($plantIds) {
+                return in_array($item->plant_id, $plantIds); // use array key since find_data returns array
+            });
+        }
 
         return array_values($filtered);
     }
@@ -123,18 +126,18 @@ if ($userType == 'MA') {
                 </a>
                 <ul id="access-nav" class="nav-content collapse <?= (($pageSegment == 'features' || $pageSegment == 'modules' || $pageSegment == 'roles' || $pageSegment == 'sub-users') ? 'show' : '') ?>" data-bs-parent="#sidebar-nav">
                     <?php if ($common_model->checkModuleAccess(3)) { ?>
-                        <li>
+                        <!-- <li>
                             <a class="<?= (($pageSegment == 'features') ? 'active' : '') ?>" href="<?= base_url('admin/features/list') ?>">
                                 <i class="fa fa-arrow-right"></i><span>Features</span>
                             </a>
-                        </li>
+                        </li> -->
                     <?php } ?>
                     <?php if ($common_model->checkModuleAccess(4)) { ?>
-                        <li>
+                        <!-- <li>
                             <a class="<?= (($pageSegment == 'modules') ? 'active' : '') ?>" href="<?= base_url('admin/modules/list') ?>">
                                 <i class="fa fa-arrow-right"></i><span>Modules</span>
                             </a>
-                        </li>
+                        </li> -->
                     <?php } ?>
                     <?php if ($common_model->checkModuleAccess(5)) { ?>
                         <li>

@@ -653,8 +653,8 @@ class CompanyController extends BaseController
         $orderBy[0]                 = ['field' => 'name', 'type' => 'ASC'];
         $data['units']              = $this->common_model->find_data('ecomm_units', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
 
-        $order_by[0]                = array('field' => 'id', 'type' => 'asc');
-        $conditions                 = array('company_id' => $id, 'status!=' => 3);
+        $order_by[0]                = array('field' => 'item_name_ecoex', 'type' => 'asc');
+        $conditions                 = array('company_id' => $id, 'status' => 1);
         $data['assignItems']        = $this->data['model']->find_data('ecomm_company_items', 'array', $conditions, '', '', '', $order_by);
 
         if ($this->request->getMethod() == 'post') {
@@ -662,8 +662,8 @@ class CompanyController extends BaseController
             $company_id             = $this->request->getPost('company_id');
             $item_category          = $this->request->getPost('item_category');
             $item_name_ecoex        = $this->request->getPost('item_name_ecoex');
-            $alias_name             = $this->request->getPost('alias_name');
-            $billing_name           = $this->request->getPost('billing_name');
+            // $alias_name             = $this->request->getPost('alias_name');
+            // $billing_name           = $this->request->getPost('billing_name');
             $hsn                    = $this->request->getPost('hsn');
             $gst                    = $this->request->getPost('gst');
             $rate                   = $this->request->getPost('rate');
@@ -703,8 +703,8 @@ class CompanyController extends BaseController
                     'company_id'                => $company_id,
                     'item_category'             => $item_category[0],
                     'item_name_ecoex'           => $item_name_ecoex[0],
-                    'alias_name'                => $alias_name[0],
-                    'billing_name'              => $billing_name[0],
+                    // 'alias_name'                => $alias_name[0],
+                    // 'billing_name'              => $billing_name[0],
                     'hsn'                       => $hsn[0],
                     'gst'                       => $gst[0],
                     'rate'                      => $rate[0],
