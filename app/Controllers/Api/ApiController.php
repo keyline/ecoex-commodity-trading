@@ -8860,18 +8860,19 @@ class ApiController extends BaseController
                             'updated_at'    => date('Y-m-d H:i:s'),
                         ];
                         $this->common_model->save_data('vendor_items', $fields, '', 'id');
-
-                        $apiResponse        = [
-                            'company_id' => $company_id,
-                            'item_id' => $item_id,
-                            'price' => $price,
-                        ];
+                        
                         $apiStatus          = TRUE;
                         http_response_code(200);
                         $apiMessage         = 'Vendor price inserted successfully !!!';
                         $apiExtraField      = 'response_code';
                         $apiExtraData       = http_response_code();
                     }
+
+                    $apiResponse        = [
+                        'company_id' => $company_id,
+                        'item_id' => $item_id,
+                        'price' => $price,
+                    ];
                 } else {
                     $apiStatus          = FALSE;
                     http_response_code(404);
