@@ -8729,7 +8729,7 @@ class ApiController extends BaseController
         }
     }
 
-    # price list
+    # vendor price list
     public function vendorPriceList(){
         $apiStatus          = TRUE;
         $apiMessage         = '';
@@ -8781,6 +8781,92 @@ class ApiController extends BaseController
                     $apiMessage         = 'Data Available !!!';
                     $apiExtraField      = 'response_code';
                     $apiExtraData       = http_response_code();
+                } else {
+                    $apiStatus          = FALSE;
+                    http_response_code(404);
+                    $apiMessage         = 'User Not Found !!!';
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+            } else {
+                http_response_code($getTokenValue['data'][2]);
+                $apiStatus                      = FALSE;
+                $apiMessage                     = $this->getResponseCode(http_response_code());
+                $apiExtraField                  = 'response_code';
+                $apiExtraData                   = http_response_code();
+            }
+        } else {
+            http_response_code(400);
+            $apiStatus          = FALSE;
+            $apiMessage         = $this->getResponseCode(http_response_code());
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        }
+        $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+    }
+
+    # vendor price update
+    public function vendorPriceUpdate()
+    {
+        $apiStatus          = TRUE;
+        $apiMessage         = '';
+        $apiResponse        = [];
+        $this->isJSON(file_get_contents('php://input'));
+        $requestData        = $this->extract_json(file_get_contents('php://input'));
+        $requiredFields     = ['company_id', 'item_id', 'price'];
+        $headerData         = $this->request->headers();
+        if (!$this->validateArray($requiredFields, $requestData)) {
+            $apiStatus          = FALSE;
+            $apiMessage         = 'All Data Are Not Present !!!';
+        }
+        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+            $company_id                         = $requestData['company_id'];
+            $item_id                            = $requestData['item_id'];
+            $price                              = $requestData['price'];
+            
+            $Authorization              = $headerData['Authorization'];
+            $app_access_token           = $this->extractToken($Authorization);
+            $getTokenValue              = $this->tokenAuth($app_access_token);
+            if ($getTokenValue['status']) {
+                $uId        = $getTokenValue['data'][1];
+                $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                if ($getUser) {
+                    $checkPrice = $this->common_model->find_data('vendor_items', 'row', ['vendor_id' => $uId, 'company_id' => $company_id, 'item_id' => $item_id], 'id,item_price');
+                    if($checkPrice){
+                        // update
+                        $fields = [
+                            'item_price' => $price,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s'),
+                        ];
+                        $this->common_model->save_data('vendor_items', $fields, $checkPrice->id, 'id');
+
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Vendor price updated successfully !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        // insert
+                        $getCompanyItem = $this->common_model->find_data('ecomm_company_items', 'row', ['item_id' => $item_id], 'unit');
+                        $fields = [
+                            'vendor_id'     => $uId,
+                            'company_id'    => $company_id,
+                            'item_id'       => $item_id,
+                            'item_price'    => $price,
+                            'item_unit'     => (($getCompanyItem)?$getCompanyItem->unit:0),
+                            'created_at'    => date('Y-m-d H:i:s'),
+                            'updated_at'    => date('Y-m-d H:i:s'),
+                        ];
+                        $this->common_model->save_data('vendor_items', $fields, '', 'id');
+
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Vendor price inserted successfully !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
                 } else {
                     $apiStatus          = FALSE;
                     http_response_code(404);

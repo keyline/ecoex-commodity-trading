@@ -491,6 +491,7 @@ $routes->group("api", ["namespace" => "App\Controllers\Api",], function ($routes
 
     // price list
     $routes->match(['get'], "vendor-price-list", "ApiController::vendorPriceList");
+    $routes->match(['post'], "vendor-price-update", "ApiController::vendorPriceUpdate");
 
 });
 /* API */
