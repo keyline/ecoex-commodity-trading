@@ -490,7 +490,7 @@ $routes->group("api", ["namespace" => "App\Controllers\Api",], function ($routes
     $routes->match(['get', 'post'], 'wpmsg/incoming', [App\Controllers\Admin\WhatsappMessageController::class, 'incoming']);
 
     // price list
-    $routes->match(['post'], "vendor-price-list", "ApiController::vendorPriceList");
+    $routes->match(['get'], "vendor-price-list", "ApiController::vendorPriceList");
 
 });
 /* API */
