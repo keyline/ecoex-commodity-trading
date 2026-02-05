@@ -200,12 +200,12 @@ $userType           = $session->user_type;
                                         <div class="col-md-2 mb-3 mb-md-0">
                                             <input type="text" name="item_name_ecoex[]" class="form-control" placeholder="Item Ecoex">
                                         </div>
-                                        <div class="col-md-1 mb-3 mb-md-0">
+                                        <!-- <div class="col-md-1 mb-3 mb-md-0">
                                             <input type="text" name="alias_name[]" class="form-control" placeholder="Alias Name">
                                         </div>
                                         <div class="col-md-1 mb-3 mb-md-0">
                                             <input type="text" name="billing_name[]" class="form-control" placeholder="Billing Name">
-                                        </div>
+                                        </div> -->
                                         <div class="col-md-1 mb-3 mb-md-0">
                                             <input type="text" name="hsn[]" class="form-control" placeholder="HSN">
                                         </div>
