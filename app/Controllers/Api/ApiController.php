@@ -8744,7 +8744,36 @@ class ApiController extends BaseController
                 $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                 $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                 if ($getUser) {
-                    pr($getUser);
+                    $sql2 = "
+                            SELECT 
+                                ecomm_company_items.id,
+                                ecomm_company_items.company_id, 
+                                ecomm_company_items.item_name_ecoex, 
+                                ecomm_company_items.unit, 
+                                ecoex_companies.company_name, 
+                                ecomm_units.name as unit_name
+                            FROM ecomm_company_items
+                            INNER JOIN ecoex_companies ON ecomm_company_items.company_id = ecoex_companies.id 
+                            INNER JOIN ecomm_units ON ecomm_company_items.unit = ecomm_units.id
+                            WHERE ecomm_company_items.is_approved=1 AND ecomm_company_items.status=1
+                            ORDER BY ecomm_company_items.created_at DESC
+                        ";
+                    // Run query
+                    $query   = $this->db->query($sql2);
+                    $results = $query->getResult();
+
+                    if($results){
+                        foreach($results as $result){
+                            $apiResponse[] = [
+                                'company_name'          => $result->company_name,
+                                'item_name_ecoex'       => $result->item_name_ecoex,
+                                'price'                 => 0.00,
+                                'unit_name'             => $result->unit,
+                                'company_id'            => $result->company_id,
+                                'item_id'               => $result->id,
+                            ];
+                        }
+                    }
 
                     $apiStatus          = TRUE;
                     http_response_code(200);
