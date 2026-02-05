@@ -8849,7 +8849,7 @@ class ApiController extends BaseController
                         $apiExtraData       = http_response_code();
                     } else {
                         // insert
-                        $getCompanyItem = $this->common_model->find_data('ecomm_company_items', 'row', ['item_id' => $item_id], 'unit');
+                        $getCompanyItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $item_id], 'unit');
                         $fields = [
                             'vendor_id'     => $uId,
                             'company_id'    => $company_id,
