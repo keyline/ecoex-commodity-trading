@@ -314,8 +314,8 @@ class EnquiryRequestController extends BaseController
                     $location           = (($getEnquiry)?$getEnquiry->full_address:'');
                     $price_range        = ((!empty($priceRangeArray))?implode(', ', $priceRangeArray):'NA');
     
-                    dd($username, $phone, $image, $material, $quantity, $location, $price_range);
-                    // $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
+                    // dd($username, $phone, $enquiry_id, $image, $material, $quantity, $location, $price_range);
+                    $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
                     // pr($whatsappResponse,0);
     
                 }
@@ -756,94 +756,7 @@ class EnquiryRequestController extends BaseController
                 
 
                 /* send wp message to vendors & subscribers */
-                // $enquiry_id                             = $id;
-                // $plant_state_name                       = decoded($plant_state_name);
                 
-                // $wpRecipients                           = [];
-                // $getVendors                             = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'state' => $plant_state_name], 'company_name,phone, contact_person_name');
-                // if($getVendors){
-                //     foreach($getVendors as $getVendor){
-                //         $wpRecipients[]                           = [
-                //             'name'  => (($getVendor->company_name != '')?$getVendor->company_name:$getVendor->contact_person_name),
-                //             'phone' => $getVendor->phone,
-                //         ];
-                //     }
-                // }
-
-                // $getSubscribers                             = $this->data['model']->find_data('subscribers', 'array', ['type' => 'VENDOR', 'state' => $plant_state_name], 'name,phone');
-                // if($getSubscribers){
-                //     foreach($getSubscribers as $getSubscriber){
-                //         $wpRecipients[]                           = [
-                //             'name'  => (($getSubscriber->name != '')?$getSubscriber->name:'Subscriber'),
-                //             'phone' => $getSubscriber->phone,
-                //         ];
-                //     }
-                // }
-
-                // // pr($wpRecipients);die;
-
-
-                // /* wp message template */
-                // $DemoRecipents = [
-                //     [
-                //         'name'  => 'Anirban Singh',
-                //         'phone' => '9330528208'
-                //     ],
-                //     [
-                //         'name'  => 'Subhomoy Samanta',
-                //         'phone' => '6289339520'
-                //     ],
-                //     [
-                //         'name'  => 'Harendra Tiwari',
-                //         'phone' => '9766601173'
-                //     ],
-                //     [
-                //         'name'  => 'Sakshi ECOEX 2',
-                //         'phone' => '9773797180'
-                //     ]
-                // ];
-
-                // foreach($DemoRecipents as $recipent)
-                // {
-                //     $username           = $recipent['name'];
-                //     $phone              = $recipent['phone'];
-
-                //     $join1[0]            = ['table_master' => 'ecomm_enquires', 'field_table_master' => 'plant_id', 'table' => 'ecomm_users', 'field' => 'id', 'type' => 'INNER'];
-                //     $getEnquiry         = $this->data['model']->find_data('ecomm_enquires', 'row', ['ecomm_enquires.id' => $enquiry_id], 'ecomm_enquires.plant_id, ecomm_enquires.gps_tracking_image, ecomm_enquires.enquiry_no, ecomm_users.plant_name, ecomm_users.full_address', $join1);
-                //     $image              =   [
-                //                                 "url" => (($getEnquiry)?base_url('public/uploads/enquiry/' . $getEnquiry->gps_tracking_image):'https://commodity.ecoex.market/public/uploads/1700637387admin_leftlogo.png'),
-                //                                 "filename" => (($getEnquiry)?$getEnquiry->gps_tracking_image:'ImageName.jpg')
-                //                             ];
-
-                //     $join2[0]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'table' => 'ecomm_company_items', 'field' => 'id', 'type' => 'LEFT'];
-                //     $join2[1]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'table' => 'ecomm_units', 'field' => 'id', 'type' => 'INNER'];
-                //     $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name, ecomm_company_items.price_range as price_range', $join2);
-                    
-                //     $itemNameArray = [];
-                //     $quantityArray = [];
-                //     $priceRangeArray = [];
-
-                //     if($getEnquiryItems){
-                //         foreach($getEnquiryItems as $getEnquiryItem){
-                //             $itemNameArray[] = $getEnquiryItem->item_name;
-                //             $quantityArray[] = $getEnquiryItem->qty . ' ' . $getEnquiryItem->unit_name;
-                //             if($getEnquiryItem->price_range != ''){
-                //                 $priceRangeArray[] = (($getEnquiryItem->price_range != '')?'₹' . $getEnquiryItem->price_range:'');
-                //             }
-                //         }
-                //     }
-
-                //     $material           = ((!empty($itemNameArray))?implode(', ', $itemNameArray):'NA');
-                //     $quantity           = ((!empty($quantityArray))?implode(', ', $quantityArray):'NA');
-                //     $location           = (($getEnquiry)?$getEnquiry->full_address:'');
-                //     $price_range        = ((!empty($priceRangeArray))?implode(', ', $priceRangeArray):'NA');
-
-                //     $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
-                //     // pr($whatsappResponse,0);
-
-                // }
-                
-                /* wp message template */
                 /* send wp message to vendors & subscribers */
 
                 
