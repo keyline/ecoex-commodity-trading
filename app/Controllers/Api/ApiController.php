@@ -8769,7 +8769,7 @@ class ApiController extends BaseController
                                 'company_name'          => $result->company_name,
                                 'item_name_ecoex'       => $result->item_name_ecoex,
                                 'price'                 => (($checkPrice)?$checkPrice->item_price:0.00),
-                                'unit_name'             => $result->unit,
+                                'unit_name'             => $result->unit_name,
                                 'company_id'            => $result->company_id,
                                 'item_id'               => $result->id,
                             ];
