@@ -179,23 +179,8 @@ $userType           = $session->user_type;
                                                         <br>
                                                             
                                                         
-                                                        <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification to <span style="color: #0a0326;font-weight: bold;"><?= $plant_state_name ?></span> Vendors & Subscribers</a>
                                                         
-                                                        <!-- <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification to <?= $plant_state_name ?> Vendors & Subscribers</a> -->
-
-                                                        
-                                                        <!-- 
-                                                        <br>
-                                                        <a
-                                                            class="btn btn-info btn-sm mt-2 panIndiaWpModalBtn"
-                                                            data-bs-toggle="modal" data-bs-target=".panIndiaWpModal"
-                                                            data-enquiryid="<?= encoded($row->$primary_key) ?>">
-                                                            <i class="fa-brands fa-whatsapp"></i> Click To Send Notification to pan India Vendors & Subscribers 
-                                                        </a> 
-
-
-                                                        
-                                                        </a> -->
+                                                         
                                                     <?php } else { ?>
                                                         <?php if ($row->status >= 1 && $row->status <= 12) { ?>
                                                             <h6 class="badge bg-success mt-2"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
@@ -226,8 +211,23 @@ $userType           = $session->user_type;
                                                         
                                                         <?php if ($row->status >= 1 && $row->status <= 2) { ?>
                                                             <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification to <span style="color: #0a0326;font-weight: bold;"><?= $plant_state_name ?></span> Vendors & Subscribers</a>
+                                                        <br>
+                                                        <a
+                                                            class="btn btn-info btn-sm mt-2 panIndiaWpModalBtn"
+                                                            data-bs-toggle="modal" data-bs-target=".panIndiaWpModal"
+                                                            data-enquiryid="<?= encoded($row->$primary_key) ?>">
+                                                            <i class="fa-brands fa-whatsapp"></i> Click To Send Notification to pan India Vendors & Subscribers 
+                                                        </a>
                                                         <?php }?>
+
+
+                                                        
                                                     <?php } ?>
+
+
+                                                    
+
+
                                                 </td>
                                             </tr>
                                     <?php }
