@@ -365,7 +365,7 @@ if ($userType == 'MA') {
                         <i class="fa fa-arrow-right"></i><span>Invoice From HO (<?= $step7_count ?>)</span>
                     </a>
                 </li>
-                <?php if ($userType == 'MA') { ?>
+                <?php //if ($userType == 'MA') { ?>
                     <li>
                         <a class="<?= ((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 8)) ? 'active' : '') ?>" href="<?= base_url('admin/enquiry-requests/list/' . encoded(8)) ?>">
                             <i class="fa fa-arrow-right"></i><span>Invoice to Vendor (<?= $step8_count ?>)</span>
@@ -376,7 +376,7 @@ if ($userType == 'MA') {
                             <i class="fa fa-arrow-right"></i><span>Payment received from Vendor (<?= $step9_count ?>)</span>
                         </a>
                     </li>
-                <?php } ?>
+                <?php //} ?>
                 <li>
                     <a class="<?= ((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 10)) ? 'active' : '') ?>" href="<?= base_url('admin/enquiry-requests/list/' . encoded(10)) ?>">
                         <i class="fa fa-arrow-right"></i><span>Vehicle Dispatched (<?= $step10_count ?>)</span>
@@ -393,13 +393,13 @@ if ($userType == 'MA') {
                         <i class="fa fa-arrow-right"></i><span>Order Complete (<?= $step12_count ?>)</span>
                     </a>
                 </li>
-                <?php if ($userType == 'MA') { ?>
+                <?php //if ($userType == 'MA') { ?>
                     <li>
                         <a class="<?= ((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 13)) ? 'active' : '') ?>" href="<?= base_url('admin/enquiry-requests/list/' . encoded(13)) ?>">
                             <i class="fa fa-arrow-right"></i><span>Reject Request (<?= $step13_count ?>)</span>
                         </a>
                     </li>
-                <?php } ?>
+                <?php //} ?>
             </ul>
         </li>
     <?php } ?>
