@@ -214,12 +214,12 @@ $userType           = $session->user_type;
                                                                 $stateNotification = $common_model->find_data('ecomm_parent_whatsapp', 'row', ['enquiry_id' => $row->$primary_key , 'notification_type' => 'STATE' ], 'created_at');
                                                                 if(!empty($stateNotification)){?>
                                                                 
-                                                                    <h6 class="badge bg-primary mt-1 mb-0"><i class="fa-brands fa-whatsapp"></i> Notified <span style="color: #0a0326;font-weight: bold;"><?= $plant_state_name ?></span> Vendors & Subscribers On 
-                                                                    <span><?= (($stateNotification->created_at != '') ? date_format(date_create($stateNotification->created_at), "M d, Y h:i A") : '') ?></span></h6>
+                                                                    <a href="<?= base_url('admin/enquiry-requests/view-notified-recipient/' . encoded($row->$primary_key) . '/' . '/STATE') ?>" class="badge bg-primary mt-1 mb-0" target="_blank"><i class="fa-brands fa-whatsapp"></i> Notified <span style="color: #0a0326;font-weight: bold;"><?= $plant_state_name ?></span> Vendors & Subscribers On 
+                                                                    <span><?= (($stateNotification->created_at != '') ? date_format(date_create($stateNotification->created_at), "M d, Y h:i A") : '') ?></span></a>
 
                                                                 <?php }else{ ?>
 
-                                                                    <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-1" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification To <span style="color: #0a0326;font-weight: bold;"><?= $plant_state_name ?></span> Vendors & Subscribers</a>
+                                                                    <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-1" onclick="return confirm('Are You Sure ?')" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification To <span style="color: #0a0326;font-weight: bold;"><?= $plant_state_name ?></span> Vendors & Subscribers</a>
 
                                                                 <?php } ?>
                                                             <br>
@@ -227,8 +227,8 @@ $userType           = $session->user_type;
                                                                 $panIndiaNotification = $common_model->find_data('ecomm_parent_whatsapp', 'row', ['enquiry_id' => $row->$primary_key , 'notification_type' => 'PAN_INDIA' ], 'created_at');
                                                                 if(!empty($panIndiaNotification)){?>
 
-                                                                   <h6 class="badge bg-info mt-1 mb-0"><i class="fa-brands fa-whatsapp"></i> Notified Pan India Vendors & Subscribers On
-                                                                   <span><?= (($panIndiaNotification->created_at != '') ? date_format(date_create($panIndiaNotification->created_at), "M d, Y h:i A") : '') ?></span></h6>
+                                                                   <a href="<?= base_url('admin/enquiry-requests/view-notified-recipient/' . encoded($row->$primary_key) . '/' . '/PAN_INDIA') ?>" class="badge bg-info mt-1 mb-0" target="_blank"><i class="fa-brands fa-whatsapp"></i> Notified Pan India Vendors & Subscribers On
+                                                                   <span><?= (($panIndiaNotification->created_at != '') ? date_format(date_create($panIndiaNotification->created_at), "M d, Y h:i A") : '') ?></span></a>
 
                                                                 <?php }else{ ?>
 

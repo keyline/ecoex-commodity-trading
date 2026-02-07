@@ -248,6 +248,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     
     $routes->post("enquiry-requests/pan-india-wp-modal", "EnquiryRequestController::panIndiaWpModal");
     $routes->post("enquiry-requests/send-pan-india-wp", "EnquiryRequestController::sendPanIndiaWp");
+    $routes->get("enquiry-requests/view-notified-recipient/(:any)/(:any)", "EnquiryRequestController::viewNotifiedRecipient/$1/$2");
 
 
     // enquiry requests

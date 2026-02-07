@@ -168,6 +168,52 @@ class EnquiryRequestController extends BaseController
     }
 
 
+    public function viewNotifiedRecipient($enquiry_id, $notification_type)
+    {
+        if ($this->request->getMethod() == 'get')
+        {
+            $db = \Config\Database::connect();
+            $enquiry_id = decoded($enquiry_id);
+            // dd($enquiry_id, $notification_type);
+            
+            $parent_whatsapp_data = $db->table('ecomm_parent_whatsapp')
+            ->where('enquiry_id', $enquiry_id)
+            ->where('notification_type', $notification_type)
+            ->get()
+            ->getResult();
+            // dd($parent_whatsapp_data);
+            
+            $child_whatsapp_arr = [];
+            foreach($parent_whatsapp_data as $each_parent_whatsapp_data)
+            {
+                // dd($each_parent_whatsapp_data);
+
+                $child_whatsapp_data = $db->table('ecomm_child_whatsapp')
+                ->where('parent_id', $each_parent_whatsapp_data->id)
+                ->get()
+                ->getResult();
+                // dd($child_whatsapp_data);
+
+                if(!empty($child_whatsapp_data))
+                {
+                    $child_whatsapp_arr[] = $child_whatsapp_data ;
+                }
+
+            }
+
+            
+            $data = [];
+            $data['parent_whatsapp_data'] = $parent_whatsapp_data ;
+            $data['child_whatsapp_arr'] = $child_whatsapp_arr ;
+
+
+            $title                      =  $this->data['title'] . ' : Notified Recipients';
+            $page_name                  = 'enquiry-request/view-notified-recipients';
+            echo $this->layout_after_login($title, $page_name, $data);
+        }            
+    }
+
+
     
 
 
@@ -499,7 +545,7 @@ class EnquiryRequestController extends BaseController
                 'recipient_type' => 'VENDOR',
                 'recipient_id' => 8,
                 'recipient_table_name' => 'ecomm_users',
-                'state_name' => 'Bihar',
+                'state_name' => 'Goa',
             ],
             [
                 'name'  => 'Subhomoy Samanta',
@@ -507,7 +553,7 @@ class EnquiryRequestController extends BaseController
                 'recipient_type' => 'SUBSCRIBER',
                 'recipient_id' => 16,
                 'recipient_table_name' => 'subscribers',
-                'state_name' => 'Odisha',
+                'state_name' => 'Goa',
             ]
         ];
 
