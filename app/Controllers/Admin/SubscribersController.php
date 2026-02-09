@@ -114,6 +114,7 @@ class SubscribersController extends BaseController {
                     'phone' => $this->request->getPost('phone'),
                     'type' => $this->request->getPost('type'),
                     'state' => $this->request->getPost('state'),
+                    'remarks' => $this->request->getPost('remarks'),
                     'created_at' => date('Y-m-d H:i:s'),
                 ];
                 $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
@@ -195,6 +196,7 @@ class SubscribersController extends BaseController {
                     'phone' => $this->request->getPost('phone'),
                     'type' => $this->request->getPost('type'),
                     'state' => $this->request->getPost('state'),
+                    'remarks' => $this->request->getPost('remarks'),
                     'updated_at' => date('Y-m-d H:i:s'),
                 ];
                 $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
