@@ -65,7 +65,7 @@ $controller_route   = $moduleDetail['controller_route'];
                                                 <td><?= $row->phone ?></td>
                                                 <td><?= $row->email ?></td>
                                                 <td><?= $row->state ?></td>
-                                                <td><?= wordwrap($row->remarks,35,"<br>\n") ?></td>
+                                                <td><?= wordwrap($row->remarks,40,"<br>\n") ?></td>
                                                 <td width="12%" class="text-center">
                                                     <?php if ($common_model->checkModuleFunctionAccess(28, 145)) { ?>
                                                         <a href="<?= base_url('admin/' . $controller_route . '/edit/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-primary btn-sm" title="Edit <?= $title ?>"><i class="fa fa-edit"></i></a>
