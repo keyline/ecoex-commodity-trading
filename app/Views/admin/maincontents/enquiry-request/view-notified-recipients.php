@@ -32,6 +32,44 @@
                     </div>
                 <?php } ?>
             </div>
+            
+            <!-- ?php dd($parent_whatsapp_data[0]); ?> -->
+            <div class="col-lg-12">
+                 <div class="card">
+                     <div class="card-body rounded" style="background: #ffffff;background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgb(209 224 209) 100%);">
+                        <h5 class="card-title text-center pb-0 mb-0">Whatsapp Template</h5>
+                        <div class="row">
+                            <div class="col-md-6 d-flex justify-content-center align-items-center mt-2">
+                                <img src="<?= $parent_whatsapp_data[0]->image_url ?>" alt="Template Image" class="img-fluid rounded" style="max-width: 214px;">                                
+                            </div>
+                            
+                            <div class="col-md-6 mt-2">
+                                🚨 <strong>New Material Available on ECOEX</strong>
+                                <br>
+                                Hello Recipient Name,
+                                <br>
+                                A new listing is live for you today 👇
+                                <br>
+                                ━━━━━━━━━━━━━━
+                                <br>
+                                📦 <strong>Material:</strong> <?= $parent_whatsapp_data[0]->material ?> <br>
+                                ⚖️ <strong>Quantity:</strong> <?= $parent_whatsapp_data[0]->quantity ?> <br>
+                                📍  <strong>&nbsp;&nbsp;Location:</strong> <?= $parent_whatsapp_data[0]->location ?> <br>
+                                💰 <strong>Expected Price:</strong> <?= $parent_whatsapp_data[0]->price_range ?> <br>
+                                ━━━━━━━━━━━━━━
+                                <br>
+                                👉 Open the App to View Details & Respond
+
+                                <br>
+                                <a href="https://commodity.ecoex.market/" class="btn btn-light mt-2 me-2" target="_blank" style="box-shadow: 2px 4px 3px #c5d3c5;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Download App</a>
+                                <a href="tel:911140346015" class="btn btn-light mt-2" target="_blank" style="box-shadow: 2px 4px 3px #c5d3c5;"><i class="fa-solid fa-phone"></i> Helpline</a>
+                            </div>
+                            
+                        </div>
+                     </div>
+                 </div>
+            </div>
+
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
