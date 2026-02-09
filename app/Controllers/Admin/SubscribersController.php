@@ -69,7 +69,7 @@ class SubscribersController extends BaseController {
             $validation->setRules([
                 'email' => [
                     'label' => 'Email',
-                    'rules' => 'valid_email',
+                    'rules' => 'max_length[255]',
                     'errors' => [
                         // 'required' => 'Email is required.',
                         // 'valid_email' => 'Please enter a valid email address.',
@@ -149,16 +149,16 @@ class SubscribersController extends BaseController {
         if($this->request->getMethod() == 'post') {
             $validation = \Config\Services::validation();
             $validation->setRules([
-                'email' => [
-                    'label' => 'Email',
-                    'rules' => "valid_email|id,{$id}]",
-                    'errors' => [
-                        // 'required' => 'Email is required.',
-                        'valid_email' => 'Please enter a valid email address.',
-                        // 'is_unique' => 'This email is already subscribed.',
-                        // 'max_length' => 'Email cannot exceed 255 characters.'
-                    ]
-                ],
+                // 'email' => [
+                //     'label' => 'Email',
+                //     'rules' => "valid_email|max_length[255]",
+                //     'errors' => [
+                //         // 'required' => 'Email is required.',
+                //         // 'valid_email' => 'Please enter a valid email address.',
+                //         // 'is_unique' => 'This email is already subscribed.',
+                //         'max_length' => 'Email cannot exceed 255 characters.'
+                //     ]
+                // ],
                 'name' => [
                     'label' => 'Name',
                     'rules' => 'required|max_length[100]',
