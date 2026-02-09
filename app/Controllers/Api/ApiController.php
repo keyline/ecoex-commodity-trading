@@ -8944,7 +8944,7 @@ class ApiController extends BaseController
 
                         $apiStatus          = TRUE;
                         http_response_code(200);
-                        $apiMessage         = 'Vendor price updated successfully !!!';
+                        $apiMessage         = 'Vendor price available !!!';
                         $apiExtraField      = 'response_code';
                         $apiExtraData       = http_response_code();
                     } else {
