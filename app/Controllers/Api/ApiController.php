@@ -9014,13 +9014,13 @@ class ApiController extends BaseController
 
                         $vehicleNoArray = [];
                         if(!empty($vehicles)){
-                            for($v-0;$v<count($vehicles);$v++){
+                            for($v=0;$v<count($vehicles);$v++){
                                 $vehicleNoArray[] = $vehicles[$v]['vehicleNo'];
                             }
                         }
 
                         if(!empty($scrap_items)){
-                            for($s-0;$s<count($scrap_items);$s++){
+                            for($s=0;$s<count($scrap_items);$s++){
                                 $item_id            = $scrap_items[$s]['item_id'];
                                 $weighted_qty       = $scrap_items[$s]['weight'];
                                 $weighted_unit      = $scrap_items[$s]['unit_name'];
