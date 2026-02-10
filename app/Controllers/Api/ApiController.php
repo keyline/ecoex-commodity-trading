@@ -9011,26 +9011,48 @@ class ApiController extends BaseController
                     if($checkEnquiry){
                         $this->common_model->save_data('ecomm_enquires', ['status' => 5], $enquiry_id, 'id');
                         pr($requestData,0);
-                        $fields = [
-                            'weighted_qty'                                  => '',
-                            'weighted_unit'                                 => '',
-                            'pickup_scheduled_date'                         => '',
-                            'pickup_schedule_edit_access'                   => '',
-                            'pickup_schedule_remarks'                       => '',
-                            'is_pickup_final'                               => '',
-                            'vehicle_placed_date'                           => '',
-                            'no_of_vehicle'                                 => '',
-                            'vehicle_registration_nos'                      => '',
-                            'vehicle_images'                                => '',
-                            'material_weighted_date'                        => '',
-                            'material_weight_vendor_date'                   => '',
-                            'material_weight_plant_date'                    => '',
-                            'material_weighing_slips'                       => '',
-                            'material_weighing_edit_vendor'                 => '',
-                            'material_weighing_edit_vendor_attempts'        => '',
-                            'material_weighing_edit_plant'                  => '',
-                        ];
-                        pr($fields);
+
+                        $vehicleNoArray = [];
+                        if(!empty($vehicles)){
+                            for($v-0;$v<count($vehicles);$v++){
+                                $vehicleNoArray[] = $vehicles[$v]['vehicleNo'];
+                            }
+                        }
+
+                        if(!empty($scrap_items)){
+                            for($s-0;$s<count($scrap_items);$s++){
+                                $item_id            = $scrap_items[$s]['item_id'];
+                                $weighted_qty       = $scrap_items[$s]['weight'];
+                                $weighted_unit      = $scrap_items[$s]['unit_name'];
+
+                                $checkItem = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enquiry_id, 'item_id' => $item_id]);
+                                if($checkItem){
+                                    $subenquiry_id = $checkItem->id;
+
+                                    $fields = [
+                                        'weighted_qty'                                  => $weighted_qty,
+                                        'weighted_unit'                                 => $weighted_unit,
+                                        'pickup_scheduled_date'                         => date('Y-m-d H:i:s'),
+                                        'pickup_schedule_edit_access'                   => 0,
+                                        'pickup_schedule_remarks'                       => 'Pickup scheduled at ' . date('Y-m-d H:i:s'),
+                                        'is_pickup_final'                               => 1,
+                                        'vehicle_placed_date'                           => date('Y-m-d H:i:s'),
+                                        'no_of_vehicle'                                 => count($vehicles),
+                                        'vehicle_registration_nos'                      => json_encode($vehicleNoArray),
+                                        'vehicle_images'                                => [],
+                                        'material_weighted_date'                        => date('Y-m-d H:i:s'),
+                                        'material_weight_vendor_date'                   => date('Y-m-d H:i:s'),
+                                        'material_weight_plant_date'                    => date('Y-m-d H:i:s'),
+                                        'material_weighing_slips'                       => '',
+                                        'material_weighing_edit_vendor'                 => 0,
+                                        'material_weighing_edit_vendor_attempts'        => 1,
+                                        'material_weighing_edit_plant'                  => 0,
+                                    ];
+                                    pr($fields,0);
+                                }
+                            }
+                        }
+                        die;
                     } else {
                         $apiStatus          = FALSE;
                         http_response_code(200);
