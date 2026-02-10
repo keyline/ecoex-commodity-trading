@@ -8977,4 +8977,89 @@ class ApiController extends BaseController
         }
         $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
     }
+
+    # vendor pickup schedule vehicle place material weight
+    public function vendorPickupScheduleVehiclePlaceMaterialWeight()
+    {
+        $apiStatus          = TRUE;
+        $apiMessage         = '';
+        $apiResponse        = [];
+        $this->isJSON(file_get_contents('php://input'));
+        $requestData        = $this->extract_json(file_get_contents('php://input'));
+        $requiredFields     = ['enquiry_id', 'vehicles', 'scrap_items'];
+        $headerData         = $this->request->headers();
+        if (!$this->validateArray($requiredFields, $requestData)) {
+            $apiStatus          = FALSE;
+            $apiMessage         = 'All Data Are Not Present !!!';
+        }
+        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+            $enquiry_id                             = $requestData['enquiry_id'];
+            $vehicles                               = $requestData['vehicles'];
+            $scrap_items                            = $requestData['scrap_items'];
+
+            pr($requestData);
+            
+            $Authorization              = $headerData['Authorization'];
+            $app_access_token           = $this->extractToken($Authorization);
+            $getTokenValue              = $this->tokenAuth($app_access_token);
+            if ($getTokenValue['status']) {
+                $uId        = $getTokenValue['data'][1];
+                $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                if ($getUser) {
+                    $checkEnquiry = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enquiry_id]);
+                    if($checkEnquiry){
+                        $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enquiry_id], 'product_id,qty,unit');
+                        if($getEnquiryItems){
+                            foreach($getEnquiryItems as $getEnquiryItem){
+                                $getItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $getEnquiryItem->product_id], 'item_name_ecoex');
+                                $getUnit = $this->common_model->find_data('ecomm_units', 'row', ['id' => $getEnquiryItem->unit], 'name');
+
+                                $getPrice = $this->common_model->find_data('vendor_items', 'row', ['item_id' => $getEnquiryItem->product_id, 'vendor_id' => $uId, 'status' => 1], 'item_price');
+                                $apiResponse[]  = [
+                                                    'item_id'       => $getEnquiryItem->product_id,
+                                                    'item_name'     => (($getItem)?$getItem->item_name_ecoex:''),
+                                                    'price'         => (($getPrice)?$getPrice->item_price:0),
+                                                    'qty'           => $getEnquiryItem->qty,
+                                                    'unit_id'       => $getEnquiryItem->unit,
+                                                    'unit_name'     => (($getUnit)?$getUnit->name:''),
+                                                ];
+                            }
+                        }
+
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Vendor price available !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(200);
+                        $apiMessage         = 'Enquiry not found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    $apiStatus          = FALSE;
+                    http_response_code(404);
+                    $apiMessage         = 'User Not Found !!!';
+                    $apiExtraField      = 'response_code';
+                    $apiExtraData       = http_response_code();
+                }
+            } else {
+                http_response_code($getTokenValue['data'][2]);
+                $apiStatus                      = FALSE;
+                $apiMessage                     = $this->getResponseCode(http_response_code());
+                $apiExtraField                  = 'response_code';
+                $apiExtraData                   = http_response_code();
+            }
+        } else {
+            http_response_code(400);
+            $apiStatus          = FALSE;
+            $apiMessage         = $this->getResponseCode(http_response_code());
+            $apiExtraField      = 'response_code';
+            $apiExtraData       = http_response_code();
+        }
+        $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+    }
 }

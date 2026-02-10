@@ -493,6 +493,7 @@ $routes->group("api", ["namespace" => "App\Controllers\Api",], function ($routes
     $routes->match(['get'], "vendor-price-list", "ApiController::vendorPriceList");
     $routes->match(['post'], "vendor-price-update", "ApiController::vendorPriceUpdate");
     $routes->match(['post'], "get-vendor-enquiry-items", "ApiController::getVendorEnquiryItems");
+    $routes->match(['post'], "vendor-pickup-schedule-vehicle-place-material-weight", "ApiController::vendorPickupScheduleVehiclePlaceMaterialWeight");
 
 });
 /* API */
