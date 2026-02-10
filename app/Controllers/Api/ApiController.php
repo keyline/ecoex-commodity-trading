@@ -9068,12 +9068,9 @@ class ApiController extends BaseController
                                         'material_weighing_edit_vendor_attempts'        => 1,
                                         'material_weighing_edit_plant'                  => 0,
                                         'status'                                        => 5.5,
+                                        'main_status'                                   => 5,
                                     ];
                                     $this->common_model->save_data('ecomm_sub_enquires', $fields, $subenquiry_id, 'id');
-
-                                    // $this->db = \Config\Database::connect();
-                                    // echo $this->db->getLastQuery(); // Raw SQL
-                                    // die;
                                 }
                             }
                         }
