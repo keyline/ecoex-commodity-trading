@@ -9029,6 +9029,37 @@ class ApiController extends BaseController
                                 if($checkItem){
                                     $subenquiry_id = $checkItem->id;
 
+                                    $uploadedImages = [];
+
+                                    // Loop through scrap_items images
+                                    $files = $request->getFiles();
+                                    pr($files);
+
+                                    if (isset($files['scrap_items'])) {
+                                        foreach ($files['scrap_items'] as $itemIndex => $itemData) {
+                                            if (isset($itemData['images'])) {
+                                                foreach ($itemData['images'] as $imgIndex => $imageFile) {
+
+                                                    if ($imageFile->isValid() && !$imageFile->hasMoved()) {
+
+                                                        $newName = $imageFile->getRandomName();
+
+                                                        $imageFile->move(
+                                                            ROOTPATH . 'public/uploads/enquiry/',
+                                                            $newName
+                                                        );
+
+                                                        // Store filenames in array
+                                                        $uploadedImages[$itemIndex][] = $newName;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // Convert to JSON for DB
+                                    $imagesJson = json_encode($uploadedImages);
+
                                     $fields = [
                                         'weighted_qty'                                  => $weighted_qty,
                                         'weighted_unit'                                 => $weighted_unit,
@@ -9043,7 +9074,7 @@ class ApiController extends BaseController
                                         'material_weighted_date'                        => date('Y-m-d H:i:s'),
                                         'material_weight_vendor_date'                   => date('Y-m-d H:i:s'),
                                         'material_weight_plant_date'                    => date('Y-m-d H:i:s'),
-                                        'material_weighing_slips'                       => '',
+                                        'material_weighing_slips'                       => $imagesJson,
                                         'material_weighing_edit_vendor'                 => 0,
                                         'material_weighing_edit_vendor_attempts'        => 1,
                                         'material_weighing_edit_plant'                  => 0,
