@@ -9059,7 +9059,7 @@ class ApiController extends BaseController
                                         'vehicle_placed_date'                           => date('Y-m-d H:i:s'),
                                         'no_of_vehicle'                                 => count($vehicles),
                                         'vehicle_registration_nos'                      => json_encode($vehicleNoArray),
-                                        'vehicle_images'                                => [],
+                                        // 'vehicle_images'                                => [],
                                         'material_weighted_date'                        => date('Y-m-d H:i:s'),
                                         'material_weight_vendor_date'                   => date('Y-m-d H:i:s'),
                                         'material_weight_plant_date'                    => date('Y-m-d H:i:s'),
@@ -9071,9 +9071,9 @@ class ApiController extends BaseController
                                     ];
                                     $this->common_model->save_data('ecomm_sub_enquires', $fields, $subenquiry_id, 'id');
 
-                                    $this->db = \Config\Database::connect();
-                                    echo $this->db->getLastQuery(); // Raw SQL
-                                    die;
+                                    // $this->db = \Config\Database::connect();
+                                    // echo $this->db->getLastQuery(); // Raw SQL
+                                    // die;
                                 }
                             }
                         }
