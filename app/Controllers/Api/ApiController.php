@@ -8988,10 +8988,10 @@ class ApiController extends BaseController
         // $requestData        = $this->extract_json(file_get_contents('php://input'));
         // $requiredFields     = ['enquiry_id', 'vehicles', 'scrap_items'];
         $headerData         = $this->request->headers();
-        if (!$this->validateArray($requiredFields, $requestData)) {
-            $apiStatus          = FALSE;
-            $apiMessage         = 'All Data Are Not Present !!!';
-        }
+        // if (!$this->validateArray($requiredFields, $requestData)) {
+        //     $apiStatus          = FALSE;
+        //     $apiMessage         = 'All Data Are Not Present !!!';
+        // }
         if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
             $requestData                            = $this->request->getPost();
             pr($requestData);
