@@ -9067,12 +9067,17 @@ class ApiController extends BaseController
                                         'material_weighing_edit_vendor'                 => 0,
                                         'material_weighing_edit_vendor_attempts'        => 1,
                                         'material_weighing_edit_plant'                  => 0,
+                                        'status'                                        => 5.5,
                                     ];
-                                    pr($fields,0);
+                                    $this->common_model->save_data('ecomm_sub_enquires', $fields, $subenquiry_id, 'id');
                                 }
                             }
                         }
-                        die;
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Enquiry material weight updated successfully !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
                     } else {
                         $apiStatus          = FALSE;
                         http_response_code(200);
