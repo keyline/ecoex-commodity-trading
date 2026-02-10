@@ -9070,6 +9070,10 @@ class ApiController extends BaseController
                                         'status'                                        => 5.5,
                                     ];
                                     $this->common_model->save_data('ecomm_sub_enquires', $fields, $subenquiry_id, 'id');
+
+                                    $this->db = \Config\Database::connect();
+                                    echo $this->db->getLastQuery(); // Raw SQL
+                                    die;
                                 }
                             }
                         }
