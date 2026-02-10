@@ -8994,7 +8994,6 @@ class ApiController extends BaseController
         // }
         if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
             $requestData                            = $this->request->getPost();
-            pr($requestData);
 
             $enquiry_id                             = $requestData['enquiry_id'];
             $vehicles                               = $requestData['vehicles'];
