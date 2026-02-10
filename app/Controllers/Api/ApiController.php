@@ -9009,7 +9009,28 @@ class ApiController extends BaseController
                 if ($getUser) {
                     $checkEnquiry = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enquiry_id]);
                     if($checkEnquiry){
-                        pr($checkEnquiry);
+                        $this->common_model->save_data('ecomm_enquires', ['status' => 5], $enquiry_id, 'id');
+                        pr($requestData,0);
+                        $fields = [
+                            'weighted_qty'                                  => '',
+                            'weighted_unit'                                 => '',
+                            'pickup_scheduled_date'                         => '',
+                            'pickup_schedule_edit_access'                   => '',
+                            'pickup_schedule_remarks'                       => '',
+                            'is_pickup_final'                               => '',
+                            'vehicle_placed_date'                           => '',
+                            'no_of_vehicle'                                 => '',
+                            'vehicle_registration_nos'                      => '',
+                            'vehicle_images'                                => '',
+                            'material_weighted_date'                        => '',
+                            'material_weight_vendor_date'                   => '',
+                            'material_weight_plant_date'                    => '',
+                            'material_weighing_slips'                       => '',
+                            'material_weighing_edit_vendor'                 => '',
+                            'material_weighing_edit_vendor_attempts'        => '',
+                            'material_weighing_edit_plant'                  => '',
+                        ];
+                        pr($fields);
                     } else {
                         $apiStatus          = FALSE;
                         http_response_code(200);
