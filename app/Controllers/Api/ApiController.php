@@ -9032,7 +9032,7 @@ class ApiController extends BaseController
                                     $uploadedImages = [];
 
                                     // Loop through scrap_items images
-                                    $files = $request->getFiles();
+                                    $files = $this->request->getFiles();
                                     pr($files);
 
                                     if (isset($files['scrap_items'])) {
