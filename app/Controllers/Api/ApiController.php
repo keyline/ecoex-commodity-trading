@@ -8984,14 +8984,9 @@ class ApiController extends BaseController
         $apiStatus          = TRUE;
         $apiMessage         = '';
         $apiResponse        = [];
-        // $this->isJSON(file_get_contents('php://input'));
-        // $requestData        = $this->extract_json(file_get_contents('php://input'));
-        // $requiredFields     = ['enquiry_id', 'vehicles', 'scrap_items'];
+
         $headerData         = $this->request->headers();
-        // if (!$this->validateArray($requiredFields, $requestData)) {
-        //     $apiStatus          = FALSE;
-        //     $apiMessage         = 'All Data Are Not Present !!!';
-        // }
+
         if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
             $requestData                            = $this->request->getPost();
 
@@ -9031,34 +9026,28 @@ class ApiController extends BaseController
 
                                     $uploadedImages = [];
 
-                                    // Loop through scrap_items images
                                     $files = $this->request->getFiles();
-                                    pr($files);
 
-                                    if (isset($files['scrap_items'])) {
-                                        foreach ($files['scrap_items'] as $itemIndex => $itemData) {
-                                            if (isset($itemData['images'])) {
-                                                foreach ($itemData['images'] as $imgIndex => $imageFile) {
+                                    if (isset($files['scrap_items'][$s]['images'])) {
 
-                                                    if ($imageFile->isValid() && !$imageFile->hasMoved()) {
+                                        foreach ($files['scrap_items'][$s]['images'] as $imgIndex => $imageFile) {
 
-                                                        $newName = $imageFile->getRandomName();
+                                            if ($imageFile->isValid() && !$imageFile->hasMoved()) {
 
-                                                        $imageFile->move(
-                                                            ROOTPATH . 'public/uploads/enquiry/',
-                                                            $newName
-                                                        );
+                                                $newName = $imageFile->getRandomName();
 
-                                                        // Store filenames in array
-                                                        $uploadedImages[$itemIndex][] = $newName;
-                                                    }
-                                                }
+                                                $imageFile->move(
+                                                    ROOTPATH . 'public/uploads/enquiry/',
+                                                    $newName
+                                                );
+
+                                                $uploadedImages[] = $newName;
                                             }
                                         }
                                     }
 
-                                    // Convert to JSON for DB
-                                    $imagesJson = json_encode($uploadedImages);
+                                    // Save images JSON for THIS ITEM ONLY
+                                    $material_weighing_slips_json = json_encode($uploadedImages);
 
                                     $fields = [
                                         'weighted_qty'                                  => $weighted_qty,
@@ -9074,7 +9063,7 @@ class ApiController extends BaseController
                                         'material_weighted_date'                        => date('Y-m-d H:i:s'),
                                         'material_weight_vendor_date'                   => date('Y-m-d H:i:s'),
                                         'material_weight_plant_date'                    => date('Y-m-d H:i:s'),
-                                        'material_weighing_slips'                       => $imagesJson,
+                                        'material_weighing_slips'                       => $material_weighing_slips_json,
                                         'material_weighing_edit_vendor'                 => 0,
                                         'material_weighing_edit_vendor_attempts'        => 1,
                                         'material_weighing_edit_plant'                  => 0,
