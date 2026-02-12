@@ -915,7 +915,7 @@ $request_edit_fields = [
                                                         <tr>
                                                             <th>Company</th>
                                                             <th>Plant</th>
-                                                            <th>Vendor</th>
+                                                            <!-- <th>Vendor</th> -->
                                                             <th>Is Quit</th>
                                                         </tr>
                                                     </thead>
@@ -923,7 +923,7 @@ $request_edit_fields = [
                                                         <tr>
                                                             <td><?= (($getCompany) ? $getCompany->company_name : '') ?></td>
                                                             <td><?= (($getPlant) ? $getPlant->plant_name : '') ?></td>
-                                                            <td><?= (($getVendor) ? $getVendor->company_name : '') ?></td>
+                                                            <!-- <td>?= (($getVendor) ? $getVendor->company_name : '') ?></td> -->
                                                             <td>
                                                                 <?php if ($subenquiry->is_vendor_quit) { ?>
                                                                     <a href="<?= base_url('admin/enquiry-requests/sub-enquiry-quit/' . $subenquiry->is_vendor_quit . '/' . $subenquiry->sub_enquiry_no . '/' . $subenquiry->enq_id) ?>" class="badge bg-danger">Click to cancel quit</a>
