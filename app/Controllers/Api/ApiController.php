@@ -5508,7 +5508,7 @@ class ApiController extends BaseController
                         'email'             => $getUser->email,
                         'phone'             => $getUser->phone,
                         'total_request'     => 'Total',
-                        'new_request'       => 'New Requests',
+                        'new_request'       => 'Pending Requests',
                         'quotation_request' => 'Quotation Requests',
                         'process_request'   => 'In Process Requests',
                         'rejected_request'  => 'Rejected Requests',
