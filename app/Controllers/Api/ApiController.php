@@ -9073,6 +9073,15 @@ class ApiController extends BaseController
                                     }
                                 }
                             }
+
+                            $getSubEnquiry = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enquiry_id]);
+
+                            $apiResponse        = [
+                                'enquiry_id'        => $enquiry_id,
+                                'enquiry_no'        => $checkEnquiry->enquiry_no,
+                                'sub_enquiry_no'    => (($getSubEnquiry)?$getSubEnquiry->sub_enquiry_no:''),
+                            ];
+
                             $apiStatus          = TRUE;
                             http_response_code(200);
                             $apiMessage         = 'Enquiry material weight updated successfully !!!';
