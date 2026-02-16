@@ -9173,7 +9173,7 @@ class ApiController extends BaseController
                             /* email log save */
 
                             $requestList = [];
-                            $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id], 'product_id,qty,unit');
+                            $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id], 'product_id,qty,unit,id,hsn');
                             if($getEnquiryItems){
                                 foreach($getEnquiryItems as $getEnquiryItem){
                                     $getItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $getEnquiryItem->product_id], 'item_name_ecoex');
@@ -9181,17 +9181,19 @@ class ApiController extends BaseController
 
                                     $getPrice = $this->common_model->find_data('vendor_items', 'row', ['item_id' => $getEnquiryItem->product_id, 'vendor_id' => $uId, 'status' => 1], 'item_price');
                                     $requestList[]  = [
-                                                        'item_id'       => $getEnquiryItem->product_id,
-                                                        'item_name'     => (($getItem)?$getItem->item_name_ecoex:''),
-                                                        'price'         => (($getPrice)?$getPrice->item_price:0),
-                                                        'qty'           => $getEnquiryItem->qty,
-                                                        'unit_id'       => $getEnquiryItem->unit,
-                                                        'unit_name'     => (($getUnit)?$getUnit->name:''),
+                                                        'enq_product_id'        => $getEnquiryItem->id,
+                                                        'item_id'               => $getEnquiryItem->product_id,
+                                                        'item_name'             => (($getItem)?$getItem->item_name_ecoex:''),
+                                                        'item_hsn'               => $getEnquiryItem->hsn,
+                                                        'price'                 => (($getPrice)?$getPrice->item_price:0),
+                                                        'qty'                   => $getEnquiryItem->qty,
+                                                        'unit_id'               => $getEnquiryItem->unit,
+                                                        'unit_name'             => (($getUnit)?$getUnit->name:''),
                                                     ];
                                 }
                             }
 
-                            pr($requestList);die;
+                            // pr($requestList);die;
 
                             /* quotation submit & auto assign */
                                 if ($requestList) {
@@ -9200,15 +9202,16 @@ class ApiController extends BaseController
                                             'enq_id'        => $enq_id,
                                             'enq_item_id'   => $rqlt['enq_product_id'],
                                             'vendor_id'     => $uId,
-                                            'item_id'       => $rqlt['product_id'],
-                                            'item_name'     => $rqlt['product_name'],
-                                            'item_hsn'      => $rqlt['hsn'],
-                                            'quote_price'   => (($rqlt['quote_price'] != '') ? $rqlt['quote_price'] : 0.00),
+                                            'item_id'       => $rqlt['item_id'],
+                                            'item_name'     => $rqlt['item_name'],
+                                            'item_hsn'      => $rqlt['item_hsn'],
+                                            'quote_price'   => (($rqlt['price'] != '') ? $rqlt['price'] : 0.00),
                                             'qty'           => 0,
-                                            'unit_id'       => $rqlt['unit'],
+                                            'unit_id'       => $rqlt['unit_id'],
                                             'unit_name'     => $rqlt['unit_name'],
                                         ];
-                                        $checkQuotationExist = $this->common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => $enq_id, 'item_id' => $rqlt['product_id'], 'vendor_id' => $uId]);
+                                        pr($fields);die;
+                                        $checkQuotationExist = $this->common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => $enq_id, 'item_id' => $rqlt['item_id'], 'vendor_id' => $uId]);
                                         if ($checkQuotationExist) {
                                             $this->common_model->save_data('ecomm_enquiry_vendor_quotations', $fields, $checkQuotationExist->id, 'id');
                                         } else {
@@ -9219,19 +9222,23 @@ class ApiController extends BaseController
                                             'enq_id'        => $enq_id,
                                             'enq_item_id'   => $rqlt['enq_product_id'],
                                             'vendor_id'     => $uId,
-                                            'item_id'       => $rqlt['product_id'],
-                                            'item_name'     => $rqlt['product_name'],
-                                            'item_hsn'      => $rqlt['hsn'],
-                                            'quote_price'   => (($rqlt['quote_price'] != '') ? $rqlt['quote_price'] : 0.00),
+                                            'item_id'       => $rqlt['item_id'],
+                                            'item_name'     => $rqlt['item_name'],
+                                            'item_hsn'      => $rqlt['item_hsn'],
+                                            'quote_price'   => (($rqlt['price'] != '') ? $rqlt['price'] : 0.00),
                                             'qty'           => 0,
-                                            'unit_id'       => $rqlt['unit'],
+                                            'unit_id'       => $rqlt['unit_id'],
                                             'unit_name'     => $rqlt['unit_name'],
                                         ];
                                         $this->common_model->save_data('ecomm_enquiry_vendor_quotation_logs', $fields, '', 'id');
                                     }
                                 }
 
-                                $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quotation_submit = 1, is_editable = 0 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+                                $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quotation_submit = 1, is_editable = 0, status = 2 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+
+                                $this->db->query("UPDATE ecomm_enquires SET status = 3 WHERE id = '$enq_id'");
+                                $assigned_date = date('Y-m-d H:i:s');
+                                $this->db->query("UPDATE ecomm_sub_enquires SET status = 3.3, main_status = 3, assigned_date = '$assigned_date' WHERE enq_id = '$enq_id'");
                             /* quotation submit & auto assign */
 
                             $apiStatus          = TRUE;
