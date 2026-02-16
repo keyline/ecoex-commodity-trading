@@ -9193,8 +9193,6 @@ class ApiController extends BaseController
                                 }
                             }
 
-                            // pr($requestList);die;
-
                             /* quotation submit & auto assign */
                                 if ($requestList) {
                                     foreach ($requestList as $rqlt) {
@@ -9210,7 +9208,6 @@ class ApiController extends BaseController
                                             'unit_id'       => $rqlt['unit_id'],
                                             'unit_name'     => $rqlt['unit_name'],
                                         ];
-                                        // pr($fields);die;
                                         $checkQuotationExist = $this->common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => $enq_id, 'item_id' => $rqlt['item_id'], 'vendor_id' => $uId]);
                                         if ($checkQuotationExist) {
                                             $this->common_model->save_data('ecomm_enquiry_vendor_quotations', $fields, $checkQuotationExist->id, 'id');
@@ -9234,7 +9231,7 @@ class ApiController extends BaseController
                                     }
                                 }
 
-                                $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quotation_submit = 1, is_editable = 0, status = 2 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+                                $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quotation_submit = 1, is_editable = 0, status = 1 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
 
                                 $this->db->query("UPDATE ecomm_enquires SET status = 3 WHERE id = '$enq_id'");
                                 $assigned_date = date('Y-m-d H:i:s');
