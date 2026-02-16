@@ -6853,7 +6853,7 @@ class ApiController extends BaseController
                                 'is_approve_vendor_payment'     => $rows[0]->is_approve_vendor_payment,
                             ];
                         }
-                        
+
 
                         $apiResponse = [
                             'enq_id'                            => $rows[0]->enq_id,
@@ -9235,6 +9235,8 @@ class ApiController extends BaseController
                                 $assigned_date = date('Y-m-d H:i:s');
                                 $this->db->query("UPDATE ecomm_sub_enquires SET status = 3.3, main_status = 3, assigned_date = '$assigned_date' WHERE enq_id = '$enq_id'");
                             /* quotation submit & auto assign */
+
+                            $apiResponse['enquiry_id'] = $enq_id;
 
                             $apiStatus          = TRUE;
                             http_response_code(200);
