@@ -9210,7 +9210,7 @@ class ApiController extends BaseController
                                             'unit_id'       => $rqlt['unit_id'],
                                             'unit_name'     => $rqlt['unit_name'],
                                         ];
-                                        pr($fields);die;
+                                        // pr($fields);die;
                                         $checkQuotationExist = $this->common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => $enq_id, 'item_id' => $rqlt['item_id'], 'vendor_id' => $uId]);
                                         if ($checkQuotationExist) {
                                             $this->common_model->save_data('ecomm_enquiry_vendor_quotations', $fields, $checkQuotationExist->id, 'id');
@@ -9243,7 +9243,7 @@ class ApiController extends BaseController
 
                             $apiStatus          = TRUE;
                             http_response_code(200);
-                            $apiMessage         = 'Vendor price available !!!';
+                            $apiMessage         = 'Enquiry accepted, quotation submitted & assigned successfully !!!';
                             $apiExtraField      = 'response_code';
                             $apiExtraData       = http_response_code();
                         } else {
