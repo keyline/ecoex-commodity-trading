@@ -366,7 +366,7 @@ class EnquiryRequestController extends BaseController
                 $DemoRecipents = [
                     [
                         'name'  => 'Anirban Singh',
-                        'phone' => '',
+                        'phone' => '9330528208',
                         'recipient_type' => 'VENDOR',
                         'recipient_id' => 8,
                         'recipient_table_name' => 'ecomm_users',
@@ -391,7 +391,8 @@ class EnquiryRequestController extends BaseController
                     $phone              = $recipent['phone'];
         
                     // dd($username, $phone, $image, $material, $quantity, $location, $price_range);
-                    $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
+                    
+                    $whatsappResponse = $this->send_whatsapp_campaign_aisensy($username, $phone, $image, $material, $quantity, $location, $price_range);
                     // pr($whatsappResponse,0);
                     $responseArray = json_decode($whatsappResponse,true);
                     $response = $responseArray["response"];
@@ -566,7 +567,8 @@ class EnquiryRequestController extends BaseController
             $phone              = $recipent['phone'];
 
             // dd($username, $phone, $image, $material, $quantity, $location, $price_range);
-            $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
+            
+            $whatsappResponse = $this->send_whatsapp_campaign_aisensy($username, $phone, $image, $material, $quantity, $location, $price_range);
             // pr($whatsappResponse,0);
             $responseArray = json_decode($whatsappResponse,true);
             $response = $responseArray["response"];
@@ -686,6 +688,79 @@ class EnquiryRequestController extends BaseController
             'postData'  => json_encode($postData)
         ]);
     }
+
+
+    public function send_whatsapp_campaign_aisensy($username, $phone, $image, $param2, $param3, $param4, $param5)
+    {
+        // pr($image);die;
+
+        $url = "https://backend.aisensy.com/campaign/t1/api/v2";
+
+        $postData = [
+            "apiKey" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ODE5YjcxZjc1NzZmMDU0ZjNlZmIwZiIsIm5hbWUiOiJFQ09FWCIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2OTgxOWI3MWY3NTc2ZjA1NGYzZWZiMGEiLCJhY3RpdmVQbGFuIjoiRlJFRV9GT1JFVkVSIiwiaWF0IjoxNzcwMTAxNjE3fQ.3QgRyHbOR8eipG2LfgCE_rQIpPnPQ_iCvZaeXA13u7A",
+            "campaignName" => "ecoex-comodity-alert",
+            "destination" => $phone,
+            "userName" => $username,
+            "templateParams" => [
+                "$username",
+                "$param2",
+                "$param3",
+                "$param4",
+                "$param5"
+            ],
+            "source" => "new-landing-page form",
+            "media" => [
+                "url" => $image['url'],
+                "filename" => $image['filename']
+            ],
+            "buttons" => [],
+            "carouselCards" => [],
+            "location" => [],
+            "attributes" => [],
+            "paramsFallbackValue" => [
+                "FirstName" => "user"
+            ]
+        ];
+        // pr($postData);
+
+        $ch = curl_init($url);
+
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_HTTPHEADER     => [
+                "Content-Type: application/json"
+            ],
+            CURLOPT_POSTFIELDS     => json_encode($postData),
+            CURLOPT_TIMEOUT        => 30,
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if (curl_errno($ch)) {
+            $error = curl_error($ch);
+            curl_close($ch);
+            echo json_encode([
+                'status' => false,
+                'error'  => $error
+            ]);
+            return;
+        }
+
+        curl_close($ch);
+
+        return json_encode([
+            'status'    => true,
+            'http_code' => $httpCode,
+            'response'  => json_decode($response, true),
+            'postData'  => json_encode($postData)
+        ]);
+    }
+
+
+
+
 
     public function viewDetail($enq_id)
     {
