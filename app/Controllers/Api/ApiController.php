@@ -6811,11 +6811,11 @@ class ApiController extends BaseController
                         if ($no_of_vehicle) {
                             for ($v = 0; $v < $no_of_vehicle; $v++) {
                                 $vehImags = [];
-                                if (count($vehicleImgs[$v])) {
-                                    for ($p = 0; $p < count($vehicleImgs[$v]); $p++) {
-                                        $vehImags[] = base_url('public/uploads/enquiry/' . $vehicleImgs[$v][$p]);
-                                    }
-                                }
+                                // if (count($vehicleImgs[$v])) {
+                                //     for ($p = 0; $p < count($vehicleImgs[$v]); $p++) {
+                                //         $vehImags[] = base_url('public/uploads/enquiry/' . $vehicleImgs[$v][$p]);
+                                //     }
+                                // }
                                 $vehicles[] = [
                                     'vehicle_no'    => $vehicle_registration_nos[$v],
                                     'vehicle_img'   => $vehImags,
