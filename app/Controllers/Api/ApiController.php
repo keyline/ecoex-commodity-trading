@@ -6724,7 +6724,7 @@ class ApiController extends BaseController
 
                             $materials                  = [];
                             $weighted_qty               = (($getItemWeightedInfo) ? $getItemWeightedInfo->weighted_qty : '');
-                            $material_weighing_slips    = (($getItemWeightedInfo) ? json_decode($getItemWeightedInfo->material_weighing_slips) : []);
+                            $material_weighing_slips    = (($getItemWeightedInfo) ? (($getItemWeightedInfo->material_weighing_slips != '')?json_decode($getItemWeightedInfo->material_weighing_slips):[]) : []);
                             $matImags                   = [];
                             if (count($material_weighing_slips)) {
                                 for ($p = 0; $p < count($material_weighing_slips); $p++) {
