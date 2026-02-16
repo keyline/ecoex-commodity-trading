@@ -8728,385 +8728,553 @@ class ApiController extends BaseController
             echo 'update transaction failed: ' . $e->getMessage();
         }
     }
+    
+    /* new vendor app flow update in february 2026 */
+        # vendor price list
+        public function vendorPriceList(){
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $headerData         = $this->request->headers();
+            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if ($getTokenValue['status']) {
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if ($getUser) {
+                        $sql2 = "
+                                SELECT 
+                                    ecomm_company_items.id,
+                                    ecomm_company_items.company_id, 
+                                    ecomm_company_items.item_name_ecoex, 
+                                    ecomm_company_items.unit, 
+                                    ecoex_companies.company_name, 
+                                    ecomm_units.name as unit_name
+                                FROM ecomm_company_items
+                                INNER JOIN ecoex_companies ON ecomm_company_items.company_id = ecoex_companies.id 
+                                INNER JOIN ecomm_units ON ecomm_company_items.unit = ecomm_units.id
+                                WHERE ecomm_company_items.is_approved=1 AND ecomm_company_items.status=1
+                                ORDER BY ecomm_company_items.created_at DESC
+                            ";
+                        // Run query
+                        $query   = $this->db->query($sql2);
+                        $results = $query->getResult();
 
-    # vendor price list
-    public function vendorPriceList(){
-        $apiStatus          = TRUE;
-        $apiMessage         = '';
-        $apiResponse        = [];
-        $headerData         = $this->request->headers();
-        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-            $Authorization              = $headerData['Authorization'];
-            $app_access_token           = $this->extractToken($Authorization);
-            $getTokenValue              = $this->tokenAuth($app_access_token);
-            if ($getTokenValue['status']) {
-                $uId        = $getTokenValue['data'][1];
-                $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
-                $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
-                if ($getUser) {
-                    $sql2 = "
-                            SELECT 
-                                ecomm_company_items.id,
-                                ecomm_company_items.company_id, 
-                                ecomm_company_items.item_name_ecoex, 
-                                ecomm_company_items.unit, 
-                                ecoex_companies.company_name, 
-                                ecomm_units.name as unit_name
-                            FROM ecomm_company_items
-                            INNER JOIN ecoex_companies ON ecomm_company_items.company_id = ecoex_companies.id 
-                            INNER JOIN ecomm_units ON ecomm_company_items.unit = ecomm_units.id
-                            WHERE ecomm_company_items.is_approved=1 AND ecomm_company_items.status=1
-                            ORDER BY ecomm_company_items.created_at DESC
-                        ";
-                    // Run query
-                    $query   = $this->db->query($sql2);
-                    $results = $query->getResult();
-
-                    if($results){
-                        foreach($results as $result){
-                            $checkPrice = $this->common_model->find_data('vendor_items', 'row', ['vendor_id' => $uId, 'company_id' => $result->company_id, 'item_id' => $result->id, 'status' => 1], 'item_price');
-                            $apiResponse[] = [
-                                'company_name'          => $result->company_name,
-                                'item_name_ecoex'       => $result->item_name_ecoex,
-                                'price'                 => (($checkPrice)?$checkPrice->item_price:0.00),
-                                'unit_name'             => $result->unit_name,
-                                'company_id'            => $result->company_id,
-                                'item_id'               => $result->id,
-                            ];
-                        }
-                    }
-
-                    $apiStatus          = TRUE;
-                    http_response_code(200);
-                    $apiMessage         = 'Data Available !!!';
-                    $apiExtraField      = 'response_code';
-                    $apiExtraData       = http_response_code();
-                } else {
-                    $apiStatus          = FALSE;
-                    http_response_code(404);
-                    $apiMessage         = 'User Not Found !!!';
-                    $apiExtraField      = 'response_code';
-                    $apiExtraData       = http_response_code();
-                }
-            } else {
-                http_response_code($getTokenValue['data'][2]);
-                $apiStatus                      = FALSE;
-                $apiMessage                     = $this->getResponseCode(http_response_code());
-                $apiExtraField                  = 'response_code';
-                $apiExtraData                   = http_response_code();
-            }
-        } else {
-            http_response_code(400);
-            $apiStatus          = FALSE;
-            $apiMessage         = $this->getResponseCode(http_response_code());
-            $apiExtraField      = 'response_code';
-            $apiExtraData       = http_response_code();
-        }
-        $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
-    }
-
-    # vendor price update
-    public function vendorPriceUpdate()
-    {
-        $apiStatus          = TRUE;
-        $apiMessage         = '';
-        $apiResponse        = [];
-        $this->isJSON(file_get_contents('php://input'));
-        $requestData        = $this->extract_json(file_get_contents('php://input'));
-        $requiredFields     = ['company_id', 'item_id', 'price'];
-        $headerData         = $this->request->headers();
-        if (!$this->validateArray($requiredFields, $requestData)) {
-            $apiStatus          = FALSE;
-            $apiMessage         = 'All Data Are Not Present !!!';
-        }
-        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-            $company_id                         = $requestData['company_id'];
-            $item_id                            = $requestData['item_id'];
-            $price                              = $requestData['price'];
-            
-            $Authorization              = $headerData['Authorization'];
-            $app_access_token           = $this->extractToken($Authorization);
-            $getTokenValue              = $this->tokenAuth($app_access_token);
-            if ($getTokenValue['status']) {
-                $uId        = $getTokenValue['data'][1];
-                $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
-                $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
-                if ($getUser) {
-                    $checkPrice = $this->common_model->find_data('vendor_items', 'row', ['vendor_id' => $uId, 'company_id' => $company_id, 'item_id' => $item_id], 'id,item_price');
-                    if($checkPrice){
-                        // update
-                        $fields = [
-                            'item_price' => $price,
-                            'created_at' => date('Y-m-d H:i:s'),
-                            'updated_at' => date('Y-m-d H:i:s'),
-                        ];
-                        $this->common_model->save_data('vendor_items', $fields, $checkPrice->id, 'id');
-
-                        $apiStatus          = TRUE;
-                        http_response_code(200);
-                        $apiMessage         = 'Vendor price updated successfully !!!';
-                        $apiExtraField      = 'response_code';
-                        $apiExtraData       = http_response_code();
-                    } else {
-                        // insert
-                        $getCompanyItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $item_id], 'unit');
-                        $fields = [
-                            'vendor_id'     => $uId,
-                            'company_id'    => $company_id,
-                            'item_id'       => $item_id,
-                            'item_price'    => $price,
-                            'item_unit'     => (($getCompanyItem)?$getCompanyItem->unit:0),
-                            'created_at'    => date('Y-m-d H:i:s'),
-                            'updated_at'    => date('Y-m-d H:i:s'),
-                        ];
-                        $this->common_model->save_data('vendor_items', $fields, '', 'id');
-                        
-                        $apiStatus          = TRUE;
-                        http_response_code(200);
-                        $apiMessage         = 'Vendor price inserted successfully !!!';
-                        $apiExtraField      = 'response_code';
-                        $apiExtraData       = http_response_code();
-                    }
-
-                    $apiResponse        = [
-                        'company_id' => $company_id,
-                        'item_id' => $item_id,
-                        'price' => $price,
-                    ];
-                } else {
-                    $apiStatus          = FALSE;
-                    http_response_code(404);
-                    $apiMessage         = 'User Not Found !!!';
-                    $apiExtraField      = 'response_code';
-                    $apiExtraData       = http_response_code();
-                }
-            } else {
-                http_response_code($getTokenValue['data'][2]);
-                $apiStatus                      = FALSE;
-                $apiMessage                     = $this->getResponseCode(http_response_code());
-                $apiExtraField                  = 'response_code';
-                $apiExtraData                   = http_response_code();
-            }
-        } else {
-            http_response_code(400);
-            $apiStatus          = FALSE;
-            $apiMessage         = $this->getResponseCode(http_response_code());
-            $apiExtraField      = 'response_code';
-            $apiExtraData       = http_response_code();
-        }
-        $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
-    }
-
-    # get vendor enquiry items
-    public function getVendorEnquiryItems()
-    {
-        $apiStatus          = TRUE;
-        $apiMessage         = '';
-        $apiResponse        = [];
-        $this->isJSON(file_get_contents('php://input'));
-        $requestData        = $this->extract_json(file_get_contents('php://input'));
-        $requiredFields     = ['enquiry_id'];
-        $headerData         = $this->request->headers();
-        if (!$this->validateArray($requiredFields, $requestData)) {
-            $apiStatus          = FALSE;
-            $apiMessage         = 'All Data Are Not Present !!!';
-        }
-        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-            $enquiry_id                         = $requestData['enquiry_id'];
-            
-            $Authorization              = $headerData['Authorization'];
-            $app_access_token           = $this->extractToken($Authorization);
-            $getTokenValue              = $this->tokenAuth($app_access_token);
-            if ($getTokenValue['status']) {
-                $uId        = $getTokenValue['data'][1];
-                $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
-                $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
-                if ($getUser) {
-                    $checkEnquiry = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enquiry_id]);
-                    if($checkEnquiry){
-                        $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enquiry_id], 'product_id,qty,unit');
-                        if($getEnquiryItems){
-                            foreach($getEnquiryItems as $getEnquiryItem){
-                                $getItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $getEnquiryItem->product_id], 'item_name_ecoex');
-                                $getUnit = $this->common_model->find_data('ecomm_units', 'row', ['id' => $getEnquiryItem->unit], 'name');
-
-                                $getPrice = $this->common_model->find_data('vendor_items', 'row', ['item_id' => $getEnquiryItem->product_id, 'vendor_id' => $uId, 'status' => 1], 'item_price');
-                                $apiResponse[]  = [
-                                                    'item_id'       => $getEnquiryItem->product_id,
-                                                    'item_name'     => (($getItem)?$getItem->item_name_ecoex:''),
-                                                    'price'         => (($getPrice)?$getPrice->item_price:0),
-                                                    'qty'           => $getEnquiryItem->qty,
-                                                    'unit_id'       => $getEnquiryItem->unit,
-                                                    'unit_name'     => (($getUnit)?$getUnit->name:''),
-                                                ];
+                        if($results){
+                            foreach($results as $result){
+                                $checkPrice = $this->common_model->find_data('vendor_items', 'row', ['vendor_id' => $uId, 'company_id' => $result->company_id, 'item_id' => $result->id, 'status' => 1], 'item_price');
+                                $apiResponse[] = [
+                                    'company_name'          => $result->company_name,
+                                    'item_name_ecoex'       => $result->item_name_ecoex,
+                                    'price'                 => (($checkPrice)?$checkPrice->item_price:0.00),
+                                    'unit_name'             => $result->unit_name,
+                                    'company_id'            => $result->company_id,
+                                    'item_id'               => $result->id,
+                                ];
                             }
                         }
 
                         $apiStatus          = TRUE;
                         http_response_code(200);
-                        $apiMessage         = 'Vendor price available !!!';
+                        $apiMessage         = 'Data Available !!!';
                         $apiExtraField      = 'response_code';
                         $apiExtraData       = http_response_code();
                     } else {
                         $apiStatus          = FALSE;
-                        http_response_code(200);
-                        $apiMessage         = 'Enquiry not found !!!';
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
                         $apiExtraField      = 'response_code';
                         $apiExtraData       = http_response_code();
                     }
                 } else {
-                    $apiStatus          = FALSE;
-                    http_response_code(404);
-                    $apiMessage         = 'User Not Found !!!';
-                    $apiExtraField      = 'response_code';
-                    $apiExtraData       = http_response_code();
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
                 }
             } else {
-                http_response_code($getTokenValue['data'][2]);
-                $apiStatus                      = FALSE;
-                $apiMessage                     = $this->getResponseCode(http_response_code());
-                $apiExtraField                  = 'response_code';
-                $apiExtraData                   = http_response_code();
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
             }
-        } else {
-            http_response_code(400);
-            $apiStatus          = FALSE;
-            $apiMessage         = $this->getResponseCode(http_response_code());
-            $apiExtraField      = 'response_code';
-            $apiExtraData       = http_response_code();
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
         }
-        $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
-    }
 
-    # vendor pickup schedule vehicle place material weight
-    public function vendorPickupScheduleVehiclePlaceMaterialWeight()
-    {
-        $apiStatus          = TRUE;
-        $apiMessage         = '';
-        $apiResponse        = [];
+        # vendor price update
+        public function vendorPriceUpdate()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));
+            $requiredFields     = ['company_id', 'item_id', 'price'];
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)) {
+                $apiStatus          = FALSE;
+                $apiMessage         = 'All Data Are Not Present !!!';
+            }
+            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+                $company_id                         = $requestData['company_id'];
+                $item_id                            = $requestData['item_id'];
+                $price                              = $requestData['price'];
+                
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if ($getTokenValue['status']) {
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if ($getUser) {
+                        $checkPrice = $this->common_model->find_data('vendor_items', 'row', ['vendor_id' => $uId, 'company_id' => $company_id, 'item_id' => $item_id], 'id,item_price');
+                        if($checkPrice){
+                            // update
+                            $fields = [
+                                'item_price' => $price,
+                                'created_at' => date('Y-m-d H:i:s'),
+                                'updated_at' => date('Y-m-d H:i:s'),
+                            ];
+                            $this->common_model->save_data('vendor_items', $fields, $checkPrice->id, 'id');
 
-        $headerData         = $this->request->headers();
-
-        if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
-            $requestData                            = $this->request->getPost();
-
-            $enquiry_id                             = $requestData['enquiry_id'];
-            $vehicles                               = $requestData['vehicles'];
-            $scrap_items                            = $requestData['scrap_items'];
-            
-            $Authorization              = $headerData['Authorization'];
-            $app_access_token           = $this->extractToken($Authorization);
-            $getTokenValue              = $this->tokenAuth($app_access_token);
-            if ($getTokenValue['status']) {
-                $uId        = $getTokenValue['data'][1];
-                $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
-                $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
-                if ($getUser) {
-                    $checkEnquiry = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enquiry_id]);
-                    if($checkEnquiry){
-                        $this->common_model->save_data('ecomm_enquires', ['status' => 5], $enquiry_id, 'id');
-                        // pr($requestData,0);
-
-                        $vehicleNoArray = [];
-                        if(!empty($vehicles)){
-                            for($v=0;$v<count($vehicles);$v++){
-                                $vehicleNoArray[] = $vehicles[$v]['vehicleNo'];
-                            }
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Vendor price updated successfully !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            // insert
+                            $getCompanyItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $item_id], 'unit');
+                            $fields = [
+                                'vendor_id'     => $uId,
+                                'company_id'    => $company_id,
+                                'item_id'       => $item_id,
+                                'item_price'    => $price,
+                                'item_unit'     => (($getCompanyItem)?$getCompanyItem->unit:0),
+                                'created_at'    => date('Y-m-d H:i:s'),
+                                'updated_at'    => date('Y-m-d H:i:s'),
+                            ];
+                            $this->common_model->save_data('vendor_items', $fields, '', 'id');
+                            
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Vendor price inserted successfully !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
                         }
 
-                        if(!empty($scrap_items)){
-                            for($s=0;$s<count($scrap_items);$s++){
-                                $item_id            = $scrap_items[$s]['item_id'];
-                                $weighted_qty       = $scrap_items[$s]['weight'];
-                                $weighted_unit      = $scrap_items[$s]['unit_name'];
+                        $apiResponse        = [
+                            'company_id' => $company_id,
+                            'item_id' => $item_id,
+                            'price' => $price,
+                        ];
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
 
-                                $checkItem = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enquiry_id, 'item_id' => $item_id]);
-                                if($checkItem){
-                                    $subenquiry_id = $checkItem->id;
+        # get vendor enquiry items
+        public function getVendorEnquiryItems()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));
+            $requiredFields     = ['enquiry_id'];
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)) {
+                $apiStatus          = FALSE;
+                $apiMessage         = 'All Data Are Not Present !!!';
+            }
+            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+                $enquiry_id                         = $requestData['enquiry_id'];
+                
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if ($getTokenValue['status']) {
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if ($getUser) {
+                        $checkEnquiry = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enquiry_id]);
+                        if($checkEnquiry){
+                            $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enquiry_id], 'product_id,qty,unit');
+                            if($getEnquiryItems){
+                                foreach($getEnquiryItems as $getEnquiryItem){
+                                    $getItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $getEnquiryItem->product_id], 'item_name_ecoex');
+                                    $getUnit = $this->common_model->find_data('ecomm_units', 'row', ['id' => $getEnquiryItem->unit], 'name');
 
-                                    $uploadedImages = [];
-
-                                    $files = $this->request->getFiles();
-
-                                    if (isset($files['scrap_items'][$s]['images'])) {
-
-                                        foreach ($files['scrap_items'][$s]['images'] as $imgIndex => $imageFile) {
-
-                                            if ($imageFile->isValid() && !$imageFile->hasMoved()) {
-
-                                                $newName = $imageFile->getRandomName();
-
-                                                $imageFile->move(
-                                                    ROOTPATH . 'public/uploads/enquiry/',
-                                                    $newName
-                                                );
-
-                                                $uploadedImages[] = $newName;
-                                            }
-                                        }
-                                    }
-
-                                    // Save images JSON for THIS ITEM ONLY
-                                    $material_weighing_slips_json = json_encode($uploadedImages);
-
-                                    $fields = [
-                                        'weighted_qty'                                  => $weighted_qty,
-                                        'weighted_unit'                                 => $weighted_unit,
-                                        'pickup_scheduled_date'                         => date('Y-m-d H:i:s'),
-                                        'pickup_schedule_edit_access'                   => 0,
-                                        'pickup_schedule_remarks'                       => 'Pickup scheduled at ' . date('Y-m-d H:i:s'),
-                                        'is_pickup_final'                               => 1,
-                                        'vehicle_placed_date'                           => date('Y-m-d H:i:s'),
-                                        'no_of_vehicle'                                 => count($vehicles),
-                                        'vehicle_registration_nos'                      => json_encode($vehicleNoArray),
-                                        // 'vehicle_images'                                => [],
-                                        'material_weighted_date'                        => date('Y-m-d H:i:s'),
-                                        'material_weight_vendor_date'                   => date('Y-m-d H:i:s'),
-                                        'material_weight_plant_date'                    => date('Y-m-d H:i:s'),
-                                        'material_weighing_slips'                       => $material_weighing_slips_json,
-                                        'material_weighing_edit_vendor'                 => 0,
-                                        'material_weighing_edit_vendor_attempts'        => 1,
-                                        'material_weighing_edit_plant'                  => 0,
-                                        'status'                                        => 5.5,
-                                        'main_status'                                   => 5,
-                                    ];
-                                    $this->common_model->save_data('ecomm_sub_enquires', $fields, $subenquiry_id, 'id');
+                                    $getPrice = $this->common_model->find_data('vendor_items', 'row', ['item_id' => $getEnquiryItem->product_id, 'vendor_id' => $uId, 'status' => 1], 'item_price');
+                                    $apiResponse[]  = [
+                                                        'item_id'       => $getEnquiryItem->product_id,
+                                                        'item_name'     => (($getItem)?$getItem->item_name_ecoex:''),
+                                                        'price'         => (($getPrice)?$getPrice->item_price:0),
+                                                        'qty'           => $getEnquiryItem->qty,
+                                                        'unit_id'       => $getEnquiryItem->unit,
+                                                        'unit_name'     => (($getUnit)?$getUnit->name:''),
+                                                    ];
                                 }
                             }
+
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Vendor price available !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(200);
+                            $apiMessage         = 'Enquiry not found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
                         }
-                        $apiStatus          = TRUE;
-                        http_response_code(200);
-                        $apiMessage         = 'Enquiry material weight updated successfully !!!';
-                        $apiExtraField      = 'response_code';
-                        $apiExtraData       = http_response_code();
                     } else {
                         $apiStatus          = FALSE;
-                        http_response_code(200);
-                        $apiMessage         = 'Enquiry not found !!!';
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
                         $apiExtraField      = 'response_code';
                         $apiExtraData       = http_response_code();
                     }
                 } else {
-                    $apiStatus          = FALSE;
-                    http_response_code(404);
-                    $apiMessage         = 'User Not Found !!!';
-                    $apiExtraField      = 'response_code';
-                    $apiExtraData       = http_response_code();
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
                 }
             } else {
-                http_response_code($getTokenValue['data'][2]);
-                $apiStatus                      = FALSE;
-                $apiMessage                     = $this->getResponseCode(http_response_code());
-                $apiExtraField                  = 'response_code';
-                $apiExtraData                   = http_response_code();
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
             }
-        } else {
-            http_response_code(400);
-            $apiStatus          = FALSE;
-            $apiMessage         = $this->getResponseCode(http_response_code());
-            $apiExtraField      = 'response_code';
-            $apiExtraData       = http_response_code();
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
         }
-        $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
-    }
+
+        # vendor pickup schedule vehicle place material weight
+        public function vendorPickupScheduleVehiclePlaceMaterialWeight()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+
+            $headerData         = $this->request->headers();
+
+            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+                $requestData                            = $this->request->getPost();
+
+                $enquiry_id                             = $requestData['enquiry_id'];
+                $vehicles                               = $requestData['vehicles'];
+                $scrap_items                            = $requestData['scrap_items'];
+                
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if ($getTokenValue['status']) {
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if ($getUser) {
+                        $checkEnquiry = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enquiry_id]);
+                        if($checkEnquiry){
+                            $this->common_model->save_data('ecomm_enquires', ['status' => 5], $enquiry_id, 'id');
+                            // pr($requestData,0);
+
+                            $vehicleNoArray = [];
+                            if(!empty($vehicles)){
+                                for($v=0;$v<count($vehicles);$v++){
+                                    $vehicleNoArray[] = $vehicles[$v]['vehicleNo'];
+                                }
+                            }
+
+                            if(!empty($scrap_items)){
+                                for($s=0;$s<count($scrap_items);$s++){
+                                    $item_id            = $scrap_items[$s]['item_id'];
+                                    $weighted_qty       = $scrap_items[$s]['weight'];
+                                    $weighted_unit      = $scrap_items[$s]['unit_name'];
+
+                                    $checkItem = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enquiry_id, 'item_id' => $item_id]);
+                                    if($checkItem){
+                                        $subenquiry_id = $checkItem->id;
+
+                                        $uploadedImages = [];
+
+                                        $files = $this->request->getFiles();
+
+                                        if (isset($files['scrap_items'][$s]['images'])) {
+
+                                            foreach ($files['scrap_items'][$s]['images'] as $imgIndex => $imageFile) {
+
+                                                if ($imageFile->isValid() && !$imageFile->hasMoved()) {
+
+                                                    $newName = $imageFile->getRandomName();
+
+                                                    $imageFile->move(
+                                                        ROOTPATH . 'public/uploads/enquiry/',
+                                                        $newName
+                                                    );
+
+                                                    $uploadedImages[] = $newName;
+                                                }
+                                            }
+                                        }
+
+                                        // Save images JSON for THIS ITEM ONLY
+                                        $material_weighing_slips_json = json_encode($uploadedImages);
+
+                                        $fields = [
+                                            'weighted_qty'                                  => $weighted_qty,
+                                            'weighted_unit'                                 => $weighted_unit,
+                                            'pickup_scheduled_date'                         => date('Y-m-d H:i:s'),
+                                            'pickup_schedule_edit_access'                   => 0,
+                                            'pickup_schedule_remarks'                       => 'Pickup scheduled at ' . date('Y-m-d H:i:s'),
+                                            'is_pickup_final'                               => 1,
+                                            'vehicle_placed_date'                           => date('Y-m-d H:i:s'),
+                                            'no_of_vehicle'                                 => count($vehicles),
+                                            'vehicle_registration_nos'                      => json_encode($vehicleNoArray),
+                                            // 'vehicle_images'                                => [],
+                                            'material_weighted_date'                        => date('Y-m-d H:i:s'),
+                                            'material_weight_vendor_date'                   => date('Y-m-d H:i:s'),
+                                            'material_weight_plant_date'                    => date('Y-m-d H:i:s'),
+                                            'material_weighing_slips'                       => $material_weighing_slips_json,
+                                            'material_weighing_edit_vendor'                 => 0,
+                                            'material_weighing_edit_vendor_attempts'        => 1,
+                                            'material_weighing_edit_plant'                  => 0,
+                                            'status'                                        => 5.5,
+                                            'main_status'                                   => 5,
+                                        ];
+                                        $this->common_model->save_data('ecomm_sub_enquires', $fields, $subenquiry_id, 'id');
+                                    }
+                                }
+                            }
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Enquiry material weight updated successfully !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(200);
+                            $apiMessage         = 'Enquiry not found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+        
+        # vendor enquiry request accet, reject, quotation submission, auto final assign
+        public function vendorPendingRequestAcceptRejectNew()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));
+            $requiredFields     = ['quotation_request_status', 'enq_id']; // 1 = accept or 3 = reject
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)) {
+                $apiStatus          = FALSE;
+                $apiMessage         = 'All Data Are Not Present !!!';
+            }
+            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+
+                $quotation_request_status   = $requestData['quotation_request_status'];
+                $enq_id                     = $requestData['enq_id'];
+
+                if ($getTokenValue['status']) {
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if ($getUser) {
+                        $checkEnquiry = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+                        if($checkEnquiry){
+                            /* enquiry accept/reject */
+                                $fields = [
+                                    'status' => $quotation_request_status
+                                ];
+                                $this->db = \Config\Database::connect();
+                                $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET status = '$quotation_request_status' WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+                            /* enquiry accept/reject */
+                            /* mail functionality */
+                                $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                                $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+                                $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                                if ($quotation_request_status == 1) {
+                                    $apiMessage         = 'Enquiry Invitation For Quotation Submission Accepted Successfully !!!';
+                                    $subject            = $generalSetting->site_name . ' :: Enquiry Invitation For Quotation Submission Accepted (' . (($getEnquiry) ? $getEnquiry->enquiry_no : '') . ') ';
+                                } else {
+                                    $apiMessage         = 'Enquiry Invitation For Quotation Submission Rejected Successfully !!!';
+                                    $subject            = $generalSetting->site_name . ' :: Enquiry Invitation For Quotation Submission Rejected (' . (($getEnquiry) ? $getEnquiry->enquiry_no : '') . ') ';
+                                }
+                                $getEnquiryVendorShare      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'row-array', ['enq_id' => $enq_id, 'vendor_id' => $uId]);
+                                $message                    = view('email-templates/enquiry-request-for-quotation-accept-reject', $getEnquiryVendorShare);
+                                // $this->sendMail($getVendor->email, $subject, $message);
+                            /* mail functionality */
+                            /* email log save */
+                                $postData2 = [
+                                    'name'                  => $getVendor->company_name,
+                                    'email'                 => $getVendor->email,
+                                    'subject'               => $subject,
+                                    'message'               => $message
+                                ];
+                                // $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                            /* email log save */
+
+                            $requestList = [];
+                            $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id], 'product_id,qty,unit');
+                            if($getEnquiryItems){
+                                foreach($getEnquiryItems as $getEnquiryItem){
+                                    $getItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $getEnquiryItem->product_id], 'item_name_ecoex');
+                                    $getUnit = $this->common_model->find_data('ecomm_units', 'row', ['id' => $getEnquiryItem->unit], 'name');
+
+                                    $getPrice = $this->common_model->find_data('vendor_items', 'row', ['item_id' => $getEnquiryItem->product_id, 'vendor_id' => $uId, 'status' => 1], 'item_price');
+                                    $requestList[]  = [
+                                                        'item_id'       => $getEnquiryItem->product_id,
+                                                        'item_name'     => (($getItem)?$getItem->item_name_ecoex:''),
+                                                        'price'         => (($getPrice)?$getPrice->item_price:0),
+                                                        'qty'           => $getEnquiryItem->qty,
+                                                        'unit_id'       => $getEnquiryItem->unit,
+                                                        'unit_name'     => (($getUnit)?$getUnit->name:''),
+                                                    ];
+                                }
+                            }
+
+                            pr($requestList);die;
+
+                            /* quotation submit & auto assign */
+                                if ($requestList) {
+                                    foreach ($requestList as $rqlt) {
+                                        $fields = [
+                                            'enq_id'        => $enq_id,
+                                            'enq_item_id'   => $rqlt['enq_product_id'],
+                                            'vendor_id'     => $uId,
+                                            'item_id'       => $rqlt['product_id'],
+                                            'item_name'     => $rqlt['product_name'],
+                                            'item_hsn'      => $rqlt['hsn'],
+                                            'quote_price'   => (($rqlt['quote_price'] != '') ? $rqlt['quote_price'] : 0.00),
+                                            'qty'           => 0,
+                                            'unit_id'       => $rqlt['unit'],
+                                            'unit_name'     => $rqlt['unit_name'],
+                                        ];
+                                        $checkQuotationExist = $this->common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => $enq_id, 'item_id' => $rqlt['product_id'], 'vendor_id' => $uId]);
+                                        if ($checkQuotationExist) {
+                                            $this->common_model->save_data('ecomm_enquiry_vendor_quotations', $fields, $checkQuotationExist->id, 'id');
+                                        } else {
+                                            $this->common_model->save_data('ecomm_enquiry_vendor_quotations', $fields, '', 'id');
+                                        }
+
+                                        $fields = [
+                                            'enq_id'        => $enq_id,
+                                            'enq_item_id'   => $rqlt['enq_product_id'],
+                                            'vendor_id'     => $uId,
+                                            'item_id'       => $rqlt['product_id'],
+                                            'item_name'     => $rqlt['product_name'],
+                                            'item_hsn'      => $rqlt['hsn'],
+                                            'quote_price'   => (($rqlt['quote_price'] != '') ? $rqlt['quote_price'] : 0.00),
+                                            'qty'           => 0,
+                                            'unit_id'       => $rqlt['unit'],
+                                            'unit_name'     => $rqlt['unit_name'],
+                                        ];
+                                        $this->common_model->save_data('ecomm_enquiry_vendor_quotation_logs', $fields, '', 'id');
+                                    }
+                                }
+
+                                $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quotation_submit = 1, is_editable = 0 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+                            /* quotation submit & auto assign */
+
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Vendor price available !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(200);
+                            $apiMessage         = 'Enquiry not found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+
+                        
+
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+    /* new vendor app flow update in february 2026 */
 }
