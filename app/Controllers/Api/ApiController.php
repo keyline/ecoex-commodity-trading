@@ -6853,9 +6853,7 @@ class ApiController extends BaseController
                                 'is_approve_vendor_payment'     => $rows[0]->is_approve_vendor_payment,
                             ];
                         }
-
-
-
+                        
 
                         $apiResponse = [
                             'enq_id'                            => $rows[0]->enq_id,
