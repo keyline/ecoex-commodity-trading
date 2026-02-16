@@ -9173,7 +9173,7 @@ class ApiController extends BaseController
                             /* email log save */
 
                             $requestList = [];
-                            $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id], 'product_id,qty,unit,id,hsn');
+                            $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id], 'product_id,qty,unit,id,new_hsn');
                             if($getEnquiryItems){
                                 foreach($getEnquiryItems as $getEnquiryItem){
                                     $getItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $getEnquiryItem->product_id], 'item_name_ecoex');
@@ -9184,7 +9184,7 @@ class ApiController extends BaseController
                                                         'enq_product_id'        => $getEnquiryItem->id,
                                                         'item_id'               => $getEnquiryItem->product_id,
                                                         'item_name'             => (($getItem)?$getItem->item_name_ecoex:''),
-                                                        'item_hsn'               => $getEnquiryItem->hsn,
+                                                        'item_hsn'               => $getEnquiryItem->new_hsn,
                                                         'price'                 => (($getPrice)?$getPrice->item_price:0),
                                                         'qty'                   => $getEnquiryItem->qty,
                                                         'unit_id'               => $getEnquiryItem->unit,
