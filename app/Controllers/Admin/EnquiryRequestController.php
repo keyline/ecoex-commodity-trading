@@ -381,28 +381,20 @@ class EnquiryRequestController extends BaseController
                         'state_name' => 'Odisha',
                     ],
                     [
-                        'name'  => 'Mambusa Jemson',
-                        'phone' => '8981374267',
-                        'recipient_type' => 'SUBSCRIBER',
-                        'recipient_id' => 96,
-                        'recipient_table_name' => 'subscribers',
-                        'state_name' => 'Kerala',
-                    ],
-                    [
-                        'name'  => 'Sudip Da Primary',
-                        'phone' => '8981436780',
-                        'recipient_type' => 'SUBSCRIBER',
-                        'recipient_id' => 69,
-                        'recipient_table_name' => 'subscribers',
-                        'state_name' => 'Goa',
-                    ],
-                    [
                         'name'  => 'Sudip Da Secondary',
                         'phone' => '7003366979',
                         'recipient_type' => 'SUBSCRIBER',
                         'recipient_id' => 13,
                         'recipient_table_name' => 'subscribers',
                         'state_name' => 'Goa',
+                    ],
+                    [
+                        'name'  => 'Harendra Tiwari',
+                        'phone' => '9766601173',
+                        'recipient_type' => 'SUBSCRIBER',
+                        'recipient_id' => 41,
+                        'recipient_table_name' => 'subscribers',
+                        'state_name' => 'Delhi',
                     ]
                 ];
 
@@ -581,26 +573,18 @@ class EnquiryRequestController extends BaseController
                 'state_name' => 'Goa',
             ],
             [
-                'name'  => 'Mambusa Jemson',
-                'phone' => '8981374267',
-                'recipient_type' => 'SUBSCRIBER',
-                'recipient_id' => 96,
-                'recipient_table_name' => 'subscribers',
-                'state_name' => 'Goa',
-            ],
-            [
-                'name'  => 'Sudip Da Primary',
-                'phone' => '8981436780',
-                'recipient_type' => 'SUBSCRIBER',
-                'recipient_id' => 69,
-                'recipient_table_name' => 'subscribers',
-                'state_name' => 'Goa',
-            ],
-            [
                 'name'  => 'Sudip Da Secondary',
                 'phone' => '7003366979',
                 'recipient_type' => 'SUBSCRIBER',
                 'recipient_id' => 13,
+                'recipient_table_name' => 'subscribers',
+                'state_name' => 'Goa',
+            ],
+            [
+                'name'  => 'Harendra Tiwari',
+                'phone' => '9766601173',
+                'recipient_type' => 'SUBSCRIBER',
+                'recipient_id' => 41,
                 'recipient_table_name' => 'subscribers',
                 'state_name' => 'Goa',
             ]
