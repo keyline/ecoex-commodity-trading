@@ -9203,6 +9203,11 @@ class ApiController extends BaseController
                             /* quotation submit & auto assign */
                                 if ($requestList) {
                                     foreach ($requestList as $rqlt) {
+
+                                        $vendor_id = $uId;
+                                        $enquiry_no                 = (($checkEnquiry) ? $checkEnquiry->enquiry_no : '');
+                                        $item_id = $rqlt['item_id'];                                    
+
                                         $fields = [
                                             'enq_id'        => $enq_id,
                                             'enq_item_id'   => $rqlt['enq_product_id'],
@@ -9235,14 +9240,51 @@ class ApiController extends BaseController
                                             'unit_name'     => $rqlt['unit_name'],
                                         ];
                                         $this->common_model->save_data('ecomm_enquiry_vendor_quotation_logs', $fields, '', 'id');
+
+                                        /* sub enquiry create */
+                                            /* sl no*/
+                                                $checkEnq = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enq_id], 'sub_sl_no,vendor_id,max(sub_sl_no) as max_sub_sl_no');
+                                                if ($checkEnq->max_sub_sl_no != '') {
+                                                    $checkEnqVendor = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enq_id, 'vendor_id' => $vendor_id], 'sub_sl_no,vendor_id');
+                                                    if ($checkEnqVendor) {
+                                                        $sub_sl_no         = $checkEnqVendor->sub_sl_no;
+                                                    } else {
+                                                        $sub_sl_no         = $checkEnq->max_sub_sl_no + 1;
+                                                    }
+                                                } else {
+                                                    $sub_sl_no         = 0;
+                                                }
+                                                $alphabet       = range('A', 'Z');
+                                                $getCharacter   = $alphabet[$sub_sl_no];
+                                                $sub_enquiry_no = $enquiry_no . '-' . $getCharacter;
+                                            /* sl no*/
+                                            $getQuotation = $this->common_model->find_data("ecomm_enquiry_vendor_quotations", 'row', ['enq_id' => $enq_id, 'vendor_id' => $vendor_id, 'item_id' => $item_id]);
+                                            $fields = [
+                                                'enq_id'                    => $enq_id,
+                                                'company_id'                => (($checkEnquiry) ? $checkEnquiry->company_id : 0),
+                                                'plant_id'                  => (($checkEnquiry) ? $checkEnquiry->plant_id : 0),
+                                                'enquiry_no'                => $enquiry_no,
+                                                'vendor_id'                 => $vendor_id,
+                                                'item_id'                   => $item_id,
+                                                'sub_sl_no'                 => $sub_sl_no,
+                                                'sub_enquiry_no'            => $sub_enquiry_no,
+                                                'win_quote_price'           => (($getQuotation) ? $getQuotation->quote_price : 0),
+                                                'status'                    => 3.3,
+                                                'main_status'               => 3,
+                                                'assigned_date'             => date('Y-m-d H:i:s'),
+                                            ];
+                                            $this->common_model->save_data('ecomm_sub_enquires', $fields, '', 'id');
+                                        /* sub enquiry create */
                                     }
                                 }
 
                                 $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quotation_submit = 1, is_editable = 0, status = 1 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
 
+                                
+
                                 $this->db->query("UPDATE ecomm_enquires SET status = 3 WHERE id = '$enq_id'");
                                 $assigned_date = date('Y-m-d H:i:s');
-                                $this->db->query("UPDATE ecomm_sub_enquires SET status = 3.3, main_status = 3, assigned_date = '$assigned_date' WHERE enq_id = '$enq_id'");
+                                // $this->db->query("UPDATE ecomm_sub_enquires SET status = 3.3, main_status = 3, assigned_date = '$assigned_date' WHERE enq_id = '$enq_id'");
                             /* quotation submit & auto assign */
 
                             $apiResponse['enquiry_id'] = $enq_id;
