@@ -379,6 +379,14 @@ class EnquiryRequestController extends BaseController
                         'recipient_id' => 16,
                         'recipient_table_name' => 'subscribers',
                         'state_name' => 'Odisha',
+                    ],
+                    [
+                        'name'  => 'Mambusa Jemson',
+                        'phone' => '8981374267',
+                        'recipient_type' => 'SUBSCRIBER',
+                        'recipient_id' => 96,
+                        'recipient_table_name' => 'subscribers',
+                        'state_name' => 'Kerala',
                     ]
                 ];
 
@@ -553,6 +561,14 @@ class EnquiryRequestController extends BaseController
                 'phone' => '6289339520',
                 'recipient_type' => 'SUBSCRIBER',
                 'recipient_id' => 16,
+                'recipient_table_name' => 'subscribers',
+                'state_name' => 'Goa',
+            ],
+            [
+                'name'  => 'Mambusa Jemson',
+                'phone' => '8981374267',
+                'recipient_type' => 'SUBSCRIBER',
+                'recipient_id' => 96,
                 'recipient_table_name' => 'subscribers',
                 'state_name' => 'Goa',
             ]
