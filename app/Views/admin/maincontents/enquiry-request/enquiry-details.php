@@ -1057,7 +1057,7 @@ $request_edit_fields = [
                                                                     <tr>
                                                                         <th>#</th>
                                                                         <th>Vehicle Number</th>
-                                                                        <th>Vehicle Images</th>
+                                                                        <!-- <th>Vehicle Images</th> -->
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -1088,7 +1088,7 @@ $request_edit_fields = [
                                                                             <tr>
                                                                                 <td><?= $sl++ ?></td>
                                                                                 <td><?= $vehicle['vehicle_no'] ?></td>
-                                                                                <td>
+                                                                                <!-- <td>
                                                                                     <div class="row">
 
                                                                                         <?php if ($vehicle['vehicle_img']) {
@@ -1099,7 +1099,7 @@ $request_edit_fields = [
                                                                                         <?php }
                                                                                         } ?>
                                                                                     </div>
-                                                                                </td>
+                                                                                </td> -->
                                                                             </tr>
                                                                     <?php }
                                                                     } ?>
