@@ -1064,7 +1064,7 @@ $request_edit_fields = [
                                                                     <?php
                                                                     $no_of_vehicle                      = (($subenquiry) ? $subenquiry->no_of_vehicle : 0);
                                                                     $vehicle_registration_nos           = (($subenquiry) ? json_decode($subenquiry->vehicle_registration_nos) : []);
-                                                                    $vehicle_images                     = (($subenquiry) ? json_decode($subenquiry->vehicle_images) : []);
+                                                                    $vehicle_images                     = (($subenquiry) ? (($subenquiry->vehicle_images != '')?json_decode($subenquiry->vehicle_images):[]) : []);
                                                                     $vehicles                           = [];
                                                                     if ($no_of_vehicle > 0) {
                                                                         for ($v = 0; $v < $no_of_vehicle; $v++) {
