@@ -1069,11 +1069,11 @@ $request_edit_fields = [
                                                                     if ($no_of_vehicle > 0) {
                                                                         for ($v = 0; $v < $no_of_vehicle; $v++) {
                                                                             $vehImags = [];
-                                                                            if (count($vehicle_images[$v])) {
-                                                                                for ($p = 0; $p < count($vehicle_images[$v]); $p++) {
-                                                                                    $vehImags[] = base_url('public/uploads/enquiry/' . $vehicle_images[$v][$p]);
-                                                                                }
-                                                                            }
+                                                                            // if (count($vehicle_images[$v])) {
+                                                                            //     for ($p = 0; $p < count($vehicle_images[$v]); $p++) {
+                                                                            //         $vehImags[] = base_url('public/uploads/enquiry/' . $vehicle_images[$v][$p]);
+                                                                            //     }
+                                                                            // }
                                                                             $vehicles[] = [
                                                                                 'vehicle_no'    => $vehicle_registration_nos[$v],
                                                                                 'vehicle_img'   => $vehImags,
