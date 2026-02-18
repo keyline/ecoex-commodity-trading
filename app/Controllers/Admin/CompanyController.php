@@ -143,71 +143,84 @@ class CompanyController extends BaseController
                 $agreement_document = '';
             }
             /* AGREEMENT DOCUMENT */
-            $postData   = array(
-                'type'                  => 'COMPANY',
-                'parent_id'             => 0,
-                'gst_no'                => $this->request->getPost('gst_no'),
-                'gst_certificate'       => $gst_certificate,
-                'company_name'          => $this->request->getPost('company_name'),
-                'full_address'          => $this->request->getPost('full_address'),
-                'holding_no'            => $this->request->getPost('holding_no'),
-                'street'                => $this->request->getPost('street'),
-                'district'              => $this->request->getPost('district'),
-                'state'                 => $this->request->getPost('state'),
-                'pincode'               => $this->request->getPost('pincode'),
-                'location'              => $this->request->getPost('location'),
-                'email'                 => $this->request->getPost('email'),
-                'email_verify'          => 1,
-                'email_verified_at'     => date('Y-m-d H:i:s'),
-                'alternate_email1'      => $this->request->getPost('alternate_email1'),
-                'alternate_email2'      => $this->request->getPost('alternate_email2'),
-                'alternate_email3'      => $this->request->getPost('alternate_email3'),
-                'alternate_email4'      => $this->request->getPost('alternate_email4'),
-                'alternate_email5'      => $this->request->getPost('alternate_email5'),
-                'phone'                 => $this->request->getPost('phone'),
-                'phone_verify'          => 1,
-                'phone_verified_at'     => date('Y-m-d H:i:s'),
-                'password'              => md5($this->request->getPost('password')),
-                'profile_image'         => $profile_image,
-                'contract_start'        => date_format(date_create($this->request->getPost('contract_start')), "Y-m-d"),
-                'contract_end'          => date_format(date_create($this->request->getPost('contract_end')), "Y-m-d"),
-                'agreement_document'    => $agreement_document,
-                'ho_contact_person_name'                => $this->request->getPost('ho_contact_person_name'),
-                'cin_no'                => $this->request->getPost('cin_no'),
-                'cin_document'          => $cin_document,
-                'bank_name'             => $this->request->getPost('bank_name'),
-                'branch_name'           => $this->request->getPost('branch_name'),
-                'ifsc_code'             => $this->request->getPost('ifsc_code'),
-                'account_type'          => $this->request->getPost('account_type'),
-                'account_number'        => $this->request->getPost('account_number'),
-                'cancelled_cheque'      => $cancelled_cheque,
-                'created_by'            => $this->session->user_id,
-                'updated_by'            => $this->session->user_id,
-                'status'                => 2,
-            );
-            $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
 
-            // insert as a sub user of masteradmin of type COMPANY ADMIN
-            $postData2   = array(
-                'user_type'                 => 'COMPANY',
-                'role_id'                   => 14,
-                'name'                      => $this->request->getPost('company_name'),
-                'mobileNo'                  => $this->request->getPost('phone'),
-                'username'                  => $this->request->getPost('email'),
-                'password'                  => md5($this->request->getPost('password')),
-                'original_password'         => $this->request->getPost('password'),
-                'email'                     => $this->request->getPost('email'),
-                'present_address'           => $this->request->getPost('full_address'),
-                'permanent_address'         => $this->request->getPost('full_address'),
-                'added_user'                => 1,
-                'updated_user'              => 1,
-                'company_id'                => $record,
-            );
-            $this->data['model']->save_data('ecoex_admin_user', $postData2, '', 'id');
-            // insert as a sub user of masteradmin of type COMPANY ADMIN
+            $checkPhone = $this->data['model']->find_data('ecoex_companies', 'count', ['phone' => $this->request->getPost('phone')]);
+            if($checkPhone <= 0){
+                $checkEmail = $this->data['model']->find_data('ecoex_companies', 'count', ['email' => $this->request->getPost('email')]);
+                if($checkEmail <= 0){
+                    $postData   = array(
+                        'type'                  => 'COMPANY',
+                        'parent_id'             => 0,
+                        'gst_no'                => $this->request->getPost('gst_no'),
+                        'gst_certificate'       => $gst_certificate,
+                        'company_name'          => $this->request->getPost('company_name'),
+                        'full_address'          => $this->request->getPost('full_address'),
+                        'holding_no'            => $this->request->getPost('holding_no'),
+                        'street'                => $this->request->getPost('street'),
+                        'district'              => $this->request->getPost('district'),
+                        'state'                 => $this->request->getPost('state'),
+                        'pincode'               => $this->request->getPost('pincode'),
+                        'location'              => $this->request->getPost('location'),
+                        'email'                 => $this->request->getPost('email'),
+                        'email_verify'          => 1,
+                        'email_verified_at'     => date('Y-m-d H:i:s'),
+                        'alternate_email1'      => $this->request->getPost('alternate_email1'),
+                        'alternate_email2'      => $this->request->getPost('alternate_email2'),
+                        'alternate_email3'      => $this->request->getPost('alternate_email3'),
+                        'alternate_email4'      => $this->request->getPost('alternate_email4'),
+                        'alternate_email5'      => $this->request->getPost('alternate_email5'),
+                        'phone'                 => $this->request->getPost('phone'),
+                        'phone_verify'          => 1,
+                        'phone_verified_at'     => date('Y-m-d H:i:s'),
+                        'password'              => md5($this->request->getPost('password')),
+                        'profile_image'         => $profile_image,
+                        'contract_start'        => date_format(date_create($this->request->getPost('contract_start')), "Y-m-d"),
+                        'contract_end'          => date_format(date_create($this->request->getPost('contract_end')), "Y-m-d"),
+                        'agreement_document'    => $agreement_document,
+                        'ho_contact_person_name'                => $this->request->getPost('ho_contact_person_name'),
+                        'cin_no'                => $this->request->getPost('cin_no'),
+                        'cin_document'          => $cin_document,
+                        'bank_name'             => $this->request->getPost('bank_name'),
+                        'branch_name'           => $this->request->getPost('branch_name'),
+                        'ifsc_code'             => $this->request->getPost('ifsc_code'),
+                        'account_type'          => $this->request->getPost('account_type'),
+                        'account_number'        => $this->request->getPost('account_number'),
+                        'cancelled_cheque'      => $cancelled_cheque,
+                        'created_by'            => $this->session->user_id,
+                        'updated_by'            => $this->session->user_id,
+                        'status'                => 2,
+                    );
+                    $record     = $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
 
-            $this->session->setFlashdata('success_message', $this->data['title'] . ' inserted successfully');
-            return redirect()->to('/admin/' . $this->data['controller_route'] . '/list');
+                    // insert as a sub user of masteradmin of type COMPANY ADMIN
+                    $postData2   = array(
+                        'user_type'                 => 'COMPANY',
+                        'role_id'                   => 14,
+                        'name'                      => $this->request->getPost('company_name'),
+                        'mobileNo'                  => $this->request->getPost('phone'),
+                        'username'                  => $this->request->getPost('email'),
+                        'password'                  => md5($this->request->getPost('password')),
+                        'original_password'         => $this->request->getPost('password'),
+                        'email'                     => $this->request->getPost('email'),
+                        'present_address'           => $this->request->getPost('full_address'),
+                        'permanent_address'         => $this->request->getPost('full_address'),
+                        'added_user'                => 1,
+                        'updated_user'              => 1,
+                        'company_id'                => $record,
+                    );
+                    $this->data['model']->save_data('ecoex_admin_user', $postData2, '', 'id');
+                    // insert as a sub user of masteradmin of type COMPANY ADMIN
+
+                    $this->session->setFlashdata('success_message', $this->data['title'] . ' inserted successfully');
+                    return redirect()->to('/admin/' . $this->data['controller_route'] . '/list');
+                } else {
+                    $this->session->setFlashdata('error_message', 'A company with same email exists');
+                    return redirect()->to('/admin/' . $this->data['controller_route'] . '/add');
+                }
+            } else {
+                $this->session->setFlashdata('error_message', 'A company with same phone number exists');
+                return redirect()->to('/admin/' . $this->data['controller_route'] . '/add');
+            }
         }
         echo $this->layout_after_login($title, $page_name, $data);
     }
