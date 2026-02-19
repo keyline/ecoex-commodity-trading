@@ -179,16 +179,8 @@ $userType           = $session->user_type;
                                                         <br>
                                                             
                                                         
-                                                        <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification to <span style="color: #0a0326;font-weight: bold;"><?= $plant_state_name ?></span> Vendors & Subscribers</a>
                                                         
-                                                        <!-- 
-                                                        <br>
-                                                        <a
-                                                            class="btn btn-info btn-sm mt-2 panIndiaWpModalBtn"
-                                                            data-bs-toggle="modal" data-bs-target=".panIndiaWpModal"
-                                                            data-enquiryid="<?= encoded($row->$primary_key) ?>">
-                                                            <i class="fa-brands fa-whatsapp"></i> Click To Send Notification to pan India Vendors & Subscribers 
-                                                        </a> -->
+                                                         
                                                     <?php } else { ?>
                                                         <?php if ($row->status >= 1 && $row->status <= 12) { ?>
                                                             <h6 class="badge bg-success mt-2"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
@@ -218,9 +210,48 @@ $userType           = $session->user_type;
                                                         <p><?= (($row->accepted_date != '') ? date_format(date_create($row->accepted_date), "M d, Y h:i A") : '') ?></p>
                                                         
                                                         <?php if ($row->status >= 1 && $row->status <= 2) { ?>
-                                                            <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification to <span style="color: #0a0326;font-weight: bold;"><?= $plant_state_name ?></span> Vendors & Subscribers</a>
+                                                                <?php 
+                                                                $stateNotification = $common_model->find_data('ecomm_parent_whatsapp', 'row', ['enquiry_id' => $row->$primary_key , 'notification_type' => 'STATE' ], 'created_at');
+                                                                if(!empty($stateNotification)){?>
+                                                                
+                                                                    <a href="<?= base_url('admin/enquiry-requests/view-notified-recipient/' . encoded($row->$primary_key) . '/' . '/STATE') ?>" class="badge bg-primary mt-1 mb-0" target="_blank"><i class="fa-brands fa-whatsapp"></i> Notified <span style="color: #0a0326;font-weight: bold;"><?= $plant_state_name ?></span> Vendors & Subscribers On 
+                                                                    <span><?= (($stateNotification->created_at != '') ? date_format(date_create($stateNotification->created_at), "M d, Y h:i A") : '') ?></span></a>
+
+                                                                <?php }else{ ?>
+
+                                                                    <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-1" onclick="return confirm('Are You Sure ?')" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification To <span style="color: #0a0326;font-weight: bold;"><?= $plant_state_name ?></span> Vendors & Subscribers</a>
+
+                                                                <?php } ?>
+                                                            <br>
+                                                                <?php
+                                                                $panIndiaNotification = $common_model->find_data('ecomm_parent_whatsapp', 'row', ['enquiry_id' => $row->$primary_key , 'notification_type' => 'PAN_INDIA' ], 'created_at');
+                                                                if(!empty($panIndiaNotification)){?>
+
+                                                                   <a href="<?= base_url('admin/enquiry-requests/view-notified-recipient/' . encoded($row->$primary_key) . '/' . '/PAN_INDIA') ?>" class="badge bg-info mt-1 mb-0" target="_blank"><i class="fa-brands fa-whatsapp"></i> Notified Pan India Vendors & Subscribers On
+                                                                   <span><?= (($panIndiaNotification->created_at != '') ? date_format(date_create($panIndiaNotification->created_at), "M d, Y h:i A") : '') ?></span></a>
+
+                                                                <?php }else{ ?>
+
+                                                                    <a
+                                                                    class="btn btn-info btn-sm mt-1 panIndiaWpModalBtn"
+                                                                    data-bs-toggle="modal" data-bs-target=".panIndiaWpModal"
+                                                                    data-enquiryid="<?= encoded($row->$primary_key) ?>">
+                                                                    <i class="fa-brands fa-whatsapp"></i> Click To Send Notification To Pan India Vendors & Subscribers 
+                                                                    </a>
+
+                                                                <?php } ?>
+
+
                                                         <?php }?>
+
+
+                                                        
                                                     <?php } ?>
+
+
+                                                    
+
+
                                                 </td>
                                             </tr>
                                     <?php }
@@ -256,9 +287,7 @@ $userType           = $session->user_type;
     <div class="spinner-border text-white mb-3" style="width: 3rem; height: 3rem;" role="status">
         <span class="visually-hidden">Loading...</span>
     </div>
-
-    <h5 class="text-white fw-semibold">Please Wait ☕</h5>
-    <h6 class="text-white mb-0">Processing Data…</h6>
+    
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -278,6 +307,7 @@ $userType           = $session->user_type;
                 type: 'POST',
                 data: { 
                     enquiry_id : enquiry_id ,
+                    current_status : '<?= $current_status ?>',
                     <?= csrf_token() ?>: '<?= csrf_hash() ?>'
                 },
                 beforeSend: function () {
@@ -318,6 +348,7 @@ $userType           = $session->user_type;
             });
 
         });
+
 
 
 

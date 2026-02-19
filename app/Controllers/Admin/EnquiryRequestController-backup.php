@@ -168,52 +168,6 @@ class EnquiryRequestController extends BaseController
     }
 
 
-    public function viewNotifiedRecipient($enquiry_id, $notification_type)
-    {
-        if ($this->request->getMethod() == 'get')
-        {
-            $db = \Config\Database::connect();
-            $enquiry_id = decoded($enquiry_id);
-            // dd($enquiry_id, $notification_type);
-            
-            $parent_whatsapp_data = $db->table('ecomm_parent_whatsapp')
-            ->where('enquiry_id', $enquiry_id)
-            ->where('notification_type', $notification_type)
-            ->get()
-            ->getResult();
-            // dd($parent_whatsapp_data);
-            
-            $child_whatsapp_arr = [];
-            foreach($parent_whatsapp_data as $each_parent_whatsapp_data)
-            {
-                // dd($each_parent_whatsapp_data);
-
-                $child_whatsapp_data = $db->table('ecomm_child_whatsapp')
-                ->where('parent_id', $each_parent_whatsapp_data->id)
-                ->get()
-                ->getResult();
-                // dd($child_whatsapp_data);
-
-                if(!empty($child_whatsapp_data))
-                {
-                    $child_whatsapp_arr[] = $child_whatsapp_data ;
-                }
-
-            }
-
-            
-            $data = [];
-            $data['parent_whatsapp_data'] = $parent_whatsapp_data ;
-            $data['child_whatsapp_arr'] = $child_whatsapp_arr ;
-
-
-            $title                      =  $this->data['title'] . ' : Notified Recipients';
-            $page_name                  = 'enquiry-request/view-notified-recipients';
-            echo $this->layout_after_login($title, $page_name, $data);
-        }            
-    }
-
-
     
 
 
@@ -223,8 +177,6 @@ class EnquiryRequestController extends BaseController
         {
             $enquiry_id = $this->request->getPost('enquiry_id');
             $data['enquiry_id'] = $enquiry_id;
-
-            $data['current_status'] = $this->request->getPost('current_status');
 
             $db = \Config\Database::connect();
 
@@ -240,22 +192,11 @@ class EnquiryRequestController extends BaseController
             {                
                 foreach($states as $state)
                 {
-                    $stateWiseArr[] = [
-
-                        'state' => $state->name ,
-
-                        'VendorsCount' => $this->data['model']->find_data('ecomm_users', 'count', ['type' => 'VENDOR', 'state' => $state->name]) ?? 0 ,
-
-                        'SubscribersCount' => $this->data['model']->find_data('subscribers', 'count', ['type' => 'VENDOR', 'state' => $state->name]) ?? 0 ,
-
-                    ];  
-
+                    
                 }
             }
-           
-            // pr($stateWiseArr);die;
 
-            $data['stateWiseArr'] = $stateWiseArr ;
+             
 
 
             $html = view('admin/maincontents/enquiry-request/panIndiaWpModal', $data);
@@ -268,193 +209,6 @@ class EnquiryRequestController extends BaseController
         throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
     }
 
-    
-    public function sendPanIndiaWp()
-    {
-       if ($this->request->getMethod() == 'post')
-       {
-            $enquiry_id = decoded($this->request->getPost('enquiry_id'));
-            $stateArr = $this->request->getPost('stateArr');
-            $current_status = $this->request->getPost('current_status');
-            // dd($current_status);
-            $db = \Config\Database::connect();
-
-            // dd($enquiry_id);
-            if(!empty($stateArr))
-            {
-
-                $wpRecipients  = [];
-                foreach($stateArr as $eachState)
-                {
-                    $plant_state_name                       = decoded($eachState);
-                    // dd($plant_state_name);
-                    
-                    $getVendors                             = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'state' => $plant_state_name], 'company_name,phone, contact_person_name, id');
-                    if($getVendors){
-                        foreach($getVendors as $getVendor){
-                            $wpRecipients[]                           = [
-                                'name'  => (($getVendor->company_name != '')?$getVendor->company_name:$getVendor->contact_person_name),
-                                'phone' => $getVendor->phone,
-                                'recipient_type' => 'VENDOR',
-                                'recipient_id' => $getVendor->id ?? 0,
-                                'recipient_table_name' => 'ecomm_users',
-                                'state_name' => $plant_state_name ?? NULL,
-                            ];
-                        }
-                    }
-    
-                    $getSubscribers                             = $this->data['model']->find_data('subscribers', 'array', ['type' => 'VENDOR', 'state' => $plant_state_name], 'name,phone,id');
-                    if($getSubscribers){
-                        foreach($getSubscribers as $getSubscriber){
-                            $wpRecipients[]                           = [
-                                'name'  => (($getSubscriber->name != '')?$getSubscriber->name:'Subscriber'),
-                                'phone' => $getSubscriber->phone,
-                                'recipient_type' => 'SUBSCRIBER',
-                                'recipient_id' => $getSubscriber->id ?? 0,
-                                'recipient_table_name' => 'subscribers',
-                                'state_name' => $plant_state_name ?? NULL,
-                            ];
-                        }
-                    }
-    
-            
-                }
-
-
-                // pr($wpRecipients);die;    
- 
-                $db->table('ecomm_parent_whatsapp')->insert([
-                    'enquiry_id' => $enquiry_id,
-                    'notification_type' => 'PAN_INDIA',
-                ]);
-                $lastInsert_parent_whatsapp_Id = $db->insertID();
-
-
-                /* common wp message template */
-                $join1[0]            = ['table_master' => 'ecomm_enquires', 'field_table_master' => 'plant_id', 'table' => 'ecomm_users', 'field' => 'id', 'type' => 'INNER'];
-                $getEnquiry         = $this->data['model']->find_data('ecomm_enquires', 'row', ['ecomm_enquires.id' => $enquiry_id], 'ecomm_enquires.plant_id, ecomm_enquires.gps_tracking_image, ecomm_enquires.enquiry_no, ecomm_users.plant_name, ecomm_users.full_address', $join1);
-                $image              =   [
-                                            "url" => (($getEnquiry)?base_url('public/uploads/enquiry/' . $getEnquiry->gps_tracking_image):'https://commodity.ecoex.market/public/uploads/1700637387admin_leftlogo.png'),
-                                            "filename" => (($getEnquiry)?$getEnquiry->gps_tracking_image:'ImageName.jpg')
-                                        ];
-
-                $join2[0]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'table' => 'ecomm_company_items', 'field' => 'id', 'type' => 'LEFT'];
-                $join2[1]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'table' => 'ecomm_units', 'field' => 'id', 'type' => 'INNER'];
-                $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id, 'ecomm_company_items.status' => 1], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name, ecomm_company_items.price_range as price_range', $join2);
-                
-                $itemNameArray = [];
-                $quantityArray = [];
-                $priceRangeArray = [];
-
-                if($getEnquiryItems){
-                    foreach($getEnquiryItems as $getEnquiryItem){
-                        $itemNameArray[] = $getEnquiryItem->item_name;
-                        $quantityArray[] = $getEnquiryItem->qty . ' ' . $getEnquiryItem->unit_name;
-                        if($getEnquiryItem->price_range != ''){
-                            $priceRangeArray[] = (($getEnquiryItem->price_range != '')?'₹' . $getEnquiryItem->price_range:'');
-                        }
-                    }
-                }
-
-                $material           = ((!empty($itemNameArray))?implode(', ', $itemNameArray):'NA');
-                $quantity           = ((!empty($quantityArray))?implode(', ', $quantityArray):'NA');
-                $location           = (($getEnquiry)?$getEnquiry->full_address:'');
-                $price_range        = ((!empty($priceRangeArray))?implode(', ', $priceRangeArray):'NA');
-                /* common wp message template */
-
-                    
-                $DemoRecipents = [
-                    [
-                        'name'  => 'Harendra Tiwari',
-                        'phone' => '9773797179',
-                        'recipient_type' => 'VENDOR',
-                        'recipient_id' => 8,
-                        'recipient_table_name' => 'ecomm_users',
-                        'state_name' => 'Goa',
-                    ],
-                    [
-                        'name'  => 'Sakshi Mahani',
-                        'phone' => '9773797180',
-                        'recipient_type' => 'VENDOR',
-                        'recipient_id' => 16,
-                        'recipient_table_name' => 'ecomm_users',
-                        'state_name' => 'Goa',
-                    ]
-                ];
-
-                $recipient_count = 0;
-                $recipient_success_count = 0;
-                foreach($DemoRecipents as $recipent)
-                {
-                    $recipient_count++;
-                    $username           = $recipent['name'];
-                    $phone              = $recipent['phone'];
-        
-                    // dd($username, $phone, $image, $material, $quantity, $location, $price_range);
-                    
-                    $whatsappResponse = $this->send_whatsapp_campaign_aisensy($username, $phone, $image, $material, $quantity, $location, $price_range);
-                    // pr($whatsappResponse,0);
-                    $responseArray = json_decode($whatsappResponse,true);
-                    $response = $responseArray["response"];
-
-                    $child_whatsapp_data = [
-                        'parent_id' => $lastInsert_parent_whatsapp_Id ?? 0,
-                        'recipient_type' => $recipent['recipient_type'] ,
-                        'recipient_id' => $recipent['recipient_id'] ,
-                        'recipient_table_name' => $recipent['recipient_table_name'] ,
-                        'state_name' => $recipent['state_name'] ,
-                        'recipient_name' => $recipent['name'] ,
-                        'recipient_phone' => $recipent['phone'] , 
-                        'notification_response' => !empty($responseArray["response"]) ? json_encode($responseArray["response"]) : NULL,
-                        'post_data' => !empty($responseArray["postData"]) ? json_encode($responseArray["postData"]) : NULL,
-                    ];
-
-                    if(!empty($response['success']) && $response['success'] == 'true')
-                    {
-                        $recipient_success_count++;
-                        $child_whatsapp_data['notification_status'] = "true";
-                    }
-                    else
-                    {
-                        $child_whatsapp_data['notification_status'] = "false";
-                    }
-
-                    // pr($child_whatsapp_data , 0);
-
-                    $db->table('ecomm_child_whatsapp')->insert($child_whatsapp_data);
-    
-                }
-
-
-                $parent_whatsapp_data = [
-                    'recipient_count' => $recipient_count ,
-                    'recipient_success_count' => $recipient_success_count,
-                    'image_url' => $image["url"] ?? NULL,
-                    'image_name' => $image["filename"] ?? NULL,
-                    'material' => $material ?? NULL,
-                    'quantity' => $quantity ?? NULL,
-                    'location' => $location ?? NULL,
-                    'price_range' => $price_range ?? NULL,
-                ];
-
-                // pr($parent_whatsapp_data);
-
-                $db->table('ecomm_parent_whatsapp')->where('id', $lastInsert_parent_whatsapp_Id)->update($parent_whatsapp_data);
-
-                
-                $this->session->setFlashdata('success_message', 'Whatsapp notification has been sent to pan India successfully !!!');                
-            }
-            else
-            {
-                $this->session->setFlashdata('error_message', 'Please select at least one state !!!');
-            }
-
-            return redirect()->to(base_url('admin/enquiry-requests/list/' . encoded($current_status)));
-
-
-
-        } 
-    }
 
     
 
@@ -464,167 +218,94 @@ class EnquiryRequestController extends BaseController
     public function sendWhatsappNotificationState($enquiry_id, $plant_state_name){
         $enquiry_id                             = decoded($enquiry_id);
         $plant_state_name                       = decoded($plant_state_name);
-        $db = \Config\Database::connect();
         
         $wpRecipients                           = [];
-
-        $getVendors                             = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'state' => $plant_state_name], 'company_name,phone, contact_person_name, id');
+        $getVendors                             = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'state' => $plant_state_name], 'company_name,phone, contact_person_name');
         if($getVendors){
             foreach($getVendors as $getVendor){
                 $wpRecipients[]                           = [
                     'name'  => (($getVendor->company_name != '')?$getVendor->company_name:$getVendor->contact_person_name),
                     'phone' => $getVendor->phone,
-                    'recipient_type' => 'VENDOR',
-                    'recipient_id' => $getVendor->id ?? 0,
-                    'recipient_table_name' => 'ecomm_users',
-                    'state_name' => $plant_state_name ?? NULL,
                 ];
             }
         }
 
-        $getSubscribers                             = $this->data['model']->find_data('subscribers', 'array', ['type' => 'VENDOR', 'state' => $plant_state_name], 'name,phone,id');
+        $getSubscribers                             = $this->data['model']->find_data('subscribers', 'array', ['type' => 'VENDOR', 'state' => $plant_state_name], 'name,phone');
         if($getSubscribers){
             foreach($getSubscribers as $getSubscriber){
                 $wpRecipients[]                           = [
                     'name'  => (($getSubscriber->name != '')?$getSubscriber->name:'Subscriber'),
                     'phone' => $getSubscriber->phone,
-                    'recipient_type' => 'SUBSCRIBER',
-                    'recipient_id' => $getSubscriber->id ?? 0,
-                    'recipient_table_name' => 'subscribers',
-                    'state_name' => $plant_state_name ?? NULL,
                 ];
             }
         }
 
-
-        // pr($wpRecipients);die;
-
-        $db->table('ecomm_parent_whatsapp')->insert([
-            'enquiry_id' => $enquiry_id,
-            'notification_type' => 'STATE',
-        ]);
-        $lastInsert_parent_whatsapp_Id = $db->insertID();
-
-        
-        /* common wp message template */
-        $join1[0]            = ['table_master' => 'ecomm_enquires', 'field_table_master' => 'plant_id', 'table' => 'ecomm_users', 'field' => 'id', 'type' => 'INNER'];
-        $getEnquiry         = $this->data['model']->find_data('ecomm_enquires', 'row', ['ecomm_enquires.id' => $enquiry_id], 'ecomm_enquires.plant_id, ecomm_enquires.gps_tracking_image, ecomm_enquires.enquiry_no, ecomm_users.plant_name, ecomm_users.full_address', $join1);
-        $image              =   [
-                                    "url" => (($getEnquiry)?base_url('public/uploads/enquiry/' . $getEnquiry->gps_tracking_image):'https://commodity.ecoex.market/public/uploads/1700637387admin_leftlogo.png'),
-                                    "filename" => (($getEnquiry)?$getEnquiry->gps_tracking_image:'ImageName.jpg')
-                                ];
-
-        $join2[0]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'table' => 'ecomm_company_items', 'field' => 'id', 'type' => 'LEFT'];
-        $join2[1]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'table' => 'ecomm_units', 'field' => 'id', 'type' => 'INNER'];
-        $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id, 'ecomm_company_items.status' => 1], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name, ecomm_company_items.price_range as price_range', $join2);
-        
-        $itemNameArray = [];
-        $quantityArray = [];
-        $priceRangeArray = [];
-
-        if($getEnquiryItems){
-            foreach($getEnquiryItems as $getEnquiryItem){
-                $itemNameArray[] = $getEnquiryItem->item_name;
-                $quantityArray[] = $getEnquiryItem->qty . ' ' . $getEnquiryItem->unit_name;
-                if($getEnquiryItem->price_range != ''){
-                    $priceRangeArray[] = (($getEnquiryItem->price_range != '')?'₹' . $getEnquiryItem->price_range:'');
-                }
-            }
-        }
-
-        $material           = ((!empty($itemNameArray))?implode(', ', $itemNameArray):'NA');
-        $quantity           = ((!empty($quantityArray))?implode(', ', $quantityArray):'NA');
-        $location           = (($getEnquiry)?$getEnquiry->full_address:'');
-        $price_range        = ((!empty($priceRangeArray))?implode(', ', $priceRangeArray):'NA');
-        /* common wp message template */
-        
-
+        /* wp message template */
         $DemoRecipents = [
             [
-                'name'  => 'Harendra Tiwari',
-                'phone' => '9773797179',
-                'recipient_type' => 'VENDOR',
-                'recipient_id' => 8,
-                'recipient_table_name' => 'ecomm_users',
-                'state_name' => 'Goa',
+                'name'  => 'Anirban Singh',
+                'phone' => '9330528208'
             ],
             [
-                'name'  => 'Sakshi Mahani',
-                'phone' => '9773797180',
-                'recipient_type' => 'VENDOR',
-                'recipient_id' => 16,
-                'recipient_table_name' => 'ecomm_users',
-                'state_name' => 'Goa',
+                'name'  => 'Subhomoy Samanta',
+                'phone' => '6289339520'
+            ],
+            [
+                'name'  => 'Harendra Tiwari',
+                'phone' => '9766601173'
+            ],
+            [
+                'name'  => 'Sakshi ECOEX 2',
+                'phone' => '9773797180'
             ]
         ];
 
-        $recipient_count = 0;
-        $recipient_success_count = 0;
-        foreach($DemoRecipents as $recipent)
+        foreach($wpRecipients as $recipent)
         {
-            $recipient_count++;
             $username           = $recipent['name'];
             $phone              = $recipent['phone'];
 
-            // dd($username, $phone, $image, $material, $quantity, $location, $price_range);
+            $join1[0]            = ['table_master' => 'ecomm_enquires', 'field_table_master' => 'plant_id', 'table' => 'ecomm_users', 'field' => 'id', 'type' => 'INNER'];
+            $getEnquiry         = $this->data['model']->find_data('ecomm_enquires', 'row', ['ecomm_enquires.id' => $enquiry_id], 'ecomm_enquires.plant_id, ecomm_enquires.gps_tracking_image, ecomm_enquires.enquiry_no, ecomm_users.plant_name, ecomm_users.full_address', $join1);
+            $image              =   [
+                                        "url" => (($getEnquiry)?base_url('public/uploads/enquiry/' . $getEnquiry->gps_tracking_image):'https://commodity.ecoex.market/public/uploads/1700637387admin_leftlogo.png'),
+                                        "filename" => (($getEnquiry)?$getEnquiry->gps_tracking_image:'')
+                                    ];
+
+            $join2[0]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'table' => 'ecomm_company_items', 'field' => 'id', 'type' => 'LEFT'];
+            $join2[1]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'table' => 'ecomm_units', 'field' => 'id', 'type' => 'INNER'];
+            $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name, ecomm_company_items.price_range as price_range', $join2);
             
-            $whatsappResponse = $this->send_whatsapp_campaign_aisensy($username, $phone, $image, $material, $quantity, $location, $price_range);
+            $itemNameArray = [];
+            $quantityArray = [];
+            $priceRangeArray = [];
+
+            if($getEnquiryItems){
+                foreach($getEnquiryItems as $getEnquiryItem){
+                    $itemNameArray[] = $getEnquiryItem->item_name;
+                    $quantityArray[] = $getEnquiryItem->qty . ' ' . $getEnquiryItem->unit_name;
+                    if($getEnquiryItem->price_range != ''){
+                        $priceRangeArray[] = (($getEnquiryItem->price_range != '')?'₹' . $getEnquiryItem->price_range:'');
+                    }
+                }
+            }
+
+            $material           = ((!empty($itemNameArray))?implode(', ', $itemNameArray):'NA');
+            $quantity           = ((!empty($quantityArray))?implode(', ', $quantityArray):'NA');
+            $location           = (($getEnquiry)?$getEnquiry->full_address:'');
+            $price_range        = ((!empty($priceRangeArray))?implode(', ', $priceRangeArray):'NA');
+
+            $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
             // pr($whatsappResponse,0);
-            $responseArray = json_decode($whatsappResponse,true);
-            $response = $responseArray["response"];
-
-            $child_whatsapp_data = [
-                'parent_id' => $lastInsert_parent_whatsapp_Id ?? 0,
-                'recipient_type' => $recipent['recipient_type'] ,
-                'recipient_id' => $recipent['recipient_id'] ,
-                'recipient_table_name' => $recipent['recipient_table_name'] ,
-                'state_name' => $recipent['state_name'] ,
-                'recipient_name' => $recipent['name'] ,
-                'recipient_phone' => $recipent['phone'] , 
-                'notification_response' => !empty($responseArray["response"]) ? json_encode($responseArray["response"]) : NULL,
-                'post_data' => !empty($responseArray["postData"]) ? json_encode($responseArray["postData"]) : NULL,
-            ];
-
-            if(!empty($response['success']) && $response['success'] == 'true')
-            {
-                $recipient_success_count++;
-                $child_whatsapp_data['notification_status'] = "true";
-            }
-            else
-            {
-                $child_whatsapp_data['notification_status'] = "false";
-            }
-
-            // pr($child_whatsapp_data , 0);
-
-            $db->table('ecomm_child_whatsapp')->insert($child_whatsapp_data);
 
         }
-
-        $parent_whatsapp_data = [
-            'recipient_count' => $recipient_count ,
-            'recipient_success_count' => $recipient_success_count,
-            'image_url' => $image["url"] ?? NULL,
-            'image_name' => $image["filename"] ?? NULL,
-            'material' => $material ?? NULL,
-            'quantity' => $quantity ?? NULL,
-            'location' => $location ?? NULL,
-            'price_range' => $price_range ?? NULL,
-        ];
-
-        // pr($parent_whatsapp_data);
-
-        $db->table('ecomm_parent_whatsapp')->where('id', $lastInsert_parent_whatsapp_Id)->update($parent_whatsapp_data);
-
         
         $this->session->setFlashdata('success_message', 'Whatsapp notification has been sent successfully !!!');
         return redirect()->back();
-        
+        /* wp message template */
     }
     public function send_whatsapp_campaign($username, $phone, $image, $param2, $param3, $param4, $param5)
     {
-        // pr($image);die;
-
         $url = "https://backend.api-wa.co/campaign/smartping/api/v2";
 
         $postData = [
@@ -684,83 +365,9 @@ class EnquiryRequestController extends BaseController
         return json_encode([
             'status'    => true,
             'http_code' => $httpCode,
-            'response'  => json_decode($response, true),
-            'postData'  => json_encode($postData)
+            'response'  => json_decode($response, true)
         ]);
     }
-
-
-    public function send_whatsapp_campaign_aisensy($username, $phone, $image, $param2, $param3, $param4, $param5)
-    {
-        // pr($image);die;
-
-        $url = "https://backend.aisensy.com/campaign/t1/api/v2";
-
-        $postData = [
-            "apiKey" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ODE5YjcxZjc1NzZmMDU0ZjNlZmIwZiIsIm5hbWUiOiJFQ09FWCIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2OTgxOWI3MWY3NTc2ZjA1NGYzZWZiMGEiLCJhY3RpdmVQbGFuIjoiRlJFRV9GT1JFVkVSIiwiaWF0IjoxNzcwMTAxNjE3fQ.3QgRyHbOR8eipG2LfgCE_rQIpPnPQ_iCvZaeXA13u7A",
-            "campaignName" => "ecoex-comodity-alert",
-            "destination" => $phone,
-            "userName" => $username,
-            "templateParams" => [
-                "$username",
-                "$param2",
-                "$param3",
-                "$param4",
-                "$param5"
-            ],
-            "source" => "new-landing-page form",
-            "media" => [
-                "url" => $image['url'],
-                "filename" => $image['filename']
-            ],
-            "buttons" => [],
-            "carouselCards" => [],
-            "location" => [],
-            "attributes" => [],
-            "paramsFallbackValue" => [
-                "FirstName" => "user"
-            ]
-        ];
-        // pr($postData);
-
-        $ch = curl_init($url);
-
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST           => true,
-            CURLOPT_HTTPHEADER     => [
-                "Content-Type: application/json"
-            ],
-            CURLOPT_POSTFIELDS     => json_encode($postData),
-            CURLOPT_TIMEOUT        => 30,
-        ]);
-
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        if (curl_errno($ch)) {
-            $error = curl_error($ch);
-            curl_close($ch);
-            echo json_encode([
-                'status' => false,
-                'error'  => $error
-            ]);
-            return;
-        }
-
-        curl_close($ch);
-
-        return json_encode([
-            'status'    => true,
-            'http_code' => $httpCode,
-            'response'  => json_decode($response, true),
-            'postData'  => json_encode($postData)
-        ]);
-    }
-
-
-
-
 
     public function viewDetail($enq_id)
     {
@@ -1019,98 +626,10 @@ class EnquiryRequestController extends BaseController
                         $this->common_model->save_data('notifications', $pushData, '', 'id');
                     }
                 }
-                /* send push */
-                
+                /* send push */                
 
                 /* send wp message to vendors & subscribers */
-                // $enquiry_id                             = $id;
-                // $plant_state_name                       = decoded($plant_state_name);
                 
-                // $wpRecipients                           = [];
-                // $getVendors                             = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'state' => $plant_state_name], 'company_name,phone, contact_person_name');
-                // if($getVendors){
-                //     foreach($getVendors as $getVendor){
-                //         $wpRecipients[]                           = [
-                //             'name'  => (($getVendor->company_name != '')?$getVendor->company_name:$getVendor->contact_person_name),
-                //             'phone' => $getVendor->phone,
-                //         ];
-                //     }
-                // }
-
-                // $getSubscribers                             = $this->data['model']->find_data('subscribers', 'array', ['type' => 'VENDOR', 'state' => $plant_state_name], 'name,phone');
-                // if($getSubscribers){
-                //     foreach($getSubscribers as $getSubscriber){
-                //         $wpRecipients[]                           = [
-                //             'name'  => (($getSubscriber->name != '')?$getSubscriber->name:'Subscriber'),
-                //             'phone' => $getSubscriber->phone,
-                //         ];
-                //     }
-                // }
-
-                // // pr($wpRecipients);die;
-
-
-                // /* wp message template */
-                // $DemoRecipents = [
-                //     [
-                //         'name'  => 'Anirban Singh',
-                //         'phone' => '9330528208'
-                //     ],
-                //     [
-                //         'name'  => 'Subhomoy Samanta',
-                //         'phone' => '6289339520'
-                //     ],
-                //     [
-                //         'name'  => 'Harendra Tiwari',
-                //         'phone' => '9766601173'
-                //     ],
-                //     [
-                //         'name'  => 'Sakshi ECOEX 2',
-                //         'phone' => '9773797180'
-                //     ]
-                // ];
-
-                // foreach($DemoRecipents as $recipent)
-                // {
-                //     $username           = $recipent['name'];
-                //     $phone              = $recipent['phone'];
-
-                //     $join1[0]            = ['table_master' => 'ecomm_enquires', 'field_table_master' => 'plant_id', 'table' => 'ecomm_users', 'field' => 'id', 'type' => 'INNER'];
-                //     $getEnquiry         = $this->data['model']->find_data('ecomm_enquires', 'row', ['ecomm_enquires.id' => $enquiry_id], 'ecomm_enquires.plant_id, ecomm_enquires.gps_tracking_image, ecomm_enquires.enquiry_no, ecomm_users.plant_name, ecomm_users.full_address', $join1);
-                //     $image              =   [
-                //                                 "url" => (($getEnquiry)?base_url('public/uploads/enquiry/' . $getEnquiry->gps_tracking_image):'https://commodity.ecoex.market/public/uploads/1700637387admin_leftlogo.png'),
-                //                                 "filename" => (($getEnquiry)?$getEnquiry->gps_tracking_image:'ImageName.jpg')
-                //                             ];
-
-                //     $join2[0]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'table' => 'ecomm_company_items', 'field' => 'id', 'type' => 'LEFT'];
-                //     $join2[1]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'table' => 'ecomm_units', 'field' => 'id', 'type' => 'INNER'];
-                //     $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name, ecomm_company_items.price_range as price_range', $join2);
-                    
-                //     $itemNameArray = [];
-                //     $quantityArray = [];
-                //     $priceRangeArray = [];
-
-                //     if($getEnquiryItems){
-                //         foreach($getEnquiryItems as $getEnquiryItem){
-                //             $itemNameArray[] = $getEnquiryItem->item_name;
-                //             $quantityArray[] = $getEnquiryItem->qty . ' ' . $getEnquiryItem->unit_name;
-                //             if($getEnquiryItem->price_range != ''){
-                //                 $priceRangeArray[] = (($getEnquiryItem->price_range != '')?'₹' . $getEnquiryItem->price_range:'');
-                //             }
-                //         }
-                //     }
-
-                //     $material           = ((!empty($itemNameArray))?implode(', ', $itemNameArray):'NA');
-                //     $quantity           = ((!empty($quantityArray))?implode(', ', $quantityArray):'NA');
-                //     $location           = (($getEnquiry)?$getEnquiry->full_address:'');
-                //     $price_range        = ((!empty($priceRangeArray))?implode(', ', $priceRangeArray):'NA');
-
-                //     $whatsappResponse = $this->send_whatsapp_campaign($username, $phone, $image, $material, $quantity, $location, $price_range);
-                //     // pr($whatsappResponse,0);
-
-                // }
-                
-                /* wp message template */
                 /* send wp message to vendors & subscribers */
 
                 
@@ -1123,6 +642,7 @@ class EnquiryRequestController extends BaseController
 
                 $this->session->setFlashdata('success_message', $this->data['title'] . ' Accepted Successfully & Transfer To Sent/Submitted List !!!');
                 return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/' . encoded(1));
+                // return redirect()->to('/admin/enquiry-requests/list/MQ==');
             } else {
                 $this->session->setFlashdata('error_message', $pendingItemCount . ' Pending Items In ' . $getEnquiry->enquiry_no . '. Please Approve The Same Before Accept Enquiry Request !!!');
                 return redirect()->to('/admin/' . $this->data['controller_route'] . '/list/' . encoded(0));
@@ -1353,50 +873,49 @@ class EnquiryRequestController extends BaseController
             'assigned_date'             => date('Y-m-d H:i:s'),
         ];
         $this->common_model->save_data('ecomm_sub_enquires', $fields, '', 'id');
-        
         /* send push */
-            $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
-            if ($getDeviceTokens) {
-                foreach ($getDeviceTokens as $getDeviceToken) {
-                    $fcm_token          = $getDeviceToken->fcm_token;
-                    $messageData = [
-                        'title'     => 'Enquiry Assigned To You',
-                        'body'      => 'Enquiry (' . $sub_enquiry_no . ') Assigned To You By EcoEx',
-                        'badge'     => 1,
-                        'sound'     => 'Default',
-                        'data'      => [],
-                    ];
-                    $this->pushNotification($fcm_token, $messageData);
-                    $users[]    = $getEnquiry->plant_id;
-                    $pushData   = [
-                        'source'            => 'FROM APP',
-                        'title'             => 'Enquiry Assigned To You',
-                        'description'       => 'Enquiry (' . $sub_enquiry_no . ') Assigned To You By EcoEx',
-                        'user_type'         => 'VENDOR',
-                        'users'             => json_encode($users),
-                        'is_send'           => 1,
-                        'send_timestamp'    => date('Y-m-d H:i:s'),
-                        'status'            => 1,
-                    ];
-                    $this->common_model->save_data('notifications', $pushData, '', 'id');
-                }
+        $getDeviceTokens            = $this->common_model->find_data('ecomm_user_devices', 'array', ['user_id' => $vendor_id, 'fcm_token!=' => ''], 'fcm_token');
+        if ($getDeviceTokens) {
+            foreach ($getDeviceTokens as $getDeviceToken) {
+                $fcm_token          = $getDeviceToken->fcm_token;
+                $messageData = [
+                    'title'     => 'Enquiry Assigned To You',
+                    'body'      => 'Enquiry (' . $sub_enquiry_no . ') Assigned To You By EcoEx',
+                    'badge'     => 1,
+                    'sound'     => 'Default',
+                    'data'      => [],
+                ];
+                $this->pushNotification($fcm_token, $messageData);
+                $users[]    = $getEnquiry->plant_id;
+                $pushData   = [
+                    'source'            => 'FROM APP',
+                    'title'             => 'Enquiry Assigned To You',
+                    'description'       => 'Enquiry (' . $sub_enquiry_no . ') Assigned To You By EcoEx',
+                    'user_type'         => 'VENDOR',
+                    'users'             => json_encode($users),
+                    'is_send'           => 1,
+                    'send_timestamp'    => date('Y-m-d H:i:s'),
+                    'status'            => 1,
+                ];
+                $this->common_model->save_data('notifications', $pushData, '', 'id');
             }
+        }
         /* send push */
         /* send mail */
-            $fields = [
-                'enq_id'                => $enq_id,
-                'company_id'            => (($getEnquiry) ? $getEnquiry->company_id : 0),
-                'plant_id'              => (($getEnquiry) ? $getEnquiry->plant_id : 0),
-                'vendor_id'             => $vendor_id,
-                'sub_enquiry_no'        => $sub_enquiry_no,
-                'msg'                   => 'Enquiry (' . $sub_enquiry_no . ') Assigned To You By EcoEx',
-            ];
-            $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendor_id]);
-            $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
-            $generalSetting             = $this->common_model->find_data('general_settings', 'row');
-            $subject                    = $generalSetting->site_name . ' :: Enquiry (' . (($getEnquiry) ? $getEnquiry->enquiry_no : "") . ') Assigned To You By EcoEx';
-            $message                    = view('email-templates/enquiry-request-assigned', $fields);
-            $this->sendMail($getVendor->email, $subject, $message);
+        $fields = [
+            'enq_id'                => $enq_id,
+            'company_id'            => (($getEnquiry) ? $getEnquiry->company_id : 0),
+            'plant_id'              => (($getEnquiry) ? $getEnquiry->plant_id : 0),
+            'vendor_id'             => $vendor_id,
+            'sub_enquiry_no'        => $sub_enquiry_no,
+            'msg'                   => 'Enquiry (' . $sub_enquiry_no . ') Assigned To You By EcoEx',
+        ];
+        $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $vendor_id]);
+        $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+        $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+        $subject                    = $generalSetting->site_name . ' :: Enquiry (' . (($getEnquiry) ? $getEnquiry->enquiry_no : "") . ') Assigned To You By EcoEx';
+        $message                    = view('email-templates/enquiry-request-assigned', $fields);
+        $this->sendMail($getVendor->email, $subject, $message);
         /* send mail */
 
         $alreadyAllocatedCount     = $this->data['model']->find_data('ecomm_sub_enquires', 'count', ['enq_id' => $enq_id]);
