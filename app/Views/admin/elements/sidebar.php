@@ -338,7 +338,7 @@ if ($userType == 'MA') {
                         <i class="fa fa-arrow-right"></i><span>Vendor Allocated (<?= $step2_count ?>)</span>
                     </a>
                 </li>
-                <li>
+                <!-- <li>
                     <a class="<?= ((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 3)) ? 'active' : '') ?>" href="<?= base_url('admin/enquiry-requests/list/' . encoded(3)) ?>">
                         <i class="fa fa-arrow-right"></i><span>Vendor Assigned (<?= $step3_count ?>)</span>
                     </a>
@@ -347,7 +347,7 @@ if ($userType == 'MA') {
                     <a class="<?= ((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 4)) ? 'active' : '') ?>" href="<?= base_url('admin/enquiry-requests/list/' . encoded(4)) ?>">
                         <i class="fa fa-arrow-right"></i><span>Pickup Scheduled (<?= $step4_count ?>)</span>
                     </a>
-                </li>
+                </li> -->
                 <li>
                     <a class="<?= ((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 5)) ? 'active' : '') ?>" href="<?= base_url('admin/enquiry-requests/list/' . encoded(5)) ?>">
                         <i class="fa fa-arrow-right"></i><span>Vehicle Placed (<?= $step5_count ?>)</span>
