@@ -384,7 +384,8 @@ class EnquiryRequestController extends BaseController
 
                 $recipient_count = 0;
                 $recipient_success_count = 0;
-                foreach($DemoRecipents as $recipent)
+                // foreach($DemoRecipents as $recipent)
+                foreach($wpRecipients as $recipent)
                 {
                     $recipient_count++;
                     $username           = $recipent['name'];
@@ -560,7 +561,8 @@ class EnquiryRequestController extends BaseController
 
         $recipient_count = 0;
         $recipient_success_count = 0;
-        foreach($DemoRecipents as $recipent)
+        // foreach($DemoRecipents as $recipent)
+        foreach($wpRecipients as $recipent)
         {
             $recipient_count++;
             $username           = $recipent['name'];
