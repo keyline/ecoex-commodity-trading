@@ -1481,13 +1481,15 @@ $request_edit_fields = [
                                                                             <h6>Payment Mode : <?= $subenquiry->payment_mode ?></h6>
                                                                             <?php if ($subenquiry->payment_mode != 'CASH') { ?>
                                                                                 <h6>Transaction No. : <?= $subenquiry->txn_no ?></h6>
-                                                                                <h6>Transaction Screenshot :
-                                                                                    <div class="popup_gallery">
-                                                                                        <a target="_blank" href="<?= getenv('app.uploadsURL') . 'enquiry/' . $subenquiry->txn_screenshot ?>">
-                                                                                            <img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $subenquiry->txn_screenshot ?>" style="width: 200px; height: 200px;">
-                                                                                        </a>
-                                                                                    </div>
-                                                                                </h6>
+                                                                                <?php if($subenquiry->txn_screenshot != ''){?>
+                                                                                    <h6>Transaction Screenshot :
+                                                                                        <div class="popup_gallery">
+                                                                                            <a target="_blank" href="<?= getenv('app.uploadsURL') . 'enquiry/' . $subenquiry->txn_screenshot ?>">
+                                                                                                <img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $subenquiry->txn_screenshot ?>" style="width: 200px; height: 200px;">
+                                                                                            </a>
+                                                                                        </div>
+                                                                                    </h6>
+                                                                                <?php } ?>
                                                                             <?php } ?>
                                                                         <?php } ?>
                                                                     </div>
