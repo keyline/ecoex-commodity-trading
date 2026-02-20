@@ -65,7 +65,7 @@ $company_id                 = $session->company_id;
 
                                 <div class="col-md-6 mb-4 text-center">
                                     <label>Tentative Collection Date</label>
-                                    <input type="date" name="tentative_collection_date" id="tentative_collection_date" min="<?= date('Y-m-d') ?>" class="form-control" required>
+                                    <input type="date" name="tentative_collection_date" id="tentative_collection_date" min="<?= date('Y-m-d', strtotime('-1 week')) ?>" class="form-control" required>
                                 </div>
                                 <div class="col-md-6 mb-4 text-center">
                                     <label>GPS Image</label>
