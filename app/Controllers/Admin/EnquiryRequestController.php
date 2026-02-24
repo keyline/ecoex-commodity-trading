@@ -37,6 +37,7 @@ class EnquiryRequestController extends BaseController
 
         $this->vendorInvoiceService = new VendorInvoiceService();
     }
+    
     public function list($status)
     {
         if (!$this->common_model->checkModuleFunctionAccess(23, 104)) {
@@ -166,8 +167,7 @@ class EnquiryRequestController extends BaseController
 
         echo $this->layout_after_login($title, $page_name, $data);
     }
-
-
+    
     public function viewNotifiedRecipient($enquiry_id, $notification_type)
     {
         if ($this->request->getMethod() == 'get')
