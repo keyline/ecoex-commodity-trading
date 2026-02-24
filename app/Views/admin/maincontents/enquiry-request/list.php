@@ -209,7 +209,7 @@ $userType           = $session->user_type;
                                                         <?php endif; ?>
                                                         <p><?= (($row->accepted_date != '') ? date_format(date_create($row->accepted_date), "M d, Y h:i A") : '') ?></p>
                                                         
-                                                        <?php if ($row->status >= 1 && $row->status <= 2) { ?>
+                                                        <?php if ($row->status >= 0 && $row->status <= 2) { ?>
                                                                 <?php 
                                                                 $stateNotification = $common_model->find_data('ecomm_parent_whatsapp', 'row', ['enquiry_id' => $row->$primary_key , 'notification_type' => 'STATE' ], 'created_at');
                                                                 if(!empty($stateNotification)){?>
