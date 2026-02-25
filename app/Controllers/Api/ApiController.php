@@ -375,7 +375,7 @@ class ApiController extends BaseController
             // Final array with average price
             $final = [];
             foreach ($result as $item) {
-                $average_price = (($item['total_price'] != '')?round($item['total_price'] / $item['count'], 2):0);
+                $average_price = (($item['total_price'] != '' && $item['count'] > 0)?round((float) $item['total_price'] / (float)$item['count'], 2):0);
                 if($average_price > 0){
                     $final[] = [
                         'icon'                                  => $item['icon'],
