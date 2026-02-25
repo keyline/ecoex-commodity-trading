@@ -2792,7 +2792,7 @@ class ApiController extends BaseController
                 $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                 $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                 if ($getUser) {
-                    $assignItems = $this->common_model->find_data('ecomm_company_items', 'array', ['company_id' => $getUser->parent_id, 'status' => 1, 'is_approved' => 1], 'id,alias_name,hsn,unit');
+                    $assignItems = $this->common_model->find_data('ecomm_company_items', 'array', ['company_id' => $getUser->parent_id, 'status' => 1, 'is_approved' => 1], 'id,item_name_ecoex,hsn,unit');
                     // pr($assignCategory);
                     if ($assignItems) {
                         foreach ($assignItems as $assignItem) {
