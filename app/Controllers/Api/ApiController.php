@@ -2799,7 +2799,7 @@ class ApiController extends BaseController
                             $getUnit       = $this->common_model->find_data('ecomm_units', 'row', ['status' => 1, 'id' => $assignItem->unit], 'id,name');
                             $apiResponse[]        = [
                                 'id'            => $assignItem->id,
-                                'name'          => $assignItem->alias_name,
+                                'name'          => $assignItem->item_name_ecoex,
                                 'hsn'           => $assignItem->hsn,
                                 'unit_name'     => (($getUnit) ? $getUnit->name : ''),
                             ];
