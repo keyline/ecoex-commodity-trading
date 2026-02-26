@@ -135,7 +135,7 @@ $company_id                 = $session->company_id;
 </script>
 <script>
     $(document).ready(function() {
-        var maxField = 10; //Input fields increment limitation
+        var maxField = 20; //Input fields increment limitation
         var addButton = $('.add_button'); //Add button selector
         var wrapper = $('.field_wrapper'); //Input field wrapper
         var fieldHTML = `<div class="row" style="border: 1px solid #022b6d; padding: 10px;margin-bottom: 5px;border-radius:10px;">
