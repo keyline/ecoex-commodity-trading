@@ -365,36 +365,20 @@ class EnquiryRequestController extends BaseController
                     
                 $DemoRecipents = [
                     [
-                        'name'  => 'Anirban Singh',
-                        'phone' => '9330528208',
+                        'name'  => 'Harendra Tiwari',
+                        'phone' => '9773797179',
                         'recipient_type' => 'VENDOR',
                         'recipient_id' => 8,
                         'recipient_table_name' => 'ecomm_users',
-                        'state_name' => 'Bihar',
-                    ],
-                    [
-                        'name'  => 'Subhomoy Samanta',
-                        'phone' => '6289339520',
-                        'recipient_type' => 'SUBSCRIBER',
-                        'recipient_id' => 16,
-                        'recipient_table_name' => 'subscribers',
-                        'state_name' => 'Odisha',
-                    ],
-                    [
-                        'name'  => 'Sudip Da Secondary',
-                        'phone' => '7003366979',
-                        'recipient_type' => 'SUBSCRIBER',
-                        'recipient_id' => 13,
-                        'recipient_table_name' => 'subscribers',
                         'state_name' => 'Goa',
                     ],
                     [
-                        'name'  => 'Harendra Tiwari',
-                        'phone' => '9766601173',
-                        'recipient_type' => 'SUBSCRIBER',
-                        'recipient_id' => 41,
-                        'recipient_table_name' => 'subscribers',
-                        'state_name' => 'Delhi',
+                        'name'  => 'Sakshi Mahani',
+                        'phone' => '9773797180',
+                        'recipient_type' => 'VENDOR',
+                        'recipient_id' => 16,
+                        'recipient_table_name' => 'ecomm_users',
+                        'state_name' => 'Goa',
                     ]
                 ];
 
@@ -557,35 +541,19 @@ class EnquiryRequestController extends BaseController
 
         $DemoRecipents = [
             [
-                'name'  => 'Anirban Singh',
-                'phone' => '9330528208',
+                'name'  => 'Harendra Tiwari',
+                'phone' => '9773797179',
                 'recipient_type' => 'VENDOR',
                 'recipient_id' => 8,
                 'recipient_table_name' => 'ecomm_users',
                 'state_name' => 'Goa',
             ],
             [
-                'name'  => 'Subhomoy Samanta',
-                'phone' => '6289339520',
-                'recipient_type' => 'SUBSCRIBER',
+                'name'  => 'Sakshi Mahani',
+                'phone' => '9773797180',
+                'recipient_type' => 'VENDOR',
                 'recipient_id' => 16,
-                'recipient_table_name' => 'subscribers',
-                'state_name' => 'Goa',
-            ],
-            [
-                'name'  => 'Sudip Da Secondary',
-                'phone' => '7003366979',
-                'recipient_type' => 'SUBSCRIBER',
-                'recipient_id' => 13,
-                'recipient_table_name' => 'subscribers',
-                'state_name' => 'Goa',
-            ],
-            [
-                'name'  => 'Harendra Tiwari',
-                'phone' => '9766601173',
-                'recipient_type' => 'SUBSCRIBER',
-                'recipient_id' => 41,
-                'recipient_table_name' => 'subscribers',
+                'recipient_table_name' => 'ecomm_users',
                 'state_name' => 'Goa',
             ]
         ];
