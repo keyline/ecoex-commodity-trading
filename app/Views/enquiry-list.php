@@ -67,19 +67,21 @@ $this->common_model         = new CommonModel;
                         $withoutProductEnquiryCount = 0;
                         if($enqs){ foreach($enqs as $enq){
                             if($enq->enquiry_products_count <= 0){
-                                $withoutProductEnquiryCount++;
-                            }
+                                if($enq->enquiry_products_count <= 0){
+                                    $withoutProductEnquiryCount++;
+                                }
                         ?>
-                        <tr>
-                            <td><?= $sl++ ?></td>
-                            <td><?= $enq->enquiry_no ?></td>
-                            <td><?= $enq->company_name ?></td>
-                            <td><?= $enq->sub_enquiry_count ?></td>
-                            <td><?= $enq->sub_enquiry_nos ?></td>
-                            <td <?= (($enq->enquiry_products_count <= 0)?'style="background-color:red;"':'') ?>><?= $enq->enquiry_products_count ?></td>
-                            <td><?= $enq->enquiry_product_name_list ?></td>
-                            <td><?= $enq->enquiry_status ?></td>
-                        </tr>
+                                <tr>
+                                    <td><?= $sl++ ?></td>
+                                    <td><?= $enq->enquiry_no ?></td>
+                                    <td><?= $enq->company_name ?></td>
+                                    <td><?= $enq->sub_enquiry_count ?></td>
+                                    <td><?= $enq->sub_enquiry_nos ?></td>
+                                    <td <?= (($enq->enquiry_products_count <= 0)?'style="background-color:red;"':'') ?>><?= $enq->enquiry_products_count ?></td>
+                                    <td><?= $enq->enquiry_product_name_list ?></td>
+                                    <td><?= $enq->enquiry_status ?></td>
+                                </tr>
+                            <?php }?>
                         <?php } }?>
                     </tbody>
                 </table>
