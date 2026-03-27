@@ -205,6 +205,56 @@ class Home extends BaseController
         return view('enquiry-list', $data);
     }
 
+    public function enquiryMigration()
+    {
+        $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
+        $db = \Config\Database::connect();
+
+        if($this->request->getMethod() == 'post')
+        {
+            $ecomm_enquires = $db->table('ecomm_enquires')->where('enquiry_no', $this->request->getPost("enquiry_no"))->get()->getRow();
+            // dd($ecomm_enquires);
+            
+            $ecomm_sub_enquires = $db->table('ecomm_sub_enquires')->where('enq_id', $ecomm_enquires->id)->get()->getResult();
+            // dd($ecomm_sub_enquires);
+
+            foreach($ecomm_sub_enquires as $each_ecomm_sub_enquires)
+            {
+                $ecomm_company_items = $db->table('ecomm_company_items')->where('id', $each_ecomm_sub_enquires->item_id)->get()->getRow();
+                // dd($ecomm_company_items);
+
+                $insertion_data = [
+                    'enq_id' => $ecomm_enquires->id ,
+                    'plant_id' => $ecomm_enquires->plant_id ,
+                    'company_id' => $ecomm_enquires->company_id ,
+                    'sl_no' => $ecomm_enquires->sl_no ,
+                    'new_product' => 1 ,
+                    'product_id' => $each_ecomm_sub_enquires->item_id ,
+                    'hsn' => $ecomm_company_items->hsn ,
+                    'new_product_name' => $ecomm_company_items->item_name_ecoex ,
+                    'new_hsn' => $ecomm_company_items->hsn ,
+                    'new_product_image' => NULL ,
+                    'qty' => $each_ecomm_sub_enquires->weighted_qty ,
+                    'unit' => $ecomm_company_items->unit ,
+                    'remarks' => 'Approved By Admin' ,
+                    'status' => 1 ,
+                    'updated_at' => date('Y-m-d H:i:s') ,
+                ];
+
+                $db->table('ecomm_enquiry_products')->insert($insertion_data);
+
+            }
+
+
+            
+            $this->session->setFlashdata('success_message', count($ecomm_sub_enquires) .' Product Added Successfully!');
+         
+        }
+
+
+        return view('enquiry-migration', $data);
+    }
+
     
 
 
