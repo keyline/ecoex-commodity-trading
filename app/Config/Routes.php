@@ -17,6 +17,8 @@ $routes->get('/upcoming-collection', 'Home::upcomingCollectionCron');
 $routes->get('/get-all-enquiry', 'Home::getAllEnquiry');
 $routes->get('/get-analytics', 'Home::getAnalytics');
 
+$routes->match(['get', 'post'], '/enquiry-migration', 'Home::enquiryMigration');
+
 $routes->match(['get', 'post'], '/wp-message', 'Home::wpMessage');
 
 /* ADMIN PANEL */
