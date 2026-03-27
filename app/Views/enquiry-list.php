@@ -57,8 +57,8 @@ $this->common_model         = new CommonModel;
                             <th>Plant</th>
                             <th>Sub Enquiry Count</th>
                             <th>Sub Enquiries</th>
-                            <!-- <th>Item Count</th> -->
-                            <!-- <th>Items</th> -->
+                            <th>Item Count</th>
+                            <th>Items</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -79,8 +79,8 @@ $this->common_model         = new CommonModel;
                                     <td><?= $enq->plant_name ?></td>
                                     <td><?= $enq->sub_enquiry_count ?></td>
                                     <td><?= $enq->sub_enquiry_nos ?></td>
-                                    <!-- <td <?= (($enq->enquiry_products_count <= 0)?'style="background-color:red;"':'') ?>><?= $enq->enquiry_products_count ?></td> -->
-                                    <!-- <td><?= $enq->enquiry_product_name_list ?></td> -->
+                                    <td <?= (($enq->enquiry_products_count <= 0)?'style="background-color:red;"':'') ?>><?= $enq->enquiry_products_count ?></td>
+                                    <td><?= $enq->enquiry_product_name_list ?></td>
                                     <td><?= $enq->enquiry_status ?></td>
                                 </tr>
                             <?php }?>
