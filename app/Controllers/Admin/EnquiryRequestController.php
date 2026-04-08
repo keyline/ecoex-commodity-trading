@@ -3012,27 +3012,27 @@ class EnquiryRequestController extends BaseController
         echo $this->layout_after_login($title, $page_name, $data);
     }
 
-    public function confirm_item_delete($id, $enq_id)
-    {
-        if (!$this->common_model->checkModuleFunctionAccess(23, 157)) {
-            $data['action']             = 'Access Forbidden';
-            $title                      = $data['action'] . ' ' . $this->data['title'];
-            $page_name                  = 'access-forbidden';
-            echo $this->layout_after_login($title, $page_name, $data);
-            exit;
-        }
-         $id                         = decoded($id);   
-         $enq_id                     = decoded($enq_id);     
+    // public function confirm_item_delete($id, $enq_id)
+    // {
+    //     if (!$this->common_model->checkModuleFunctionAccess(23, 157)) {
+    //         $data['action']             = 'Access Forbidden';
+    //         $title                      = $data['action'] . ' ' . $this->data['title'];
+    //         $page_name                  = 'access-forbidden';
+    //         echo $this->layout_after_login($title, $page_name, $data);
+    //         exit;
+    //     }
+    //      $id                         = decoded($id);   
+    //      $enq_id                     = decoded($enq_id);     
         
-        // DELETE ROW FROM ecomm_company_items TABLE
-        $query = $this->db->table('ecomm_enquiry_products')
-                ->where('product_id', $id)
-                ->delete();
-        // echo $query; die;
+    //     // DELETE ROW FROM ecomm_company_items TABLE
+    //     $query = $this->db->table('ecomm_enquiry_products')
+    //             ->where('product_id', $id)
+    //             ->delete();
+    //     // echo $query; die;
 
-        $this->session->setFlashdata('success_message', $this->data['title'] . ' deleted successfully');
-        return redirect()->to('/admin/' . $this->data['controller_route'] . '/enquiry-details/' . encoded($enq_id));
-    }
+    //     $this->session->setFlashdata('success_message', $this->data['title'] . ' deleted successfully');
+    //     return redirect()->to('/admin/' . $this->data['controller_route'] . '/enquiry-details/' . encoded($enq_id));
+    // }
 
     public function approveVendorQuit($enq_id, $vendor_id)
     {
