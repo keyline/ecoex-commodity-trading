@@ -731,7 +731,7 @@ $request_edit_fields = [
                                                                             <span><a href="?= base_url('admin/' . $controller_route . '/enquiry-item/delete/' . encoded($getItem->id) . '/'. encoded($row->id)) ?>" class="badge  bg-danger btn-sm" title="Delete ?= $title ?>" onclick="return confirm('Do You Want To Delete This ?= $title ?>');"><i class="fa fa-trash"></i> Delete</a></span>
                                                                             ?php } ?> -->
                                                                     </td>
-                                                                <?php endif; ?>
+                                                                <?php //endif; ?>
                                                             </tr>
                                                     <?php }
                                                     } ?>
