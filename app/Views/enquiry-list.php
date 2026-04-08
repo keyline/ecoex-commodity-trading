@@ -66,7 +66,7 @@ $this->common_model         = new CommonModel;
                         <?php
                         $sl=1;
                         if($enqs){ foreach($enqs as $enq){
-                            if($enq->enquiry_products_count <= 0){
+                            // if($enq->enquiry_products_count <= 0){
                         ?>
                                 <tr>
                                     <td><?= $sl++ ?></td>
@@ -79,7 +79,7 @@ $this->common_model         = new CommonModel;
                                     <td><?= $enq->enquiry_product_name_list ?></td>
                                     <td><?= $enq->enquiry_status ?></td>
                                 </tr>
-                            <?php }?>
+                            <?php //}?>
                         <?php } }?>
                     </tbody>
                 </table>
