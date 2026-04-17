@@ -3021,8 +3021,11 @@ class EnquiryRequestController extends BaseController
             echo $this->layout_after_login($title, $page_name, $data);
             exit;
         }
-         $item_id                       = decoded($id);   
-         $enq_id                        = decoded($enq_id);     
+        
+        $item_id                       = decoded($id);   
+        $enq_id                        = decoded($enq_id);
+
+        echo $item_id . ' || ' . $enq_id;die;
         
         // DELETE ROW FROM ecomm_company_items TABLE
         // $query = $this->db->table('ecomm_enquiry_products')
