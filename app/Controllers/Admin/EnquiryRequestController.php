@@ -2775,6 +2775,7 @@ class EnquiryRequestController extends BaseController
         $data['enquiryProducts'] = $this->db->table('ecomm_enquiry_products ep')
             // ->join("($subQuery) AS sub", 'ep.id = sub.id')
             ->where('enq_id', $enq_id)
+            ->where('status', 1)
             ->get()
             ->getResult();
 
