@@ -3025,15 +3025,7 @@ class EnquiryRequestController extends BaseController
         $item_id                       = decoded($id);   
         $enq_id                        = decoded($enq_id);
 
-        echo $item_id . ' || ' . $enq_id;die;
-        
-        // DELETE ROW FROM ecomm_company_items TABLE
-        // $query = $this->db->table('ecomm_enquiry_products')
-        //         ->where('product_id', $id)
-        //         ->delete();
-        // echo $query; die;
-        $this->db->query("UPDATE ecomm_enquiry_products SET status = 3 WHERE enq_id = '$enq_id' AND product_id = '$item_id'");
-        
+        $this->db->query("UPDATE ecomm_enquiry_products SET status = 3 WHERE enq_id = '$enq_id' AND product_id = '$item_id'");        
 
         $this->session->setFlashdata('success_message', $this->data['title'] . ' deleted successfully');
         return redirect()->to('/admin/' . $this->data['controller_route'] . '/enquiry-details/' . encoded($enq_id));
