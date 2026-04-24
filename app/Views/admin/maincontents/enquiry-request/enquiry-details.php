@@ -1178,6 +1178,13 @@ $request_edit_fields = [
                                                                                     'field'               => 'id',
                                                                                     'field_table_master'  => 'vendor_id',
                                                                                     'type'                => 'left'      // or 'inner' if you only want matching vendors
+                                                                                ],
+                                                                                [
+                                                                                    'table'               => 'ecomm_enquiry_products',
+                                                                                    'table_master'        => 'ecomm_sub_enquires',
+                                                                                    'field'               => 'enq_id',
+                                                                                    'field_table_master'  => 'enq_id',
+                                                                                    'type'                => 'left'      // or 'inner' if you only want matching vendors
                                                                                 ]
                                                                             ];
 
@@ -1185,7 +1192,7 @@ $request_edit_fields = [
                                                                             $select = 'ecomm_sub_enquires.*, ecomm_users.company_name';
 
 
-                                                                            $where = ['sub_enquiry_no' => $sub_enquiry_no];
+                                                                            $where = ['sub_enquiry_no' => $sub_enquiry_no, 'ecomm_enquiry_products.status' => 1];
 
 
                                                                             $materialWeights = $common_model->find_data(
@@ -1195,22 +1202,15 @@ $request_edit_fields = [
                                                                                 $select,                // select
                                                                                 $join                   // join
                                                                             );
-                                                                            // echo "<pre>";
-                                                                            // print_r($materialWeights);die;
                                                                             ?>
                                                                             <?php if ($materialWeights) {
                                                                                 $sl = 1;
                                                                                 foreach ($materialWeights as $materialWeight) {
                                                                             ?>
                                                                                     <?php
-                                                                                    // var_dump($materialWeight->company_name);
-                                                                                    // var_dump($materialWeight->material_weighing_edit_vendor_attempts);
                                                                                     $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $materialWeight->item_id], 'item_name_ecoex,hsn,alias_name,billing_name');
                                                                                     ?>
-
-
                                                                                     <tr>
-
                                                                                         <td><?= $sl++ ?></td>
                                                                                         <td><?= (($getItem) ? $getItem->item_name_ecoex : '') ?></td>
                                                                                         <td><?= (($getItem) ? $getItem->alias_name : '') ?></td>
@@ -1236,7 +1236,6 @@ $request_edit_fields = [
                                                                                                 } ?>
                                                                                             </div>
                                                                                         </td>
-
                                                                                     </tr>
                                                                             <?php }
                                                                             } ?>
