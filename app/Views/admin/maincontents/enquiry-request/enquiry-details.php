@@ -1206,7 +1206,7 @@ $request_edit_fields = [
                                                                                     if($getEnqItemCount > 0){
                                                                                     ?>
                                                                                         <tr>
-                                                                                            <td><?= $sl++ ?> || <?=$getEnqItemCount?> || <?=$materialWeight->item_id?></td>
+                                                                                            <td><?= $sl++ ?></td>
                                                                                             <td><?= (($getItem) ? $getItem->item_name_ecoex : '') ?></td>
                                                                                             <td><?= (($getItem) ? $getItem->alias_name : '') ?></td>
                                                                                             <td><?= (($getItem) ? $getItem->billing_name : '') ?></td>
