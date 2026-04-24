@@ -1178,13 +1178,6 @@ $request_edit_fields = [
                                                                                     'field'               => 'id',
                                                                                     'field_table_master'  => 'vendor_id',
                                                                                     'type'                => 'left'      // or 'inner' if you only want matching vendors
-                                                                                ],
-                                                                                [
-                                                                                    'table'               => 'ecomm_enquiry_products',
-                                                                                    'table_master'        => 'ecomm_sub_enquires',
-                                                                                    'field'               => 'enq_id',
-                                                                                    'field_table_master'  => 'enq_id',
-                                                                                    'type'                => 'inner'      // or 'inner' if you only want matching vendors
                                                                                 ]
                                                                             ];
 
@@ -1192,7 +1185,7 @@ $request_edit_fields = [
                                                                             $select = 'ecomm_sub_enquires.*, ecomm_users.company_name';
 
 
-                                                                            $where = ['sub_enquiry_no' => $sub_enquiry_no, 'ecomm_enquiry_products.status' => 1];
+                                                                            $where = ['sub_enquiry_no' => $sub_enquiry_no];
 
 
                                                                             $materialWeights = $common_model->find_data(
@@ -1209,34 +1202,37 @@ $request_edit_fields = [
                                                                             ?>
                                                                                     <?php
                                                                                     $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $materialWeight->item_id], 'item_name_ecoex,hsn,alias_name,billing_name');
+                                                                                    $getEnqItemCount = $common_model->find_data('ecomm_enquiry_products', 'count', ['product_id' => $materialWeight->item_id, 'status' => 1]);
+                                                                                    if($getEnqItemCount > 0){
                                                                                     ?>
-                                                                                    <tr>
-                                                                                        <td><?= $sl++ ?></td>
-                                                                                        <td><?= (($getItem) ? $getItem->item_name_ecoex : '') ?></td>
-                                                                                        <td><?= (($getItem) ? $getItem->alias_name : '') ?></td>
-                                                                                        <td><?= (($getItem) ? $getItem->billing_name : '') ?></td>
-                                                                                        <td>
-                                                                                            <span class="weight-label"><?= $materialWeight->weighted_qty ?></span>
-                                                                                            <input type="text" name="weighted_qty[]" class="form-control weight-value" value="<?= $materialWeight->weighted_qty ?>" style="display: none;">
-                                                                                            <?= $materialWeight->weighted_unit ?>
-                                                                                        </td>
-                                                                                        <td><?= (($materialWeight->material_weight_vendor_date != '') ? date_format(date_create($materialWeight->material_weight_vendor_date), "M d, Y h:i A") : '') ?></td>
-                                                                                        <td><?= (($materialWeight->material_weight_plant_date != '') ? date_format(date_create($materialWeight->material_weight_plant_date), "M d, Y h:i A") : '') ?></td>
-                                                                                        <td>
-                                                                                            <div class="row">
-                                                                                                <?php
-                                                                                                $material_weighing_slips = json_decode($materialWeight->material_weighing_slips);
-                                                                                                ?>
-                                                                                                <?php if ($material_weighing_slips) {
-                                                                                                    for ($v = 0; $v < count($material_weighing_slips); $v++) { ?>
-                                                                                                        <div class="col-md-6 popup_gallery">
-                                                                                                            <a href="<?= getenv('app.uploadsURL') . 'enquiry/' . $material_weighing_slips[$v] ?>" download><img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $material_weighing_slips[$v] ?>" class="img-thumbnail" style="height:100px;width: 100px;"></a>
-                                                                                                        </div>
-                                                                                                <?php }
-                                                                                                } ?>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                    </tr>
+                                                                                        <tr>
+                                                                                            <td><?= $sl++ ?></td>
+                                                                                            <td><?= (($getItem) ? $getItem->item_name_ecoex : '') ?></td>
+                                                                                            <td><?= (($getItem) ? $getItem->alias_name : '') ?></td>
+                                                                                            <td><?= (($getItem) ? $getItem->billing_name : '') ?></td>
+                                                                                            <td>
+                                                                                                <span class="weight-label"><?= $materialWeight->weighted_qty ?></span>
+                                                                                                <input type="text" name="weighted_qty[]" class="form-control weight-value" value="<?= $materialWeight->weighted_qty ?>" style="display: none;">
+                                                                                                <?= $materialWeight->weighted_unit ?>
+                                                                                            </td>
+                                                                                            <td><?= (($materialWeight->material_weight_vendor_date != '') ? date_format(date_create($materialWeight->material_weight_vendor_date), "M d, Y h:i A") : '') ?></td>
+                                                                                            <td><?= (($materialWeight->material_weight_plant_date != '') ? date_format(date_create($materialWeight->material_weight_plant_date), "M d, Y h:i A") : '') ?></td>
+                                                                                            <td>
+                                                                                                <div class="row">
+                                                                                                    <?php
+                                                                                                    $material_weighing_slips = json_decode($materialWeight->material_weighing_slips);
+                                                                                                    ?>
+                                                                                                    <?php if ($material_weighing_slips) {
+                                                                                                        for ($v = 0; $v < count($material_weighing_slips); $v++) { ?>
+                                                                                                            <div class="col-md-6 popup_gallery">
+                                                                                                                <a href="<?= getenv('app.uploadsURL') . 'enquiry/' . $material_weighing_slips[$v] ?>" download><img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $material_weighing_slips[$v] ?>" class="img-thumbnail" style="height:100px;width: 100px;"></a>
+                                                                                                            </div>
+                                                                                                    <?php }
+                                                                                                    } ?>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    <?php }?>
                                                                             <?php }
                                                                             } ?>
                                                                             <?php if ($subenquiry->is_plant_ecoex_confirm <= 0) { ?>
