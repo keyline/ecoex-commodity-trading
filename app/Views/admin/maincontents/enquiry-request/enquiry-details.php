@@ -1184,7 +1184,7 @@ $request_edit_fields = [
                                                                                     'table_master'        => 'ecomm_sub_enquires',
                                                                                     'field'               => 'enq_id',
                                                                                     'field_table_master'  => 'enq_id',
-                                                                                    'type'                => 'left'      // or 'inner' if you only want matching vendors
+                                                                                    'type'                => 'inner'      // or 'inner' if you only want matching vendors
                                                                                 ]
                                                                             ];
 
