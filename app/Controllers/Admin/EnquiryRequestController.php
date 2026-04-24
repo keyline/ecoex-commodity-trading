@@ -340,7 +340,7 @@ class EnquiryRequestController extends BaseController
 
                 $join2[0]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'table' => 'ecomm_company_items', 'field' => 'id', 'type' => 'LEFT'];
                 $join2[1]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'table' => 'ecomm_units', 'field' => 'id', 'type' => 'INNER'];
-                $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id, 'ecomm_company_items.status' => 1], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name, ecomm_company_items.price_range as price_range', $join2);
+                $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id, 'ecomm_company_items.status' => 1, 'ecomm_enquiry_products.status' => 1], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name, ecomm_company_items.price_range as price_range', $join2);
                 
                 $itemNameArray = [];
                 $quantityArray = [];
@@ -517,7 +517,7 @@ class EnquiryRequestController extends BaseController
 
         $join2[0]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'table' => 'ecomm_company_items', 'field' => 'id', 'type' => 'LEFT'];
         $join2[1]            = ['table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'table' => 'ecomm_units', 'field' => 'id', 'type' => 'INNER'];
-        $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id, 'ecomm_company_items.status' => 1], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name, ecomm_company_items.price_range as price_range', $join2);
+        $getEnquiryItems    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.enq_id' => $enquiry_id, 'ecomm_company_items.status' => 1, 'ecomm_enquiry_products.status' => 1], 'ecomm_units.name as unit_name, ecomm_enquiry_products.qty as qty, ecomm_company_items.item_name_ecoex as item_name, ecomm_company_items.price_range as price_range', $join2);
         
         $itemNameArray = [];
         $quantityArray = [];
@@ -1229,7 +1229,7 @@ class EnquiryRequestController extends BaseController
         $enq_id             = $requestData['enq_id'];
         $getEnquiry         = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
         $modalHeader        = '<b>Enquiry Request Images : ' . (($getEnquiry) ? $getEnquiry->enquiry_no : '') . '</b>';
-        $enqImages          = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id], 'new_product_image');
+        $enqImages          = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id, 'status' => 1], 'new_product_image');
         $enquiryImages      = [];
         if ($enqImages) {
             foreach ($enqImages as $enqImage) {
@@ -1278,7 +1278,7 @@ class EnquiryRequestController extends BaseController
         $data['vendor']             = $this->data['model']->find_data('ecomm_users', 'row', ['id' => $vendor_id], 'id,company_name');
         $data['moduleDetail']       = $this->data;
         $data['enquiryStatus']      = (($data['row']) ? $data['row']->status : 1);
-        $data['enquiryProducts']    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id]);
+        $data['enquiryProducts']    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id, 'status' => 1]);
         $data['enquiryPendingProducts']    = $this->data['model']->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id, 'status' => 0]);
 
         $company_id                 = $data['row']->company_id;
@@ -1296,7 +1296,7 @@ class EnquiryRequestController extends BaseController
         $data['avlVendors']         = $this->data['model']->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1], 'id,company_name', '', '', $order_by);
 
         $data['sharedVendors']      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'array', ['enq_id' => $enq_id]);
-        $data['enquiryItems']       = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id]);
+        $data['enquiryItems']       = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id, 'status' => 1]);
 
         $title                      = 'View Quotation Logs Of ' . (($data['vendor']) ? $data['vendor']->company_name : '') . ' Within ' . $data['row']->enquiry_no;
         $page_name                  = 'enquiry-request/view-quotation-logs';
@@ -1319,7 +1319,7 @@ class EnquiryRequestController extends BaseController
         $data['item_id']            = $item_id;
 
         $getEnquiry                 = $this->data['model']->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
-        $getEnquiryProductCount     = $this->data['model']->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $enq_id]);
+        $getEnquiryProductCount     = $this->data['model']->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $enq_id, 'status' => 1]);
         $getProduct                 = $this->data['model']->find_data('ecomm_company_items', 'row', ['id' => $item_id], 'id,item_name_ecoex');
         $getVendor                  = $this->data['model']->find_data('ecomm_users', 'row', ['id' => $vendor_id], 'id,company_name');
         $enquiry_no                 = (($getEnquiry) ? $getEnquiry->enquiry_no : '');
