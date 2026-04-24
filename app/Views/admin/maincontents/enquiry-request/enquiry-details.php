@@ -1202,7 +1202,7 @@ $request_edit_fields = [
                                                                             ?>
                                                                                     <?php
                                                                                     $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $materialWeight->item_id], 'item_name_ecoex,hsn,alias_name,billing_name');
-                                                                                    $getEnqItemCount = $common_model->find_data('ecomm_enquiry_products', 'count', ['product_id' => $materialWeight->item_id, 'status' => 1]);
+                                                                                    $getEnqItemCount = $common_model->find_data('ecomm_enquiry_products', 'count', ['product_id' => $materialWeight->item_id, 'status' => 1, 'enq_id' => $materialWeight->enq_id]);
                                                                                     if($getEnqItemCount > 0){
                                                                                     ?>
                                                                                         <tr>
