@@ -55,8 +55,8 @@ $userType           = $session->user_type;
                                             if ($rows[0]->status >= 11 && $rows[0]->status <= 12) { ?><th>Ecoex Payment<br>Approve Status<br>HO Approve<br>Enquiry Complete</th>?php }
                                             } ?> -->
                                         <?php if ($rows) {
-                                            if ($rows[0]->status >= 10) { ?><th>Ecoex Payment<br>Approve Status<br>HO Approve<br>Enquiry Complete</th><?php }
-                                                                                                                                                } ?>
+                                            if ($rows[0]->status >= 10) { ?><th>Ecoex Payment<br>Approve Status<br>HO Approve<br>Enquiry Complete</th>
+                                        <?php } } ?>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
