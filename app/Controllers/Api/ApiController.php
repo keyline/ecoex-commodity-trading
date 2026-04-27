@@ -733,9 +733,9 @@ class ApiController extends BaseController
             $orderBy[0] = ['field' => 'ecomm_enquires.id', 'type' => 'DESC'];
             
             if($selected_scrap != ''){
-                $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status<=' => 12, 'ecomm_company_items.item_name_ecoex' => $selected_scrap], 'ecomm_enquires.plant_id,ecomm_users.state', $join, $groupBy, $orderBy);
+                $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status<=' => 12, 'ecomm_company_items.item_name_ecoex' => $selected_scrap, 'ecomm_enquiry_products.status' => 1], 'ecomm_enquires.plant_id,ecomm_users.state', $join, $groupBy, $orderBy);
             } else {
-                $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status<=' => 6], 'ecomm_enquires.plant_id,ecomm_users.state', $join, $groupBy, $orderBy);
+                $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status<=' => 6, 'ecomm_enquiry_products.status' => 1], 'ecomm_enquires.plant_id,ecomm_users.state', $join, $groupBy, $orderBy);
             }
 
             $response = [];
