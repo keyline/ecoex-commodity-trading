@@ -726,6 +726,9 @@ class ApiController extends BaseController
         if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
             $selected_scrap = $requestData['selected_scrap'];
 
+            $startOfLastWeek    = date('Y-m-d', strtotime('monday last week'));
+            $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));
+
             $groupBy[0] = 'ecomm_users.state';
             $join[0]  = ['table' => 'ecomm_users', 'field' => 'id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'plant_id', 'type' => 'INNER'];
             $join[1]  = ['table' => 'ecomm_enquiry_products', 'field' => 'enq_id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'id', 'type' => 'INNER'];
