@@ -246,7 +246,7 @@ class ApiController extends BaseController
             $startOfLastLastWeek    = date('Y-m-d', strtotime($givenDate . ' -21 days'));
             $endOfLastLastWeek    = date('Y-m-d', strtotime($givenDate2 . ' -21 days'));
 
-            echo $startOfLastWeek . ' || ' . $endOfLastWeek;die;
+            // echo $startOfLastWeek . ' || ' . $endOfLastWeek;die;
 
             // $this->db = \Config\Database::connect();
             // echo $this->db->getLastQuery();
