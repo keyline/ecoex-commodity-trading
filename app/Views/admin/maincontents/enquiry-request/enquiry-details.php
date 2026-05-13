@@ -1141,7 +1141,9 @@ $request_edit_fields = [
                                                                             <?php endif; ?>
 
                                                                             <td class="key">
-                                                                                <span><?= $vendor->company_name ?> (vendor)</span>
+                                                                                <?php if($userType != 'COMPANY'){?>
+                                                                                    <span><?= $vendor->company_name ?> (vendor)</span>
+                                                                                <?php }?>
 
                                                                                 <?php if ($vendor->material_weighing_edit_vendor == 1) { ?>
                                                                                     <a href="<?= base_url('admin/enquiry-requests/material-weighted-access/' . encoded($enq_id) . '/' . encoded($vendor->vendor_id)) ?>" title="Access Open" onclick="return confirm('Do you want to access close of weighted info submit for this vendor ?');"><i class="fas fa-unlock text-success"></i></a>
