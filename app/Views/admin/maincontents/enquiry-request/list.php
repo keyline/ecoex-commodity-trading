@@ -230,7 +230,7 @@ $userType           = $session->user_type;
                                                         <?php } ?>
                                                         <?php if (!empty($certificateData['status'])): ?>
                                                             </br>
-                                                            <h6 class="badge bg-info mt-2"><i class="fa fa-certificate"></i> <?= ucfirst($certificateData['status']); ?></h6>
+                                                            <!-- <h6 class="badge bg-info mt-2"><i class="fa fa-certificate"></i> <?= ucfirst($certificateData['status']); ?></h6> -->
                                                         <?php endif; ?>
                                                         <p><?= (($row->accepted_date != '') ? date_format(date_create($row->accepted_date), "M d, Y h:i A") : '') ?></p>
                                                         
