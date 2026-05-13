@@ -207,7 +207,7 @@ $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
 $userType           = $session->user_type;
 
-pr(session()->get());die;
+// pr(session()->get());die;
 
 $request_edit_fields = [
     'item_name' => 'Item Name',
