@@ -143,6 +143,7 @@ $userType           = $session->user_type;
                                                         <!-- ?php } else { ?>
                                                             <h6 class="badge bg-warning">PENDING</h6>
                                                         ?php } ?> -->
+                                                        
                                                     </td>
                                                 <?php } ?>
                                                 <td>
