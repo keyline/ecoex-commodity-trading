@@ -1150,10 +1150,12 @@ $request_edit_fields = [
                                                                                 <?php } else { ?>
                                                                                     <a href="<?= base_url('admin/enquiry-requests/material-weighted-access/' . encoded($enq_id) . '/' . encoded($vendor->vendor_id)) ?>" title="Access Close" onclick="return confirm('Do you want to access open weighted info submit for this vendor ?');"><i class="fas fa-lock text-danger"></i></a>
                                                                                 <?php } ?>
-
-                                                                                <p>
-                                                                                    <a class="badge bg-success"><small>Submitted : <?= $vendor->submitted_times ?> time(s)</small></a>
-                                                                                </p>
+                                                                                
+                                                                                <?php if($userType != 'COMPANY'){?>
+                                                                                    <p>
+                                                                                        <a class="badge bg-success"><small>Submitted : <?= $vendor->submitted_times ?> time(s)</small></a>
+                                                                                    </p>
+                                                                                <?php }?>
                                                                             </td>
                                                                         <?php endforeach; ?>
                                                                             </tr>
