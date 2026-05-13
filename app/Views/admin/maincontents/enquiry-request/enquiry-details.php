@@ -697,7 +697,7 @@ $request_edit_fields = [
                                                                 <td>
                                                                     <?php
 
-                                                                    $unit               = $common_model->find_data('ecomm_units', 'row', ['id' => $getItem->unit], 'name');
+                                                                    $unit               = $common_model->find_data('ecomm_units', 'row', ['id' => (($getItem)?$getItem->unit:0)], 'name');
                                                                     echo (($unit) ? $unit->name : '');
                                                                     ?>
                                                                 </td>
