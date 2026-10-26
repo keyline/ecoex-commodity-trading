@@ -61,6 +61,11 @@ class App extends BaseConfig
     public string $uriProtocol = 'REQUEST_URI';
 
     /**
+     * Allowed URI characters. Include padding used by existing Base64 ID links.
+     */
+    public string $permittedURIChars = 'a-z 0-9~%.:_\-=';
+
+    /**
      * --------------------------------------------------------------------------
      * Default Locale
      * --------------------------------------------------------------------------
