@@ -61,6 +61,11 @@ class App extends BaseConfig
     public string $uriProtocol = 'REQUEST_URI';
 
     /**
+     * Allowed characters in URI segments (regular expression character group).
+     */
+    public string $permittedURIChars = 'a-z 0-9~%.:_\-';
+
+    /**
      * --------------------------------------------------------------------------
      * Default Locale
      * --------------------------------------------------------------------------
