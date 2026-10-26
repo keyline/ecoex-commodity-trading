@@ -11,7 +11,7 @@ class User extends BaseController
     /* authentication */
         public function login()
         {
-            if ($this->request->getMethod() == 'post') {
+            if ($this->request->is('post')) {
                 $input = $this->validate([
                     'username' => 'required',
                     'password' => 'required|min_length[6]'

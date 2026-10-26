@@ -635,22 +635,49 @@ class Home extends BaseController
             * 2. IMAGE UPLOAD
             * ------------------------------- */
             // $uploadPath = FCPATH . 'uploads/wp_image/';
-            $uploadPath = getenv('app.uploadsURL'). 'wp_image/';
+            // $uploadPath = getenv('app.uploadsURL'). 'wp_image/';
 
-            if (!is_dir($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
+            // if (!is_dir($uploadPath)) {
+            //     mkdir($uploadPath, 0755, true);
+            // }
+
+            // $newName = time() . '_' . $image->getRandomName();
+            // $image->move($uploadPath, $newName);
+
+            // if (!$image->hasMoved()) {
+            //     return redirect()->back()->with('error', 'Image upload failed');
+            // }
+
+            // // $imageUrl  = base_url('uploads/wp_image/' . $newName);
+            // $imageUrl  = getenv('app.uploadsURL').'wp_image/' . $newName;
+            // $imageName = $newName;
+
+            $fileName = $_FILES['image']['name'];
+
+            $upload = $this->common_model->upload_single_file(
+                'image',        // input field name
+                $fileName,      // original file name
+                'wp_image',     // folder inside public/uploads/
+                'image'         // upload type
+            );
+
+            if ($upload['status'] == 1) {
+
+                // SUCCESS
+                $imageName = $upload['newFilename'];
+
+                // save to DB example
+                $data = [
+                    'image' => $imageName
+                ];
+
+                // $this->common_model->insert_data('table_name', $data);
+
+            } else {
+
+                // ERROR
+                return redirect()->back()->with('error', $upload['message']);
             }
-
-            $newName = time() . '_' . $image->getRandomName();
-            $image->move($uploadPath, $newName);
-
-            if (!$image->hasMoved()) {
-                return redirect()->back()->with('error', 'Image upload failed');
-            }
-
-            // $imageUrl  = base_url('uploads/wp_image/' . $newName);
-            $imageUrl  = getenv('app.uploadsURL').'wp_image/' . $newName;
-            $imageName = $newName;
 
 
 
