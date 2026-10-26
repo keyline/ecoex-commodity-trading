@@ -375,7 +375,7 @@ class ApiController extends BaseController
             // Final array with average price
             $final = [];
             foreach ($result as $item) {
-                $average_price = round($item['total_price'] / $item['count'], 2);
+                $average_price = (($item['total_price'] != '' && $item['count'] > 0)?round((float) $item['total_price'] / (float)$item['count'], 2):0);
                 if($average_price > 0){
                     $final[] = [
                         'icon'                                  => $item['icon'],
@@ -393,11 +393,11 @@ class ApiController extends BaseController
             /* top 10 transactions qty */
             $groupBy[0] = 'ecomm_enquiry_products.product_id';
             $join['0']  = ['table' => 'ecomm_company_items', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'product_id', 'type' => 'INNER'];
-            $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.product_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
+            $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek, 'ecomm_enquiry_products.status' => 1], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.product_id, ecomm_company_items.item_name_ecoex', $join, $groupBy);
 
             $groupBy[0] = 'ecoex_companies.state';
             $join['0']  = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'company_id', 'type' => 'INNER'];
-            $getEnquiryStates = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.company_id, ecoex_companies.state', $join, $groupBy);
+            $getEnquiryStates = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek, 'ecomm_enquiry_products.status' => 1], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.company_id, ecoex_companies.state', $join, $groupBy);
 
             $state_wise_item = [];
             if ($getEnquiryStates) {
@@ -421,7 +421,7 @@ class ApiController extends BaseController
                             }
 
                             $join['0']          = ['table' => 'ecoex_companies', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'company_id', 'type' => 'INNER'];
-                            $getTotalQty        = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek, 'ecomm_enquiry_products.product_id' => $product_id, 'ecoex_companies.state' => $state_name], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.qty, ecomm_enquiry_products.unit', $join);
+                            $getTotalQty        = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquiry_products.created_at>=' => $startOfLastWeek, 'ecomm_enquiry_products.created_at<=' => $endOfLastWeek, 'ecomm_enquiry_products.product_id' => $product_id, 'ecoex_companies.state' => $state_name, 'ecomm_enquiry_products.status' => 1], 'ecomm_enquiry_products.sl_no, ecomm_enquiry_products.qty, ecomm_enquiry_products.unit', $join);
 
                             // $this->db = \Config\Database::connect();
                             // echo $this->db->getLastQuery();
@@ -651,7 +651,7 @@ class ApiController extends BaseController
                     $join[0]  = ['table' => 'ecomm_enquires', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'enq_id', 'type' => 'INNER'];
                     $join[1]  = ['table' => 'ecomm_users', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'plant_id', 'type' => 'INNER'];
                     $join[2]  = ['table' => 'ecomm_units', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'type' => 'INNER'];
-                    $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquires.status' => 0, 'ecomm_users.state' => $requestNotSubmittedEnquiry->state], 'ecomm_users.state, ecomm_enquiry_products.product_id, ecomm_enquiry_products.new_product_name, ecomm_enquiry_products.qty, ecomm_units.name as unit_name,ecomm_enquiry_products.new_product_image, ecomm_enquiry_products.id as enquiry_product_id', $join, '', $orderBy);
+                    $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquires.status' => 0, 'ecomm_users.state' => $requestNotSubmittedEnquiry->state, 'ecomm_enquiry_products.status' => 1], 'ecomm_users.state, ecomm_enquiry_products.product_id, ecomm_enquiry_products.new_product_name, ecomm_enquiry_products.qty, ecomm_units.name as unit_name,ecomm_enquiry_products.new_product_image, ecomm_enquiry_products.id as enquiry_product_id', $join, '', $orderBy);
                     
                     $scraps = [];
                     if($getEnquiryItems){
@@ -726,6 +726,9 @@ class ApiController extends BaseController
         if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
             $selected_scrap = $requestData['selected_scrap'];
 
+            $startOfLastWeek    = date('Y-m-d', strtotime('monday last week'));
+            $endOfLastWeek      = date('Y-m-d', strtotime('sunday last week'));
+
             $groupBy[0] = 'ecomm_users.state';
             $join[0]  = ['table' => 'ecomm_users', 'field' => 'id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'plant_id', 'type' => 'INNER'];
             $join[1]  = ['table' => 'ecomm_enquiry_products', 'field' => 'enq_id', 'table_master' => 'ecomm_enquires', 'field_table_master' => 'id', 'type' => 'INNER'];
@@ -733,9 +736,9 @@ class ApiController extends BaseController
             $orderBy[0] = ['field' => 'ecomm_enquires.id', 'type' => 'DESC'];
             
             if($selected_scrap != ''){
-                $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status<=' => 12, 'ecomm_company_items.item_name_ecoex' => $selected_scrap], 'ecomm_enquires.plant_id,ecomm_users.state', $join, $groupBy, $orderBy);
+                $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status<=' => 12, 'ecomm_company_items.item_name_ecoex' => $selected_scrap, 'ecomm_enquiry_products.status' => 1], 'ecomm_enquires.plant_id,ecomm_users.state', $join, $groupBy, $orderBy);
             } else {
-                $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status<=' => 6], 'ecomm_enquires.plant_id,ecomm_users.state', $join, $groupBy, $orderBy);
+                $requestNotSubmittedEnquiries = $this->common_model->find_data('ecomm_enquires', 'array', ['ecomm_enquires.status<=' => 6, 'ecomm_enquiry_products.status' => 1], 'ecomm_enquires.plant_id,ecomm_users.state', $join, $groupBy, $orderBy);
             }
 
             $response = [];
@@ -745,7 +748,7 @@ class ApiController extends BaseController
                     $join[0]  = ['table' => 'ecomm_enquires', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'enq_id', 'type' => 'INNER'];
                     $join[1]  = ['table' => 'ecomm_users', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'plant_id', 'type' => 'INNER'];
                     $join[2]  = ['table' => 'ecomm_units', 'field' => 'id', 'table_master' => 'ecomm_enquiry_products', 'field_table_master' => 'unit', 'type' => 'INNER'];
-                    $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquires.status<=' => 12, 'ecomm_users.state' => $requestNotSubmittedEnquiry->state], 'ecomm_users.state, ecomm_enquiry_products.product_id, ecomm_enquiry_products.new_product_name, ecomm_enquiry_products.qty, ecomm_units.name as unit_name,ecomm_enquiry_products.new_product_image, ecomm_enquiry_products.id as enquiry_product_id', $join, '', $orderBy);
+                    $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['ecomm_enquires.status<=' => 12, 'ecomm_users.state' => $requestNotSubmittedEnquiry->state, 'ecomm_enquiry_products.status' => 1], 'ecomm_users.state, ecomm_enquiry_products.product_id, ecomm_enquiry_products.new_product_name, ecomm_enquiry_products.qty, ecomm_units.name as unit_name,ecomm_enquiry_products.new_product_image, ecomm_enquiry_products.id as enquiry_product_id', $join, '', $orderBy);
                     
                     $scraps = [];
                     if($getEnquiryItems){
@@ -2792,14 +2795,14 @@ class ApiController extends BaseController
                 $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
                 $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
                 if ($getUser) {
-                    $assignItems = $this->common_model->find_data('ecomm_company_items', 'array', ['company_id' => $getUser->parent_id, 'status' => 1, 'is_approved' => 1], 'id,alias_name,hsn,unit');
+                    $assignItems = $this->common_model->find_data('ecomm_company_items', 'array', ['company_id' => $getUser->parent_id, 'status' => 1, 'is_approved' => 1], 'id,item_name_ecoex,hsn,unit');
                     // pr($assignCategory);
                     if ($assignItems) {
                         foreach ($assignItems as $assignItem) {
                             $getUnit       = $this->common_model->find_data('ecomm_units', 'row', ['status' => 1, 'id' => $assignItem->unit], 'id,name');
                             $apiResponse[]        = [
                                 'id'            => $assignItem->id,
-                                'name'          => $assignItem->alias_name,
+                                'name'          => $assignItem->item_name_ecoex,
                                 'hsn'           => $assignItem->hsn,
                                 'unit_name'     => (($getUnit) ? $getUnit->name : ''),
                             ];
@@ -3304,7 +3307,7 @@ class ApiController extends BaseController
                     if ($rows) {
                         foreach ($rows as $row) {
                             $status_name = '';
-                            $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
+                            $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status' => 1]);
 
                             if ($row->status == 0) {
                                 $enquiryStatus = 'Request Submitted';
@@ -3337,7 +3340,7 @@ class ApiController extends BaseController
                             }
 
                             $itemArray = [];
-                            $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status!=' => 3], 'product_id,new_product_name,new_product');
+                            $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status' => 1], 'product_id,new_product_name,new_product');
                             if ($enquityProducts) {
                                 foreach ($enquityProducts as $enquityProduct) {
                                     if ($enquityProduct->new_product) {
@@ -4010,7 +4013,7 @@ class ApiController extends BaseController
                     $enquiry               = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
                     if ($enquiry) {
                         $requestList = [];
-                        $enquiryProducts = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id, 'status!=' => 3]);
+                        $enquiryProducts = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id, 'status' => 1]);
                         if ($enquiryProducts) {
                             foreach ($enquiryProducts as $enquiryProduct) {
                                 if ($enquiryProduct->new_product) {
@@ -4221,7 +4224,7 @@ class ApiController extends BaseController
                                         if (array_key_exists("enq_product_id", $requestList[$k])) {
                                             // update
                                             $enq_product_id = $requestList[$k]['enq_product_id'];
-                                            $getEnquiryProductData = $this->common_model->find_data('ecomm_enquiry_products', 'row', ['id' => $enq_product_id]);
+                                            $getEnquiryProductData = $this->common_model->find_data('ecomm_enquiry_products', 'row', ['id' => $enq_product_id, 'status' => 1]);
 
                                             /* new product image */
                                             $product_image  = $requestList[$k]['product_image'];
@@ -4672,7 +4675,7 @@ class ApiController extends BaseController
                     if ($rows) {
                         foreach ($rows as $row) {
                             $getItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $row->item_id], 'item_name_ecoex,hsn');
-                            $getEnquiryItem = $this->common_model->find_data('ecomm_enquiry_products', 'row', ['product_id' => $row->item_id, 'enq_id' => $row->enq_id], 'new_product_image,qty,unit');
+                            $getEnquiryItem = $this->common_model->find_data('ecomm_enquiry_products', 'row', ['product_id' => $row->item_id, 'enq_id' => $row->enq_id, 'status' => 1], 'new_product_image,qty,unit');
                             $getUnit = $this->common_model->find_data('ecomm_units', 'row', ['id' => (($getEnquiryItem) ? $getEnquiryItem->unit : 0)], 'name');
 
                             $item_images     = [];
@@ -4688,33 +4691,36 @@ class ApiController extends BaseController
                                 }
                             }
 
-                            $getItemWeightedInfo = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no, 'item_id' => $row->item_id], 'weighted_qty,material_weighing_slips');
+                            if($getEnquiryItem){
+                                $getItemWeightedInfo = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['sub_enquiry_no' => $sub_enquiry_no, 'item_id' => $row->item_id], 'weighted_qty,material_weighing_slips');
 
-                            $materials                  = [];
-                            $weighted_qty               = (($getItemWeightedInfo) ? $getItemWeightedInfo->weighted_qty : '');
-                            $material_weighing_slips    = (($getItemWeightedInfo) ? json_decode($getItemWeightedInfo->material_weighing_slips) : []);
-                            $matImags                   = [];
-                            if (count($material_weighing_slips)) {
-                                for ($p = 0; $p < count($material_weighing_slips); $p++) {
-                                    $matImags[] = base_url('public/uploads/enquiry/' . $material_weighing_slips[$p]);
+                                $materials                  = [];
+                                $weighted_qty               = (($getItemWeightedInfo) ? $getItemWeightedInfo->weighted_qty : '');
+                                $material_weighing_slips    = (($getItemWeightedInfo) ? json_decode($getItemWeightedInfo->material_weighing_slips) : []);
+                                $matImags                   = [];
+                                if (count($material_weighing_slips)) {
+                                    for ($p = 0; $p < count($material_weighing_slips); $p++) {
+                                        $matImags[] = base_url('public/uploads/enquiry/' . $material_weighing_slips[$p]);
+                                    }
                                 }
-                            }
-                            $materials = [
-                                'actual_weight'         => (($getItemWeightedInfo) ? $getItemWeightedInfo->weighted_qty : ''),
-                                'weighing_slip_img'     => $matImags,
-                            ];
+                                $materials = [
+                                    'actual_weight'         => (($getItemWeightedInfo) ? $getItemWeightedInfo->weighted_qty : ''),
+                                    'weighing_slip_img'     => $matImags,
+                                ];
 
-                            $items[]              = [
-                                'item_id'                           => $row->item_id,
-                                'item_name'                         => (($getItem) ? $getItem->item_name_ecoex : ''),
-                                'item_hsn'                          => (($getItem) ? $getItem->hsn : ''),
-                                'item_qty'                          => (($getItemWeightedInfo) ? $getItemWeightedInfo->weighted_qty : ''),
-                                'item_unit'                         => (($getUnit) ? $getUnit->name : ''),
-                                'item_quote_price'                  => $row->win_quote_price,
-                                'item_images'                       => $item_images,
-                                'materials'                         => $materials,
-                                'is_plant_ecoex_confirm'            => $row->is_plant_ecoex_confirm,
-                            ];
+                            
+                                $items[]              = [
+                                    'item_id'                           => $row->item_id,
+                                    'item_name'                         => (($getItem) ? $getItem->item_name_ecoex : ''),
+                                    'item_hsn'                          => (($getItem) ? $getItem->hsn : ''),
+                                    'item_qty'                          => (($getItemWeightedInfo) ? $getItemWeightedInfo->weighted_qty : ''),
+                                    'item_unit'                         => (($getUnit) ? $getUnit->name : ''),
+                                    'item_quote_price'                  => $row->win_quote_price,
+                                    'item_images'                       => $item_images,
+                                    'materials'                         => $materials,
+                                    'is_plant_ecoex_confirm'            => $row->is_plant_ecoex_confirm,
+                                ];
+                            }
                         }
 
                         $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $rows[0]->enq_id]);
@@ -4780,11 +4786,11 @@ class ApiController extends BaseController
                         if ($no_of_vehicle) {
                             for ($v = 0; $v < $no_of_vehicle; $v++) {
                                 $vehImags = [];
-                                if (count($vehicleImgs[$v])) {
-                                    for ($p = 0; $p < count($vehicleImgs[$v]); $p++) {
-                                        $vehImags[] = base_url('public/uploads/enquiry/' . $vehicleImgs[$v][$p]);
-                                    }
-                                }
+                                // if (count($vehicleImgs[$v])) {
+                                //     for ($p = 0; $p < count($vehicleImgs[$v]); $p++) {
+                                //         $vehImags[] = base_url('public/uploads/enquiry/' . $vehicleImgs[$v][$p]);
+                                //     }
+                                // }
                                 $vehicles[] = [
                                     'vehicle_no'    => $vehicle_registration_nos[$v],
                                     'vehicle_img'   => $vehImags,
@@ -5138,7 +5144,7 @@ class ApiController extends BaseController
                     // echo $this->db->getLastQuery();die;
                     if ($rows) {
                         foreach ($rows as $row) {
-                            $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
+                            $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status' => 1]);
 
                             if ($row->status == 0) {
                                 $enquiryStatus = 'Request Submitted';
@@ -5171,7 +5177,7 @@ class ApiController extends BaseController
                             }
 
                             $itemArray = [];
-                            $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status!=' => 3], 'product_id,new_product_name,new_product');
+                            $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status' => 1], 'product_id,new_product_name,new_product');
                             if ($enquityProducts) {
                                 foreach ($enquityProducts as $enquityProduct) {
                                     if ($enquityProduct->new_product) {
@@ -5280,7 +5286,7 @@ class ApiController extends BaseController
                     // echo $this->db->getLastQuery();die;
                     if ($rows) {
                         foreach ($rows as $row) {
-                            $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
+                            $productCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status' => 1]);
 
                             if ($row->status == 0) {
                                 $enquiryStatus = 'Request Submitted';
@@ -5313,7 +5319,7 @@ class ApiController extends BaseController
                             }
 
                             $itemArray = [];
-                            $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status!=' => 3], 'product_id,new_product_name,new_product');
+                            $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status' => 1], 'product_id,new_product_name,new_product');
                             if ($enquityProducts) {
                                 foreach ($enquityProducts as $enquityProduct) {
                                     if ($enquityProduct->new_product) {
@@ -5484,7 +5490,7 @@ class ApiController extends BaseController
                     // $quotation_request      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId, 'status' => 1]);
 
                     $groupBy[0]             = 'sub_enquiry_no';
-                    $process_request        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['vendor_id' => $uId, 'status<=' => 10.10], '', '', $groupBy);
+                    $process_request        = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['vendor_id' => $uId, 'status<=' => 10.10, 'assigned_date!=' => ''], '', '', $groupBy);
 
                     //__________________ new rejected count _____________________
                     // $rejected_enquiry       = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'count', ['vendor_id' => $uId, 'status' => 3]);
@@ -5508,7 +5514,7 @@ class ApiController extends BaseController
                         'email'             => $getUser->email,
                         'phone'             => $getUser->phone,
                         'total_request'     => 'Total',
-                        'new_request'       => 'New Requests',
+                        'new_request'       => 'Pending Requests',
                         'quotation_request' => 'Quotation Requests',
                         'process_request'   => 'In Process Requests',
                         'rejected_request'  => 'Rejected Requests',
@@ -5605,12 +5611,12 @@ class ApiController extends BaseController
                     // echo $this->db->getLastQuery();die;
                     if ($rows) {
                         foreach ($rows as $row) {
-                            $itemCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
+                            $itemCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status' => 1]);
                             $getCompany              = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id], 'company_name');
                             $getPlant                = $this->common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
 
                             $itemArray = [];
-                            $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status!=' => 3], 'product_id,new_product_name,new_product');
+                            $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status' => 1], 'product_id,new_product_name,new_product');
                             if ($enquityProducts) {
                                 foreach ($enquityProducts as $enquityProduct) {
                                     if ($enquityProduct->new_product) {
@@ -5772,7 +5778,7 @@ class ApiController extends BaseController
                     $enquiry               = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
                     if ($enquiry) {
                         $requestList = [];
-                        $enquiryProducts = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id, 'status!=' => 3]);
+                        $enquiryProducts = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id, 'status' => 1]);
                         if ($enquiryProducts) {
                             foreach ($enquiryProducts as $enquiryProduct) {
                                 if ($enquiryProduct->new_product) {
@@ -5995,13 +6001,13 @@ class ApiController extends BaseController
                         foreach ($rows as $row) {
                             $checkSunEnquiryBreakUp  = $this->common_model->find_data('ecomm_sub_enquires', 'count', ['enq_id' => $row->id]);
                             if ($checkSunEnquiryBreakUp <= 0) {
-                                $itemCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
-                                $firstItem               = $this->common_model->find_data('ecomm_enquiry_products', 'row', ['enq_id' => $row->id, 'status!=' => 3], 'product_id');
+                                $itemCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status' => 1]);
+                                $firstItem               = $this->common_model->find_data('ecomm_enquiry_products', 'row', ['enq_id' => $row->id, 'status' => 1], 'product_id');
                                 $getCompany              = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id], 'company_name');
                                 $getPlant                = $this->common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
 
                                 $itemArray = [];
-                                $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status!=' => 3], 'product_id,new_product_name,new_product');
+                                $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status' => 1], 'product_id,new_product_name,new_product');
                                 if ($enquityProducts) {
                                     foreach ($enquityProducts as $enquityProduct) {
                                         if ($enquityProduct->new_product) {
@@ -6124,12 +6130,12 @@ class ApiController extends BaseController
                     // echo $this->db->getLastQuery();die;
                     if ($rows) {
                         foreach ($rows as $row) {
-                            $itemCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
+                            $itemCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status' => 1]);
                             $getCompany              = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id], 'company_name');
                             $getPlant                = $this->common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
 
                             $itemArray = [];
-                            $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status!=' => 3], 'product_id,new_product_name,new_product');
+                            $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status' => 1], 'product_id,new_product_name,new_product');
                             if ($enquityProducts) {
                                 foreach ($enquityProducts as $enquityProduct) {
                                     if ($enquityProduct->new_product) {
@@ -6241,12 +6247,12 @@ class ApiController extends BaseController
                     // echo $this->db->getLastQuery();die;
                     if ($rows) {
                         foreach ($rows as $row) {
-                            $itemCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status!=' => 3]);
+                            $itemCount               = $this->common_model->find_data('ecomm_enquiry_products', 'count', ['enq_id' => $row->id, 'status' => 1]);
                             $getCompany              = $this->common_model->find_data('ecoex_companies', 'row', ['id' => $row->company_id], 'company_name');
                             $getPlant                = $this->common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'plant_name');
 
                             $itemArray = [];
-                            $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status!=' => 3], 'product_id,new_product_name,new_product');
+                            $enquityProducts               = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $row->id, 'status' => 1], 'product_id,new_product_name,new_product');
                             if ($enquityProducts) {
                                 foreach ($enquityProducts as $enquityProduct) {
                                     if ($enquityProduct->new_product) {
@@ -6704,7 +6710,7 @@ class ApiController extends BaseController
                     if ($rows) {
                         foreach ($rows as $row) {
                             $getItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $row->item_id], 'item_name_ecoex,hsn');
-                            $getEnquiryItem = $this->common_model->find_data('ecomm_enquiry_products', 'row', ['product_id' => $row->item_id, 'enq_id' => $row->enq_id], 'new_product_image,qty,unit');
+                            $getEnquiryItem = $this->common_model->find_data('ecomm_enquiry_products', 'row', ['product_id' => $row->item_id, 'enq_id' => $row->enq_id, 'status' => 1], 'new_product_image,qty,unit');
                             $getUnit = $this->common_model->find_data('ecomm_units', 'row', ['id' => (($getEnquiryItem) ? $getEnquiryItem->unit : 0)], 'name');
 
                             $item_images     = [];
@@ -6724,7 +6730,7 @@ class ApiController extends BaseController
 
                             $materials                  = [];
                             $weighted_qty               = (($getItemWeightedInfo) ? $getItemWeightedInfo->weighted_qty : '');
-                            $material_weighing_slips    = (($getItemWeightedInfo) ? json_decode($getItemWeightedInfo->material_weighing_slips) : []);
+                            $material_weighing_slips    = (($getItemWeightedInfo) ? (($getItemWeightedInfo->material_weighing_slips != '')?json_decode($getItemWeightedInfo->material_weighing_slips):[]) : []);
                             $matImags                   = [];
                             if (count($material_weighing_slips)) {
                                 for ($p = 0; $p < count($material_weighing_slips); $p++) {
@@ -6811,11 +6817,11 @@ class ApiController extends BaseController
                         if ($no_of_vehicle) {
                             for ($v = 0; $v < $no_of_vehicle; $v++) {
                                 $vehImags = [];
-                                if (count($vehicleImgs[$v])) {
-                                    for ($p = 0; $p < count($vehicleImgs[$v]); $p++) {
-                                        $vehImags[] = base_url('public/uploads/enquiry/' . $vehicleImgs[$v][$p]);
-                                    }
-                                }
+                                // if (count($vehicleImgs[$v])) {
+                                //     for ($p = 0; $p < count($vehicleImgs[$v]); $p++) {
+                                //         $vehImags[] = base_url('public/uploads/enquiry/' . $vehicleImgs[$v][$p]);
+                                //     }
+                                // }
                                 $vehicles[] = [
                                     'vehicle_no'    => $vehicle_registration_nos[$v],
                                     'vehicle_img'   => $vehImags,
@@ -6853,8 +6859,6 @@ class ApiController extends BaseController
                                 'is_approve_vendor_payment'     => $rows[0]->is_approve_vendor_payment,
                             ];
                         }
-
-
 
 
                         $apiResponse = [
@@ -7526,23 +7530,19 @@ class ApiController extends BaseController
         // UPDATE PAYMENT INFO
         // --------------------------------------
         $fields = [
-            'payment_amount'    => $payment_amount,
-            'payment_mode'      => $payment_mode,
-            'payment_date'      => date_format(date_create($payment_date), "Y-m-d H:i:s"),
-            'txn_no'            => $txn_no,
-            'txn_screenshot'    => $uploadedFileName,
+            'payment_amount'                => $payment_amount,
+            'payment_mode'                  => $payment_mode,
+            'payment_date'                  => date_format(date_create($payment_date), "Y-m-d H:i:s"),
+            'txn_no'                        => $txn_no,
+            'txn_screenshot'                => $uploadedFileName,
             'is_approve_vendor_payment'     => 1,
             'vendor_payment_received_date'  => date('Y-m-d H:i:s'),
-            'status'                        => 10.10, 
+            'status'                        => 10.10,
+            'main_status'                   => 10,
             'vehicle_dispatched_date'       => date('Y-m-d H:i:s'),
         ];
 
-        $this->common_model->save_data(
-            'ecomm_sub_enquires',
-            $fields,
-            $sub_enquiry_no,
-            'sub_enquiry_no'
-        );
+        $this->common_model->save_data('ecomm_sub_enquires', $fields, $sub_enquiry_no,  'sub_enquiry_no');
         $this->common_model->save_data('ecomm_enquires', ['status' => 10], $getSubEnquiry->enq_id, 'id');
 
         // --------------------------------------
@@ -8728,4 +8728,610 @@ class ApiController extends BaseController
             echo 'update transaction failed: ' . $e->getMessage();
         }
     }
+    
+    /* new vendor app flow update in february 2026 */
+        # vendor price list
+        public function vendorPriceList(){
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $headerData         = $this->request->headers();
+            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if ($getTokenValue['status']) {
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if ($getUser) {
+                        $sql2 = "
+                                SELECT 
+                                    ecomm_company_items.id,
+                                    ecomm_company_items.company_id, 
+                                    ecomm_company_items.item_name_ecoex, 
+                                    ecomm_company_items.unit, 
+                                    ecoex_companies.company_name, 
+                                    ecomm_units.name as unit_name
+                                FROM ecomm_company_items
+                                INNER JOIN ecoex_companies ON ecomm_company_items.company_id = ecoex_companies.id 
+                                INNER JOIN ecomm_units ON ecomm_company_items.unit = ecomm_units.id
+                                WHERE ecomm_company_items.is_approved=1 AND ecomm_company_items.status=1
+                                ORDER BY ecomm_company_items.created_at DESC
+                            ";
+                        // Run query
+                        $query   = $this->db->query($sql2);
+                        $results = $query->getResult();
+
+                        if($results){
+                            foreach($results as $result){
+                                $checkPrice = $this->common_model->find_data('vendor_items', 'row', ['vendor_id' => $uId, 'company_id' => $result->company_id, 'item_id' => $result->id, 'status' => 1], 'item_price');
+                                $apiResponse[] = [
+                                    'company_name'          => $result->company_name,
+                                    'item_name_ecoex'       => $result->item_name_ecoex,
+                                    'price'                 => (($checkPrice)?$checkPrice->item_price:0.00),
+                                    'unit_name'             => $result->unit_name,
+                                    'company_id'            => $result->company_id,
+                                    'item_id'               => $result->id,
+                                ];
+                            }
+                        }
+
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiMessage         = 'Data Available !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+
+        # vendor price update
+        public function vendorPriceUpdate()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));
+            $requiredFields     = ['company_id', 'item_id', 'price'];
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)) {
+                $apiStatus          = FALSE;
+                $apiMessage         = 'All Data Are Not Present !!!';
+            }
+            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+                $company_id                         = $requestData['company_id'];
+                $item_id                            = $requestData['item_id'];
+                $price                              = $requestData['price'];
+                
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if ($getTokenValue['status']) {
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if ($getUser) {
+                        $checkPrice = $this->common_model->find_data('vendor_items', 'row', ['vendor_id' => $uId, 'company_id' => $company_id, 'item_id' => $item_id], 'id,item_price');
+                        if($checkPrice){
+                            // update
+                            $fields = [
+                                'item_price' => $price,
+                                'created_at' => date('Y-m-d H:i:s'),
+                                'updated_at' => date('Y-m-d H:i:s'),
+                            ];
+                            $this->common_model->save_data('vendor_items', $fields, $checkPrice->id, 'id');
+
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Vendor price updated successfully !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            // insert
+                            $getCompanyItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $item_id], 'unit');
+                            $fields = [
+                                'vendor_id'     => $uId,
+                                'company_id'    => $company_id,
+                                'item_id'       => $item_id,
+                                'item_price'    => $price,
+                                'item_unit'     => (($getCompanyItem)?$getCompanyItem->unit:0),
+                                'created_at'    => date('Y-m-d H:i:s'),
+                                'updated_at'    => date('Y-m-d H:i:s'),
+                            ];
+                            $this->common_model->save_data('vendor_items', $fields, '', 'id');
+                            
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Vendor price inserted successfully !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+
+                        $apiResponse        = [
+                            'company_id' => $company_id,
+                            'item_id' => $item_id,
+                            'price' => $price,
+                        ];
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+
+        # get vendor enquiry items
+        public function getVendorEnquiryItems()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));
+            $requiredFields     = ['enquiry_id'];
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)) {
+                $apiStatus          = FALSE;
+                $apiMessage         = 'All Data Are Not Present !!!';
+            }
+            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+                $enquiry_id                         = $requestData['enquiry_id'];
+                
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if ($getTokenValue['status']) {
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if ($getUser) {
+                        $checkEnquiry = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enquiry_id]);
+                        if($checkEnquiry){
+                            $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enquiry_id, 'status' => 1], 'product_id,qty,unit');
+                            if($getEnquiryItems){
+                                foreach($getEnquiryItems as $getEnquiryItem){
+                                    $getItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $getEnquiryItem->product_id], 'item_name_ecoex');
+                                    $getUnit = $this->common_model->find_data('ecomm_units', 'row', ['id' => $getEnquiryItem->unit], 'name');
+
+                                    $getPrice = $this->common_model->find_data('vendor_items', 'row', ['item_id' => $getEnquiryItem->product_id, 'vendor_id' => $uId, 'status' => 1], 'item_price');
+                                    $apiResponse[]  = [
+                                                        'item_id'       => $getEnquiryItem->product_id,
+                                                        'item_name'     => (($getItem)?$getItem->item_name_ecoex:''),
+                                                        'price'         => (($getPrice)?$getPrice->item_price:0),
+                                                        'qty'           => $getEnquiryItem->qty,
+                                                        'unit_id'       => $getEnquiryItem->unit,
+                                                        'unit_name'     => (($getUnit)?$getUnit->name:''),
+                                                    ];
+                                }
+                            }
+
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Vendor price available !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(200);
+                            $apiMessage         = 'Enquiry not found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+
+        # vendor pickup schedule vehicle place material weight
+        public function vendorPickupScheduleVehiclePlaceMaterialWeight()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+
+            $headerData         = $this->request->headers();
+
+            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+                $requestData                            = $this->request->getPost();
+
+                $enquiry_id                             = $requestData['enquiry_id'];
+                $vehicles                               = $requestData['vehicles'];
+                $scrap_items                            = $requestData['scrap_items'];
+                
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+                if ($getTokenValue['status']) {
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if ($getUser) {
+                        $checkEnquiry = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enquiry_id]);
+                        if($checkEnquiry){
+                            $this->common_model->save_data('ecomm_enquires', ['status' => 5], $enquiry_id, 'id');
+                            // pr($requestData,0);
+
+                            $vehicleNoArray = [];
+                            if(!empty($vehicles)){
+                                for($v=0;$v<count($vehicles);$v++){
+                                    $vehicleNoArray[] = $vehicles[$v]['vehicleNo'];
+                                }
+                            }
+
+                            if(!empty($scrap_items)){
+                                for($s=0;$s<count($scrap_items);$s++){
+                                    $item_id            = $scrap_items[$s]['item_id'];
+                                    $weighted_qty       = $scrap_items[$s]['weight'];
+                                    $weighted_unit      = $scrap_items[$s]['unit_name'];
+
+                                    $checkItem = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enquiry_id, 'item_id' => $item_id]);
+                                    if($checkItem){
+                                        $subenquiry_id = $checkItem->id;
+
+                                        $uploadedImages = [];
+
+                                        $files = $this->request->getFiles();
+
+                                        if (isset($files['scrap_items'][$s]['images'])) {
+
+                                            foreach ($files['scrap_items'][$s]['images'] as $imgIndex => $imageFile) {
+
+                                                if ($imageFile->isValid() && !$imageFile->hasMoved()) {
+
+                                                    $newName = $imageFile->getRandomName();
+
+                                                    $imageFile->move(
+                                                        ROOTPATH . 'public/uploads/enquiry/',
+                                                        $newName
+                                                    );
+
+                                                    $uploadedImages[] = $newName;
+                                                }
+                                            }
+                                        }
+
+                                        // Save images JSON for THIS ITEM ONLY
+                                        $material_weighing_slips_json = json_encode($uploadedImages);
+
+                                        $fields = [
+                                            'weighted_qty'                                  => $weighted_qty,
+                                            'weighted_unit'                                 => $weighted_unit,
+                                            'pickup_scheduled_date'                         => date('Y-m-d H:i:s'),
+                                            'pickup_schedule_edit_access'                   => 0,
+                                            'pickup_schedule_remarks'                       => 'Pickup scheduled at ' . date('Y-m-d H:i:s'),
+                                            'is_pickup_final'                               => 1,
+                                            'vehicle_placed_date'                           => date('Y-m-d H:i:s'),
+                                            'no_of_vehicle'                                 => count($vehicles),
+                                            'vehicle_registration_nos'                      => json_encode($vehicleNoArray),
+                                            // 'vehicle_images'                                => [],
+                                            'material_weighted_date'                        => date('Y-m-d H:i:s'),
+                                            'material_weight_vendor_date'                   => date('Y-m-d H:i:s'),
+                                            'material_weight_plant_date'                    => date('Y-m-d H:i:s'),
+                                            'material_weighing_slips'                       => $material_weighing_slips_json,
+                                            'material_weighing_edit_vendor'                 => 0,
+                                            'material_weighing_edit_vendor_attempts'        => 1,
+                                            'material_weighing_edit_plant'                  => 0,
+                                            'status'                                        => 5.5,
+                                            'main_status'                                   => 5,
+                                        ];
+                                        $this->common_model->save_data('ecomm_sub_enquires', $fields, $subenquiry_id, 'id');
+                                    }
+                                }
+                            }
+
+                            $getSubEnquiry = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enquiry_id]);
+
+                            $apiResponse        = [
+                                'enquiry_id'        => $enquiry_id,
+                                'enquiry_no'        => $checkEnquiry->enquiry_no,
+                                'sub_enquiry_no'    => (($getSubEnquiry)?$getSubEnquiry->sub_enquiry_no:''),
+                            ];
+
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Enquiry material weight updated successfully !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(200);
+                            $apiMessage         = 'Enquiry not found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+        
+        # vendor enquiry request accet, reject, quotation submission, auto final assign
+        public function vendorPendingRequestAcceptRejectNew()
+        {
+            $apiStatus          = TRUE;
+            $apiMessage         = '';
+            $apiResponse        = [];
+            $this->isJSON(file_get_contents('php://input'));
+            $requestData        = $this->extract_json(file_get_contents('php://input'));
+            $requiredFields     = ['quotation_request_status', 'enq_id']; // 1 = accept or 3 = reject
+            $headerData         = $this->request->headers();
+            if (!$this->validateArray($requiredFields, $requestData)) {
+                $apiStatus          = FALSE;
+                $apiMessage         = 'All Data Are Not Present !!!';
+            }
+            if ($headerData['Key'] == 'Key: ' . getenv('app.PROJECTKEY')) {
+                $Authorization              = $headerData['Authorization'];
+                $app_access_token           = $this->extractToken($Authorization);
+                $getTokenValue              = $this->tokenAuth($app_access_token);
+
+                $quotation_request_status   = $requestData['quotation_request_status'];
+                $enq_id                     = $requestData['enq_id'];
+
+                if ($getTokenValue['status']) {
+                    $uId        = $getTokenValue['data'][1];
+                    $expiry     = date('d/m/Y H:i:s', $getTokenValue['data'][4]);
+                    $getUser    = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                    if ($getUser) {
+                        $checkEnquiry = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+                        if($checkEnquiry){
+                            /* enquiry accept/reject */
+                                $fields = [
+                                    'status' => $quotation_request_status
+                                ];
+                                $this->db = \Config\Database::connect();
+                                $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET status = '$quotation_request_status' WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+                            /* enquiry accept/reject */
+                            /* mail functionality */
+                                $getVendor                  = $this->common_model->find_data('ecomm_users', 'row', ['id' => $uId]);
+                                $getEnquiry                 = $this->common_model->find_data('ecomm_enquires', 'row', ['id' => $enq_id]);
+                                $generalSetting             = $this->common_model->find_data('general_settings', 'row');
+                                if ($quotation_request_status == 1) {
+                                    $apiMessage         = 'Enquiry Invitation For Quotation Submission Accepted Successfully !!!';
+                                    $subject            = $generalSetting->site_name . ' :: Enquiry Invitation For Quotation Submission Accepted (' . (($getEnquiry) ? $getEnquiry->enquiry_no : '') . ') ';
+                                } else {
+                                    $apiMessage         = 'Enquiry Invitation For Quotation Submission Rejected Successfully !!!';
+                                    $subject            = $generalSetting->site_name . ' :: Enquiry Invitation For Quotation Submission Rejected (' . (($getEnquiry) ? $getEnquiry->enquiry_no : '') . ') ';
+                                }
+                                $getEnquiryVendorShare      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'row-array', ['enq_id' => $enq_id, 'vendor_id' => $uId]);
+                                $message                    = view('email-templates/enquiry-request-for-quotation-accept-reject', $getEnquiryVendorShare);
+                                // $this->sendMail($getVendor->email, $subject, $message);
+                            /* mail functionality */
+                            /* email log save */
+                                $postData2 = [
+                                    'name'                  => $getVendor->company_name,
+                                    'email'                 => $getVendor->email,
+                                    'subject'               => $subject,
+                                    'message'               => $message
+                                ];
+                                // $this->common_model->save_data('email_logs', $postData2, '', 'id');
+                            /* email log save */
+
+                            $requestList = [];
+                            $getEnquiryItems = $this->common_model->find_data('ecomm_enquiry_products', 'array', ['enq_id' => $enq_id, 'status' => 1], 'product_id,qty,unit,id,new_hsn');
+                            if($getEnquiryItems){
+                                foreach($getEnquiryItems as $getEnquiryItem){
+                                    $getItem = $this->common_model->find_data('ecomm_company_items', 'row', ['id' => $getEnquiryItem->product_id], 'item_name_ecoex');
+                                    $getUnit = $this->common_model->find_data('ecomm_units', 'row', ['id' => $getEnquiryItem->unit], 'name');
+
+                                    $getPrice = $this->common_model->find_data('vendor_items', 'row', ['item_id' => $getEnquiryItem->product_id, 'vendor_id' => $uId, 'status' => 1], 'item_price');
+                                    $requestList[]  = [
+                                                        'enq_product_id'        => $getEnquiryItem->id,
+                                                        'item_id'               => $getEnquiryItem->product_id,
+                                                        'item_name'             => (($getItem)?$getItem->item_name_ecoex:''),
+                                                        'item_hsn'               => $getEnquiryItem->new_hsn,
+                                                        'price'                 => (($getPrice)?$getPrice->item_price:0),
+                                                        'qty'                   => $getEnquiryItem->qty,
+                                                        'unit_id'               => $getEnquiryItem->unit,
+                                                        'unit_name'             => (($getUnit)?$getUnit->name:''),
+                                                    ];
+                                }
+                            }
+
+                            /* quotation submit & auto assign */
+                                if ($requestList) {
+                                    foreach ($requestList as $rqlt) {
+
+                                        $vendor_id = $uId;
+                                        $enquiry_no                 = (($checkEnquiry) ? $checkEnquiry->enquiry_no : '');
+                                        $item_id = $rqlt['item_id'];                                    
+
+                                        $fields = [
+                                            'enq_id'        => $enq_id,
+                                            'enq_item_id'   => $rqlt['enq_product_id'],
+                                            'vendor_id'     => $uId,
+                                            'item_id'       => $rqlt['item_id'],
+                                            'item_name'     => $rqlt['item_name'],
+                                            'item_hsn'      => $rqlt['item_hsn'],
+                                            'quote_price'   => (($rqlt['price'] != '') ? $rqlt['price'] : 0.00),
+                                            'qty'           => 0,
+                                            'unit_id'       => $rqlt['unit_id'],
+                                            'unit_name'     => $rqlt['unit_name'],
+                                        ];
+                                        $checkQuotationExist = $this->common_model->find_data('ecomm_enquiry_vendor_quotations', 'row', ['enq_id' => $enq_id, 'item_id' => $rqlt['item_id'], 'vendor_id' => $uId]);
+                                        if ($checkQuotationExist) {
+                                            $this->common_model->save_data('ecomm_enquiry_vendor_quotations', $fields, $checkQuotationExist->id, 'id');
+                                        } else {
+                                            $this->common_model->save_data('ecomm_enquiry_vendor_quotations', $fields, '', 'id');
+                                        }
+
+                                        $fields = [
+                                            'enq_id'        => $enq_id,
+                                            'enq_item_id'   => $rqlt['enq_product_id'],
+                                            'vendor_id'     => $uId,
+                                            'item_id'       => $rqlt['item_id'],
+                                            'item_name'     => $rqlt['item_name'],
+                                            'item_hsn'      => $rqlt['item_hsn'],
+                                            'quote_price'   => (($rqlt['price'] != '') ? $rqlt['price'] : 0.00),
+                                            'qty'           => 0,
+                                            'unit_id'       => $rqlt['unit_id'],
+                                            'unit_name'     => $rqlt['unit_name'],
+                                        ];
+                                        $this->common_model->save_data('ecomm_enquiry_vendor_quotation_logs', $fields, '', 'id');
+
+                                        /* sub enquiry create */
+                                            /* sl no*/
+                                                $checkEnq = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enq_id], 'sub_sl_no,vendor_id,max(sub_sl_no) as max_sub_sl_no');
+                                                if ($checkEnq->max_sub_sl_no != '') {
+                                                    $checkEnqVendor = $this->common_model->find_data('ecomm_sub_enquires', 'row', ['enq_id' => $enq_id, 'vendor_id' => $vendor_id], 'sub_sl_no,vendor_id');
+                                                    if ($checkEnqVendor) {
+                                                        $sub_sl_no         = $checkEnqVendor->sub_sl_no;
+                                                    } else {
+                                                        $sub_sl_no         = $checkEnq->max_sub_sl_no + 1;
+                                                    }
+                                                } else {
+                                                    $sub_sl_no         = 0;
+                                                }
+                                                $alphabet       = range('A', 'Z');
+                                                $getCharacter   = $alphabet[$sub_sl_no];
+                                                $sub_enquiry_no = $enquiry_no . '-' . $getCharacter;
+                                            /* sl no*/
+                                            $getQuotation = $this->common_model->find_data("ecomm_enquiry_vendor_quotations", 'row', ['enq_id' => $enq_id, 'vendor_id' => $vendor_id, 'item_id' => $item_id]);
+                                            $fields = [
+                                                'enq_id'                    => $enq_id,
+                                                'company_id'                => (($checkEnquiry) ? $checkEnquiry->company_id : 0),
+                                                'plant_id'                  => (($checkEnquiry) ? $checkEnquiry->plant_id : 0),
+                                                'enquiry_no'                => $enquiry_no,
+                                                'vendor_id'                 => $vendor_id,
+                                                'item_id'                   => $item_id,
+                                                'sub_sl_no'                 => $sub_sl_no,
+                                                'sub_enquiry_no'            => $sub_enquiry_no,
+                                                'win_quote_price'           => (($getQuotation) ? $getQuotation->quote_price : 0),
+                                                'status'                    => 3.3,
+                                                'main_status'               => 3,
+                                                'assigned_date'             => date('Y-m-d H:i:s'),
+                                            ];
+                                            $this->common_model->save_data('ecomm_sub_enquires', $fields, '', 'id');
+                                        /* sub enquiry create */
+                                    }
+                                }
+
+                                $this->db->query("UPDATE ecomm_enquiry_vendor_shares SET is_quotation_submit = 1, is_editable = 0, status = 1 WHERE enq_id = '$enq_id' AND vendor_id = '$uId'");
+
+                                
+
+                                $this->db->query("UPDATE ecomm_enquires SET status = 3 WHERE id = '$enq_id'");
+                                $assigned_date = date('Y-m-d H:i:s');
+                                // $this->db->query("UPDATE ecomm_sub_enquires SET status = 3.3, main_status = 3, assigned_date = '$assigned_date' WHERE enq_id = '$enq_id'");
+                            /* quotation submit & auto assign */
+
+                            $apiResponse['enquiry_id'] = $enq_id;
+
+                            $apiStatus          = TRUE;
+                            http_response_code(200);
+                            $apiMessage         = 'Enquiry accepted, quotation submitted & assigned successfully !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        } else {
+                            $apiStatus          = FALSE;
+                            http_response_code(200);
+                            $apiMessage         = 'Enquiry not found !!!';
+                            $apiExtraField      = 'response_code';
+                            $apiExtraData       = http_response_code();
+                        }
+
+                        
+
+                        $apiStatus          = TRUE;
+                        http_response_code(200);
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    } else {
+                        $apiStatus          = FALSE;
+                        http_response_code(404);
+                        $apiMessage         = 'User Not Found !!!';
+                        $apiExtraField      = 'response_code';
+                        $apiExtraData       = http_response_code();
+                    }
+                } else {
+                    http_response_code($getTokenValue['data'][2]);
+                    $apiStatus                      = FALSE;
+                    $apiMessage                     = $this->getResponseCode(http_response_code());
+                    $apiExtraField                  = 'response_code';
+                    $apiExtraData                   = http_response_code();
+                }
+            } else {
+                http_response_code(400);
+                $apiStatus          = FALSE;
+                $apiMessage         = $this->getResponseCode(http_response_code());
+                $apiExtraField      = 'response_code';
+                $apiExtraData       = http_response_code();
+            }
+            $this->response_to_json($apiStatus, $apiMessage, $apiResponse);
+        }
+    /* new vendor app flow update in february 2026 */
 }

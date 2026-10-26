@@ -40,12 +40,14 @@ $controller_route   = $moduleDetail['controller_route'];
                 $email    = $row->email;
                 $phone    = $row->phone;
                 $state    = $row->state;
+                $remarks  = $row->remarks;
             } else {
                 $name     = '';
                 $type     = '';
                 $email    = '';
                 $phone    = '';
                 $state    = '';
+                $remarks  = '';
             }
             ?>
             <div class="col-xl-12">
@@ -108,6 +110,18 @@ $controller_route   = $moduleDetail['controller_route'];
                                             <option value="<?=$st->name?>" <?= ($row && $row->state == $st->name) ? 'selected' : '' ?>><?=$st->name?></option>
                                         <?php } }?>
                                     </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="name" class="col-md-2 col-lg-2 col-form-label">Remarks</label>
+                                <div class="col-md-10 col-lg-10">
+                                    <textarea name="remarks" class="form-control" id="remarks" rows="3"><?= $remarks ?></textarea>
+                                    <?php if (isset($validation) && $validation->hasError('remarks')): ?>
+                                        <span class="text-danger">
+                                            <?= $validation->getError('remarks') ?>
+                                        </span>
+                                    <?php endif; ?>
                                 </div>
                             </div>
 

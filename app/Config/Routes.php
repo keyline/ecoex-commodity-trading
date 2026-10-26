@@ -17,6 +17,8 @@ $routes->get('/upcoming-collection', 'Home::upcomingCollectionCron');
 $routes->get('/get-all-enquiry', 'Home::getAllEnquiry');
 $routes->get('/get-analytics', 'Home::getAnalytics');
 
+$routes->match(['get', 'post'], '/enquiry-migration', 'Home::enquiryMigration');
+
 $routes->match(['get', 'post'], '/wp-message', 'Home::wpMessage');
 
 /* ADMIN PANEL */
@@ -208,7 +210,7 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     $routes->match(['get'], "enquiry-requests/list/(:any)", "EnquiryRequestController::list/$1");
     $routes->match(['get', 'post'], "enquiry-requests/view-detail/(:any)", "EnquiryRequestController::viewDetail/$1");
     $routes->match(['get', 'post'], "enquiry-requests/delete/(:any)/(:any)", "EnquiryRequestController::confirm_delete/$1/$2");
-    $routes->match(['get', 'post'], "enquiry-requests/accept-request/(:any)", "EnquiryRequestController::accept_request/$1");
+    $routes->match(['get', 'post'], "enquiry-requests/accept-request/(:any)/(:any)", "EnquiryRequestController::accept_request/$1/$2");
     $routes->match(['get', 'post'], "enquiry-requests/reject-request/(:any)", "EnquiryRequestController::reject_request/$1");
     $routes->match(['post'], "get-reject-modal", "EnquiryRequestController::getRejectModal");
     $routes->match(['post'], "get-image-modal", "EnquiryRequestController::getImageModal");
@@ -217,6 +219,8 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     $routes->match(['get', 'post'], "enquiry-requests/vendor-allocation/(:any)/(:any)/(:any)", "EnquiryRequestController::vendorAllocation/$1/$2/$3");
     $routes->match(['get', 'post'], "enquiry-requests/approve-vendor-quit/(:any)/(:any)", "EnquiryRequestController::approveVendorQuit/$1/$2");
     $routes->match(['get', 'post'], "enquiry-requests/reject-vendor-quit/(:any)/(:any)", "EnquiryRequestController::rejectVendorQuit/$1/$2");
+
+    $routes->match(['get', 'post'], "enquiry-requests/send-whatsapp-notification-state/(:any)/(:any)", "EnquiryRequestController::sendWhatsappNotificationState/$1/$2");
 
     $routes->match(['get', 'post'], "enquiry-requests/material-weighted-access/(:any)/(:any)", "EnquiryRequestController::weighted_access/$1/$2");
 
@@ -243,7 +247,10 @@ $routes->group("admin", ["namespace" => "App\Controllers\Admin"], function ($rou
     //$routes->match(['get', 'post'], "enquiry-requests/send-whatsapp-notification/(:any)", "EnquiryRequestController::sendWhatsAppNotification/$1");
 
     $routes->match(['post'], "enquiry-requests/send-whatsapp-notification", "EnquiryRequestController::sendWhatsappWithSparkCmdV2");
-
+    
+    $routes->post("enquiry-requests/pan-india-wp-modal", "EnquiryRequestController::panIndiaWpModal");
+    $routes->post("enquiry-requests/send-pan-india-wp", "EnquiryRequestController::sendPanIndiaWp");
+    $routes->get("enquiry-requests/view-notified-recipient/(:any)/(:any)", "EnquiryRequestController::viewNotifiedRecipient/$1/$2");
 
 
     // enquiry requests
@@ -485,6 +492,13 @@ $routes->group("api", ["namespace" => "App\Controllers\Api",], function ($routes
 
     // whatsapp webhook
     $routes->match(['get', 'post'], 'wpmsg/incoming', [App\Controllers\Admin\WhatsappMessageController::class, 'incoming']);
+
+    // price list
+    $routes->match(['get'], "vendor-price-list", "ApiController::vendorPriceList");
+    $routes->match(['post'], "vendor-price-update", "ApiController::vendorPriceUpdate");
+    $routes->match(['post'], "get-vendor-enquiry-items", "ApiController::getVendorEnquiryItems");
+    $routes->match(['post'], "vendor-pickup-schedule-vehicle-place-material-weight", "ApiController::vendorPickupScheduleVehiclePlaceMaterialWeight");
+    $routes->match(['post'], "pending-quotation-request-accept-reject-new", "ApiController::vendorPendingRequestAcceptRejectNew");
 
 });
 /* API */

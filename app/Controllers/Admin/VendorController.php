@@ -558,6 +558,7 @@ class VendorController extends BaseController
                 FROM ecomm_company_items
                 INNER JOIN ecoex_companies ON ecomm_company_items.company_id = ecoex_companies.id 
                 INNER JOIN ecomm_units ON ecomm_company_items.unit = ecomm_units.id
+                WHERE ecomm_company_items.is_approved=1 AND ecomm_company_items.status=1
                 ORDER BY ecomm_company_items.created_at DESC
             ";
         // Run query

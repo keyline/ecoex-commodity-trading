@@ -55,8 +55,8 @@ $userType           = $session->user_type;
                                             if ($rows[0]->status >= 11 && $rows[0]->status <= 12) { ?><th>Ecoex Payment<br>Approve Status<br>HO Approve<br>Enquiry Complete</th>?php }
                                             } ?> -->
                                         <?php if ($rows) {
-                                            if ($rows[0]->status >= 10) { ?><th>Ecoex Payment<br>Approve Status<br>HO Approve<br>Enquiry Complete</th><?php }
-                                            } ?>
+                                            if ($rows[0]->status >= 10) { ?><th>Ecoex Payment<br>Approve Status<br>HO Approve<br>Enquiry Complete</th>
+                                        <?php } } ?>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -100,50 +100,57 @@ $userType           = $session->user_type;
                                                         <?php
                                                         if ($row->created_by > 0) {
                                                             $actionUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->created_by], 'plant_name');
-                                                            ?>
+                                                        ?>
                                                             <small><?= ($actionUser) ? nl2br(wordwrap($actionUser->plant_name, 15, "\n", false)) : '' ?>
                                                             </small>
-                                                        <?php } else {?>
+                                                        <?php } else { ?>
                                                             <small>Admin</small>
-                                                        <?php }?>
+                                                        <?php } ?>
                                                         <hr>
                                                     </h6>
                                                     <h6>
                                                         <?= (($row->updated_at != '') ? date_format(date_create($row->updated_at), "M d, Y h:i A") : '') ?><br>
                                                         <?php
-                                                            if ($row->updated_by > 0) {
-                                                                $actionUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->updated_by], 'plant_name');
-                                                                ?>
+                                                        if ($row->updated_by > 0) {
+                                                            $actionUser = $common_model->find_data('ecomm_users', 'row', ['id' => $row->updated_by], 'plant_name');
+                                                        ?>
                                                             <small><?= ($actionUser) ? nl2br(wordwrap($actionUser->plant_name, 15, "\n", false)) : '' ?>
                                                             </small>
-                                                        <?php } else {?>
+                                                        <?php } else { ?>
                                                             <small>Admin</small>
-                                                        <?php }?>
+                                                        <?php } ?>
                                                     </h6>
-                                                </td>                                                
-                                                <?php //if ($row->status >= 11 && $row->status <= 12 && $row->status <= 10) {?>
+                                                </td>
+                                                <?php //if ($row->status >= 11 && $row->status <= 12 && $row->status <= 10) {
+                                                ?>
                                                 <?php if ($row->status >= 10) { ?>
                                                     <td>
                                                         <h6><?= (($row->ecoex_submitted_date != '') ? date_format(date_create($row->ecoex_submitted_date), "M d, Y h:i A") : '') ?></h6>
-                                                        
-                                                        <?php //if ($row->is_ho_approve_ecoex_payment) {?>
-                                                            <h6 class="badge bg-success">APPROVED</h6>
-                                                            <h6><?= (($row->ho_approve_date != '') ? date_format(date_create($row->ho_approve_date), "M d, Y h:i A") : '') ?></h6>
 
-                                                            <?php if ($row->order_complete_date == '') { ?>
-                                                                <?php if ($userType == 'MA') { ?>
-                                                                    <a href="<?= base_url('admin/' . $controller_route . '/order-complete/' . encoded($row->$primary_key)) ?>" class="btn btn-success btn-sm" title="Complete <?= $title ?>" onclick="return confirm('Do You Want To Complete This <?= $title ?>');"><i class="fa-solid fa-flag-checkered"></i> Click To Complete</a>
-                                                                <?php } ?>
-                                                            <?php } else { ?>
-                                                                <h6 class="badge bg-success">COMPLETED</h6>
-                                                                <h6><?= (($row->order_complete_date != '') ? date_format(date_create($row->order_complete_date), "M d, Y h:i A") : '') ?></h6>
-                                                            <?php } ?>
+                                                        <?php //if ($row->is_ho_approve_ecoex_payment) {
+                                                        ?>
+                                                        <h6 class="badge bg-success">APPROVED</h6>
+                                                        <h6><?= (($row->ho_approve_date != '') ? date_format(date_create($row->ho_approve_date), "M d, Y h:i A") : '') ?></h6>
+
+                                                        <?php if ($row->order_complete_date == '') { ?>
+                                                            <?php //if ($userType == 'MA') { ?>
+                                                                <a href="<?= base_url('admin/' . $controller_route . '/order-complete/' . encoded($row->$primary_key)) ?>" class="btn btn-success btn-sm" title="Complete <?= $title ?>" onclick="return confirm('Do You Want To Complete This <?= $title ?>');"><i class="fa-solid fa-flag-checkered"></i> Click To Complete</a>
+                                                            <?php //} ?>
+                                                        <?php } else { ?>
+                                                            <h6 class="badge bg-success">COMPLETED</h6>
+                                                            <h6><?= (($row->order_complete_date != '') ? date_format(date_create($row->order_complete_date), "M d, Y h:i A") : '') ?></h6>
+                                                        <?php } ?>
                                                         <!-- ?php } else { ?>
                                                             <h6 class="badge bg-warning">PENDING</h6>
                                                         ?php } ?> -->
+                                                        
                                                     </td>
                                                 <?php } ?>
                                                 <td>
+                                                    <?php
+                                                    $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'state, company_name');
+                                                    $plant_state_name = (($getPlant)?$getPlant->state:'');
+                                                    ?>
                                                     <?php if ($common_model->checkModuleFunctionAccess(23, 109)) { ?>
                                                         <a href="<?= base_url('admin/' . $controller_route . '/enquiry-details/' . encoded($row->$primary_key)) ?>" class="btn btn-outline-info btn-sm" title="View <?= $title ?>"><i class="fa fa-info-circle"></i> View Details</a>
                                                     <?php } ?>
@@ -156,7 +163,13 @@ $userType           = $session->user_type;
                                                     <?php if ($row->status == 0) { ?>
                                                         <?php if ($common_model->checkModuleFunctionAccess(23, 110)) { ?>
                                                             <?php if ($userType == 'MA') { ?>
-                                                                <a href="<?= base_url('admin/' . $controller_route . '/accept-request/' . encoded($row->$primary_key)) ?>" class="btn btn-success btn-sm mt-2" title="Accept <?= $title ?>" onclick="return confirm('Do You Want To Accept This <?= $title ?>');"><i class="fa fa-check"></i> Click To Accept</a>
+
+                                                                <?php
+                                                                $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'state, company_name');
+                                                                $plant_state_name = (($getPlant)?$getPlant->state:'');
+                                                                ?>
+                                                            
+                                                                <a href="<?= base_url('admin/' . $controller_route . '/accept-request/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-success btn-sm mt-2" title="Accept <?= $title ?>" onclick="return confirm('Do You Want To Accept This <?= $title ?>');"><i class="fa fa-check"></i> Click To Accept</a>
                                                             <?php } ?>
                                                         <?php } ?>
                                                         <?php if ($common_model->checkModuleFunctionAccess(23, 111)) { ?>
@@ -165,45 +178,40 @@ $userType           = $session->user_type;
                                                             <?php } ?>
                                                         <?php } ?>
                                                         <br>
-                                                        <?php //if ($common_model->checkModuleFunctionAccess(23, 149)) { ?>
-                                                            <?php //if ($userType == 'MA') { ?>
-                                                                <!-- <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification/' . encoded(97)) ?>" class="btn btn-success btn-sm mt-2" title="Send WhatsApp <?= $title ?>"><i class="fa fa-whatsapp" aria-hidden="true"></i> Click To Send Notification</a> -->
-                                                                 <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
-                                                                    <?= csrf_field() ?>
-                                                                    <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
-                                                                    <input type="hidden" name="send_type" value="state">
-                                                                    <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]['state']) && ($statusMap[$row->id]['state'] == 'processing' || $statusMap[$row->id]['state'] == 'pending')) ? 'disabled' : '' ?>>
-                                                                        <i class="fa-brands fa-whatsapp"></i> Send Notification To <?= $stateMap[$row->id] ?? '' ?> (<?= $statusMap[$row->id]['state'] ?? '' ?>)
-                                                                    </button>
-                                                                </form>
-                                                                <br>
+                                                        <?php 
+                                                        $stateNotification = $common_model->find_data('ecomm_parent_whatsapp', 'row', ['enquiry_id' => $row->$primary_key , 'notification_type' => 'STATE' ], 'created_at');
+                                                        if(!empty($stateNotification)){?>
+                                                        
+                                                            <a href="<?= base_url('admin/enquiry-requests/view-notified-recipient/' . encoded($row->$primary_key) . '/' . '/STATE') ?>" class="badge bg-primary mt-1 mb-0" target="_blank"><i class="fa-brands fa-whatsapp"></i> Notified <span style="color: #0a0326;font-weight: bold;"><?= $plant_state_name ?></span> Vendors & Subscribers On 
+                                                            <span><?= (($stateNotification->created_at != '') ? date_format(date_create($stateNotification->created_at), "M d, Y h:i A") : '') ?></span></a>
 
-                                                                <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
-                                                                    <?= csrf_field() ?>
-                                                                    <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
-                                                                    <input type="hidden" name="send_type" value="pan_india">
-                                                                    <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]['pan_India']) && ($statusMap[$row->id]['pan_India'] == 'processing' || $statusMap[$row->id]['pan_India'] == 'pending')) ? 'disabled' : '' ?>>
-                                                                        <i class="fa-brands fa-whatsapp"></i> Send Notification To Pan India (<?= $statusMap[$row->id]['pan_India'] ?? '' ?>)
-                                                                    </button>
-                                                                </form>
-                                                                <br>
-                                                                
-                                                                <!-- <form id="whatsappNotifyForm<?= $row->$primary_key ?>" method="post" action="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification') ?>" style="display:inline;">
-                                                                    <?= csrf_field() ?>
-                                                                    <input type="hidden" name="enquiry_id" value="<?= encoded($row->$primary_key) ?>">
-                                                                    <input type="hidden" name="send_type" value="neighbour">
-                                                                    <button type="submit" class="btn btn-success btn-sm mt-2 whatsapp-notify-btn" title="Send WhatsApp <?= $title ?>" <?= (isset($statusMap[$row->id]['neighbour']) && ($statusMap[$row->id]['neighbour'] == 'processing' || $statusMap[$row->id]['neighbour'] == 'pending')) ? 'disabled' : '' ?>>
-                                                                        <i class="fa-brands fa-whatsapp"></i> Send Notification To Neighbour (<?= $statusMap[$row->id]['neighbour'] ?? '' ?>)
-                                                                    </button>
-                                                                </form> -->
-                                                            <?php //} ?>
-                                                        <?php //} ?>
+                                                        <?php }else{ ?>
+
+                                                            <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-1" onclick="return confirm('Are You Sure ?')" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification To <span style="color: #0a0326;font-weight: bold;"><?= $plant_state_name ?></span> Vendors & Subscribers</a>
+
+                                                        <?php } ?>
+                                                        <br>
+                                                        <?php
+                                                        $panIndiaNotification = $common_model->find_data('ecomm_parent_whatsapp', 'row', ['enquiry_id' => $row->$primary_key , 'notification_type' => 'PAN_INDIA' ], 'created_at');
+                                                        if(!empty($panIndiaNotification)){?>
+
+                                                            <a href="<?= base_url('admin/enquiry-requests/view-notified-recipient/' . encoded($row->$primary_key) . '/' . '/PAN_INDIA') ?>" class="badge bg-info mt-1 mb-0" target="_blank"><i class="fa-brands fa-whatsapp"></i> Notified Pan India Vendors & Subscribers On
+                                                            <span><?= (($panIndiaNotification->created_at != '') ? date_format(date_create($panIndiaNotification->created_at), "M d, Y h:i A") : '') ?></span></a>
+
+                                                        <?php }else{ ?>
+                                                            <a
+                                                            class="btn btn-info btn-sm mt-1 panIndiaWpModalBtn"
+                                                            data-bs-toggle="modal" data-bs-target=".panIndiaWpModal"
+                                                            data-enquiryid="<?= encoded($row->$primary_key) ?>">
+                                                            <i class="fa-brands fa-whatsapp"></i> Click To Send Notification To Pan India Vendors & Subscribers 
+                                                            </a>
+                                                        <?php } ?>
                                                     <?php } else { ?>
                                                         <?php if ($row->status >= 1 && $row->status <= 12) { ?>
                                                             <h6 class="badge bg-success mt-2"><i class="fa fa-check-circle"></i> ACCEPTED</h6>
                                                             </br>
                                                             <!-- <a href="<?= base_url('admin/certificate/create'); ?>"><h6 class="badge bg-success mt-2"><i class="fa fa-flag-checkered"></i> Generate Certificate</h6></a> -->
-                                                            <?php if ($row->status == 12) {?>
+                                                            <?php if ($row->status == 12) { ?>
                                                                 <?php if ($common_model->checkModuleFunctionAccess(23, 155)) { ?>
                                                                     <form action="<?= base_url('admin/certificate/create'); ?>" method="post" class="d-inline">
                                                                         <?= csrf_field(); ?>
@@ -215,22 +223,58 @@ $userType           = $session->user_type;
                                                                             <i class="fa fa-flag-checkered"></i> Generate Certificate
                                                                         </button>
                                                                     </form>
-                                                                <?php }?>
-                                                            <?php }?>
+                                                                <?php } ?>
+                                                            <?php } ?>
                                                         <?php } elseif ($row->status == 13) { ?>
                                                             <h6 class="badge bg-danger mt-2"><i class="fa fa-times-circle"></i> REJECTED</h6>
                                                         <?php } ?>
                                                         <?php if (!empty($certificateData['status'])): ?>
                                                             </br>
-                                                            <h6 class="badge bg-info mt-2"><i class="fa fa-certificate"></i> <?= ucfirst($certificateData['status']); ?></h6>
+                                                            <!-- <h6 class="badge bg-info mt-2"><i class="fa fa-certificate"></i> <?= ucfirst($certificateData['status']); ?></h6> -->
                                                         <?php endif; ?>
                                                         <p><?= (($row->accepted_date != '') ? date_format(date_create($row->accepted_date), "M d, Y h:i A") : '') ?></p>
+                                                        
+                                                        <?php if ($row->status >= 0 && $row->status <= 2) { ?>
+                                                            <?php 
+                                                            $stateNotification = $common_model->find_data('ecomm_parent_whatsapp', 'row', ['enquiry_id' => $row->$primary_key , 'notification_type' => 'STATE' ], 'created_at');
+                                                            if(!empty($stateNotification)){?>
+                                                            
+                                                                <a href="<?= base_url('admin/enquiry-requests/view-notified-recipient/' . encoded($row->$primary_key) . '/' . '/STATE') ?>" class="badge bg-primary mt-1 mb-0" target="_blank"><i class="fa-brands fa-whatsapp"></i> Notified <span style="color: #0a0326;font-weight: bold;"><?= $plant_state_name ?></span> Vendors & Subscribers On 
+                                                                <span><?= (($stateNotification->created_at != '') ? date_format(date_create($stateNotification->created_at), "M d, Y h:i A") : '') ?></span></a>
 
+                                                            <?php }else{ ?>
+
+                                                                <a href="<?= base_url('admin/' . $controller_route . '/send-whatsapp-notification-state/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-primary btn-sm mt-1" onclick="return confirm('Are You Sure ?')" title="Send WhatsApp <?= $title ?>"><i class="fa-brands fa-whatsapp"></i> Click To Send Notification To <span style="color: #0a0326;font-weight: bold;"><?= $plant_state_name ?></span> Vendors & Subscribers</a>
+
+                                                            <?php } ?>
+                                                            <br>
+                                                            <?php
+                                                            $panIndiaNotification = $common_model->find_data('ecomm_parent_whatsapp', 'row', ['enquiry_id' => $row->$primary_key , 'notification_type' => 'PAN_INDIA' ], 'created_at');
+                                                            if(!empty($panIndiaNotification)){?>
+
+                                                                <a href="<?= base_url('admin/enquiry-requests/view-notified-recipient/' . encoded($row->$primary_key) . '/' . '/PAN_INDIA') ?>" class="badge bg-info mt-1 mb-0" target="_blank"><i class="fa-brands fa-whatsapp"></i> Notified Pan India Vendors & Subscribers On
+                                                                <span><?= (($panIndiaNotification->created_at != '') ? date_format(date_create($panIndiaNotification->created_at), "M d, Y h:i A") : '') ?></span></a>
+
+                                                            <?php }else{ ?>
+                                                                <a
+                                                                class="btn btn-info btn-sm mt-1 panIndiaWpModalBtn"
+                                                                data-bs-toggle="modal" data-bs-target=".panIndiaWpModal"
+                                                                data-enquiryid="<?= encoded($row->$primary_key) ?>">
+                                                                <i class="fa-brands fa-whatsapp"></i> Click To Send Notification To Pan India Vendors & Subscribers 
+                                                                </a>
+                                                            <?php } ?>
+
+                                                        <?php }?>                                                        
                                                     <?php } ?>
+
+
+                                                    
+
+
                                                 </td>
                                             </tr>
                                     <?php }
-                                        } ?>
+                                    } ?>
                                 </tbody>
                             </table>
                         </div>
@@ -254,7 +298,83 @@ $userType           = $session->user_type;
     </div>
 </div>
 <!-- reject request modal -->
+
+<div id="loadingOverlay"
+    class="d-none position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex flex-column justify-content-center align-items-center"
+    style="z-index: 9999;">
+
+    <div class="spinner-border text-white mb-3" style="width: 3rem; height: 3rem;" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    
+</div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function()
+    {
+        $(document).on('click', '.panIndiaWpModalBtn', function () 
+        {
+            let base_url = '<?= base_url() ?>';
+            let enquiry_id = $(this).data('enquiryid');
+
+            // console.log(base_url, enquiry_id);
+
+            $.ajax({
+                url: base_url + 'admin/enquiry-requests/pan-india-wp-modal',
+                type: 'POST',
+                data: { 
+                    enquiry_id : enquiry_id ,
+                    current_status : '<?= $current_status ?>',
+                    <?= csrf_token() ?>: '<?= csrf_hash() ?>'
+                },
+                beforeSend: function () {
+                    // Show Bootstrap overlay
+                    $('#loadingOverlay').removeClass('d-none');
+                },
+
+                success: function (response) {
+
+                    // Hide overlay
+                    $('#loadingOverlay').addClass('d-none');
+
+                    // Remove any existing modal with same class
+                    $('.panIndiaWpModal').remove();
+
+                    // Remove any leftover Bootstrap backdrop
+                    // $('.modal-backdrop').remove();
+
+                    // Append the modal HTML to body
+                    $('body').append(response.html);
+
+                    // Initialize and show Bootstrap modal
+                    var myModal = new bootstrap.Modal(document.querySelector('.panIndiaWpModal'));
+                    myModal.show();
+
+                    // Optional: remove modal from DOM after hidden to prevent accumulation
+                    document.querySelector('.panIndiaWpModal').addEventListener('hidden.bs.modal', function () {
+                        $(this).remove();
+                    });
+
+                },
+                error: function (xhr) {
+                    $('#loadingOverlay').addClass('d-none');
+                    alert('Error Loading The data.');
+                    console.log(xhr);
+                }
+
+            });
+
+        });
+
+
+
+
+    });
+</script>
+
+
 <script type="text/javascript">
     $(function() {
 

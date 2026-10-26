@@ -181,6 +181,7 @@ class Home extends BaseController
             'E.enquiry_no',
             'E.status AS enquiry_status',
             'C.company_name',
+            'P.plant_name',
             'COUNT(DISTINCT SE.id) AS sub_enquiry_count',
             "GROUP_CONCAT(DISTINCT SE.sub_enquiry_no ORDER BY SE.sub_enquiry_no SEPARATOR ', ') AS sub_enquiry_nos",
             'COUNT(DISTINCT EP.id) AS enquiry_products_count',
@@ -192,15 +193,66 @@ class Home extends BaseController
         ]);
 
         $builder->join('ecoex_companies C', 'C.id = E.company_id', 'left');
+        $builder->join('ecomm_users P', 'P.id = E.plant_id', 'left');
         $builder->join('ecomm_sub_enquires SE', 'SE.enq_id = E.id', 'left');
         $builder->join('ecomm_enquiry_products EP', 'EP.enq_id = E.id', 'left');
 
-        $builder->where('E.status', 12);
+        $builder->where('E.status <=', 12);
         $builder->groupBy('E.id');
-        $builder->orderBy('E.id', 'ASC');
+        $builder->orderBy('E.id', 'DESC');
 
         $data['enqs'] = $builder->get()->getResult();
         return view('enquiry-list', $data);
+    }
+
+    public function enquiryMigration()
+    {
+        $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
+        $db = \Config\Database::connect();
+
+        if($this->request->getMethod() == 'post')
+        {
+            $ecomm_enquires = $db->table('ecomm_enquires')->where('enquiry_no', $this->request->getPost("enquiry_no"))->get()->getRow();
+            // dd($ecomm_enquires);
+            
+            $ecomm_sub_enquires = $db->table('ecomm_sub_enquires')->where('enq_id', $ecomm_enquires->id)->get()->getResult();
+            // dd($ecomm_sub_enquires);
+
+            foreach($ecomm_sub_enquires as $each_ecomm_sub_enquires)
+            {
+                $ecomm_company_items = $db->table('ecomm_company_items')->where('id', $each_ecomm_sub_enquires->item_id)->get()->getRow();
+                // dd($ecomm_company_items);
+
+                $insertion_data = [
+                    'enq_id' => $ecomm_enquires->id ,
+                    'plant_id' => $ecomm_enquires->plant_id ,
+                    'company_id' => $ecomm_enquires->company_id ,
+                    'sl_no' => $ecomm_enquires->sl_no ,
+                    'new_product' => 1 ,
+                    'product_id' => $each_ecomm_sub_enquires->item_id ,
+                    'hsn' => $ecomm_company_items->hsn ,
+                    'new_product_name' => $ecomm_company_items->item_name_ecoex ,
+                    'new_hsn' => $ecomm_company_items->hsn ,
+                    'new_product_image' => NULL ,
+                    'qty' => $each_ecomm_sub_enquires->weighted_qty ,
+                    'unit' => $ecomm_company_items->unit ,
+                    'remarks' => 'Approved By Admin' ,
+                    'status' => 1 ,
+                    'updated_at' => date('Y-m-d H:i:s') ,
+                ];
+
+                $db->table('ecomm_enquiry_products')->insert($insertion_data);
+
+            }
+
+
+            
+            $this->session->setFlashdata('success_message', count($ecomm_sub_enquires) .' Product Added Successfully!');
+         
+        }
+
+
+        return view('enquiry-migration', $data);
     }
 
     
@@ -578,188 +630,259 @@ class Home extends BaseController
 
 
 
+    
+
+
+
+
     // public function wpMessage()
     // {
-    //     $db = \Config\Database::connect();
 
-        
+    //     $data['general_settings'] = $this->common_model->find_data('general_settings', 'row');
+    //     $data['title']           = 'Wp Message - ' . $data['general_settings']->site_name;
+    //     $data['page_header']     = 'Wp Message';
 
-    //     $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
-    //     $data['title']              = 'Wp Message - ' . $data['general_settings']->site_name;
-    //     $data['page_header']        = 'Wp Message';
+    //     if ($this->request->getMethod() === 'post') {
+
+    //         $rules = [
+    //             'campaignName'  => 'required',
+    //             'destination'   => 'required',
+    //             'userName'      => 'required',
+    //         ];
+
+    //         if (!$this->validate($rules)) {
+    //             return redirect()->back()->with('error', 'Please fill all mandatory fields.');
+    //         }
+
+    //         $campaignName  = $this->request->getPost('campaignName');
+    //         $destination   = $this->request->getPost('destination');
+    //         $userName      = $this->request->getPost('userName');
+    //         // $source        = $this->request->getPost('source');
+
+    //         // TEMPLATE PARAMS (comma separated → array)
+    //         $templateParamsRaw = $this->request->getPost('templateParams');
+    //         $templateParams    = !empty($templateParamsRaw)
+    //             ? array_map('trim', explode(',', $templateParamsRaw))
+    //             : [];
+
+            
+    //         $media = null;
+    //         if (!empty($_FILES['image']['name'])) {
+
+    //             $fileName = $_FILES['image']['name'];
+
+    //             $upload = $this->common_model->upload_single_file(
+    //                 'image',
+    //                 $fileName,
+    //                 'wp_image',
+    //                 'image'
+    //             );
+
+    //             if ($upload['status'] == 1) {
+    //                 $imageName = $upload['newFilename'];
+    //                 $imageUrl  = base_url('public/uploads/wp_image/' . $imageName);
+
+    //                 $media = [
+    //                     'url'      => $imageUrl,
+    //                     'filename' => $imageName
+    //                 ];
+    //             } else {
+    //                 return redirect()->back()->with('error', $upload['message']);
+    //             }
+    //         }
+
+            
+    //         $payload = [
+    //             'apiKey'        => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUyNDRjN2VlMTE0MGY3OTQ5MmZiZSIsIm5hbWUiOiJLZXlsaW5lIERpZ2lUZWNoIFB2dC4gTHRkLiIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2N2U1MjQ0YzdlZTExNDBmNzk0OTJmYjgiLCJhY3RpdmVQbGFuIjoiTk9ORSIsImlhdCI6MTc0MzA3MDI4NH0.eFNVbyN63fAzdd_gtViD0JToL10R7nvgKiM6MFbQqow",
+    //             'campaignName'  => $campaignName,
+    //             'destination'   => $destination,
+    //             'userName'      => $userName,
+    //             // 'source'        => $source,
+    //         ];
+
+    //         if (!empty($templateParams)) {
+    //             $payload['templateParams'] = $templateParams;
+    //         }
+
+    //         if (!empty($media)) {
+    //             $payload['media'] = $media;
+    //         }
+
+    //         // dd($payload);
+            
+    //         $client = \Config\Services::curlrequest();
+
+    //         try {
+    //             $response = $client->post(
+    //                 'https://backend.api-wa.co/campaign/smartping/api/v2',
+    //                 [
+    //                     'headers' => [
+    //                         'Content-Type' => 'application/json',
+    //                     ],
+    //                     'json' => $payload,
+    //                     'http_errors' => false
+    //                 ]
+    //             );
+
+    //             $result = json_decode($response->getBody(), true);
+
+    //             if (isset($result['success']) && $result['success'] === "true") 
+    //             {
+    //                 // return redirect()->back()->with(
+    //                 //     'success',
+    //                 //     'WhatsApp message sent successfully. Message ID: ' . $result['submitted_message_id']
+    //                 // );
+    //                 return redirect()->back()->with(
+    //                     'success',
+    //                     'WhatsApp message sent successfully.'
+    //                 );
+
+
+    //             } else {
+    //                 return redirect()->back()->with('error', 'API Error: ' . $response->getBody());
+    //             }
+
+    //         } catch (\Exception $e) {
+    //             return redirect()->back()->with('error', $e->getMessage());
+    //         }
+    //     }
+
     //     return view('wp-message', $data);
     // }
 
 
     public function wpMessage()
     {
-        $db = \Config\Database::connect();
-        helper(['form']);
 
-        // Common data for GET & POST
         $data['general_settings'] = $this->common_model->find_data('general_settings', 'row');
-        $data['title']            = 'Wp Message - ' . $data['general_settings']->site_name;
-        $data['page_header']      = 'Wp Message';
+        $data['title']           = 'Wp Message - ' . $data['general_settings']->site_name;
+        $data['page_header']     = 'Wp Message';
 
-        // ---------- HANDLE FORM SUBMISSION ----------
-        if ($this->request->getMethod() === 'post') {
-
-            /* --------------------------
-            * 1. GET & VALIDATE INPUTS
-            * ------------------------------- */
-            $phoneNo = trim($this->request->getPost('phone_no'));
-
-            $phoneNo = preg_replace('/\D/', '', $phoneNo);
-            if (strlen($phoneNo) === 10) {
-                $phoneNo = '91' . $phoneNo;
-            }
-
-
-            $params = [];
-            for ($i = 1; $i <= 4; $i++) {
-                $paramVal = trim($this->request->getPost("param{$i}"));
-                if ($paramVal !== '') {
-                    $params[] = $paramVal;
-                }
-            }
-
-            // Image
-            $image = $this->request->getFile('image');
-
-            if (!$phoneNo || !$image->isValid()) {
-                return redirect()->back()->with('error', 'Phone number and image are mandatory');
-            }
-
-
-            /* -------------------------------
-            * 2. IMAGE UPLOAD
-            * ------------------------------- */
-            // $uploadPath = FCPATH . 'uploads/wp_image/';
-            // $uploadPath = getenv('app.uploadsURL'). 'wp_image/';
-
-            // if (!is_dir($uploadPath)) {
-            //     mkdir($uploadPath, 0755, true);
-            // }
-
-            // $newName = time() . '_' . $image->getRandomName();
-            // $image->move($uploadPath, $newName);
-
-            // if (!$image->hasMoved()) {
-            //     return redirect()->back()->with('error', 'Image upload failed');
-            // }
-
-            // // $imageUrl  = base_url('uploads/wp_image/' . $newName);
-            // $imageUrl  = getenv('app.uploadsURL').'wp_image/' . $newName;
-            // $imageName = $newName;
-
-            $fileName = $_FILES['image']['name'];
-
-            $upload = $this->common_model->upload_single_file(
-                'image',        // input field name
-                $fileName,      // original file name
-                'wp_image',     // folder inside public/uploads/
-                'image'         // upload type
-            );
-
-            if ($upload['status'] == 1) {
-
-                // SUCCESS
-                $imageName = $upload['newFilename'];
-
-                // save to DB example
-                $data = [
-                    'image' => $imageName
-                ];
-
-                // $this->common_model->insert_data('table_name', $data);
-
-            } else {
-
-                // ERROR
-                return redirect()->back()->with('error', $upload['message']);
-            }
-
-
-
-
-
-            /* -------------------------------
-            * 3. BUILD templateParams ARRAY
-            * ------------------------------- */
-            // WhatsApp API expects array values, not raw params
-            // If 2 params submitted → array length = 2
-            $templateParams = [];
-            foreach ($params as $p) {
-                $templateParams[] = $p;
-            }
-
-            /* -------------------------------
-            * 4. PREPARE API PAYLOAD
-            * ------------------------------- */
-            $payload = [
-                "apiKey"        => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUyNDRjN2VlMTE0MGY3OTQ5MmZiZSIsIm5hbWUiOiJLZXlsaW5lIERpZ2lUZWNoIFB2dC4gTHRkLiIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2N2U1MjQ0YzdlZTExNDBmNzk0OTJmYjgiLCJhY3RpdmVQbGFuIjoiTk9ORSIsImlhdCI6MTc0MzA3MDI4NH0.eFNVbyN63fAzdd_gtViD0JToL10R7nvgKiM6MFbQqow",
-                "campaignName"  => "ecoex-test",
-                "destination"   => $phoneNo,
-                "userName"      => "Keyline DigiTech Pvt. Ltd.",
-                "templateParams"=> $templateParams,
-                "source"        => "new-landing-page form",
-                "media"         => [
-                    "url"      => $imageUrl,
-                    "filename" => $imageName
-                ],
-                "buttons"       => [],
-                "carouselCards" => [],
-                "location"      => (object)[],
-                "attributes"    => (object)[],
-                "paramsFallbackValue" => [
-                    "FirstName" => "user"
-                ]
+        if ($this->request->is('post')) 
+        {
+            $rules = [
+                'campaignName'    => 'required',
+                'destination'     => 'required',
+                'userName'        => 'required',
+                'templateParams'  => 'required',
             ];
 
-            dd($payload);
-
-            /* -------------------------------
-            * 5. SEND CURL REQUEST
-            * ------------------------------- */
-            $ch = curl_init();
-
-            curl_setopt_array($ch, [
-                CURLOPT_URL            => "https://backend.api-wa.co/campaign/smartping/api/v2",
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_POST           => true,
-                CURLOPT_HTTPHEADER     => [
-                    "Content-Type: application/json"
-                ],
-                CURLOPT_POSTFIELDS     => json_encode($payload)
-            ]);
-
-            $response = curl_exec($ch);
-            $curlError = curl_error($ch);
-            $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-            curl_close($ch);
-
-            if ($curlError) {
-                return redirect()->back()->with('error', 'Curl Error: ' . $curlError);
+            if (!$this->validate($rules)) {
+                return redirect()->back()->with('error', 'Please fill all mandatory fields.');
             }
 
-            $responseData = json_decode($response, true);
+            $campaignName  = $this->request->getPost('campaignName');
+            $destination   = $this->request->getPost('destination');
+            $userName      = $this->request->getPost('userName');
+            // $source        = $this->request->getPost('source');
 
-            // DEBUG (temporarily)
-            // log_message('error', print_r($responseData, true));
+            // TEMPLATE PARAMS (comma separated → array)
+            $templateParamsRaw = $this->request->getPost('templateParams');
+            $templateParams    = !empty($templateParamsRaw)
+                ? array_map('trim', explode(',', $templateParamsRaw))
+                : [];
 
-            if ($httpCode !== 200 || empty($responseData) || (isset($responseData['success']) && $responseData['success'] === false)) {
-                return redirect()->back()->with(
-                    'error',
-                    'WhatsApp API Error: ' . ($responseData['message'] ?? 'Unknown error')
+            
+            $media = null;
+            if (!empty($_FILES['image']['name'])) 
+            {
+
+                $fileName = $_FILES['image']['name'];
+
+                $upload = $this->common_model->upload_single_file(
+                    'image',
+                    $fileName,
+                    'wp_image',
+                    'image'
                 );
+
+                if ($upload['status'] == 1) {
+                    $imageName = $upload['newFilename'];
+                    $imageUrl  = base_url('public/uploads/wp_image/' . $imageName);
+
+                    $media = [
+                        'url'      => $imageUrl,
+                        'filename' => $imageName
+                    ];
+                } else {
+                    return redirect()->back()->with('error', $upload['message']);
+                }
+            }
+            else
+            {
+                return redirect()->back()->with('error', 'Please Upload An Image');
             }
 
-            return redirect()->back()->with('success', 'WhatsApp message sent successfully');
 
+            // destination (comma separated → array)
+            $destinationRaw = $this->request->getPost('destination');
+            $destinationArr    = !empty($destinationRaw)
+                ? array_map('trim', explode(',', $destinationRaw))
+                : [];
+
+            foreach($destinationArr as $key => $eachDestination)
+            {
+                // dd($eachDestination);
+                $payload = [
+                    'apiKey'        => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTUyNDRjN2VlMTE0MGY3OTQ5MmZiZSIsIm5hbWUiOiJLZXlsaW5lIERpZ2lUZWNoIFB2dC4gTHRkLiIsImFwcE5hbWUiOiJBaVNlbnN5IiwiY2xpZW50SWQiOiI2N2U1MjQ0YzdlZTExNDBmNzk0OTJmYjgiLCJhY3RpdmVQbGFuIjoiTk9ORSIsImlhdCI6MTc0MzA3MDI4NH0.eFNVbyN63fAzdd_gtViD0JToL10R7nvgKiM6MFbQqow",
+                    'campaignName'  => $campaignName,
+                    'destination'   => $eachDestination,
+                    'userName'      => $userName,
+                    // 'source'        => $source,
+                ];
+    
+                if (!empty($templateParams)) {
+                    $payload['templateParams'] = $templateParams;
+                }
+    
+                if (!empty($media)) {
+                    $payload['media'] = $media;
+                }
+    
+                // dd($payload);
+                
+                $client = \Config\Services::curlrequest();
+    
+                try {
+                    $response = $client->post(
+                        'https://backend.api-wa.co/campaign/smartping/api/v2',
+                        [
+                            'headers' => [
+                                'Content-Type' => 'application/json',
+                            ],
+                            'json' => $payload,
+                            'http_errors' => false
+                        ]
+                    );
+    
+                    $result = json_decode($response->getBody(), true);
+    
+                    if (isset($result['success']) && $result['success'] === "true") 
+                    {
+                        // return redirect()->back()->with(
+                        //     'success',
+                        //     'WhatsApp message sent successfully. Message ID: ' . $result['submitted_message_id']
+                        // );
+                        
+                        continue;
+    
+    
+                    } else {
+                        return redirect()->back()->with('error', 'API Error: ' . $response->getBody());
+                    }
+    
+                } catch (\Exception $e) {
+                    return redirect()->back()->with('error', $e->getMessage());
+                }
+                
+            }
+
+            return redirect()->back()->with('success','WhatsApp message sent successfully.');
+
+
+            
         }
 
-        // ---------- LOAD VIEW (GET REQUEST) ----------
         return view('wp-message', $data);
     }
 

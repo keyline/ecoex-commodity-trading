@@ -67,16 +67,16 @@ class SubscribersController extends BaseController {
         {
             $validation = \Config\Services::validation();
             $validation->setRules([
-                'email' => [
-                    'label' => 'Email',
-                    'rules' => 'max_length[255]',
-                    'errors' => [
-                        // 'required' => 'Email is required.',
-                        // 'valid_email' => 'Please enter a valid email address.',
-                        // 'is_unique' => 'This email is already subscribed.',
-                        // 'max_length' => 'Email cannot exceed 255 characters.'
-                    ]
-                ],
+                // 'email' => [
+                //     'label' => 'Email',
+                //     'rules' => 'max_length[255]',
+                //     'errors' => [
+                //         // 'required' => 'Email is required.',
+                //         // 'valid_email' => 'Please enter a valid email address.',
+                //         // 'is_unique' => 'This email is already subscribed.',
+                //         // 'max_length' => 'Email cannot exceed 255 characters.'
+                //     ]
+                // ],
                 'name' => [
                     'label' => 'Name',
                     'rules' => 'required|max_length[100]',
@@ -114,6 +114,7 @@ class SubscribersController extends BaseController {
                     'phone' => $this->request->getPost('phone'),
                     'type' => $this->request->getPost('type'),
                     'state' => $this->request->getPost('state'),
+                    'remarks' => $this->request->getPost('remarks'),
                     'created_at' => date('Y-m-d H:i:s'),
                 ];
                 $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
@@ -148,16 +149,16 @@ class SubscribersController extends BaseController {
         if($this->request->getMethod() == 'post') {
             $validation = \Config\Services::validation();
             $validation->setRules([
-                'email' => [
-                    'label' => 'Email',
-                    'rules' => "valid_email|max_length[255],id,{$id}]",
-                    'errors' => [
-                        // 'required' => 'Email is required.',
-                        'valid_email' => 'Please enter a valid email address.',
-                        // 'is_unique' => 'This email is already subscribed.',
-                        'max_length' => 'Email cannot exceed 255 characters.'
-                    ]
-                ],
+                // 'email' => [
+                //     'label' => 'Email',
+                //     'rules' => "valid_email|max_length[255]",
+                //     'errors' => [
+                //         // 'required' => 'Email is required.',
+                //         // 'valid_email' => 'Please enter a valid email address.',
+                //         // 'is_unique' => 'This email is already subscribed.',
+                //         'max_length' => 'Email cannot exceed 255 characters.'
+                //     ]
+                // ],
                 'name' => [
                     'label' => 'Name',
                     'rules' => 'required|max_length[100]',
@@ -195,9 +196,10 @@ class SubscribersController extends BaseController {
                     'phone' => $this->request->getPost('phone'),
                     'type' => $this->request->getPost('type'),
                     'state' => $this->request->getPost('state'),
+                    'remarks' => $this->request->getPost('remarks'),
                     'updated_at' => date('Y-m-d H:i:s'),
                 ];
-                $this->data['model']->save_data($this->data['table_name'], $postData, '', $this->data['primary_key']);
+                $this->data['model']->save_data($this->data['table_name'], $postData, $id, $this->data['primary_key']);
                 $this->session->setFlashdata('success_message', $this->data['title'].' updated successfully');
                 return redirect()->to('/admin/'.$this->data['controller_route'].'/list');
             }

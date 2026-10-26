@@ -207,6 +207,7 @@ $primary_key        = $moduleDetail['primary_key'];
 $controller_route   = $moduleDetail['controller_route'];
 $userType           = $session->user_type;
 
+// pr(session()->get());die;
 
 $request_edit_fields = [
     'item_name' => 'Item Name',
@@ -297,9 +298,13 @@ $request_edit_fields = [
                     <div class="card-body">
                         <div class="row mt-3">
                             <div class="col-md-12 mb-3">
+                                <?php
+                                $getPlant = $common_model->find_data('ecomm_users', 'row', ['id' => $row->plant_id], 'state, company_name');
+                                $plant_state_name = (($getPlant)?$getPlant->state:'');
+                                ?>
                                 <?php if ($row->status == 0) { ?>
                                     <?php if ($common_model->checkModuleFunctionAccess(23, 110)) { ?>
-                                        <a href="<?= base_url('admin/' . $controller_route . '/accept-request/' . encoded($row->$primary_key)) ?>" class="btn btn-success btn-sm" title="Accept <?= $title ?>" onclick="return confirm('Do You Want To Accept This <?= $title ?>');"><i class="fa fa-check"></i> Click To Accept</a>
+                                        <a href="<?= base_url('admin/' . $controller_route . '/accept-request/' . encoded($row->$primary_key). '/' . encoded($plant_state_name)) ?>" class="btn btn-success btn-sm" title="Accept <?= $title ?>" onclick="return confirm('Do You Want To Accept This <?= $title ?>');"><i class="fa fa-check"></i> Click To Accept</a>
                                     <?php } ?>
                                     <?php if ($common_model->checkModuleFunctionAccess(23, 111)) { ?>
                                         <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Reject <?= $title ?>" onclick="getRejectModal(<?= $row->$primary_key ?>);"><i class="fa fa-times"></i> Click To Reject</a>
@@ -622,7 +627,6 @@ $request_edit_fields = [
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                    // pr($enquiryProducts);
                                                     if ($enquiryProducts) {
                                                         $slNo = 1;
                                                         foreach ($enquiryProducts as $enquiryProduct) {
@@ -693,7 +697,7 @@ $request_edit_fields = [
                                                                 <td>
                                                                     <?php
 
-                                                                    $unit               = $common_model->find_data('ecomm_units', 'row', ['id' => $getItem->unit], 'name');
+                                                                    $unit               = $common_model->find_data('ecomm_units', 'row', ['id' => (($getItem)?$getItem->unit:0)], 'name');
                                                                     echo (($unit) ? $unit->name : '');
                                                                     ?>
                                                                 </td>
@@ -723,9 +727,11 @@ $request_edit_fields = [
                                                                             data-category="<?= $getItem->item_category ?>"
                                                                             data-unit="<?= $getItem->unit ?>">
                                                                             <i class="fas fa-pencil-alt"></i> Edit</span>
-                                                                            <?php } if ($common_model->checkModuleFunctionAccess(23, 157)) { ?>
-                                                                            <span><a href="<?= base_url('admin/' . $controller_route . '/enquiry-item/delete/' . encoded($getItem->id) . '/'. encoded($row->id)) ?>" class="badge  bg-danger btn-sm" title="Delete <?= $title ?>" onclick="return confirm('Do You Want To Delete This <?= $title ?>');"><i class="fa fa-trash"></i> Delete</a></span>
-                                                                            <?php } ?>
+                                                                             <?php } if ($common_model->checkModuleFunctionAccess(23, 157)) { ?>
+                                                                                <span>
+                                                                                    <a href="<?= base_url('admin/' . $controller_route . '/enquiry-item/delete/' . encoded($getItem->id) . '/'. encoded($row->id)) ?>" class="badge  bg-danger btn-sm" title="Delete ?= $title ?>" onclick="return confirm('Do You Want To Delete This Item From This Enquiry ?');"><i class="fa fa-trash"></i> Delete</a>
+                                                                                </span>
+                                                                            <?php } ?> 
                                                                     </td>
                                                                 <?php endif; ?>
                                                             </tr>
@@ -911,7 +917,7 @@ $request_edit_fields = [
                                                         <tr>
                                                             <th>Company</th>
                                                             <th>Plant</th>
-                                                            <th>Vendor</th>
+                                                            <!-- <th>Vendor</th> -->
                                                             <th>Is Quit</th>
                                                         </tr>
                                                     </thead>
@@ -919,7 +925,7 @@ $request_edit_fields = [
                                                         <tr>
                                                             <td><?= (($getCompany) ? $getCompany->company_name : '') ?></td>
                                                             <td><?= (($getPlant) ? $getPlant->plant_name : '') ?></td>
-                                                            <td><?= (($getVendor) ? $getVendor->company_name : '') ?></td>
+                                                            <!-- <td>?= (($getVendor) ? $getVendor->company_name : '') ?></td> -->
                                                             <td>
                                                                 <?php if ($subenquiry->is_vendor_quit) { ?>
                                                                     <a href="<?= base_url('admin/enquiry-requests/sub-enquiry-quit/' . $subenquiry->is_vendor_quit . '/' . $subenquiry->sub_enquiry_no . '/' . $subenquiry->enq_id) ?>" class="badge bg-danger">Click to cancel quit</a>
@@ -1053,23 +1059,23 @@ $request_edit_fields = [
                                                                     <tr>
                                                                         <th>#</th>
                                                                         <th>Vehicle Number</th>
-                                                                        <th>Vehicle Images</th>
+                                                                        <!-- <th>Vehicle Images</th> -->
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
                                                                     <?php
                                                                     $no_of_vehicle                      = (($subenquiry) ? $subenquiry->no_of_vehicle : 0);
                                                                     $vehicle_registration_nos           = (($subenquiry) ? json_decode($subenquiry->vehicle_registration_nos) : []);
-                                                                    $vehicle_images                     = (($subenquiry) ? json_decode($subenquiry->vehicle_images) : []);
+                                                                    $vehicle_images                     = (($subenquiry) ? (($subenquiry->vehicle_images != '')?json_decode($subenquiry->vehicle_images):[]) : []);
                                                                     $vehicles                           = [];
                                                                     if ($no_of_vehicle > 0) {
                                                                         for ($v = 0; $v < $no_of_vehicle; $v++) {
                                                                             $vehImags = [];
-                                                                            if (count($vehicle_images[$v])) {
-                                                                                for ($p = 0; $p < count($vehicle_images[$v]); $p++) {
-                                                                                    $vehImags[] = base_url('public/uploads/enquiry/' . $vehicle_images[$v][$p]);
-                                                                                }
-                                                                            }
+                                                                            // if (count($vehicle_images[$v])) {
+                                                                            //     for ($p = 0; $p < count($vehicle_images[$v]); $p++) {
+                                                                            //         $vehImags[] = base_url('public/uploads/enquiry/' . $vehicle_images[$v][$p]);
+                                                                            //     }
+                                                                            // }
                                                                             $vehicles[] = [
                                                                                 'vehicle_no'    => $vehicle_registration_nos[$v],
                                                                                 'vehicle_img'   => $vehImags,
@@ -1084,7 +1090,7 @@ $request_edit_fields = [
                                                                             <tr>
                                                                                 <td><?= $sl++ ?></td>
                                                                                 <td><?= $vehicle['vehicle_no'] ?></td>
-                                                                                <td>
+                                                                                <!-- <td>
                                                                                     <div class="row">
 
                                                                                         <?php if ($vehicle['vehicle_img']) {
@@ -1095,7 +1101,7 @@ $request_edit_fields = [
                                                                                         <?php }
                                                                                         } ?>
                                                                                     </div>
-                                                                                </td>
+                                                                                </td> -->
                                                                             </tr>
                                                                     <?php }
                                                                     } ?>
@@ -1135,17 +1141,20 @@ $request_edit_fields = [
                                                                             <?php endif; ?>
 
                                                                             <td class="key">
-                                                                                <span><?= $vendor->company_name ?> (vendor)</span>
+                                                                                <?php if($userType != 'COMPANY'){?>
+                                                                                    <span><?= $vendor->company_name ?> (vendor)</span>
+                                                                                
 
-                                                                                <?php if ($vendor->material_weighing_edit_vendor == 1) { ?>
-                                                                                    <a href="<?= base_url('admin/enquiry-requests/material-weighted-access/' . encoded($enq_id) . '/' . encoded($vendor->vendor_id)) ?>" title="Access Open" onclick="return confirm('Do you want to access close of weighted info submit for this vendor ?');"><i class="fas fa-unlock text-success"></i></a>
-                                                                                <?php } else { ?>
-                                                                                    <a href="<?= base_url('admin/enquiry-requests/material-weighted-access/' . encoded($enq_id) . '/' . encoded($vendor->vendor_id)) ?>" title="Access Close" onclick="return confirm('Do you want to access open weighted info submit for this vendor ?');"><i class="fas fa-lock text-danger"></i></a>
-                                                                                <?php } ?>
-
-                                                                                <p>
-                                                                                    <a class="badge bg-success"><small>Submitted : <?= $vendor->submitted_times ?> time(s)</small></a>
-                                                                                </p>
+                                                                                    <?php if ($vendor->material_weighing_edit_vendor == 1) { ?>
+                                                                                        <a href="<?= base_url('admin/enquiry-requests/material-weighted-access/' . encoded($enq_id) . '/' . encoded($vendor->vendor_id)) ?>" title="Access Open" onclick="return confirm('Do you want to access close of weighted info submit for this vendor ?');"><i class="fas fa-unlock text-success"></i></a>
+                                                                                    <?php } else { ?>
+                                                                                        <a href="<?= base_url('admin/enquiry-requests/material-weighted-access/' . encoded($enq_id) . '/' . encoded($vendor->vendor_id)) ?>" title="Access Close" onclick="return confirm('Do you want to access open weighted info submit for this vendor ?');"><i class="fas fa-lock text-danger"></i></a>
+                                                                                    <?php } ?>
+                                                                                
+                                                                                    <p>
+                                                                                        <a class="badge bg-success"><small>Submitted : <?= $vendor->submitted_times ?> time(s)</small></a>
+                                                                                    </p>
+                                                                                <?php }?>
                                                                             </td>
                                                                         <?php endforeach; ?>
                                                                             </tr>
@@ -1190,49 +1199,44 @@ $request_edit_fields = [
                                                                                 $select,                // select
                                                                                 $join                   // join
                                                                             );
-                                                                            // echo "<pre>";
-                                                                            // print_r($materialWeights);die;
                                                                             ?>
                                                                             <?php if ($materialWeights) {
                                                                                 $sl = 1;
                                                                                 foreach ($materialWeights as $materialWeight) {
                                                                             ?>
                                                                                     <?php
-                                                                                    // var_dump($materialWeight->company_name);
-                                                                                    // var_dump($materialWeight->material_weighing_edit_vendor_attempts);
                                                                                     $getItem = $common_model->find_data('ecomm_company_items', 'row', ['id' => $materialWeight->item_id], 'item_name_ecoex,hsn,alias_name,billing_name');
+                                                                                    $getEnqItemCount = $common_model->find_data('ecomm_enquiry_products', 'count', ['product_id' => $materialWeight->item_id, 'status' => 1, 'enq_id' => $materialWeight->enq_id]);
+                                                                                    if($getEnqItemCount > 0){
                                                                                     ?>
-
-
-                                                                                    <tr>
-
-                                                                                        <td><?= $sl++ ?></td>
-                                                                                        <td><?= (($getItem) ? $getItem->item_name_ecoex : '') ?></td>
-                                                                                        <td><?= (($getItem) ? $getItem->alias_name : '') ?></td>
-                                                                                        <td><?= (($getItem) ? $getItem->billing_name : '') ?></td>
-                                                                                        <td>
-                                                                                            <span class="weight-label"><?= $materialWeight->weighted_qty ?></span>
-                                                                                            <input type="text" name="weighted_qty[]" class="form-control weight-value" value="<?= $materialWeight->weighted_qty ?>" style="display: none;">
-                                                                                            <?= $materialWeight->weighted_unit ?>
-                                                                                        </td>
-                                                                                        <td><?= (($materialWeight->material_weight_vendor_date != '') ? date_format(date_create($materialWeight->material_weight_vendor_date), "M d, Y h:i A") : '') ?></td>
-                                                                                        <td><?= (($materialWeight->material_weight_plant_date != '') ? date_format(date_create($materialWeight->material_weight_plant_date), "M d, Y h:i A") : '') ?></td>
-                                                                                        <td>
-                                                                                            <div class="row">
-                                                                                                <?php
-                                                                                                $material_weighing_slips = json_decode($materialWeight->material_weighing_slips);
-                                                                                                ?>
-                                                                                                <?php if ($material_weighing_slips) {
-                                                                                                    for ($v = 0; $v < count($material_weighing_slips); $v++) { ?>
-                                                                                                        <div class="col-md-6 popup_gallery">
-                                                                                                            <a href="<?= getenv('app.uploadsURL') . 'enquiry/' . $material_weighing_slips[$v] ?>" download><img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $material_weighing_slips[$v] ?>" class="img-thumbnail" style="height:100px;width: 100px;"></a>
-                                                                                                        </div>
-                                                                                                <?php }
-                                                                                                } ?>
-                                                                                            </div>
-                                                                                        </td>
-
-                                                                                    </tr>
+                                                                                        <tr>
+                                                                                            <td><?= $sl++ ?></td>
+                                                                                            <td><?= (($getItem) ? $getItem->item_name_ecoex : '') ?></td>
+                                                                                            <td><?= (($getItem) ? $getItem->alias_name : '') ?></td>
+                                                                                            <td><?= (($getItem) ? $getItem->billing_name : '') ?></td>
+                                                                                            <td>
+                                                                                                <span class="weight-label"><?= $materialWeight->weighted_qty ?></span>
+                                                                                                <input type="text" name="weighted_qty[]" class="form-control weight-value" value="<?= $materialWeight->weighted_qty ?>" style="display: none;">
+                                                                                                <?= $materialWeight->weighted_unit ?>
+                                                                                            </td>
+                                                                                            <td><?= (($materialWeight->material_weight_vendor_date != '') ? date_format(date_create($materialWeight->material_weight_vendor_date), "M d, Y h:i A") : '') ?></td>
+                                                                                            <td><?= (($materialWeight->material_weight_plant_date != '') ? date_format(date_create($materialWeight->material_weight_plant_date), "M d, Y h:i A") : '') ?></td>
+                                                                                            <td>
+                                                                                                <div class="row">
+                                                                                                    <?php
+                                                                                                    $material_weighing_slips = json_decode($materialWeight->material_weighing_slips);
+                                                                                                    ?>
+                                                                                                    <?php if ($material_weighing_slips) {
+                                                                                                        for ($v = 0; $v < count($material_weighing_slips); $v++) { ?>
+                                                                                                            <div class="col-md-6 popup_gallery">
+                                                                                                                <a href="<?= getenv('app.uploadsURL') . 'enquiry/' . $material_weighing_slips[$v] ?>" download><img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $material_weighing_slips[$v] ?>" class="img-thumbnail" style="height:100px;width: 100px;"></a>
+                                                                                                            </div>
+                                                                                                    <?php }
+                                                                                                    } ?>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    <?php }?>
                                                                             <?php }
                                                                             } ?>
                                                                             <?php if ($subenquiry->is_plant_ecoex_confirm <= 0) { ?>
@@ -1477,13 +1481,15 @@ $request_edit_fields = [
                                                                             <h6>Payment Mode : <?= $subenquiry->payment_mode ?></h6>
                                                                             <?php if ($subenquiry->payment_mode != 'CASH') { ?>
                                                                                 <h6>Transaction No. : <?= $subenquiry->txn_no ?></h6>
-                                                                                <h6>Transaction Screenshot :
-                                                                                    <div class="popup_gallery">
-                                                                                        <a target="_blank" href="<?= getenv('app.uploadsURL') . 'enquiry/' . $subenquiry->txn_screenshot ?>">
-                                                                                            <img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $subenquiry->txn_screenshot ?>" style="width: 200px; height: 200px;">
-                                                                                        </a>
-                                                                                    </div>
-                                                                                </h6>
+                                                                                <?php if($subenquiry->txn_screenshot != ''){?>
+                                                                                    <h6>Transaction Screenshot :
+                                                                                        <div class="popup_gallery">
+                                                                                            <a target="_blank" href="<?= getenv('app.uploadsURL') . 'enquiry/' . $subenquiry->txn_screenshot ?>">
+                                                                                                <img src="<?= getenv('app.uploadsURL') . 'enquiry/' . $subenquiry->txn_screenshot ?>" style="width: 200px; height: 200px;">
+                                                                                            </a>
+                                                                                        </div>
+                                                                                    </h6>
+                                                                                <?php } ?>
                                                                             <?php } ?>
                                                                         <?php } ?>
                                                                     </div>

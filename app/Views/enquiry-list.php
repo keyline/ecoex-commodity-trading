@@ -54,6 +54,7 @@ $this->common_model         = new CommonModel;
                             <th>#</th>
                             <th>Enquiry No.</th>
                             <th>Company</th>
+                            <th>Plant</th>
                             <th>Sub Enquiry Count</th>
                             <th>Sub Enquiries</th>
                             <th>Item Count</th>
@@ -64,26 +65,24 @@ $this->common_model         = new CommonModel;
                     <tbody>
                         <?php
                         $sl=1;
-                        $withoutProductEnquiryCount = 0;
                         if($enqs){ foreach($enqs as $enq){
                             if($enq->enquiry_products_count <= 0){
-                                $withoutProductEnquiryCount++;
-                            }
                         ?>
-                        <tr>
-                            <td><?= $sl++ ?></td>
-                            <td><?= $enq->enquiry_no ?></td>
-                            <td><?= $enq->company_name ?></td>
-                            <td><?= $enq->sub_enquiry_count ?></td>
-                            <td><?= $enq->sub_enquiry_nos ?></td>
-                            <td <?= (($enq->enquiry_products_count <= 0)?'style="background-color:red;"':'') ?>><?= $enq->enquiry_products_count ?></td>
-                            <td><?= $enq->enquiry_product_name_list ?></td>
-                            <td><?= $enq->enquiry_status ?></td>
-                        </tr>
+                                <tr>
+                                    <td><?= $sl++ ?></td>
+                                    <td><?= $enq->enquiry_no ?></td>
+                                    <td><?= $enq->company_name ?></td>
+                                    <td><?= $enq->plant_name ?></td>
+                                    <td><?= $enq->sub_enquiry_count ?></td>
+                                    <td><?= $enq->sub_enquiry_nos ?></td>
+                                    <td <?= (($enq->enquiry_products_count <= 0)?'style="background-color:red;"':'') ?>><?= $enq->enquiry_products_count ?></td>
+                                    <td><?= $enq->enquiry_product_name_list ?></td>
+                                    <td><?= $enq->enquiry_status ?></td>
+                                </tr>
+                            <?php }?>
                         <?php } }?>
                     </tbody>
                 </table>
-                <h6>Without product enquiry count : <?= $withoutProductEnquiryCount ?></h6>
             </div>
         </div>
     </div>

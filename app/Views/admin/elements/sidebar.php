@@ -84,9 +84,12 @@ if ($userType == 'MA') {
     // 1️⃣ Define reusable function
     function filterByPlantId($dataArray, $plantIds)
     {
-        $filtered = array_filter($dataArray, function($item) use ($plantIds) {
-            return in_array($item->plant_id, $plantIds); // use array key since find_data returns array
-        });
+        $filtered = [];
+        if(!empty($plantIds)){
+            $filtered = array_filter($dataArray, function($item) use ($plantIds) {
+                return in_array($item->plant_id, $plantIds); // use array key since find_data returns array
+            });
+        }
 
         return array_values($filtered);
     }
@@ -123,18 +126,18 @@ if ($userType == 'MA') {
                 </a>
                 <ul id="access-nav" class="nav-content collapse <?= (($pageSegment == 'features' || $pageSegment == 'modules' || $pageSegment == 'roles' || $pageSegment == 'sub-users') ? 'show' : '') ?>" data-bs-parent="#sidebar-nav">
                     <?php if ($common_model->checkModuleAccess(3)) { ?>
-                        <li>
+                        <!-- <li>
                             <a class="<?= (($pageSegment == 'features') ? 'active' : '') ?>" href="<?= base_url('admin/features/list') ?>">
                                 <i class="fa fa-arrow-right"></i><span>Features</span>
                             </a>
-                        </li>
+                        </li> -->
                     <?php } ?>
                     <?php if ($common_model->checkModuleAccess(4)) { ?>
-                        <li>
+                        <!-- <li>
                             <a class="<?= (($pageSegment == 'modules') ? 'active' : '') ?>" href="<?= base_url('admin/modules/list') ?>">
                                 <i class="fa fa-arrow-right"></i><span>Modules</span>
                             </a>
-                        </li>
+                        </li> -->
                     <?php } ?>
                     <?php if ($common_model->checkModuleAccess(5)) { ?>
                         <li>
@@ -340,11 +343,11 @@ if ($userType == 'MA') {
                         <i class="fa fa-arrow-right"></i><span>Vendor Assigned (<?= $step3_count ?>)</span>
                     </a>
                 </li>
-                <li>
+                <!-- <li>
                     <a class="<?= ((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 4)) ? 'active' : '') ?>" href="<?= base_url('admin/enquiry-requests/list/' . encoded(4)) ?>">
                         <i class="fa fa-arrow-right"></i><span>Pickup Scheduled (<?= $step4_count ?>)</span>
                     </a>
-                </li>
+                </li> -->
                 <li>
                     <a class="<?= ((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 5)) ? 'active' : '') ?>" href="<?= base_url('admin/enquiry-requests/list/' . encoded(5)) ?>">
                         <i class="fa fa-arrow-right"></i><span>Vehicle Placed (<?= $step5_count ?>)</span>
@@ -362,7 +365,7 @@ if ($userType == 'MA') {
                         <i class="fa fa-arrow-right"></i><span>Invoice From HO (<?= $step7_count ?>)</span>
                     </a>
                 </li>
-                <?php if ($userType == 'MA') { ?>
+                <?php //if ($userType == 'MA') { ?>
                     <li>
                         <a class="<?= ((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 8)) ? 'active' : '') ?>" href="<?= base_url('admin/enquiry-requests/list/' . encoded(8)) ?>">
                             <i class="fa fa-arrow-right"></i><span>Invoice to Vendor (<?= $step8_count ?>)</span>
@@ -373,7 +376,7 @@ if ($userType == 'MA') {
                             <i class="fa fa-arrow-right"></i><span>Payment received from Vendor (<?= $step9_count ?>)</span>
                         </a>
                     </li>
-                <?php } ?>
+                <?php //} ?>
                 <li>
                     <a class="<?= ((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 10)) ? 'active' : '') ?>" href="<?= base_url('admin/enquiry-requests/list/' . encoded(10)) ?>">
                         <i class="fa fa-arrow-right"></i><span>Vehicle Dispatched (<?= $step10_count ?>)</span>
@@ -390,13 +393,13 @@ if ($userType == 'MA') {
                         <i class="fa fa-arrow-right"></i><span>Order Complete (<?= $step12_count ?>)</span>
                     </a>
                 </li>
-                <?php if ($userType == 'MA') { ?>
+                <?php //if ($userType == 'MA') { ?>
                     <li>
                         <a class="<?= ((($pageSegment == 'enquiry-requests') && (decoded($paramerId) == 13)) ? 'active' : '') ?>" href="<?= base_url('admin/enquiry-requests/list/' . encoded(13)) ?>">
                             <i class="fa fa-arrow-right"></i><span>Reject Request (<?= $step13_count ?>)</span>
                         </a>
                     </li>
-                <?php } ?>
+                <?php //} ?>
             </ul>
         </li>
     <?php } ?>
