@@ -758,7 +758,7 @@ class Home extends BaseController
         $data['title']           = 'Wp Message - ' . $data['general_settings']->site_name;
         $data['page_header']     = 'Wp Message';
 
-        if ($this->request->getMethod() === 'post') 
+        if ($this->request->is('post')) 
         {
             $rules = [
                 'campaignName'    => 'required',

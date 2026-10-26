@@ -35,6 +35,14 @@ require FCPATH . 'app/Config/Paths.php';
 
 $paths = new Config\Paths();
 
+// CodeIgniter 4.5+ boots through Boot.php; older installations use bootstrap.php.
+$bootFile = rtrim($paths->systemDirectory, '\\/ ') . DIRECTORY_SEPARATOR . 'Boot.php';
+if (is_file($bootFile)) {
+    require $bootFile;
+
+    exit(CodeIgniter\Boot::bootWeb($paths));
+}
+
 // Location of the framework bootstrap file.
 require rtrim($paths->systemDirectory, '\\/ ') . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
