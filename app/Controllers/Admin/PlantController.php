@@ -802,7 +802,7 @@ class PlantController extends BaseController
         $orderBy2[0]                = ['field' => 'item_name_ecoex', 'type' => 'ASC'];
         $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => $parent_id], 'id,item_name_ecoex', '', '', $orderBy2);
 
-        if ($this->request->getMethod() == 'post') {
+        if (strtolower($this->request->getMethod()) === 'post') {
             $item_id            = $this->request->getPost('item_id');
             $qty                = $this->request->getPost('qty');
             $uploadedFiles      = $this->request->getFileMultiple('new_product_image');
