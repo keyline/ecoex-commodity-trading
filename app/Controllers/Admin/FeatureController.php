@@ -38,7 +38,7 @@ class FeatureController extends BaseController {
         $title                      = $data['action'].' '.$this->data['title'];
         $page_name                  = 'feature/add-edit';        
         $data['row']                = [];
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             $postData   = array(
                 'feature_name'          => strtoupper($this->request->getPost('feature_name')),
             );
@@ -58,7 +58,7 @@ class FeatureController extends BaseController {
         $conditions                 = array($this->data['primary_key']=>$id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
 
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             $postData   = array(
                 'feature_name'          => strtoupper($this->request->getPost('feature_name')),
             );

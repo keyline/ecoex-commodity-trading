@@ -52,7 +52,7 @@ class MemberTypeController extends BaseController {
         $title                      = $data['action'].' '.$this->data['title'];
         $page_name                  = 'member-types/add-edit';        
         $data['row']                = [];
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             $postData   = array(
                 'name'          => strtoupper($this->request->getPost('name')),
                 'created_by'    => $this->session->get('user_id'),
@@ -80,7 +80,7 @@ class MemberTypeController extends BaseController {
         $conditions                 = array($this->data['primary_key']=>$id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
 
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             $postData   = array(
                 'name'          => strtoupper($this->request->getPost('name')),
                 'updated_by'    => $this->session->get('user_id'),

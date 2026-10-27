@@ -1320,7 +1320,7 @@ class CertificateController extends BaseController
         $data['enquiry_id']         = $enquiry_id;
         $data['enquiry_data']       = $this->certificateModel->getCertificateByEnquiry($enquiry_id);
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             pr($this->request->getPost());
         }
         echo $this->layout_after_login($title, $page_name, $data);

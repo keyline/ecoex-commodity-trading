@@ -67,7 +67,7 @@ class CompanyController extends BaseController
         $title                      = $data['action'] . ' ' . $this->data['title'];
         $page_name                  = 'company/add-edit';
         $data['row']                = [];
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             /* profile image */
             $file = $this->request->getFile('profile_image');
             $originalName = $file->getClientName();
@@ -241,7 +241,7 @@ class CompanyController extends BaseController
         $conditions                 = array($this->data['primary_key'] => $id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             /* profile image */
             $file = $this->request->getFile('profile_image');
             $originalName = $file->getClientName();
@@ -616,7 +616,7 @@ class CompanyController extends BaseController
         $conditions                 = array('company_id' => $id, 'status' => 1);
         $data['assignCats']         = $this->data['model']->find_data('ecomm_company_category', 'array', $conditions, '', '', '', $order_by);
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             $company_id         = $this->request->getPost('company_id');
             $category_id        = $this->request->getPost('category_id');
 
@@ -670,7 +670,7 @@ class CompanyController extends BaseController
         $conditions                 = array('company_id' => $id, 'status' => 1);
         $data['assignItems']        = $this->data['model']->find_data('ecomm_company_items', 'array', $conditions, '', '', '', $order_by);
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             // pr($this->request->getPost());
             $company_id             = $this->request->getPost('company_id');
             $item_category          = $this->request->getPost('item_category');
@@ -871,7 +871,7 @@ class CompanyController extends BaseController
         $data['company_id']         = $id;
         $data['company_name']       = $company_name;
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             pr($this->request->getPost());
         }
         echo $this->layout_after_login($title, $page_name, $data);

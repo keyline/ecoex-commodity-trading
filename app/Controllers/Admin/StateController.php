@@ -52,7 +52,7 @@ class StateController extends BaseController {
         $title                      = $data['action'].' '.$this->data['title'];
         $page_name                  = 'state/add-edit';        
         $data['row']                = [];
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             $postData   = array(
                 'name'          => strtoupper($this->request->getPost('name')),
                 'is_neighbour'  => $this->request->getPost('is_neighbour'),
@@ -81,7 +81,7 @@ class StateController extends BaseController {
         $conditions                 = array($this->data['primary_key']=>$id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
 
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             $postData   = array(
                 'name'          => strtoupper($this->request->getPost('name')),
                 'is_neighbour'  => $this->request->getPost('is_neighbour'),

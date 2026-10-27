@@ -40,7 +40,7 @@ class PendingProductController extends BaseController {
         $data['row']                = [];
         $orderBy[0]                 = ['field' => 'name', 'type' => 'ASC'];
         $data['cats']               = $this->data['model']->find_data('ecomm_product_categories', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             /* profile image */
                 $file = $this->request->getFile('product_image');
                 $originalName = $file->getClientName();
@@ -81,7 +81,7 @@ class PendingProductController extends BaseController {
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
         $orderBy[0]                 = ['field' => 'name', 'type' => 'ASC'];
         $data['cats']               = $this->data['model']->find_data('ecomm_product_categories', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             /* profile image */
                 $file = $this->request->getFile('product_image');
                 $originalName = $file->getClientName();

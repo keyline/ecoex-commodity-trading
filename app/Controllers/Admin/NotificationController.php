@@ -52,7 +52,7 @@ class NotificationController extends BaseController {
         $title                      = $data['action'].' '.$this->data['title'];
         $page_name                  = 'notification/add-edit';        
         $data['row']                = [];
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             $users      = [];
             $user_type  = $this->request->getPost('user_type');
             $getUsers   = $this->common_model->find_data('ecomm_users', 'array', ['status!=' => 3, 'type' => $user_type], 'id');
@@ -90,7 +90,7 @@ class NotificationController extends BaseController {
         $conditions                 = array($this->data['primary_key']=>$id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
 
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             $users      = [];
             $user_type  = $this->request->getPost('user_type');
             $getUsers   = $this->common_model->find_data('ecomm_users', 'array', ['status!=' => 3, 'type' => $user_type], 'id');

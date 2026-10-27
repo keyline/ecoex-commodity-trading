@@ -100,7 +100,7 @@ class VendorController extends BaseController
         $data['row']                = [];
         $data['memberTypes']        = $this->data['model']->find_data('ecomm_member_types', 'array', ['status' => 1]);
         $data['recycler_category']  = $this->data['model']->find_data('recycler_member_categorys', 'array', ['status' => 1]);
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             /* profile image */
             $file = $this->request->getFile('profile_image');
             $originalName = $file->getClientName();
@@ -259,7 +259,7 @@ class VendorController extends BaseController
         $data['recycler_category']  = $this->data['model']->find_data('recycler_member_categorys', 'array', ['status' => 1]);
 
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             $postdata = $this->request->getPost();
             /* profile image */
             $file = $this->request->getFile('profile_image');
@@ -585,7 +585,7 @@ class VendorController extends BaseController
 
         // pr($priceMap);
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
 
             $vendor_id  = $this->request->getPost('vendor_id');
             $company_id = $this->request->getPost('company_id');

@@ -40,7 +40,7 @@ class RoleController extends BaseController {
         $data['row']                = [];
         $data['parentModules']      = $this->common_model->find_data('ecoex_modules', 'array', ['parent_id' => 0, 'published' => 1]);
         $data['features']           = $this->common_model->find_data('ecoex_features', 'array', ['published' => 1]);
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             $postData   = array(
                 'role_name'           => $this->request->getPost('role_name'),
             );
@@ -79,7 +79,7 @@ class RoleController extends BaseController {
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
         $data['parentModules']      = $this->common_model->find_data('ecoex_modules', 'array', ['parent_id' => 0, 'published' => 1]);
         $data['features']           = $this->common_model->find_data('ecoex_features', 'array', ['published' => 1]);
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             // pr($this->request->getPost());
             $postData   = array(
                 'role_name'           => $this->request->getPost('role_name'),

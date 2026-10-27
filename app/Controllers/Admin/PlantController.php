@@ -126,7 +126,7 @@ class PlantController extends BaseController
         $data['row']                = [];
         $orderBy[0]                 = ['field' => 'company_name', 'type' => 'ASC'];
         $data['companyList']        = $this->data['model']->find_data('ecoex_companies', 'array', ['status!=' => 3, 'parent_id' => 0], '', '', '', $orderBy);
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             /* profile image */
             $file = $this->request->getFile('profile_image');
             $originalName = $file->getClientName();
@@ -311,7 +311,7 @@ class PlantController extends BaseController
         $orderBy[0]                 = ['field' => 'company_name', 'type' => 'ASC'];
         $data['companyList']        = $this->data['model']->find_data('ecoex_companies', 'array', ['status!=' => 3, 'parent_id' => 0], '', '', '', $orderBy);
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             /* profile image */
             $file = $this->request->getFile('profile_image');
             $originalName = $file->getClientName();
@@ -637,7 +637,7 @@ class PlantController extends BaseController
         $orderBy[0]                 = ['field' => 'company_name', 'type' => 'ASC'];
         $data['companyList']        = $this->data['model']->find_data('ecoex_companies', 'array', ['status!=' => 3, 'parent_id' => 0, 'id' => 1], '', '', '', $orderBy);
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
 
 
             $postData   = array(
@@ -689,7 +689,7 @@ class PlantController extends BaseController
         $orderBy2[0]                = ['field' => 'item_name_ecoex', 'type' => 'ASC'];
         $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => $parent_id], 'id,item_name_ecoex', '', '', $orderBy2);
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             $item_id            = $this->request->getPost('item_id');
             $qty                = $this->request->getPost('qty');
             $uploadedFiles      = $this->request->getFileMultiple('new_product_image');
@@ -802,7 +802,7 @@ class PlantController extends BaseController
         $orderBy2[0]                = ['field' => 'item_name_ecoex', 'type' => 'ASC'];
         $data['items']              = $this->data['model']->find_data('ecomm_company_items', 'array', ['status' => 1, 'company_id' => $parent_id], 'id,item_name_ecoex', '', '', $orderBy2);
 
-        if (strtolower($this->request->getMethod()) === 'post') {
+        if ($this->request->is('post')) {
             $item_id            = $this->request->getPost('item_id');
             $qty                = $this->request->getPost('qty');
             $uploadedFiles      = $this->request->getFileMultiple('new_product_image');

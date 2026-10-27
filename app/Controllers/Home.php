@@ -30,7 +30,7 @@ class Home extends BaseController
         $data['page_header']        = $data['general_settings']->site_name;
         $data['page_content']       = $this->common_model->find_data('ecomm_pages', 'row', ['id' => 3]);
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             $postData   = array(
                 'user_type'             => $this->request->getPost('user_type'),
                 'entity_name'           => $this->request->getPost('entity_name'),
@@ -210,7 +210,7 @@ class Home extends BaseController
         $data['general_settings']   = $this->common_model->find_data('general_settings', 'row');
         $db = \Config\Database::connect();
 
-        if($this->request->getMethod() == 'post')
+        if($this->request->is('post'))
         {
             $ecomm_enquires = $db->table('ecomm_enquires')->where('enquiry_no', $this->request->getPost("enquiry_no"))->get()->getRow();
             // dd($ecomm_enquires);

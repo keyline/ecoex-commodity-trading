@@ -125,7 +125,7 @@ class WhatsappMessageController extends BaseController
         // =============================
         // 1️⃣ Handle GET: Webhook verification
         // =============================
-        if ($request->getMethod() === 'get') {
+        if ($request->is('get')) {
             $mode = $request->getGet('hub_mode');
             $token = $request->getGet('hub_verify_token');
             $challenge = $request->getGet('hub_challenge');
@@ -146,7 +146,7 @@ class WhatsappMessageController extends BaseController
         // =============================
         // 2️⃣ Handle POST: Incoming WhatsApp messages
         // =============================
-        if ($request->getMethod() === 'post') {
+        if ($request->is('post')) {
             $input = $request->getJSON(true);
 
             // Log incoming messages for debugging

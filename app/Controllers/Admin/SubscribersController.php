@@ -63,7 +63,7 @@ class SubscribersController extends BaseController {
         $order_by2[0]               = array('field' => 'name', 'type' => 'ASC');
         $data['states']             = $this->data['model']->find_data('ecomm_states', 'array', ['status' => 1], 'name', '', '', $order_by2);
 
-        if($this->request->getMethod() == "post")
+        if($this->request->is('post'))
         {
             $validation = \Config\Services::validation();
             $validation->setRules([
@@ -146,7 +146,7 @@ class SubscribersController extends BaseController {
         $order_by2[0]               = array('field' => 'name', 'type' => 'ASC');
         $data['states']             = $this->data['model']->find_data('ecomm_states', 'array', ['status' => 1], 'name', '', '', $order_by2);
 
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             $validation = \Config\Services::validation();
             $validation->setRules([
                 // 'email' => [

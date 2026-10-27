@@ -404,7 +404,7 @@ class QuotationController extends BaseController
         $data['quotation_items']    = $this->data['model']->find_data('quotation_items', 'array', ['id' => $quotation_item_id]);
         // pr($data['quotation_items']);
         $data['moduleDetail']       = $this->data;        
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             if ($this->request->getPost('mode') == 'share_vendor') {
                 $enq_id         = $this->request->getPost('enq_id');
                 $company_id     = $this->request->getPost('company_id');
@@ -2132,7 +2132,7 @@ class QuotationController extends BaseController
         $data['vendors'] = $query->getResult();
 
         # @Shubha75 NEW CODE
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             if ($this->request->getPost('mode') == 'share_vendor') {
                 $enq_id         = $this->request->getPost('enq_id');
                 $company_id     = $this->request->getPost('company_id');

@@ -44,7 +44,7 @@ class AdminSubUserController extends BaseController
         $data['row']                = [];
         $data['roles']              = $this->common_model->find_data('ecoex_roles', 'array', ['published' => 1]);
         $data['subusers']           = $this->common_model->find_data('ecoex_admin_user', 'array', ['status' => 1, 'user_type!=' => 'MA']);
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             // pr($this->request->getPost());
             /* inquiry number generate */
             $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
@@ -115,7 +115,7 @@ class AdminSubUserController extends BaseController
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
         $data['roles']              = $this->common_model->find_data('ecoex_roles', 'array', ['published' => 1]);
         $data['subusers']           = $this->common_model->find_data('ecoex_admin_user', 'array', ['status' => 1, 'user_type!=' => 'MA']);
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             $email = $this->request->getPost('email');
             $checkSubUser = $this->common_model->find_data('ecoex_admin_user', 'count', ['username' => $email, 'id!=' => $id]);
             if ($checkSubUser <= 0) {
@@ -208,7 +208,7 @@ class AdminSubUserController extends BaseController
         $orderBy[0]                 = ['field' => 'plant_name', 'type' => 'ASC'];
         $data['plantLists']         = $this->common_model->find_data('ecomm_users', 'array', ['type' => 'PLANT', 'status>=' => 1, 'status<=' => 2], 'id,plant_name,full_address,state,parent_id', '', '', $orderBy);
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             // pr($this->request->getPost());
             $fields = [
                 'plant_ids'             => $this->request->getPost('plant_ids_json'),
@@ -237,7 +237,7 @@ class AdminSubUserController extends BaseController
         $orderBy[0]                 = ['field' => 'id', 'type' => 'DESC'];
         $data['vendorLists']         = $this->common_model->find_data('ecomm_users', 'array', ['type' => 'VENDOR', 'status>=' => 1, 'status<=' => 2], 'id,full_address,location,member_type,recycler_category_id,company_name,state', '', '', $orderBy);
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             // pr($this->request->getPost());
             $fields = [
                 'vendor_ids'             => $this->request->getPost('vendor_ids_json'),

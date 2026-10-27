@@ -402,7 +402,7 @@ class EnquiryRequestController extends BaseController
 
         $data['sharedVendors']      = $this->common_model->find_data('ecomm_enquiry_vendor_shares', 'array', ['enq_id' => $enq_id]);
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             if ($this->request->getPost('mode') == 'share_vendor') {
                 $enq_id         = $this->request->getPost('enq_id');
                 $company_id     = $this->request->getPost('company_id');
@@ -2368,7 +2368,7 @@ class EnquiryRequestController extends BaseController
         $data['vendors'] = $query->getResult();
 
         # @Shubha75 NEW CODE
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             if ($this->request->getPost('mode') == 'share_vendor') {
                 $enq_id         = $this->request->getPost('enq_id');
                 $company_id     = $this->request->getPost('company_id');
@@ -2447,7 +2447,7 @@ class EnquiryRequestController extends BaseController
         }
 
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->is('post')) {
             /* sl no*/
             $orderBy[0] = ['field' => 'id', 'type' => 'DESC'];
             $checkEnq = $this->common_model->find_data('ecomm_enquires', 'row', '', 'sl_no', '', '', $orderBy);
@@ -3100,7 +3100,7 @@ class EnquiryRequestController extends BaseController
     {
 
         // Ensure this is a POST request
-        if ($this->request->getMethod() !== 'post') {
+        if (!$this->request->is('post')) {
             return redirect()->back()->with('error_message', 'Invalid request method.');
         }
 

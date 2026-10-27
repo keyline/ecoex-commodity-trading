@@ -52,7 +52,7 @@ class PageController extends BaseController {
         $title                      = $data['action'].' '.$this->data['title'];
         $page_name                  = 'pages/add-edit';
         $data['row']                = [];
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             $postData   = array(
                 'page_title'            => $this->request->getPost('page_title'),
                 'slug'                  => clean($this->request->getPost('page_title')),
@@ -86,7 +86,7 @@ class PageController extends BaseController {
         $conditions                 = array($this->data['primary_key']=>$id);
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
 
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             $postData   = array(
                 'page_title'            => $this->request->getPost('page_title'),
                 'slug'                  => clean($this->request->getPost('page_title')),

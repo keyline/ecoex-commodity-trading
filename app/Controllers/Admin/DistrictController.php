@@ -54,7 +54,7 @@ class DistrictController extends BaseController {
         $data['row']                = [];
         $orderBy[0]                 = ['field' => 'name', 'type' => 'ASC'];
         $data['states']             = $this->data['model']->find_data('ecomm_states', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             $postData   = array(
                 'states_id'     => $this->request->getPost('states_id'),
                 'name'          => $this->request->getPost('name'),
@@ -84,7 +84,7 @@ class DistrictController extends BaseController {
         $data['row']                = $this->data['model']->find_data($this->data['table_name'], 'row', $conditions);
         $orderBy[0]                 = ['field' => 'name', 'type' => 'ASC'];
         $data['states']             = $this->data['model']->find_data('ecomm_states', 'array', ['status' => 1], 'id,name', '', '', $orderBy);
-        if($this->request->getMethod() == 'post') {
+        if($this->request->is('post')) {
             $postData   = array(
                 'states_id'     => $this->request->getPost('states_id'),
                 'name'          => $this->request->getPost('name'),
